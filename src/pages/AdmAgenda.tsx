@@ -64,7 +64,7 @@ const AdmAgenda: React.FC = () => {
       if (error) throw error;
 
       // Atribuir cores fixas por colaborador para a agenda
-      const colors = ['#7C3AED', '#EC4899', '#10B981', '#F59E0B', '#3B82F6', '#EF4444', '#6366F1', '#8B5CF6'];
+      const colors = ['#D9FF00', '#EC4899', '#10B981', '#F59E0B', '#D9FF00', '#EF4444', '#D9FF00', '#D9FF00'];
       const mapped = (data || []).map((c, i) => ({
         ...c,
         color: colors[i % colors.length]

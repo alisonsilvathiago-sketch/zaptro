@@ -16,7 +16,7 @@ const Skeleton: React.FC<SkeletonProps> = ({ width, height, borderRadius = '12px
         width,
         height,
         borderRadius,
-        backgroundColor: '#F1F5F9',
+        backgroundColor: '#ebebeb',
         overflow: 'hidden',
         position: 'relative',
         ...style

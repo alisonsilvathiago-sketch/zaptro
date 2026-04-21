@@ -11,6 +11,7 @@ import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
 import { zaptroClientProfilePath } from '../constants/zaptroRoutes';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 
 /** Linhas fictícias (mesmo formato que `whatsapp_conversations`) para pré-visualizar a lista e KPIs. */
 export function getZaptroDemoClientById(id: string): any | null {
@@ -108,9 +109,9 @@ const ZaptroClients: React.FC = () => {
   );
 
   const kpis = [
-    { label: 'Total Base', value: clients.length, icon: Users, color: '#D9FF00' },
-    { label: 'Ativos 24h', value: clients.filter(c => new Date(c.updated_at) > new Date(Date.now() - 86400000)).length, icon: TrendingUp, color: '#D9FF00' },
-    { label: 'Taxa Retenção', value: '88%', icon: Star, color: '#D9FF00' },
+    { label: 'Total Base', value: clients.length, icon: Users },
+    { label: 'Ativos 24h', value: clients.filter(c => new Date(c.updated_at) > new Date(Date.now() - 86400000)).length, icon: TrendingUp },
+    { label: 'Taxa Retenção', value: '88%', icon: Star },
   ];
 
   return (
@@ -128,15 +129,18 @@ const ZaptroClients: React.FC = () => {
                 <p
                   style={{
                     margin: '12px 0 0',
-                    fontSize: 12,
-                    fontWeight: 800,
-                    color: '#14532d',
-                    backgroundColor: 'rgba(217, 255, 0, 0.35)',
-                    border: '1px solid rgba(0,0,0,0.08)',
-                    padding: '10px 14px',
-                    borderRadius: 14,
-                    maxWidth: 720,
-                    lineHeight: 1.45,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: 0,
+                    lineHeight: 1.3,
+                    color: 'rgba(33, 33, 33, 1)',
+                    backgroundColor: 'rgba(217, 255, 0, 0.33)',
+                    border: '1px solid rgba(0, 0, 0, 0.08)',
+                    padding: '9px 7px',
+                    borderRadius: 8,
+                    width: '100%',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   Pré-visualização: contactos fictícios para veres o layout da tabela e dos indicadores. Com conversas
@@ -153,16 +157,13 @@ const ZaptroClients: React.FC = () => {
 
         {/* CRM DASHBOARD MINI */}
         <div style={styles.kpiGrid}>
-           {kpis.map((k, i) => (
-             <div key={i} style={styles.kpiCard}>
-                <div style={{...styles.kpiIcon, backgroundColor: k.color + '15'}}>
-                   <k.icon size={20} color={k.color} />
-                </div>
-                <div style={styles.kpiContent}>
-                   <h3 style={styles.kpiValue}>{k.value}</h3>
-                   <span style={styles.kpiLabel}>{k.label}</span>
-                </div>
-             </div>
+           {kpis.map((k) => (
+             <ZaptroKpiMetricCard
+               key={k.label}
+               icon={k.icon}
+               title={k.label}
+               value={k.value}
+             />
            ))}
         </div>
 
@@ -263,17 +264,15 @@ const ZaptroClients: React.FC = () => {
 
 const styles: Record<string, any> = {
   container: { display: 'flex', flexDirection: 'column', gap: '40px' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 },
+  headerInfo: { flex: 1, minWidth: 0 },
+  actions: { flexShrink: 0 },
   title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-1.5px' },
   subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '500', margin: '4px 0 0 0' },
   
-  exportBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#F1F5F9', color: '#000', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '950', cursor: 'pointer' },
+  exportBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#ebebeb', color: '#000', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '950', cursor: 'pointer' },
 
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' },
-  kpiCard: { padding: '24px', backgroundColor: 'white', border: '1px solid #EBEBEC', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: '20px' },
-  kpiIcon: { width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  kpiValue: { fontSize: '24px', fontWeight: '950', color: '#000', margin: 0 },
-  kpiLabel: { fontSize: '12px', fontWeight: '800', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
 
   listSection: { display: 'flex', flexDirection: 'column', gap: '24px' },
   toolbar: { display: 'flex', justifyContent: 'space-between', gap: '16px' },

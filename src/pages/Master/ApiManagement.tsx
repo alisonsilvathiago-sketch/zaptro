@@ -74,7 +74,7 @@ const ApiManagement: React.FC = () => {
 
       <div style={styles.metricsGrid}>
          <div style={styles.metricCard}>
-            <div style={{...styles.metricDot, backgroundColor: '#7c3aed'}} />
+            <div style={{...styles.metricDot, backgroundColor: '#D9FF00'}} />
             <div style={styles.metricInfo}>
                <p style={styles.metricLabel}>Chamadas / 24h</p>
                <h3 style={styles.metricValue}>1.2M</h3>
@@ -88,7 +88,7 @@ const ApiManagement: React.FC = () => {
             </div>
          </div>
          <div style={styles.metricCard}>
-            <div style={{...styles.metricDot, backgroundColor: '#2563eb'}} />
+            <div style={{...styles.metricDot, backgroundColor: '#D9FF00'}} />
             <div style={styles.metricInfo}>
                <p style={styles.metricLabel}>Conexões Ativas</p>
                <h3 style={styles.metricValue}>{connections.length}</h3>
@@ -202,7 +202,7 @@ const ApiManagement: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '24px', fontWeight: '900', color: '#111827', margin: 0 },
+  title: { fontSize: '24px', fontWeight: '900', color: '#000000', margin: 0 },
   subtitle: { fontSize: '14px', color: '#64748b', marginTop: '4px' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer' },
@@ -214,31 +214,31 @@ const styles: Record<string, any> = {
   metricLabel: { fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' },
   metricValue: { fontSize: '22px', fontWeight: '900', color: '#1e293b', margin: 0 },
   tableSection: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
-  tableHeader: { padding: '24px', borderBottom: '1px solid #f1f5f9' },
+  tableHeader: { padding: '24px', borderBottom: '1px solid #e8e8e8' },
   tableTitle: { fontSize: '16px', fontWeight: '900', margin: 0 },
   table: { width: '100%', borderCollapse: 'collapse' },
   thead: { backgroundColor: '#f9fafb', textAlign: 'left' },
   th: { padding: '16px 24px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' },
-  tr: { borderBottom: '1px solid #f1f5f9' },
+  tr: { borderBottom: '1px solid #e8e8e8' },
   td: { padding: '16px 24px' },
   apiInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  apiIconBox: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f5f3ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  apiIconBox: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   apiName: { fontSize: '14px', fontWeight: '800' },
   apiDesc: { fontSize: '12px', color: '#94a3b8' },
   connStack: { display: 'flex', alignItems: 'center' },
-  miniAvatar: { width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#f1f5f9', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '900', color: 'var(--primary)', marginLeft: '-8px' },
+  miniAvatar: { width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#ebebeb', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '900', color: 'var(--primary)', marginLeft: '-8px' },
   moreConn: { fontSize: '11px', fontWeight: '800', color: '#94a3b8', marginLeft: '8px' },
-  urlCell: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: '#f8fafc', borderRadius: '8px', width: 'fit-content' },
+  urlCell: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: '#f4f4f4', borderRadius: '8px', width: 'fit-content' },
   statusTag: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '900', color: '#10b981' },
   statusDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' },
   rowActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-  rowBtn: { padding: '8px', border: 'none', backgroundColor: '#f8fafc', borderRadius: '8px', cursor: 'pointer' },
+  rowBtn: { padding: '8px', border: 'none', backgroundColor: '#f4f4f4', borderRadius: '8px', cursor: 'pointer' },
   form: { padding: '10px', display: 'flex', flexDirection: 'column', gap: '20px' },
   fGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   fGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
   label: { fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' },
-  input: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f8fafc', fontWeight: '700', outline: 'none' },
-  textarea: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f8fafc', fontWeight: '700', minHeight: '100px', outline: 'none', resize: 'none' },
+  input: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none' },
+  textarea: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', minHeight: '100px', outline: 'none', resize: 'none' },
   submitBtn: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '900', cursor: 'pointer' }
 };
 

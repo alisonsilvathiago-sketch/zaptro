@@ -43,10 +43,10 @@ const PublicCalculatorView: React.FC = () => {
     title: { fontSize: '32px', fontWeight: '900', color: '#0C4A6E', marginBottom: '12px' },
     companyLine: { fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: '700' },
     
-    divider: { height: '1px', backgroundColor: '#F1F5F9', margin: '40px 0' },
+    divider: { height: '1px', backgroundColor: '#ebebeb', margin: '40px 0' },
     
     entryList: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
-    entry: { padding: '24px', borderRadius: '24px', backgroundColor: '#F8FAFC', border: '1px solid #F1F5F9' },
+    entry: { padding: '24px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #e8e8e8' },
     entryH: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' },
     entryTitle: { fontSize: '16px', fontWeight: '800', color: '#1E293B' },
     entryExpr: { fontSize: '13px', color: '#94A3B8', fontFamily: 'monospace' },
@@ -121,11 +121,11 @@ const PublicCalculatorView: React.FC = () => {
           </div>
 
           <div style={{marginTop: '50px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-             <div style={{padding: '20px', borderRadius: '24px', backgroundColor: '#F8FAFC', display: 'flex', alignItems: 'center', gap: '16px'}}>
+             <div style={{padding: '20px', borderRadius: '24px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', gap: '16px'}}>
                 <div style={{width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><Mail size={18} color="#0369A1" /></div>
                 <div style={{fontSize: '12px'}}><p style={{color: '#94A3B8', margin: 0}}>Atendimento</p><strong style={{color: '#0C4A6E'}}>contato@logta.com</strong></div>
              </div>
-             <div style={{padding: '20px', borderRadius: '24px', backgroundColor: '#F8FAFC', display: 'flex', alignItems: 'center', gap: '16px'}}>
+             <div style={{padding: '20px', borderRadius: '24px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', gap: '16px'}}>
                 <div style={{width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><Phone size={18} color="#0369A1" /></div>
                 <div style={{fontSize: '12px'}}><p style={{color: '#94A3B8', margin: 0}}>WhatsApp</p><strong style={{color: '#0C4A6E'}}>(11) 98765-4321</strong></div>
              </div>

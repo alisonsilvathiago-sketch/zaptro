@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Settings, Workflow, Bot, Palette, Users, Webhook } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import WhatsAppConfig from './WhatsAppConfig';
 import ZaptroAutomation from './ZaptroAutomation';
@@ -10,7 +10,7 @@ import { ZaptroWhiteLabelInner } from './ZaptroWhiteLabel';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
-import { ZAPTRO_SECTION_BORDER } from '../constants/zaptroUi';
+import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER } from '../constants/zaptroUi';
 import { hasZaptroGranularPermission, isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { zaptroSettingsTabToPageId } from '../utils/zaptroPagePermissionMap';
 import { isZaptroBrandingEntitledByPlan } from '../utils/zaptroBrandingEntitlement';
@@ -200,12 +200,12 @@ const ZaptroSettingsInner: React.FC = () => {
   const tabs = useMemo(
     () =>
       [
-        { id: 'config' as const, label: 'Configuração', shortLabel: 'Config.', Icon: Settings },
-        { id: 'automation' as const, label: 'Automação / Fluxos', shortLabel: 'Fluxos', Icon: Workflow },
-        { id: 'chatbot' as const, label: 'Chatbot', shortLabel: 'Bot', Icon: Bot },
-        { id: 'marca' as const, label: 'Personalizar empresa', shortLabel: 'Marca', Icon: Palette },
-        { id: 'api' as const, label: 'Integrações API', shortLabel: 'API', Icon: Webhook },
-        { id: 'time' as const, label: 'Equipe e Acessos', shortLabel: 'Equipe', Icon: Users },
+        { id: 'config' as const, label: 'Configuração' },
+        { id: 'automation' as const, label: 'Automação / Fluxos' },
+        { id: 'chatbot' as const, label: 'Chatbot' },
+        { id: 'marca' as const, label: 'Personalizar empresa' },
+        { id: 'api' as const, label: 'Integrações API' },
+        { id: 'time' as const, label: 'Equipe e Acessos' },
       ] as const,
     [],
   );
@@ -233,8 +233,11 @@ const ZaptroSettingsInner: React.FC = () => {
   }, [activeTab, visibleTabs, setSearchParams]);
 
   const isDark = palette.mode === 'dark';
-  const trackBg = isDark ? 'rgba(255,255,255,0.06)' : '#f4f4f5';
+  /** Neutro quente Zaptro (#f4f4f4), não zinc #f4f4f5. */
+  const trackBg = isDark ? 'rgba(255,255,255,0.06)' : ZAPTRO_FIELD_BG;
   const tabBorder = isDark ? 'rgba(255,255,255,0.1)' : ZAPTRO_SECTION_BORDER;
+  /** Abas inativas: cinza legível sobre o trilho claro (evita slate azulado do textMuted). */
+  const tabLabelInactive = isDark ? palette.textMuted : '#525252';
 
   /** Uma só largura máxima em todas as abas — evita reflow da grelha e sensação de “aba maior” ao entrar em Automação. */
   const shellMax = 'min(100%, 1360px)';
@@ -242,7 +245,7 @@ const ZaptroSettingsInner: React.FC = () => {
   return (
     <div style={{ width: '100%', maxWidth: shellMax, margin: '0 auto', boxSizing: 'border-box' }}>
       <header style={{ marginBottom: 28 }}>
-        <h1 style={{ margin: '0 0 8px 0', fontSize: 28, fontWeight: 950, letterSpacing: '-0.8px', color: palette.text }}>
+        <h1 style={{ margin: '0 0 8px 0', fontSize: 37, fontWeight: 600, letterSpacing: '-0.8px', color: palette.text }}>
           Configurações
         </h1>
         <p style={{ margin: 0, fontSize: 15, color: palette.textMuted, fontWeight: 600, lineHeight: 1.5 }}>
@@ -250,105 +253,122 @@ const ZaptroSettingsInner: React.FC = () => {
         </p>
       </header>
 
-      <div
-        role="tablist"
-        aria-label="Secções de configuração"
-        className="zaptro-settings-tablist"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 158px), 1fr))',
-          gap: 8,
-          padding: 6,
-          borderRadius: 18,
-          backgroundColor: trackBg,
-          border: `1px solid ${tabBorder}`,
-          marginBottom: 28,
-        }}
-      >
-        {visibleTabs.map(({ id, label, shortLabel, Icon }) => {
-          const on = activeTab === id;
-          return (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              id={`zaptro-settings-tab-${id}`}
-              onClick={() => setTab(id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                gap: 8,
-                width: '100%',
-                minWidth: 0,
-                height: 44,
-                padding: '0 12px',
-                boxSizing: 'border-box',
-                borderRadius: 14,
-                border: on ? `1px solid ${isDark ? '#fafafa' : '#18181b'}` : '1px solid transparent',
-                backgroundColor: on ? (isDark ? '#111111' : '#FFFFFF') : 'transparent',
-                color: on ? palette.text : palette.textMuted,
-                boxShadow: on ? (isDark ? 'none' : '0 1px 2px rgba(0,0,0,0.06)') : 'none',
-                fontWeight: 850,
-                fontSize: 13,
-                cursor: 'pointer',
-              }}
-            >
-              <Icon size={18} strokeWidth={2.2} color={on ? palette.text : palette.textMuted} style={{ flexShrink: 0 }} />
-              <span
-                className="zaptro-settings-tab-label"
-                style={{ flex: 1, minWidth: 0, textAlign: 'left' }}
+      <div className="zaptro-settings-layout">
+        <div
+          role="tablist"
+          aria-label="Secções de configuração"
+          className="zaptro-settings-nav"
+          style={{
+            flexShrink: 0,
+            width: 220,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 6,
+            padding: 8,
+            borderRadius: 18,
+            backgroundColor: trackBg,
+            border: `1px solid ${tabBorder}`,
+            boxSizing: 'border-box',
+            alignSelf: 'flex-start',
+          }}
+        >
+          {visibleTabs.map(({ id, label }) => {
+            const on = activeTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                id={`zaptro-settings-tab-${id}`}
+                onClick={() => setTab(id)}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'center',
+                  width: '100%',
+                  minWidth: 0,
+                  minHeight: 0,
+                  padding: '14px 12px',
+                  boxSizing: 'border-box',
+                  borderRadius: 14,
+                  border: on ? `1px solid ${isDark ? '#fafafa' : '#18181b'}` : '1px solid transparent',
+                  backgroundColor: on ? (isDark ? '#111111' : '#FFFFFF') : 'transparent',
+                  color: on ? palette.text : tabLabelInactive,
+                  boxShadow: on ? (isDark ? 'none' : '0 1px 2px rgba(0,0,0,0.06)') : 'none',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
               >
-                <span className="zaptro-settings-tab-long">{label}</span>
-                <span className="zaptro-settings-tab-short">{shortLabel}</span>
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                <span
+                  style={{
+                    fontWeight: 850,
+                    fontSize: 12.5,
+                    lineHeight: 1.35,
+                    textAlign: 'left',
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-      <div
-        role="tabpanel"
-        aria-labelledby={`zaptro-settings-tab-${activeTab}`}
-        style={{
-          minHeight: 200,
-          borderRadius: 20,
-          border: `1px solid ${tabBorder}`,
-          backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFFFFF',
-          padding:
-            activeTab === 'config'
-              ? '28px 24px 36px'
-              : activeTab === 'time'
-                ? '16px 16px 28px'
-                : '24px 24px 36px',
-          boxSizing: 'border-box',
-        }}
-      >
-        {activeTab === 'config' && <WhatsAppConfig />}
-        {activeTab === 'automation' && <ZaptroAutomation hideLayout />}
-        {activeTab === 'chatbot' && <ZaptroChatbotTab />}
-        {activeTab === 'marca' && <ZaptroWhiteLabelInner embedded />}
-        {activeTab === 'api' && <ZaptroSettingsApiTab />}
-        {activeTab === 'time' && <ZaptroTeam hideLayout />}
+        <div
+          role="tabpanel"
+          aria-labelledby={`zaptro-settings-tab-${activeTab}`}
+          className="zaptro-settings-panel"
+          style={{
+            flex: 1,
+            minWidth: 0,
+            minHeight: 200,
+            borderRadius: 20,
+            border: `1px solid ${tabBorder}`,
+            backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFFFFF',
+            padding:
+              activeTab === 'config'
+                ? '28px 24px 36px'
+                : activeTab === 'time'
+                  ? '16px 16px 28px'
+                  : '24px 24px 36px',
+            boxSizing: 'border-box',
+          }}
+        >
+          {activeTab === 'config' && <WhatsAppConfig />}
+          {activeTab === 'automation' && <ZaptroAutomation hideLayout />}
+          {activeTab === 'chatbot' && <ZaptroChatbotTab />}
+          {activeTab === 'marca' && <ZaptroWhiteLabelInner embedded />}
+          {activeTab === 'api' && <ZaptroSettingsApiTab />}
+          {activeTab === 'time' && <ZaptroTeam hideLayout />}
+        </div>
       </div>
 
       <style>{`
-        .zaptro-settings-tab-short { display: none; }
-        .zaptro-settings-tab-label { overflow: hidden; }
-        .zaptro-settings-tab-long {
-          display: block;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        .zaptro-settings-layout {
+          display: flex;
+          flex-direction: row;
+          align-items: stretch;
+          gap: 24px;
+          width: 100%;
         }
-        @media (max-width: 900px) {
-          .zaptro-settings-tab-long { display: none; }
-          .zaptro-settings-tab-short {
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        @media (max-width: 960px) {
+          .zaptro-settings-layout {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .zaptro-settings-nav {
+            width: 100% !important;
+            flex-direction: row !important;
+            flex-wrap: wrap;
+            align-self: stretch !important;
+          }
+          .zaptro-settings-nav button[role="tab"] {
+            flex: 1 1 calc(50% - 4px);
+            min-width: 140px;
           }
         }
       `}</style>

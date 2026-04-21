@@ -41,7 +41,7 @@ const DriverHRProfile: React.FC = () => {
   }, [id]);
 
   const styles = {
-    container: { padding: '32px', backgroundColor: '#F8FAFC', minHeight: '100vh' },
+    container: { padding: '32px', backgroundColor: '#f4f4f4', minHeight: '100vh' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
     backBtn: { display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', cursor: 'pointer', color: '#64748B', fontWeight: '700' },
     
@@ -50,23 +50,23 @@ const DriverHRProfile: React.FC = () => {
     content: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
     
     profileCard: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0', textAlign: 'center' as const },
-    avatarLarge: { width: '120px', height: '120px', borderRadius: '40px', backgroundColor: '#F1F5F9', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', position: 'relative' as const },
+    avatarLarge: { width: '120px', height: '120px', borderRadius: '40px', backgroundColor: '#ebebeb', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', position: 'relative' as const },
     onlineDot: { width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#10b981', border: '3px solid white', position: 'absolute' as const, bottom: '5px', right: '5px' },
     name: { fontSize: '24px', fontWeight: '900', color: '#0F172A', marginBottom: '4px' },
     role: { fontSize: '12px', fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase' as const, letterSpacing: '0.05em', marginBottom: '24px', display: 'block' },
     
     scoreGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' },
-    scoreItem: { padding: '16px', borderRadius: '24px', backgroundColor: '#F8FAFC', border: '1px solid #F1F5F9' },
+    scoreItem: { padding: '16px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #e8e8e8' },
     scoreLabel: { fontSize: '11px', color: '#94A3B8', fontWeight: '800', marginBottom: '4px' },
     scoreValue: { fontSize: '18px', fontWeight: '900', color: '#1E293B' },
     
-    contactInfo: { textAlign: 'left' as const, display: 'flex', flexDirection: 'column' as const, gap: '16px', paddingTop: '24px', borderTop: '1px solid #F1F5F9' },
+    contactInfo: { textAlign: 'left' as const, display: 'flex', flexDirection: 'column' as const, gap: '16px', paddingTop: '24px', borderTop: '1px solid #e8e8e8' },
     contactRow: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#64748B', fontWeight: '600' },
-    iconBox: { padding: '8px', borderRadius: '10px', backgroundColor: '#F1F5F9', color: 'var(--text-muted)' },
+    iconBox: { padding: '8px', borderRadius: '10px', backgroundColor: '#ebebeb', color: 'var(--text-muted)' },
     
     tabNavPremium: { display: 'flex', gap: '8px', backgroundColor: 'white', padding: '8px', borderRadius: '24px', border: '1px solid #E2E8F0', marginBottom: '32px' },
     tabBtn: { padding: '12px 24px', border: 'none', background: 'none', cursor: 'pointer', borderRadius: '18px', fontSize: '13px', fontWeight: '800', color: '#94A3B8', transition: 'all 0.2s' },
-    tabBtnActive: { backgroundColor: 'var(--primary)', color: 'white', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.2)' },
+    tabBtnActive: { backgroundColor: 'var(--primary)', color: 'white', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
     
     cardPremium: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0' },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
@@ -74,7 +74,7 @@ const DriverHRProfile: React.FC = () => {
     
     attendanceTable: { width: '100%', borderCollapse: 'separate' as const, borderSpacing: '0 8px' },
     th: { textAlign: 'left' as const, padding: '12px 16px', fontSize: '11px', fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase' as const },
-    tr: { backgroundColor: '#F8FAFC', transition: 'all 0.2s' },
+    tr: { backgroundColor: '#f4f4f4', transition: 'all 0.2s' },
     td: { padding: '16px', fontSize: '14px', fontWeight: '600', color: '#475569' },
     pontoBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '800' },
     
@@ -98,7 +98,7 @@ const DriverHRProfile: React.FC = () => {
                 <p style={{ fontSize: '11px', color: '#15803d', marginTop: '4px' }}>Ótima performance de descanso</p>
              </div>
              
-             <div style={{ padding: '24px', borderRadius: '24px', backgroundColor: '#f5f3ff', border: '1px solid #ede9fe' }}>
+             <div style={{ padding: '24px', borderRadius: '24px', backgroundColor: 'rgba(217, 255, 0, 0.18)', border: '1px solid rgba(217, 255, 0, 0.28)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                    <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white' }}><Star size={16} /></div>
                    <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--primary)' }}>Avaliação Media</span>
@@ -189,7 +189,7 @@ const DriverHRProfile: React.FC = () => {
                <button style={{...styles.actionBtn, marginTop: '32px'}}>
                   <MessageSquare size={18} /> Chamar no WhatsApp
                </button>
-               <button style={{...styles.actionBtn, backgroundColor: '#F1F5F9', color: '#475569', marginTop: '12px'}}>
+               <button style={{...styles.actionBtn, backgroundColor: '#ebebeb', color: '#475569', marginTop: '12px'}}>
                   <Edit3 size={18} /> Editar Cadastro
                </button>
             </div>

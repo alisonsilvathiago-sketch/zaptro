@@ -5,7 +5,9 @@ import { Toaster } from 'react-hot-toast'
 import App from './App'
 import { TenantProvider } from './context/TenantContext'
 import { AuthProvider } from './context/AuthContext'
+import { ZaptroThemeProvider } from './context/ZaptroThemeContext'
 import ErrorBoundary from './components/ErrorBoundary'
+import ZaptroCookieBanner from './components/ZaptroCookieBanner'
 import './index.css'
 import { SystemConfigProvider } from './context/SystemConfigContext'
 
@@ -46,11 +48,15 @@ if (rootElement) {
     <StrictMode>
       <ErrorBoundary>
         <BrowserRouter>
+          <ZaptroCookieBanner />
           <Toaster
-            position="bottom-center"
+            position="bottom-right"
             containerStyle={{
               zIndex: 99999,
-              bottom: 'max(20px, env(safe-area-inset-bottom, 0px))',
+              bottom: 'max(16px, env(safe-area-inset-bottom, 0px))',
+              right: 'max(16px, env(safe-area-inset-right, 0px))',
+              left: 'auto',
+              top: 'auto',
               pointerEvents: 'none',
             }}
             gutter={12}
@@ -62,24 +68,29 @@ if (rootElement) {
                 boxShadow: 'none',
                 padding: 0,
                 maxWidth: 'min(440px, 96vw)',
+                minWidth: 'min(320px, 96vw)',
+                width: 'auto',
                 border: 'none',
               },
               success: {
-                iconTheme: { primary: '#16a34a', secondary: '#f4f4f4' },
+                iconTheme: { primary: '#D9FF00', secondary: '#0d0d0d' },
               },
               error: {
-                iconTheme: { primary: '#dc2626', secondary: '#f4f4f4' },
+                iconTheme: { primary: '#D9FF00', secondary: '#0d0d0d' },
               },
               loading: {
-                iconTheme: { primary: '#ca8a04', secondary: '#f4f4f4' },
+                iconTheme: { primary: '#D9FF00', secondary: '#0d0d0d' },
               },
             }}
           />
           <AuthProvider>
             <TenantProvider>
-              <SystemConfigProvider>
-                <App />
-              </SystemConfigProvider>
+              {/* Tema Zaptro: fallback global; `ZaptroLayout` reforça com `canCustomizeTenant` real. */}
+              <ZaptroThemeProvider canCustomizeTenant={false}>
+                <SystemConfigProvider>
+                  <App />
+                </SystemConfigProvider>
+              </ZaptroThemeProvider>
             </TenantProvider>
           </AuthProvider>
         </BrowserRouter>

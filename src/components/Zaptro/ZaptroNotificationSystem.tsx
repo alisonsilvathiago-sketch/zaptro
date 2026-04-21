@@ -1,5 +1,6 @@
 import React from 'react';
 import toast, { type Toast } from 'react-hot-toast';
+import { ZAPTRO_CARD_BG_DARK } from '../../constants/zaptroCardSurface';
 
 export type NotificationType = 'success' | 'error' | 'info' | 'news' | 'warning';
 
@@ -20,12 +21,13 @@ const DURATION_MS: Record<NotificationType, number> = {
   news: 5200,
 };
 
+/** Traço esquerdo — só variações de #D9FF00 (identidade Zaptro). */
 const ACCENT: Record<NotificationType, string> = {
-  success: '#16a34a',
-  error: '#dc2626',
-  info: '#2563eb',
-  warning: '#ca8a04',
-  news: '#7c3aed',
+  success: '#D9FF00',
+  error: 'rgba(217, 255, 0, 0.45)',
+  info: '#D9FF00',
+  warning: 'rgba(217, 255, 0, 0.65)',
+  news: '#D9FF00',
 };
 
 /**
@@ -55,24 +57,32 @@ function ZaptroToastCard({
       aria-live="polite"
       aria-atomic="true"
       style={{
-        width: '100%',
+        /** Largura explícita — evita colapso do contentor flex do react-hot-toast (faixa ~35px). */
+        width: 'min(420px, 92vw)',
+        minWidth: 'min(320px, 92vw)',
         maxWidth: 'min(420px, 92vw)',
         borderRadius: 16,
         padding: '14px 16px 14px 14px',
-        backgroundColor: '#fafafa',
-        color: '#0f172a',
-        border: '1px solid #e4e4e7',
-        borderLeft: `4px solid ${accent}`,
-        boxShadow: '0 10px 40px rgba(15, 23, 42, 0.12)',
+        backgroundColor: ZAPTRO_CARD_BG_DARK,
+        color: '#fafafa',
+        border: '1px solid rgba(255, 255, 255, 0.14)',
+        borderLeft: `3px solid ${accent}`,
+        boxShadow: '0 16px 48px rgba(0, 0, 0, 0.45)',
         textAlign: 'left',
         boxSizing: 'border-box',
         pointerEvents: 'auto',
+        wordBreak: 'break-word',
+        overflowWrap: 'anywhere',
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 950, fontSize: 14, letterSpacing: '-0.02em', lineHeight: 1.25 }}>{title}</div>
-          <div style={{ marginTop: 6, fontSize: 13, fontWeight: 600, color: '#52525b', lineHeight: 1.45 }}>{message}</div>
+          <div style={{ fontWeight: 950, fontSize: 14, letterSpacing: '-0.02em', lineHeight: 1.25, color: '#fafafa' }}>
+            {title}
+          </div>
+          <div style={{ marginTop: 6, fontSize: 13, fontWeight: 600, color: 'rgba(255, 255, 255, 0.72)', lineHeight: 1.45 }}>
+            {message}
+          </div>
         </div>
         <button
           type="button"
@@ -89,7 +99,7 @@ function ZaptroToastCard({
             padding: 4,
             margin: '-4px -4px 0 0',
             borderRadius: 8,
-            color: '#71717a',
+            color: 'rgba(255, 255, 255, 0.55)',
             fontSize: 18,
             lineHeight: 1,
             fontWeight: 700,

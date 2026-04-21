@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Truck, MapPin, Navigation, User, Package, Clock, Shield } from 'lucide-react';
+import { Truck, Navigation, User, Package, Clock, Shield } from 'lucide-react';
+import { useZaptroTheme } from '../context/ZaptroThemeContext';
 
 // Corrigindo ícones padrão do Leaflet no React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -18,6 +19,8 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const FleetMap: React.FC = () => {
+  const { palette } = useZaptroTheme();
+  const isDark = palette.mode === 'dark';
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [shipments, setShipments] = useState<any[]>([]);
 
@@ -38,18 +41,31 @@ const FleetMap: React.FC = () => {
     setShipments(mockShipments);
   }, []);
 
+  const tile = isDark
+    ? {
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      }
+    : {
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      };
+
   return (
     <div style={styles.mapWrap}>
-      <MapContainer 
-        center={[-23.5505, -46.6333] as any} 
-        zoom={13} 
+      <div
+        className={`zaptro-dashboard-map-bw ${isDark ? 'zaptro-dashboard-map-bw--dark' : 'zaptro-dashboard-map-bw--light'}`}
         style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={false}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <MapContainer
+          center={[-23.5505, -46.6333] as any}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+          scrollWheelZoom={false}
+        >
+          <TileLayer attribution={tile.attribution} url={tile.url} />
 
         {/* VEÍCULOS */}
         {vehicles.map(vehicle => (
@@ -90,13 +106,14 @@ const FleetMap: React.FC = () => {
             </Popup>
           </Marker>
         ))}
-      </MapContainer>
-      
+        </MapContainer>
+      </div>
+
       {/* FLOATING LEGEND */}
       <div style={styles.floatingPanel}>
          <h4 style={styles.panelTitle}>Monitoramento Ativo</h4>
          <div style={styles.panelRow}>
-            <div style={{...styles.dot, backgroundColor: '#3b82f6'}} />
+            <div style={{...styles.dot, backgroundColor: '#D9FF00'}} />
             <span>Veículos Ativos (45)</span>
          </div>
          <div style={styles.panelRow}>
@@ -111,15 +128,15 @@ const FleetMap: React.FC = () => {
 const styles = {
   mapWrap: { height: '100%', width: '100%', borderRadius: '24px', overflow: 'hidden', border: '1px solid #e2e8f0', position: 'relative' as const },
   popup: { minWidth: '180px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  popupHeader: { display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' },
-  pTitle: { fontSize: '14px', fontWeight: '900', color: '#111827', margin: 0 },
+  popupHeader: { display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #e8e8e8', paddingBottom: '8px' },
+  pTitle: { fontSize: '14px', fontWeight: '900', color: '#000000', margin: 0 },
   pBody: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   pText: { fontSize: '11px', color: '#64748b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' },
   pStatus: { fontSize: '10px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px', textAlign: 'center' as const, marginTop: '4px' },
   pBtn: { marginTop: '8px', width: '100%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' },
 
   floatingPanel: { position: 'absolute' as const, top: '20px', right: '20px', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', padding: '16px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, display: 'flex', flexDirection: 'column' as const, gap: '10px', border: '1px solid white' },
-  panelTitle: { fontSize: '12px', fontWeight: '900', color: '#111827', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  panelTitle: { fontSize: '12px', fontWeight: '900', color: '#000000', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   panelRow: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '700', color: '#475569' },
   dot: { width: '8px', height: '8px', borderRadius: '50%' }
 };

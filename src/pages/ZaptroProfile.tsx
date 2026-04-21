@@ -16,8 +16,12 @@ import { useTenant } from '../context/TenantContext';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER, ZAPTRO_TITLE_COLOR } from '../constants/zaptroUi';
-import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import { vitrineMissingFields } from '../utils/zaptroCompanyVitrine';
+import {
+  DEFAULT_ZAPTRO_SERVICE_SCOPE,
+  readZaptroServiceScope,
+  type ZaptroServiceScope,
+} from '../utils/zaptroServiceScope';
 import { mirrorCompanyRowForProfilesFk } from '../utils/zaptroCompaniesFkMirror';
 import {
   formatZaptroDbErrorForToast,
@@ -169,7 +173,9 @@ const ZaptroProfile: React.FC = () => {
     description: '',
     hours: 'Seg - Sex: 08:00 às 18:00',
     unit: 'Matriz (São Paulo)',
-    logo: null as string | null
+    logo: null as string | null,
+    /** Escopo de orçamento: frete, armazenagem ou ambos (persistido em `settings`). */
+    serviceScope: DEFAULT_ZAPTRO_SERVICE_SCOPE as ZaptroServiceScope,
   });
 
   useEffect(() => {
@@ -187,6 +193,7 @@ const ZaptroProfile: React.FC = () => {
         prev.description ||
         'Especialistas em transporte de carga fracionada e logística inteligente.',
       hours: company.opening_hours || prev.hours,
+      serviceScope: readZaptroServiceScope(company),
     }));
   }, [company]);
 
@@ -278,6 +285,10 @@ const ZaptroProfile: React.FC = () => {
     }
 
     const buildCompanyPayload = (): Record<string, unknown> => {
+      const prevSettings =
+        company?.settings && typeof company.settings === 'object' && !Array.isArray(company.settings)
+          ? { ...(company.settings as Record<string, unknown>) }
+          : {};
       const payload: Record<string, unknown> = {
         name: vitrineData.name.trim(),
         phone: vitrineData.phone.trim(),
@@ -286,6 +297,7 @@ const ZaptroProfile: React.FC = () => {
         category: vitrineData.segment.trim(),
         description: vitrineData.description.trim() || vitrineData.name.trim(),
         opening_hours: vitrineData.hours.trim(),
+        settings: { ...prevSettings, zaptro_service_scope: vitrineData.serviceScope },
       };
       if (vitrineData.logo && vitrineData.logo.length <= 400_000) {
         payload.logo_url = vitrineData.logo;
@@ -404,18 +416,6 @@ const ZaptroProfile: React.FC = () => {
           <p style={styles.subtitle}>
             Perfil pessoal, dados públicos da transportadora e assinatura — modelo de página Zaptro para partilhar com a equipa.
           </p>
-          {isTenantPurchaserAdmin && (
-            <div style={styles.modelUrlStrip} role="note">
-              <span style={styles.modelUrlStripLabel}>URLs</span>
-              <span style={styles.modelUrlStripText}>
-                Canónica para enviar a clientes e staff: <strong>{ZAPTRO_ROUTES.PROFILE}</strong>
-                {' · '}
-                Legado (mesma página): <strong>{ZAPTRO_ROUTES.LEGACY_PROFILE}</strong>
-                {' — '}
-                use <strong>?tab=empresa</strong>, <strong>?tab=billing</strong> ou <strong>?tab=planos</strong> para abrir direto num separador.
-              </span>
-            </div>
-          )}
         </header>
 
         <div style={{...styles.layout, gridTemplateColumns: isMobile ? '1fr' : '300px 1fr'}}>
@@ -656,7 +656,7 @@ const ZaptroProfile: React.FC = () => {
                      </div>
                    )}
                    {vitrineLocked && (
-                     <div style={{ ...styles.vitrineAlert, marginBottom: 20, borderColor: '#bae6fd', background: '#f0f9ff' }}>
+                     <div style={{ ...styles.vitrineAlert, marginBottom: 20, borderColor: 'rgba(217, 255, 0, 0.35)', background: 'rgba(217, 255, 0, 0.1)' }}>
                        <Info size={22} color="#0369a1" style={{ flexShrink: 0 }} />
                        <div>
                          <strong style={{ ...styles.vitrineAlertTitle, color: '#0c4a6e' }}>Vitrine somente leitura</strong>
@@ -836,6 +836,30 @@ const ZaptroProfile: React.FC = () => {
                                <option>Varejo</option>
                             </select>
                          </div>
+                      </div>
+                      <div style={styles.infoFull}>
+                         <label style={styles.label}>Serviços no painel (orçamentos / calculadora)</label>
+                         <div style={styles.inputStack}>
+                            <Zap size={16} color="#64748B" />
+                            <select
+                              disabled={vitrineFormDisabled}
+                              style={styles.select}
+                              value={vitrineData.serviceScope}
+                              onChange={(e) =>
+                                setVitrineData({
+                                  ...vitrineData,
+                                  serviceScope: e.target.value as ZaptroServiceScope,
+                                })
+                              }
+                            >
+                               <option value="freight_only">Apenas transporte (frete)</option>
+                               <option value="freight_and_storage">Transporte e armazenagem</option>
+                               <option value="storage_only">Apenas armazenagem</option>
+                            </select>
+                         </div>
+                         <p style={{ margin: '8px 0 0', fontSize: 12, color: '#64748b', lineHeight: 1.45, fontWeight: 600 }}>
+                           Isto define o que aparece na calculadora de Orçamentos: só frete, só armazenagem ou ambos com separador.
+                         </p>
                       </div>
                       <div style={styles.infoField}>
                          <label style={styles.label}>Horário de Funcionamento</label>
@@ -1067,34 +1091,6 @@ const styles: Record<string, any> = {
   header: { marginBottom: '40px' },
   title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: '0 0 8px 0', letterSpacing: '-1.5px' },
   subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '600', lineHeight: 1.5, margin: 0 },
-  modelUrlStrip: {
-    marginTop: 20,
-    padding: '14px 18px',
-    borderRadius: 16,
-    border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
-    backgroundColor: ZAPTRO_FIELD_BG,
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    gap: '12px 16px',
-  },
-  modelUrlStripLabel: {
-    fontSize: 10,
-    fontWeight: 950,
-    letterSpacing: '0.1em',
-    color: '#64748b',
-    flexShrink: 0,
-    marginTop: 2,
-  },
-  modelUrlStripText: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#334155',
-    lineHeight: 1.55,
-    flex: '1 1 280px',
-    minWidth: 0,
-  },
-  
   layout: { display: 'grid', gap: '40px' },
   profileNav: { display: 'flex', flexDirection: 'column', gap: '32px' },
   navGroup: { display: 'flex', flexDirection: 'column', gap: '14px' },
@@ -1271,13 +1267,13 @@ const styles: Record<string, any> = {
     marginBottom: '24px',
     padding: '16px 18px',
     borderRadius: '18px',
-    backgroundColor: '#f0f9ff',
-    border: '1px solid #bae6fd',
+    backgroundColor: 'rgba(217, 255, 0, 0.1)',
+    border: '1px solid rgba(217, 255, 0, 0.35)',
     display: 'flex',
     gap: '14px',
     alignItems: 'flex-start',
   },
-  vitrinePreview: { marginTop: '40px', padding: '24px', backgroundColor: '#EEF2FF', borderRadius: '24px', color: '#4F46E5', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '16px' },
+  vitrinePreview: { marginTop: '40px', padding: '24px', backgroundColor: 'rgba(217, 255, 0, 0.12)', borderRadius: '24px', color: '#000000', fontSize: '13px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '16px' },
 
   // BANNER DE PLANO ANIMADO
   planBannerAnimated: { 

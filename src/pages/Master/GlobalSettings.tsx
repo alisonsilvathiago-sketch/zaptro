@@ -46,7 +46,7 @@ const GlobalSettings: React.FC = () => {
             </div>
          </div>
          <div style={styles.infraItem}>
-            <Database size={18} color="#2563eb" />
+            <Database size={18} color="#D9FF00" />
             <div style={styles.infraInfo}>
                <span style={styles.infraLabel}>Storage (S3)</span>
                <span style={styles.infraValue}>4.2TB / 10TB</span>
@@ -88,7 +88,7 @@ const GlobalSettings: React.FC = () => {
          {/* SEGURANÇA E ACESSO MASTER */}
          <div style={styles.settingsCard}>
             <header style={styles.cardHeader}>
-               <div style={styles.cardIconBox}><ShieldCheck size={20} color="#7c3aed" /></div>
+               <div style={styles.cardIconBox}><ShieldCheck size={20} color="#D9FF00" /></div>
                <div>
                   <h3 style={styles.cardTitle}>Segurança & Firewall Master</h3>
                   <p style={styles.cardSub}>Proteção da infraestrutura central e acesso mestre.</p>
@@ -138,7 +138,7 @@ const GlobalSettings: React.FC = () => {
                </div>
                <div style={styles.colorGrid}>
                   <div style={styles.colorItem}>
-                     <div style={{...styles.colorCirc, backgroundColor: '#7c3aed'}} />
+                     <div style={{...styles.colorCirc, backgroundColor: '#D9FF00'}} />
                      <span>Primária</span>
                   </div>
                   <div style={styles.colorItem}>
@@ -146,7 +146,7 @@ const GlobalSettings: React.FC = () => {
                      <span>Deep Purple</span>
                   </div>
                   <div style={styles.colorItem}>
-                     <div style={{...styles.colorCirc, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0'}} />
+                     <div style={{...styles.colorCirc, backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0'}} />
                      <span>Background</span>
                   </div>
                </div>
@@ -157,7 +157,7 @@ const GlobalSettings: React.FC = () => {
          {/* INTEGRAÇÕES DE CORE (GATEWAYS) */}
          <div style={{...styles.settingsCard, gridColumn: 'span 2'}}>
             <header style={styles.cardHeader}>
-               <div style={styles.cardIconBox}><Terminal size={20} color="#2563eb" /></div>
+               <div style={styles.cardIconBox}><Terminal size={20} color="#D9FF00" /></div>
                <div>
                   <h3 style={styles.cardTitle}>Credenciais de Infraestrutura & Gateways</h3>
                   <p style={styles.cardSub}>Chaves mestras utilizadas pela plataforma (Ocultas por segurança).</p>
@@ -271,7 +271,7 @@ const GlobalSettings: React.FC = () => {
         <div style={styles.settingsGrid}>
            <div style={{...styles.settingsCard, gridColumn: 'span 2'}}>
               <header style={styles.cardHeader}>
-                 <div style={styles.cardIconBox}><Smartphone size={20} color="#7c3aed" /></div>
+                 <div style={styles.cardIconBox}><Smartphone size={20} color="#D9FF00" /></div>
                  <div>
                     <h3 style={styles.cardTitle}>Gestão de Templates Globais (WhatsApp)</h3>
                     <p style={styles.cardSub}>Modelos de mensagens transacionais para automação de frota.</p>
@@ -339,7 +339,7 @@ const styles: Record<string, any> = {
   refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-muted)' },
   saveBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
   
-  infraBar: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '24px', border: '1px solid var(--border)' },
+  infraBar: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '24px', border: '1px solid var(--border)' },
   infraItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '0 16px', borderRight: '1px solid #e2e8f0', '&:last-child': { borderRight: 'none' } },
   infraInfo: { display: 'flex', flexDirection: 'column' as const },
   infraLabel: { fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
@@ -352,12 +352,12 @@ const styles: Record<string, any> = {
   settingsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', paddingBottom: '40px' },
   settingsCard: { backgroundColor: 'white', padding: '32px', borderRadius: '28px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column' as const },
   cardHeader: { display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '32px' },
-  cardIconBox: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  cardIconBox: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   cardTitle: { fontSize: '18px', fontWeight: '900', color: 'var(--primary)', margin: 0 },
   cardSub: { fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px', fontWeight: '500' },
   cardBody: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   
-  settingRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #f8fafc' },
+  settingRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #e8e8e8' },
   sLabel: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)', margin: 0 },
   sDesc: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500', margin: 0 },
   sValue: { fontSize: '13px', fontWeight: '800', color: 'var(--primary)' },
@@ -366,7 +366,7 @@ const styles: Record<string, any> = {
   toggleDot: { width: '20px', height: '20px', backgroundColor: 'white', borderRadius: '50%', boxShadow: 'var(--shadow-sm)' },
   toggleDotActive: { width: '20px', height: '20px', backgroundColor: 'white', borderRadius: '50%', marginLeft: '22px', border: '4px solid #10b981', boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)' },
 
-  brandingPreview: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '16px' },
+  brandingPreview: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px' },
   bLogoBox: { width: '44px', height: '44px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950', fontSize: '20px' },
   bInfo: { display: 'flex', flexDirection: 'column' as const },
   bLabel: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)', margin: 0 },
@@ -379,9 +379,9 @@ const styles: Record<string, any> = {
   keyItem: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   kLabel: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', fontWeight: '900', color: '#94a3b8', letterSpacing: '0.05em' },
   eyeBtn: { border: 'none', background: 'none', cursor: 'pointer', color: 'var(--primary)' },
-  keyInput: { padding: '12px 16px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '700', color: 'var(--primary)', outline: 'none' },
+  keyInput: { padding: '12px 16px', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '700', color: 'var(--primary)', outline: 'none' },
 
-  mStatsRow: { display: 'flex', gap: '16px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '16px' },
+  mStatsRow: { display: 'flex', gap: '16px', backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '16px' },
   mStatItem: { flex: 1, display: 'flex', flexDirection: 'column' as const, gap: '2px' },
   mStatLabel: { fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
   mStatValue: { fontSize: '16px', fontWeight: '900', color: 'var(--primary)' },
@@ -390,8 +390,8 @@ const styles: Record<string, any> = {
   
   // WA Messaging
   waGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' },
-  waItem: { backgroundColor: '#f8fafc', padding: '24px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  waTag: { fontSize: '9px', fontWeight: '900', color: '#7c3aed', backgroundColor: '#f5f3ff', padding: '4px 10px', borderRadius: '6px', alignSelf: 'flex-start' },
+  waItem: { backgroundColor: '#f4f4f4', padding: '24px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
+  waTag: { fontSize: '9px', fontWeight: '900', color: '#D9FF00', backgroundColor: 'rgba(217, 255, 0, 0.18)', padding: '4px 10px', borderRadius: '6px', alignSelf: 'flex-start' },
   waItemTitle: { fontSize: '16px', fontWeight: '900', color: 'var(--primary)', margin: 0 },
   waItemDesc: { fontSize: '12px', color: 'var(--text-muted)', margin: 0 },
   waEditBtn: { marginTop: '12px', padding: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', borderRadius: '12px', fontSize: '12px', fontWeight: '800', color: 'var(--primary)', cursor: 'pointer' },

@@ -132,7 +132,7 @@ const RegisterBusiness: React.FC = () => {
              <div style={{...styles.stepBar, width: step === 1 ? '33%' : step === 2 ? '66%' : '100%'}} />
              <div style={styles.stepDotsRow}>
                 {[1, 2, 3].map(s => (
-                   <div key={s} style={{...styles.stepMarker, backgroundColor: step >= s ? '#7C3AED' : '#F1F5F9'}} />
+                   <div key={s} style={{...styles.stepMarker, backgroundColor: step >= s ? '#D9FF00' : '#F1F5F9'}} />
                 ))}
              </div>
           </div>
@@ -209,7 +209,7 @@ const RegisterBusiness: React.FC = () => {
                 <div style={styles.formStackLogta}>
                    <div style={styles.plansSelect}>
                       {plans.map(p => (
-                         <div key={p.id} style={{...styles.planItem, borderColor: formData.plan === p.id ? '#7C3AED' : '#F1F5F9'}} onClick={() => setFormData({...formData, plan: p.id})}>
+                         <div key={p.id} style={{...styles.planItem, borderColor: formData.plan === p.id ? '#D9FF00' : '#F1F5F9'}} onClick={() => setFormData({...formData, plan: p.id})}>
                             <span style={styles.planNameLabel}>{p.name}</span>
                             <strong style={styles.planPriceLabel}>R$ {p.price}</strong>
                          </div>
@@ -277,16 +277,16 @@ const styles: Record<string, any> = {
   formSide: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', position: 'relative' as const },
   formContent: { width: '100%', maxWidth: '440px' },
   logtaHeaderSmall: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '80px', position: 'absolute' as const, top: '60px', left: '60px' },
-  logoBoxPurple: { width: '40px', height: '40px', backgroundColor: '#7C3AED', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  logoBoxPurple: { width: '40px', height: '40px', backgroundColor: '#D9FF00', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   logoTitle: { fontSize: '20px', fontWeight: '900', color: '#0F172A', margin: 0 },
   
   welcomeSection: { marginBottom: '32px' },
-  badgeRegister: { fontSize: '11px', fontWeight: '900', color: '#7C3AED', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' },
+  badgeRegister: { fontSize: '11px', fontWeight: '900', color: '#D9FF00', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' },
   titleBig: { fontSize: '36px', fontWeight: '950', color: '#0F172A', margin: '0 0 12px 0', letterSpacing: '-1.5px' },
   subtitleSmall: { fontSize: '16px', color: '#64748B', fontWeight: '500' },
   
-  stepperComplex: { height: '6px', width: '100%', backgroundColor: '#F1F5F9', borderRadius: '10px', position: 'relative' as const, margin: '32px 0 40px' },
-  stepBar: { height: '100%', backgroundColor: '#7C3AED', borderRadius: '10px', transition: 'width 0.3s ease' },
+  stepperComplex: { height: '6px', width: '100%', backgroundColor: '#ebebeb', borderRadius: '10px', position: 'relative' as const, margin: '32px 0 40px' },
+  stepBar: { height: '100%', backgroundColor: '#D9FF00', borderRadius: '10px', transition: 'width 0.3s ease' },
   stepDotsRow: { position: 'absolute' as const, top: '-4px', width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 2px' },
   stepMarker: { width: '14px', height: '14px', borderRadius: '50%', border: '3px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
 
@@ -294,29 +294,29 @@ const styles: Record<string, any> = {
   formStackLogta: { display: 'flex', flexDirection: 'column', gap: '24px' },
   fieldLogta: { display: 'flex', flexDirection: 'column', gap: '8px' },
   labelLogta: { fontSize: '14px', fontWeight: '850', color: '#0F172A' },
-  inputWrapperLogta: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: '#F8FAFC', borderRadius: '16px', border: '1px solid #F1F5F9' },
+  inputWrapperLogta: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e8e8e8' },
   inputClean: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '15px', fontWeight: '600', color: '#1E293B' },
   
   btnRow: { display: 'flex', gap: '16px' },
   secBtn: { flex: 0.4, padding: '18px', backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '16px', color: '#64748B', fontWeight: '800', cursor: 'pointer' },
   submitBtnLogta: { 
-    flex: 1, padding: '20px', backgroundColor: '#7C3AED', color: 'white', border: 'none', 
+    flex: 1, padding: '20px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', 
     borderRadius: '16px', fontSize: '16px', fontWeight: '900', cursor: 'pointer', 
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', 
-    boxShadow: '0 10px 30px rgba(124, 58, 237, 0.2)', transition: '0.2s' 
+    boxShadow: '0 10px 30px rgba(217, 255, 0, 0.2)', transition: '0.2s' 
   },
 
   plansSelect: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' },
-  planItem: { padding: '16px', borderRadius: '16px', border: '2px solid #F1F5F9', cursor: 'pointer', textAlign: 'center' as const },
+  planItem: { padding: '16px', borderRadius: '16px', border: '2px solid #e8e8e8', cursor: 'pointer', textAlign: 'center' as const },
   planNameLabel: { fontSize: '11px', fontWeight: '800', color: '#94A3B8', display: 'block', marginBottom: '4px' },
   planPriceLabel: { fontSize: '18px', fontWeight: '900', color: '#0F172A' },
 
   footerLinkArea: { textAlign: 'center' as const, marginTop: '40px', fontSize: '14px', color: '#64748B', display: 'flex', justifyContent: 'center', gap: '8px' },
-  linkAction: { color: '#7C3AED', fontWeight: '900', cursor: 'pointer' },
+  linkAction: { color: '#D9FF00', fontWeight: '900', cursor: 'pointer' },
   copyrightBottom: { position: 'absolute' as const, bottom: '40px', left: '60px', fontSize: '12px', color: '#94A3B8', fontWeight: '500' },
 
   // BRANDING PANE (RIGHT)
-  brandingSide: { flex: 1, backgroundColor: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px' },
+  brandingSide: { flex: 1, backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px' },
   brandingCard: { 
     width: '100%', maxWidth: '620px', height: '100%', maxHeight: '800px', backgroundColor: 'white', 
     borderRadius: '48px', padding: '60px', display: 'flex', flexDirection: 'column', 

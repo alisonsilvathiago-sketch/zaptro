@@ -35,11 +35,11 @@ const DriverFleetProfile: React.FC = () => {
   }, [id]);
 
   const styles = {
-    container: { padding: '32px', backgroundColor: '#F8FAFC', minHeight: '100vh' },
+    container: { padding: '32px', backgroundColor: '#f4f4f4', minHeight: '100vh' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
     backBtn: { display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', cursor: 'pointer', color: '#64748B', fontWeight: '700' },
     profileSection: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0', marginBottom: '32px', display: 'flex', gap: '40px', alignItems: 'center' },
-    avatar: { width: '120px', height: '120px', borderRadius: '32px', backgroundColor: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
+    avatar: { width: '120px', height: '120px', borderRadius: '32px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
     name: { fontSize: '28px', fontWeight: '900', color: '#0F172A', marginBottom: '8px' },
     badge: { padding: '4px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: '800', backgroundColor: 'var(--success-light)', color: 'var(--success)', width: 'fit-content' },
     infoGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', flex: 1 },
@@ -60,13 +60,13 @@ const DriverFleetProfile: React.FC = () => {
     grid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' },
     card: { backgroundColor: 'white', borderRadius: '32px', padding: '24px', border: '1px solid #E2E8F0' },
     cardTitle: { fontSize: '18px', fontWeight: '800', color: '#0F172A', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' },
-    historyItem: { display: 'flex', gap: '16px', padding: '20px', borderRadius: '20px', backgroundColor: '#F8FAFC', border: '1px solid transparent', marginBottom: '12px', position: 'relative' as const },
+    historyItem: { display: 'flex', gap: '16px', padding: '20px', borderRadius: '20px', backgroundColor: '#f4f4f4', border: '1px solid transparent', marginBottom: '12px', position: 'relative' as const },
     timeline: { flexShrink: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
     line: { width: '2px', flex: 1, backgroundColor: '#E2E8F0' },
     dot: { width: '12px', height: '12px', borderRadius: '50%', backgroundColor: 'var(--primary)', border: '3px solid white', boxShadow: '0 0 0 1px #E2E8F0' },
     
     statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' },
-    miniCard: { padding: '20px', borderRadius: '24px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' },
+    miniCard: { padding: '20px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #E2E8F0' },
     miniLabel: { fontSize: '11px', color: '#64748B', fontWeight: '800', textTransform: 'uppercase' as const, marginBottom: '4px' },
     miniValue: { fontSize: '20px', fontWeight: '900', color: '#0F172A' }
   };

@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
 import type { AuthContextType, Profile } from '../types';
 
@@ -34,11 +32,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    db.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) loadProfile(session.user.id);
-      else setIsLoading(false);
-    });
+    let cancelled = false;
+    const clearLoading = () => {
+      if (!cancelled) setIsLoading(false);
+    };
+    /** Evita loader infinito se getSession falhar ou nunca resolver (rede / SDK). */
+    const safety = window.setTimeout(clearLoading, 12000);
+
+    db.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (cancelled) return;
+        window.clearTimeout(safety);
+        setUser(session?.user ?? null);
+        if (session?.user) loadProfile(session.user.id);
+        else setIsLoading(false);
+      })
+      .catch(() => {
+        window.clearTimeout(safety);
+        clearLoading();
+      });
 
     const { data: { subscription } } = db.auth.onAuthStateChange((_event, session) => {
       const currentUser = session?.user ?? null;
@@ -50,7 +63,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(safety);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {

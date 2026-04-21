@@ -200,9 +200,9 @@ const CRM: React.FC = () => {
   ];
 
   const columns = [
-    { id: 'FIRST_CONTACT', title: 'Primeiro Contato', color: '#6366f1' },
+    { id: 'FIRST_CONTACT', title: 'Primeiro Contato', color: '#D9FF00' },
     { id: 'NEGOTIATION', title: 'Negociação', color: '#f59e0b' },
-    { id: 'PROPOSAL', title: 'Proposta Enviada', color: '#8b5cf6' },
+    { id: 'PROPOSAL', title: 'Proposta Enviada', color: '#D9FF00' },
     { id: 'CLOSED', title: 'Fechado (Sucesso)', color: '#10b981' },
   ];
 
@@ -215,7 +215,7 @@ const CRM: React.FC = () => {
              <h2 style={styles.kpiValueText}>{leads.length}</h2>
              <span style={{fontSize: '11px', color: '#10b981', fontWeight: '800'}}>+12% este mês</span>
            </div>
-           <div style={{...styles.iconBox, backgroundColor: 'rgba(124, 58, 237, 0.1)'}}>
+           <div style={{...styles.iconBox, backgroundColor: 'rgba(217, 255, 0, 0.1)'}}>
              <Target size={24} color="var(--primary)" />
            </div>
          </div>
@@ -225,8 +225,8 @@ const CRM: React.FC = () => {
              <h2 style={styles.kpiValueText}>{clients.length}</h2>
              <span style={{fontSize: '11px', color: '#10b981', fontWeight: '800'}}>Crescimento estável</span>
            </div>
-           <div style={{...styles.iconBox, backgroundColor: 'rgba(59, 130, 246, 0.1)'}}>
-             <Users size={24} color="#3b82f6" />
+           <div style={{...styles.iconBox, backgroundColor: 'rgba(217, 255, 0, 0.1)'}}>
+             <Users size={24} color="#D9FF00" />
            </div>
          </div>
       </div>
@@ -494,18 +494,18 @@ const styles: Record<string, any> = {
   viewContainer: { flex: 1, display: 'flex', flexDirection: 'column' },
   tabContent: { display: 'flex', flexDirection: 'column', gap: '32px' },
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' },
-  kpiCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' },
+  kpiCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' },
   kpiInfo: { display: 'flex', flexDirection: 'column', gap: '4px' },
   kpiLabel: { fontSize: '12px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' },
   kpiValueText: { fontSize: '32px', fontWeight: '950', color: 'var(--text-main)', margin: '4px 0' },
   iconBox: { width: '64px', height: '64px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   
-  chartCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #f1f5f9', overflow: 'hidden' },
-  cardHeader: { padding: '24px 32px', borderBottom: '1px solid #f8fafc' },
+  chartCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e8e8e8', overflow: 'hidden' },
+  cardHeader: { padding: '24px 32px', borderBottom: '1px solid #e8e8e8' },
   cardTitle: { fontSize: '18px', fontWeight: '900', color: 'var(--text-main)', margin: 0 },
   
   kanbanBoard: { display: 'flex', gap: '24px', overflowX: 'auto', paddingBottom: '24px', minHeight: 'calc(100vh - 400px)' },
-  kanbanColumn: { minWidth: '320px', backgroundColor: '#f8fafc', borderRadius: '32px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid #f1f5f9' },
+  kanbanColumn: { minWidth: '320px', backgroundColor: '#f4f4f4', borderRadius: '32px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid #e8e8e8' },
   columnHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
   columnHeaderTitle: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px', fontWeight: '900', color: '#1e293b' },
   columnDot: { width: '8px', height: '8px', borderRadius: '50%' },
@@ -513,25 +513,25 @@ const styles: Record<string, any> = {
   columnBody: { display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 },
   emptyColumn: { flex: 1, border: '2px dashed #e2e8f0', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '13px', fontWeight: '700' },
   
-  leadCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 10px 25px rgba(0,0,0,0.06)' } },
+  leadCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #e8e8e8', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 10px 25px rgba(0,0,0,0.06)' } },
   leadName: { margin: '0 0 4px 0', fontSize: '15px', fontWeight: '900', color: 'var(--text-main)' },
   leadResponsible: { fontSize: '12px', color: '#64748b', margin: 0 },
-  leadFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f8fafc' },
+  leadFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e8e8e8' },
   leadValue: { fontSize: '14px', fontWeight: '900', color: 'var(--primary)' },
   
-  tableCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #f1f5f9', overflow: 'hidden', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' },
+  tableCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e8e8e8', overflow: 'hidden', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '20px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #f1f5f9', backgroundColor: '#fcfdfe' },
-  td: { padding: '20px 32px', fontSize: '14px', borderBottom: '1px solid #f1f5f9', color: '#475569' },
+  th: { textAlign: 'left', padding: '20px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #e8e8e8', backgroundColor: '#fcfdfe' },
+  td: { padding: '20px 32px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
   tr: { transition: 'background-color 0.2s', '&:hover': { backgroundColor: '#fcfdfe' } },
   
-  detailBox: { display: 'flex', gap: '16px', alignItems: 'center', padding: '20px', backgroundColor: '#f8fafc', borderRadius: '20px', border: '1px solid #f1f5f9' },
+  detailBox: { display: 'flex', gap: '16px', alignItems: 'center', padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '20px', border: '1px solid #e8e8e8' },
   detailLabel: { fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '800' },
   detailValue: { fontSize: '15px', fontWeight: '800', color: '#1e293b', margin: 0 },
   btnFull: { flex: 1, padding: '16px', borderRadius: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '900', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
   actionBtn: { padding: '10px 18px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '800' },
   categoryBadge: { padding: '5px 12px', backgroundColor: '#f0f9ff', color: '#0369a1', borderRadius: '12px', fontSize: '11px', fontWeight: '900' },
-  iconBtn: { padding: '8px', color: '#94a3b8', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '10px', transition: 'all 0.2s', '&:hover': { backgroundColor: '#f1f5f9', color: 'var(--primary)' } }
+  iconBtn: { padding: '8px', color: '#94a3b8', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '10px', transition: 'all 0.2s', '&:hover': { backgroundColor: '#ebebeb', color: 'var(--primary)' } }
 };
 
 export default CRM;

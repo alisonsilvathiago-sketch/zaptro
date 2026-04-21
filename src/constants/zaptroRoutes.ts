@@ -27,6 +27,8 @@ export const ZAPTRO_ROUTES = {
   HISTORY: '/historico',
   SETTINGS_ALIAS: '/configuracao',
   PROFILE: '/conta',
+  /** Mapa OSM + Leaflet + rota OSRM (ferramenta interna). */
+  OPENSTREETMAP: '/mapa',
   /** Mesma UI que `PROFILE` — útil para links antigos e como URL de referência em demos. */
   LEGACY_PROFILE: '/zaptro-perfil',
   BILLING: '/faturamento',

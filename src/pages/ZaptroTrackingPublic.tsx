@@ -73,7 +73,7 @@ const ZaptroTrackingPublic: React.FC = () => {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'em_rota': return { color: '#4F46E5', label: 'Emapa Rota', icon: Truck };
+      case 'em_rota': return { color: '#D9FF00', label: 'Emapa Rota', icon: Truck };
       case 'coleta': return { color: '#64748B', label: 'Em Coleta', icon: Package };
       case 'entregue': return { color: '#10B981', label: 'Entregue', icon: CheckCircle2 };
       case 'atraso': return { color: '#EF4444', label: 'Atraso', icon: AlertCircle };
@@ -198,14 +198,14 @@ const styles: Record<string, any> = {
   companyInfo: { fontSize: '13px', color: '#64748B' },
 
   content: { maxWidth: '1000px', margin: '0 auto', padding: '0 40px 80px' },
-  mainCard: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #F1F5F9', padding: '48px', marginBottom: '32px', boxShadow: ZAPTRO_SHADOW.lg },
+  mainCard: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #e8e8e8', padding: '48px', marginBottom: '32px', boxShadow: ZAPTRO_SHADOW.lg },
   trackingHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' },
   orderLabel: { fontSize: '11px', fontWeight: '950', color: '#000000', letterSpacing: '1px' },
   orderId: { fontSize: '32px', fontWeight: '950', margin: '4px 0 0 0', letterSpacing: '-1.5px' },
   statusBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '14px', fontSize: '13px', fontWeight: '950' },
 
   progressArea: { marginBottom: '48px' },
-  progressBar: { height: '12px', backgroundColor: '#F1F5F9', borderRadius: '6px', overflow: 'hidden', marginBottom: '16px' },
+  progressBar: { height: '12px', backgroundColor: '#ebebeb', borderRadius: '6px', overflow: 'hidden', marginBottom: '16px' },
   progressFill: { height: '100%', transition: '1s cubic-bezier(0.4, 0, 0.2, 1)' },
   progressSteps: { display: 'flex', justifyContent: 'space-between' },
   step: { flex: 1, fontSize: '12px', fontWeight: '900', color: '#000000' },
@@ -215,13 +215,13 @@ const styles: Record<string, any> = {
   detailLabel: { fontSize: '11px', fontWeight: '900', color: '#000000', textTransform: 'uppercase', display: 'block' },
   detailValue: { fontSize: '16px', fontWeight: '800', color: '#0F172A' },
 
-  historyArea: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #F1F5F9', padding: '48px', boxShadow: ZAPTRO_SHADOW.lg },
+  historyArea: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #e8e8e8', padding: '48px', boxShadow: ZAPTRO_SHADOW.lg },
   sectionTitle: { fontSize: '20px', fontWeight: '950', marginBottom: '32px', letterSpacing: '-0.5px' },
   timeline: { display: 'flex', flexDirection: 'column', gap: '0px' },
   timelineItem: { display: 'flex', gap: '24px' },
   timelinePoint: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '24px' },
   pointInner: { width: '12px', height: '12px', borderRadius: '50%', zIndex: 2 },
-  timelineLine: { width: '2px', flex: 1, backgroundColor: '#F1F5F9', margin: '4px 0' },
+  timelineLine: { width: '2px', flex: 1, backgroundColor: '#ebebeb', margin: '4px 0' },
   timelineContent: { paddingBottom: '32px', flex: 1 },
   timelineMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' },
   timelineStatus: { fontSize: '15px', fontWeight: '900', color: '#0F172A' },

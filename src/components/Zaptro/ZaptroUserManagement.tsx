@@ -287,7 +287,7 @@ const styles: Record<string, any> = {
   table: { width: '100%', borderCollapse: 'collapse' as const },
   tableHead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
   th: { padding: '16px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: ZAPTRO_TITLE_COLOR, textTransform: 'uppercase' as const, letterSpacing: '1px' },
-  tr: { borderBottom: '1px solid #F1F5F9' },
+  tr: { borderBottom: '1px solid #e8e8e8' },
   td: { padding: '16px 24px', fontSize: '14px' },
   userInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
   avatar: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '16px' },

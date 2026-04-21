@@ -136,7 +136,7 @@ const MasterPlans: React.FC = () => {
          {loading ? (
            <div style={{gridColumn: 'span 4', textAlign: 'center', padding: '100px', color: '#94a3b8'}}>Sincronizando catálogo mestre...</div>
          ) : filteredProducts.length === 0 ? (
-           <div style={{gridColumn: 'span 4', textAlign: 'center', padding: '100px', backgroundColor: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0'}}>
+           <div style={{gridColumn: 'span 4', textAlign: 'center', padding: '100px', backgroundColor: '#f4f4f4', borderRadius: '32px', border: '2px dashed #e2e8f0'}}>
               <Package size={48} color="#cbd5e1" style={{marginBottom: '16px'}} />
               <p style={{fontWeight: '700', color: '#94a3b8'}}>Nenhuma oferta ativa nesta categoria.</p>
               <button style={styles.addBtnSmall} onClick={() => handleOpenModal()}>Começar Modelagem</button>
@@ -181,7 +181,7 @@ const MasterPlans: React.FC = () => {
       {/* FOOTER: SIMULAÇÃO */}
       <div style={styles.exampleCard}>
           <div style={styles.exHeader}>
-             <div style={styles.exIcon}><Smartphone size={20} color="#7c3aed" /></div>
+             <div style={styles.exIcon}><Smartphone size={20} color="#D9FF00" /></div>
              <h3 style={styles.exTitle}>Motor de Receita Híbrida Ativo</h3>
           </div>
           <p style={styles.exDesc}>Logta permite venda combinada: SaaS (Recorrência) + WhatsApp (Addon) + Créditos (Consumo) + Cursos (Info).</p>
@@ -263,14 +263,14 @@ const MasterPlans: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '40px', backgroundColor: 'transparent', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' },
-  badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: '#f5f3ff', color: '#7c3aed', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
+  badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
   title: { fontSize: '40px', fontWeight: '950', color: 'var(--text-main)', letterSpacing: '-2px', marginBottom: '8px' },
   subtitle: { fontSize: '16px', color: 'var(--text-muted)', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '45px', height: '45px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' },
   saveBtn: { padding: '0 24px', height: '45px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' },
   
-  tabContainer: { display: 'flex', gap: '4px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '16px', width: 'fit-content', marginBottom: '40px' },
+  tabContainer: { display: 'flex', gap: '4px', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '16px', width: 'fit-content', marginBottom: '40px' },
   tabLink: { padding: '10px 20px', borderRadius: '12px', fontSize: '13px', fontWeight: '800', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '8px' },
   tabActive: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
 
@@ -283,24 +283,24 @@ const styles: Record<string, any> = {
   priceSymbol: { fontSize: '12px', color: '#94a3b8', fontWeight: '700' },
   creditBadge: { display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 8px', backgroundColor: '#fff7ed', color: '#ea580c', borderRadius: '8px', fontSize: '10px', fontWeight: '900', marginTop: '12px' },
   planDesc: { fontSize: '13px', color: '#64748b', lineHeight: '1.6', flex: 1, marginBottom: '24px' },
-  planActions: { display: 'flex', gap: '8px', paddingTop: '20px', borderTop: '1px solid #f1f5f9' },
+  planActions: { display: 'flex', gap: '8px', paddingTop: '20px', borderTop: '1px solid #e8e8e8' },
   editBtn: { flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', fontSize: '12px', fontWeight: '800', color: '#1e293b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' },
   trashBtn: { width: '38px', height: '38px', borderRadius: '10px', border: '1px solid #fee2e2', backgroundColor: '#fef2f2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
 
-  addPlanCard: { border: '2px dashed var(--border)', borderRadius: '32px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: '16px', cursor: 'pointer', padding: '40px', backgroundColor: 'transparent', transition: 'all 0.2s', ':hover': { borderColor: 'var(--primary)', backgroundColor: '#f5f3ff' } } as any,
-  addIcon: { width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' },
+  addPlanCard: { border: '2px dashed var(--border)', borderRadius: '32px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: '16px', cursor: 'pointer', padding: '40px', backgroundColor: 'transparent', transition: 'all 0.2s', ':hover': { borderColor: 'var(--primary)', backgroundColor: 'rgba(217, 255, 0, 0.18)' } } as any,
+  addIcon: { width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' },
   addText: { fontSize: '14px', fontWeight: '800', color: '#64748b', textAlign: 'center' as const, maxWidth: '120px' },
 
   exampleCard: { marginTop: '40px', padding: '24px', borderRadius: '24px', backgroundColor: 'white', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   exHeader: { display: 'flex', alignItems: 'center', gap: '12px' },
-  exIcon: { width: '40px', height: '40px', backgroundColor: '#f5f3ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  exIcon: { width: '40px', height: '40px', backgroundColor: 'rgba(217, 255, 0, 0.18)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   exTitle: { fontSize: '16px', fontWeight: '850', color: '#1e293b' },
   exDesc: { fontSize: '14px', color: '#64748b', fontWeight: '500' },
 
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   fLabel: { fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const },
-  fInput: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f8fafc', fontWeight: '700', outline: 'none' },
+  fInput: { padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none' },
   fRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   saveBtnModal: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '900', cursor: 'pointer', marginTop: '10px' }
 };

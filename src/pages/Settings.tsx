@@ -25,10 +25,10 @@ const Settings: React.FC = () => {
     name: company?.name || '',
     slug: (company as any)?.slug || '',
     subdomain: company?.subdomain || '',
-    primary_color: company?.primary_color || '#7C3AED',
+    primary_color: company?.primary_color || '#D9FF00',
     secondary_color: company?.secondary_color || '#A78BFA',
     menu_color: company?.menu_color || '#FFFFFF',
-    bg_color: company?.bg_color || '#F8FAFC',
+    bg_color: company?.bg_color || '#f4f4f4',
     button_radius: company?.button_radius || '12px',
     menu_name: company?.menu_name || 'Logta Business'
   });
@@ -338,10 +338,10 @@ const styles: Record<string, any> = {
   
   logoSection: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   logoUploadArea: { display: 'flex', alignItems: 'center', gap: '20px' },
-  logoPreview: { width: '80px', height: '80px', borderRadius: '16px', objectFit: 'contain' as const, backgroundColor: '#f1f5f9', border: '1px solid var(--border)' },
-  logoPlaceholder: { width: '80px', height: '80px', borderRadius: '16px', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' },
+  logoPreview: { width: '80px', height: '80px', borderRadius: '16px', objectFit: 'contain' as const, backgroundColor: '#ebebeb', border: '1px solid var(--border)' },
+  logoPlaceholder: { width: '80px', height: '80px', borderRadius: '16px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' },
   uploadControls: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  uploadBtn: { padding: '8px 16px', backgroundColor: '#f1f5f9', borderRadius: '10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  uploadBtn: { padding: '8px 16px', backgroundColor: '#ebebeb', borderRadius: '10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   uSub: { fontSize: '11px', color: 'var(--text-muted)' },
   
   colorPickerContainer: { display: 'flex', gap: '10px' },

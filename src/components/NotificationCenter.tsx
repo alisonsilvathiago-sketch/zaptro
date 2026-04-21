@@ -67,7 +67,7 @@ const NotificationCenter: React.FC = () => {
     switch(p) {
       case 'CRITICAL': return '#ef4444';
       case 'HIGH': return '#f59e0b';
-      case 'MEDIUM': return '#3b82f6';
+      case 'MEDIUM': return '#D9FF00';
       default: return '#10b981';
     }
   };
@@ -148,7 +148,7 @@ const styles = {
   notifTitle: { fontSize: '13px', fontWeight: '800', color: '#1e293b', marginBottom: '4px' },
   notifMsg: { fontSize: '12px', color: '#64748b', lineHeight: '1.5' },
   notifTime: { fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
-  popFooter: { padding: '12px', borderTop: '1px solid var(--border)', backgroundColor: '#f8fafc', textAlign: 'center' as const },
+  popFooter: { padding: '12px', borderTop: '1px solid var(--border)', backgroundColor: '#f4f4f4', textAlign: 'center' as const },
   clearBtn: { background: 'none', border: 'none', color: 'var(--primary)', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }
 };
 

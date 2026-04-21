@@ -137,7 +137,7 @@ const HelpCenter: React.FC = () => {
                </div>
             </div>
 
-            <div style={{...styles.card, background: 'linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%)', color: 'white'}}>
+            <div style={{...styles.card, background: 'linear-gradient(135deg, #000000 0%, #D9FF00 100%)', color: '#ffffff'}}>
                <h4 style={{...styles.cardTitle, color: 'white'}}>Certificação 360°</h4>
                <p style={{...styles.cardText, color: 'rgba(255,255,255,0.8)'}}>Torne-se um mestre na logística moderna com nossos treinamentos.</p>
                <button style={styles.academyBtn} onClick={() => window.open('https://academy.logta.com.br', '_blank')}>
@@ -157,11 +157,11 @@ const styles: Record<string, any> = {
   container: { minHeight: '100vh', backgroundColor: '#fcfcfc' },
   hero: { 
     padding: '100px 20px', backgroundColor: '#fff', textAlign: 'center', 
-    borderBottom: '1px solid #f1f5f9'
+    borderBottom: '1px solid #e8e8e8'
   },
   heroContent: { maxWidth: '800px', margin: '0 auto' },
   badge: { 
-    display: 'inline-block', padding: '6px 16px', backgroundColor: '#f5f3ff', 
+    display: 'inline-block', padding: '6px 16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', 
     color: 'var(--primary)', borderRadius: '20px', fontSize: '12px', fontWeight: '900', 
     marginBottom: '24px', letterSpacing: '1px' 
   },
@@ -191,7 +191,7 @@ const styles: Record<string, any> = {
   sectionTitle: { fontSize: '24px', fontWeight: '900', color: '#0f172a' },
   faqList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   faqItem: { 
-    backgroundColor: 'white', borderRadius: '24px', border: '1px solid #f1f5f9', 
+    backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e8e8e8', 
     cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)'
   },
   faqHeader: { padding: '28px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' },
@@ -211,7 +211,7 @@ const styles: Record<string, any> = {
   },
 
   sidebar: { display: 'flex', flexDirection: 'column', gap: '24px' },
-  card: { padding: '32px', borderRadius: '28px', border: '1px solid #f1f5f9', backgroundColor: 'white' },
+  card: { padding: '32px', borderRadius: '28px', border: '1px solid #e8e8e8', backgroundColor: 'white' },
   cardHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' },
   cardTitle: { fontSize: '18px', fontWeight: '900', color: '#1e293b' },
   cardText: { fontSize: '14px', color: '#64748b', lineHeight: '1.6', marginBottom: '24px' },

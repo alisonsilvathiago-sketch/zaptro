@@ -111,7 +111,7 @@ const styles = {
     border: '1px solid #e2e8f0', overflow: 'hidden', 
     cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s'
   },
-  cardCover: { height: '160px', width: '100%', backgroundColor: '#f1f5f9' },
+  cardCover: { height: '160px', width: '100%', backgroundColor: '#ebebeb' },
   coverImg: { width: '100%', height: '100%', objectFit: 'cover' as const },
   placeholderCover: { height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' },
   
@@ -121,7 +121,7 @@ const styles = {
   
   progressContainer: { display: 'flex', flexDirection: 'column' as const, gap: '6px', marginTop: '8px' },
   progressLabel: { display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
-  progressBar: { height: '6px', backgroundColor: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' },
+  progressBar: { height: '6px', backgroundColor: '#ebebeb', borderRadius: '3px', overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: 'var(--primary)', borderRadius: '3px' },
   
   continueBtn: { 

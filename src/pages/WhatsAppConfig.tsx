@@ -161,7 +161,7 @@ const WhatsAppConfig: React.FC = () => {
   const rail = isDark
     ? 'linear-gradient(180deg, #0a0a0a 0%, #0a0a0a 28%, #D9FF00 28%, #D9FF00 52%, #141416 52%)'
     : 'linear-gradient(180deg, #0f172a 0%, #0f172a 26%, #D9FF00 26%, #D9FF00 50%, #ffffff 50%)';
-  const stageBg = isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc';
+  const stageBg = isDark ? 'rgba(255,255,255,0.04)' : '#f4f4f4';
   const subtleLine = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(15, 23, 42, 0.08)';
 
   const statusConnected = status === 'connected';
@@ -227,9 +227,6 @@ const WhatsAppConfig: React.FC = () => {
           <span style={{ fontSize: 14, color: muted, fontWeight: 500 }}>Continuar conectado neste navegador ⓘ</span>
         </label>
 
-        <button style={{ ...styles.waTextBtn, color: '#0d9488' }}>
-          Entrar com número de telefone <span>›</span>
-        </button>
       </div>
     </div>
   );
@@ -255,7 +252,7 @@ const WhatsAppConfig: React.FC = () => {
           </div>
         ) : (
           <div style={styles.qrPlaceholder}>
-            <QrCode size={80} color="#e2e8f0" strokeWidth={1} />
+            <QrCode size={140} color="#e2e8f0" strokeWidth={1} />
             <p style={{ marginTop: 12, fontSize: 13, color: '#94a3b8', textAlign: 'center', padding: '0 20px' }}>
               {syncing ? 'Gerando código...' : 'Clique em conectar para gerar o código QR'}
             </p>
@@ -305,7 +302,7 @@ const WhatsAppConfig: React.FC = () => {
       <style>{`
         .wa-official-grid {
           display: grid;
-          grid-template-columns: 1fr 340px;
+          grid-template-columns: 1fr minmax(420px, auto);
           gap: 40px;
           align-items: start;
         }
@@ -323,7 +320,7 @@ const styles: Record<string, React.CSSProperties> = {
   outerContainer: {
     padding: '20px 0',
     width: '100%',
-    maxWidth: 1000,
+    maxWidth: 1280,
     margin: '0 auto',
   },
   officialShell: {
@@ -399,18 +396,6 @@ const styles: Record<string, React.CSSProperties> = {
     height: 18,
     accentColor: '#0d9488',
   },
-  waTextBtn: {
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    fontSize: 16,
-    fontWeight: 500,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 4,
-    width: 'fit-content'
-  },
   qrCardContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -420,21 +405,23 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 24,
     borderRadius: 16,
     border: '1px solid',
-    width: 280,
-    height: 280,
+    width: 420,
+    height: 420,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.05)'
+    boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
+    boxSizing: 'border-box' as const,
   },
   qrWrapper: {
     position: 'relative',
     lineHeight: 0,
   },
   qrImage: {
-    width: 240,
-    height: 240,
+    width: 372,
+    height: 372,
+    display: 'block',
   },
   qrLogoOverlay: {
     position: 'absolute',

@@ -13,7 +13,7 @@ const MODULE_WIDGETS: Record<string, any> = {
   crm: {
     title: 'Monitor Comercial (CRM)',
     icon: Briefcase,
-    color: '#3b82f6',
+    color: '#D9FF00',
     path: '/crm',
     kpi: '12 Clientes Novos',
     sub: '3 propostas aguardando retorno'
@@ -45,7 +45,7 @@ const MODULE_WIDGETS: Record<string, any> = {
   estoque: {
     title: 'Inventário & Carga',
     icon: Package,
-    color: '#8b5cf6',
+    color: '#D9FF00',
     path: '/estoque',
     kpi: '85% Ocupação',
     sub: 'Entrada de 12 paletes pendente'
@@ -231,11 +231,11 @@ const styles: Record<string, any> = {
   sub: { fontSize: '11px', color: '#94a3b8', margin: 0, fontWeight: '700' },
   progress: { height: '3px', borderRadius: '4px', width: '100%', marginTop: '8px' },
   progressBar: { height: '100%', borderRadius: '4px' },
-  emptyState: { gridColumn: '1 / -1', padding: '80px', textAlign: 'center', backgroundColor: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0', color: 'var(--text-muted)' },
+  emptyState: { gridColumn: '1 / -1', padding: '80px', textAlign: 'center', backgroundColor: '#f4f4f4', borderRadius: '32px', border: '2px dashed #e2e8f0', color: 'var(--text-muted)' },
   loading: { padding: '100px', textAlign: 'center', color: 'var(--primary)', fontWeight: '900', fontSize: '18px' },
   recentActivity: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
   activityList: { display: 'flex', flexDirection: 'column', gap: '16px' },
-  activityItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', borderRadius: '16px', cursor: 'pointer', transition: '0.2s', '&:hover': { backgroundColor: '#f8fafc' } },
+  activityItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', borderRadius: '16px', cursor: 'pointer', transition: '0.2s', '&:hover': { backgroundColor: '#f4f4f4' } },
   dot: { width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--primary)', boxShadow: '0 0 0 4px var(--primary-light)' },
   
   metricsSection: { marginBottom: '40px' },

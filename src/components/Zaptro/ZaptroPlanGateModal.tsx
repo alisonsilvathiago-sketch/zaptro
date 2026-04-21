@@ -83,7 +83,7 @@ const ZaptroPlanGateModal: React.FC<Props> = ({ open, email, onGoToBilling, onRe
             gap: 10,
             padding: '12px 14px',
             borderRadius: 14,
-            background: '#f8fafc',
+            background: '#f4f4f4',
             border: '1px solid #e2e8f0',
             marginBottom: 20,
           }}

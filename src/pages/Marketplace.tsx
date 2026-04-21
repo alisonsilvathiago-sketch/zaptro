@@ -182,14 +182,14 @@ const styles = {
 
   filters: { display: 'flex', gap: '12px', pading: '0 8px', overflowX: 'auto' as const },
   filterBtn: { padding: '12px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#64748b', fontSize: '13px', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' as const },
-  filterActive: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.2)' },
+  filterActive: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
 
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '32px' },
   card: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', padding: '32px', display: 'flex', flexDirection: 'column' as const, gap: '16px', transition: 'transform 0.3s, border-color 0.3s', cursor: 'pointer' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   iconWrap: { width: '56px', height: '56px', borderRadius: '18px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   featuredBadge: { backgroundColor: '#fff7ed', color: '#f97316', fontSize: '10px', fontWeight: '900', padding: '4px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase' as const },
-  appName: { fontSize: '18px', fontWeight: '900', color: '#111827', margin: 0 },
+  appName: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
   appDescription: { fontSize: '14px', color: '#64748b', lineHeight: '1.6', margin: 0, flex: 1 },
   appMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   categoryTag: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
@@ -198,9 +198,9 @@ const styles = {
   installedBtn: { backgroundColor: '#f0fdf4', color: '#10b981', cursor: 'default' },
   detailsBtn: { background: 'none', border: 'none', color: '#94a3b8', fontSize: '12px', fontWeight: '800', cursor: 'pointer' },
 
-  partnerSection: { padding: '40px 60px', backgroundColor: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  partnerSection: { padding: '40px 60px', backgroundColor: '#f4f4f4', borderRadius: '32px', border: '2px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   partnerInfo: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  pTitle: { fontSize: '18px', fontWeight: '900', color: '#111827', margin: 0 },
+  pTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
   pText: { fontSize: '14px', color: '#64748b', margin: 0 },
   partnerBtn: { backgroundColor: 'white', border: '1px solid #e2e8f0', padding: '14px 24px', borderRadius: '16px', color: '#334155', fontWeight: '800', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }
 };

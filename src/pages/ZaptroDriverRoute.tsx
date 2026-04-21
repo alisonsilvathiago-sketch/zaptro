@@ -19,6 +19,24 @@ import {
 
 const LIME = '#D9FF00';
 
+const DRIVER_PAGE_BG = 'linear-gradient(180deg, #0a0a0a 0%, #111 40%, #0a0a0a 100%)';
+
+/** Full viewport — evita faixas brancas do `body`/`#root` à volta da coluna de 520px. */
+const pageShell: React.CSSProperties = {
+  minHeight: '100dvh',
+  width: '100%',
+  boxSizing: 'border-box',
+  background: DRIVER_PAGE_BG,
+  color: '#f8fafc',
+};
+
+const pageInner: React.CSSProperties = {
+  maxWidth: 520,
+  margin: '0 auto',
+  padding: '20px 18px 32px',
+  boxSizing: 'border-box',
+};
+
 function demoSnapshot(token: string): RouteExecutionSnapshot {
   return {
     token,
@@ -111,6 +129,34 @@ const ZaptroDriverRoute: React.FC = () => {
         navigator.geolocation.clearWatch(watchRef.current);
         watchRef.current = null;
         setGpsWatchActive(false);
+      }
+    };
+  }, []);
+
+  /** Alinha `html` / `body` / `#root` ao fundo escuro desta rota (evita branco por trás do shell). */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const root = document.getElementById('root');
+    const prevHtmlBg = html.style.background;
+    const prevBodyBg = body.style.background;
+    const prevBodyBgColor = body.style.backgroundColor;
+    const prevRootBg = root?.style.background ?? '';
+    const prevRootMinH = root?.style.minHeight ?? '';
+    html.style.background = DRIVER_PAGE_BG;
+    body.style.background = DRIVER_PAGE_BG;
+    body.style.backgroundColor = '';
+    if (root) {
+      root.style.background = DRIVER_PAGE_BG;
+      root.style.minHeight = '100dvh';
+    }
+    return () => {
+      html.style.background = prevHtmlBg;
+      body.style.background = prevBodyBg;
+      body.style.backgroundColor = prevBodyBgColor;
+      if (root) {
+        root.style.background = prevRootBg;
+        root.style.minHeight = prevRootMinH;
       }
     };
   }, []);
@@ -238,7 +284,8 @@ const ZaptroDriverRoute: React.FC = () => {
   });
 
   return (
-    <div style={page}>
+    <div style={pageShell}>
+      <div style={pageInner}>
       <header style={head}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={logo}>
@@ -271,7 +318,7 @@ const ZaptroDriverRoute: React.FC = () => {
                     onError={() => setCoPhotoFail(true)}
                   />
                 ) : (
-                  <Building2 size={26} color="#93c5fd" strokeWidth={2.2} />
+                  <Building2 size={26} color="#D9FF00" strokeWidth={2.2} />
                 )}
               </div>
             </div>
@@ -533,18 +580,9 @@ const ZaptroDriverRoute: React.FC = () => {
           Token: {decoded} · Estado guardado localmente para o cliente acompanhar
         </footer>
       </main>
+      </div>
     </div>
   );
-};
-
-const page: React.CSSProperties = {
-  minHeight: '100dvh',
-  background: 'linear-gradient(180deg, #0a0a0a 0%, #111 40%, #0a0a0a 100%)',
-  color: '#f8fafc',
-  padding: '20px 18px 32px',
-  boxSizing: 'border-box',
-  maxWidth: 520,
-  margin: '0 auto',
 };
 
 const head: React.CSSProperties = { marginBottom: 22 };

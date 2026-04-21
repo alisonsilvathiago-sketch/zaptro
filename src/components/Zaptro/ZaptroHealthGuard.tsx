@@ -41,11 +41,25 @@ ALTER TABLE public.whatsapp_messages ADD COLUMN IF NOT EXISTS role TEXT;
 ALTER TABLE public.whatsapp_messages ADD COLUMN IF NOT EXISTS direction TEXT;
 ALTER TABLE public.whatsapp_messages ADD COLUMN IF NOT EXISTS content TEXT;
 
--- 4. FIX PARA AUTOMAÇÃO (Zaptro Flows & Departments)
-ALTER TABLE public.whatsapp_automation_flows ADD COLUMN IF NOT EXISTS options JSONB DEFAULT '[]';
+-- 4. AUTOMAÇÃO WHATSAPP (fluxo menu — precisa da coluna options JSONB)
+CREATE TABLE IF NOT EXISTS public.whatsapp_automation_flows (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id uuid NOT NULL REFERENCES public.whatsapp_companies(id) ON DELETE CASCADE,
+    name text NOT NULL DEFAULT 'Padrao',
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    UNIQUE (company_id, name)
+);
+ALTER TABLE public.whatsapp_automation_flows ADD COLUMN IF NOT EXISTS welcome_message text DEFAULT '';
+ALTER TABLE public.whatsapp_automation_flows ADD COLUMN IF NOT EXISTS options jsonb NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE public.whatsapp_automation_flows ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "whatsapp_automation_flows_authenticated_rw" ON public.whatsapp_automation_flows;
+CREATE POLICY "whatsapp_automation_flows_authenticated_rw" ON public.whatsapp_automation_flows FOR ALL TO authenticated USING (true) WITH CHECK (true);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.whatsapp_automation_flows TO authenticated;
+
 CREATE TABLE IF NOT EXISTS public.whatsapp_departments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
+    company_id UUID REFERENCES public.whatsapp_companies(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     menu_key TEXT,
     created_at TIMESTAMPTZ DEFAULT now()
@@ -174,7 +188,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '0 0 32px 0',
   },
   errorBox: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#f4f4f4',
     border: '1px solid #E2E8F0',
     borderRadius: '16px',
     padding: '16px',
@@ -196,7 +210,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   fixSection: {
     textAlign: 'left',
-    borderTop: '1px solid #F1F5F9',
+    borderTop: '1px solid #e8e8e8',
     paddingTop: '32px',
   },
   fixTitle: {

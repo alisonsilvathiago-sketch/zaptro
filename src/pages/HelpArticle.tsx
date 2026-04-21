@@ -167,7 +167,7 @@ const styles: Record<string, any> = {
   
   content: { 
     fontSize: '17px', color: '#334155', lineHeight: '1.8', 
-    marginBottom: '60px', borderBottom: '1px solid #f1f5f9', paddingBottom: '60px' 
+    marginBottom: '60px', borderBottom: '1px solid #e8e8e8', paddingBottom: '60px' 
   },
   
   footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
@@ -186,7 +186,7 @@ const styles: Record<string, any> = {
   },
 
   sidebar: { display: 'flex', flexDirection: 'column', gap: '32px' },
-  sidebarBox: { padding: '32px', border: '1px solid #f1f5f9', borderRadius: '24px' },
+  sidebarBox: { padding: '32px', border: '1px solid #e8e8e8', borderRadius: '24px' },
   sidebarTitle: { fontSize: '18px', fontWeight: '900', color: '#0f172a', marginBottom: '20px' },
   relatedList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   relatedItem: { 

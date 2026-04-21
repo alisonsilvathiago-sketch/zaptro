@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { Component, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Users,
   MessageSquare,
@@ -25,6 +25,14 @@ import {
   ChevronUp,
   ArrowUp,
   Sparkles,
+  Inbox,
+  Bot,
+  Kanban,
+  Truck,
+  HelpCircle,
+  BookOpen,
+  LayoutGrid,
+  Check,
 } from 'lucide-react';
 import {
   Area,
@@ -36,6 +44,7 @@ import {
   YAxis,
 } from 'recharts';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
+import ZaptroDashboardModernPreview from '../components/Zaptro/ZaptroDashboardModernPreview';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -48,6 +57,14 @@ import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER, ZAPTRO_TITLE_COLOR } from '../constants/zaptroUi';
 import { resolveSessionAvatarUrl } from '../utils/zaptroAvatar';
 import { readAllQuotesFlattened } from '../constants/zaptroQuotes';
+import {
+  buildDashLayoutSegments,
+  flattenDashLayoutSegments,
+  moveSegmentByIndex,
+  normalizeDashWidgetOrder,
+  reorderDashWidgets,
+  type DashLayoutSegment,
+} from './zaptroDashboardLayoutUtils';
 
 /** Superfícies claras “preto suave” (zinc) — alinhado aos badges do painel. */
 const ZT_UI = {
@@ -64,16 +81,123 @@ const ZapRay = ({ size = 24, color = "#D9FF00", style = {} }) => (
 
 const LIME = '#D9FF00';
 
+/** `true` — painel Início logístico (pré-visualização preto + lima). `false` — painel Zaptro clássico completo. */
+const ZAPTRO_DASHBOARD_MODERN_PREVIEW = true;
+
+const DASH_LAYOUT_STORAGE_KEY = 'zaptro_dashboard_widgets_v1';
+
+export type DashWidgetId =
+  | 'hero'
+  | 'kpis'
+  | 'chart'
+  | 'feed'
+  | 'automation'
+  | 'promo'
+  | 'resources'
+  | 'assistant';
+
+const DASH_WIDGET_IDS: DashWidgetId[] = [
+  'hero',
+  'kpis',
+  'chart',
+  'feed',
+  'automation',
+  'promo',
+  'resources',
+  'assistant',
+];
+
+const DASH_WIDGET_LABELS: Record<DashWidgetId, string> = {
+  hero: 'Painel superior (saudação, comando e atalhos)',
+  kpis: 'Indicadores (cartões de métricas)',
+  chart: 'Volume de mensagens (gráfico)',
+  feed: 'Fila de atendimento',
+  automation: 'Automação (resumo)',
+  promo: 'Destaque Zaptro Pro',
+  resources: 'Atalhos inferiores (histórico, equipa…)',
+  assistant: 'Assistente operacional (painel expandido)',
+};
+
+type DashWidgetCatalogTag = 'operacoes' | 'marketing';
+
+const DASH_WIDGET_CATALOG: Record<
+  DashWidgetId,
+  { title: string; description: string; tags: DashWidgetCatalogTag[] }
+> = {
+  hero: {
+    title: 'Painel principal',
+    description: 'Saudação, créditos, comando rápido e atalhos para os módulos principais.',
+    tags: ['operacoes', 'marketing'],
+  },
+  kpis: {
+    title: 'Indicadores',
+    description: 'Cartões com conversas activas, mensagens, contactos e tempo médio de resposta.',
+    tags: ['operacoes'],
+  },
+  chart: {
+    title: 'Volume de mensagens',
+    description: 'Gráfico de actividade ao longo do tempo para acompanhar o ritmo da operação.',
+    tags: ['operacoes'],
+  },
+  feed: {
+    title: 'Fila de atendimento',
+    description: 'Próximas conversas e estados para priorizar o que está em aberto.',
+    tags: ['operacoes'],
+  },
+  automation: {
+    title: 'Automação',
+    description: 'Resumo do menu WhatsApp e atalho para configurar fluxos e triagem.',
+    tags: ['marketing'],
+  },
+  promo: {
+    title: 'Destaque Zaptro',
+    description: 'Chamada para funcionalidades Pro e evolução do teu plano.',
+    tags: ['marketing'],
+  },
+  resources: {
+    title: 'Atalhos inferiores',
+    description: 'Histórico, equipa, conta e central de ajuda num só bloco.',
+    tags: ['marketing'],
+  },
+  assistant: {
+    title: 'Assistente operacional',
+    description: 'Painel do assistente com resumo e digest alinhado à tua operação.',
+    tags: ['operacoes', 'marketing'],
+  },
+};
+
+function loadDashboardHidden(): DashWidgetId[] {
+  try {
+    const raw = localStorage.getItem(DASH_LAYOUT_STORAGE_KEY);
+    if (!raw) return [];
+    const j = JSON.parse(raw) as { hidden?: string[] };
+    if (!j?.hidden || !Array.isArray(j.hidden)) return [];
+    return j.hidden.filter((x): x is DashWidgetId =>
+      (DASH_WIDGET_IDS as readonly string[]).includes(x)
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveDashboardHidden(hidden: DashWidgetId[]) {
+  try {
+    localStorage.setItem(DASH_LAYOUT_STORAGE_KEY, JSON.stringify({ hidden }));
+  } catch {
+    /* ignore */
+  }
+}
+
 const INITIAL_MONTHLY_DELIVERY = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'].map(
   (name) => ({
     name,
-    propostas: 0,
+    mensagens: 0,
   })
 );
 
 const INITIAL_WEEKLY_DELIVERY = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((name) => ({
   name,
-  propostas: 0,
+  mensagens: 0,
 }));
 
 type DigestMsg = { id: string; role: 'user' | 'system'; text: string; at: string; suggestHistory?: boolean };
@@ -363,7 +487,8 @@ const ZaptroDashboardContent: React.FC = () => {
   const [activeCount, setActiveCount] = useState('0');
   const [totalCRM, setTotalCRM] = useState('0');
   const [onlineAgents, setOnlineAgents] = useState('0');
-  const [avgAttendance, setAvgAttendance] = useState('0 min');
+  const [messagesTodayCount, setMessagesTodayCount] = useState('0');
+  const [avgAttendance, setAvgAttendance] = useState('—');
   const [recentActivities, setRecentActivities] = useState<any[]>([]);
   const [selectedLog, setSelectedLog] = useState<any>(null);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -388,9 +513,16 @@ const ZaptroDashboardContent: React.FC = () => {
   const assistantPillRef = useRef<HTMLDivElement>(null);
   const chartSentinelRef = useRef<HTMLDivElement>(null);
   const [digestAuxOpen, setDigestAuxOpen] = useState(false);
-  /** Painel do assistente expandido (minimizar liberta espaço no primeiro ecrã). */
-  const [digestPanelOpen, setDigestPanelOpen] = useState(true);
+  /** Painel do assistente expandido — a barra de comando no herói abre ao tocar. */
+  const [digestPanelOpen, setDigestPanelOpen] = useState(false);
   const [chartInView, setChartInView] = useState(false);
+  /** Personalização da página inicial (widgets visíveis) — estilo painéis modulares. */
+  const [dashLayoutEdit, setDashLayoutEdit] = useState(false);
+  const [dashHiddenSaved, setDashHiddenSaved] = useState<DashWidgetId[]>(() => loadDashboardHidden());
+  const [dashHiddenDraft, setDashHiddenDraft] = useState<DashWidgetId[]>([]);
+  const [dashManageWidgetsOpen, setDashManageWidgetsOpen] = useState(false);
+  /** No modal de widgets: mostrar só entradas com etiqueta Marketing. */
+  const [dashWidgetFilterMarketingOnly, setDashWidgetFilterMarketingOnly] = useState(false);
 
   const [headerHeroImage, setHeaderHeroImage] = useState<string | null>(() => {
     try {
@@ -424,25 +556,6 @@ const ZaptroDashboardContent: React.FC = () => {
     };
   }, [palette.mode, palette.pageBg, palette.text, palette.textMuted, palette.hubPopupBg]);
 
-  /** Fundo exterior do cartão: discreto (quase branco / cinza) com leve toque a lima. */
-  const dashHeroGradientStyle = useMemo((): React.CSSProperties => {
-    const dark = palette.mode === 'dark';
-    if (dark) {
-      return {
-        backgroundImage: `
-          radial-gradient(ellipse 80% 55% at 90% 0%, rgba(217,255,0,0.09) 0%, transparent 52%),
-          linear-gradient(180deg, #121212 0%, #0e0e0e 55%, #101010 100%)`,
-        backgroundRepeat: 'no-repeat',
-      };
-    }
-    return {
-      backgroundImage: `
-        radial-gradient(ellipse 85% 60% at 100% 0%, rgba(217,255,0,0.12) 0%, transparent 52%),
-        linear-gradient(180deg, #ffffff 0%, #fafafa 50%, #f7f8f5 100%)`,
-      backgroundRepeat: 'no-repeat',
-    };
-  }, [palette.mode]);
-
   const chartData = useMemo(
     () => (deliveryPeriod === 'month' ? monthlyChartData : weeklyChartData),
     [deliveryPeriod, monthlyChartData, weeklyChartData]
@@ -458,14 +571,6 @@ const ZaptroDashboardContent: React.FC = () => {
     if (light) {
       return {
         title: { ...styles.title, fontSize: '56px', letterSpacing: '-1px' },
-        headerTitle: {
-          ...styles.title,
-          fontSize: 'clamp(22px, 2.4vw, 30px)',
-          letterSpacing: '-0.6px',
-          lineHeight: 1.15,
-          margin: 0,
-        },
-        subtitle: styles.subtitle,
         statCard: styles.statCard,
         gridCard: styles.gridCard,
         cardTitle: styles.cardTitle,
@@ -501,15 +606,6 @@ const ZaptroDashboardContent: React.FC = () => {
     }
     return {
       title: { ...styles.title, fontSize: '56px', letterSpacing: '-1px', color: palette.text },
-      headerTitle: {
-        ...styles.title,
-        fontSize: 'clamp(22px, 2.4vw, 30px)',
-        letterSpacing: '-0.6px',
-        lineHeight: 1.15,
-        margin: 0,
-        color: palette.text,
-      },
-      subtitle: { ...styles.subtitle, color: palette.textMuted },
       statCard: {
         ...styles.statCard,
         backgroundColor: 'rgba(17, 17, 17, 0.8)',
@@ -650,110 +746,169 @@ const ZaptroDashboardContent: React.FC = () => {
 
     const fetchStats = async () => {
       if (!profile?.company_id) return;
-      
-      // 1. Conversas Ativas
-      const { count: active } = await supabaseZaptro
-        .from('whatsapp_conversations')
-        .select('*', { count: 'exact', head: true })
-        .eq('company_id', profile.company_id)
-        .in('status', ['open', 'waiting']);
 
-      // 2. Total do CRM (Supabase + Local Storage)
-      const { count: supabaseCrmCount } = await supabaseZaptro
-        .from('whatsapp_conversations')
-        .select('*', { count: 'exact', head: true })
-        .eq('company_id', profile.company_id);
-      
-      const { leadsLocal } = aggregateLocalCrm(agentCtx);
-      const totalCombinedCRM = (supabaseCrmCount || 0) + leadsLocal;
+      const crmCtx: AgentCtx = {
+        activeCount: '0',
+        totalCRM: '0',
+        onlineAgents: '0',
+        companyId: profile.company_id,
+        userFirstName: profile?.full_name?.trim()?.split(/\s+/)[0],
+        isTenantAdmin: isZaptroTenantAdminRole(profile?.role),
+      };
 
-      // 3. Agentes de Atendimento
-      const { count: agents } = await supabaseZaptro
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('company_id', profile.company_id)
-        .eq('role', 'agent');
+      try {
+        // 1. Conversas ativas (abertas ou em espera)
+        const { count: active } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .select('*', { count: 'exact', head: true })
+          .eq('company_id', profile.company_id)
+          .in('status', ['open', 'waiting']);
 
-      // 4. Média de Atendimento (Simulado com base em conversas reais se houver timestamps)
-      const { data: attendanceData } = await supabaseZaptro
-        .from('whatsapp_conversations')
-        .select('created_at, last_customer_message_at')
-        .eq('company_id', profile.company_id)
-        .not('last_customer_message_at', 'is', null)
-        .limit(20);
+        // 2. Total na base (threads WhatsApp Supabase + leads Kanban só em localStorage)
+        const { count: supabaseCrmCount } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .select('*', { count: 'exact', head: true })
+          .eq('company_id', profile.company_id);
 
-      if (attendanceData && attendanceData.length > 0) {
-        // Cálculo simplificado: média de tempo desde a criação até a última mensagem
-        // Num cenário real, usaríamos first_response_at se disponível
-        const avg = attendanceData.reduce((acc, c) => {
-          const t1 = new Date(c.created_at).getTime();
-          const t2 = new Date(c.last_customer_message_at).getTime();
-          return acc + (t2 - t1);
-        }, 0) / attendanceData.length;
-        
-        const mins = Math.max(0.5, Math.floor(avg / 60000));
-        setAvgAttendance(`${mins} min`);
-      } else {
-        setAvgAttendance('—');
+        const { leadsLocal } = aggregateLocalCrm(crmCtx);
+        const totalCombinedCRM = (supabaseCrmCount || 0) + leadsLocal;
+
+        // 3. Agentes de atendimento (papéis usados em Equipa)
+        const { count: agents } = await supabaseZaptro
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('company_id', profile.company_id)
+          .in('role', ['agent', 'atendimento']);
+
+        // 4. Média de atendimento (proxy: criação → última mensagem do cliente)
+        const { data: attendanceData } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .select('created_at, last_customer_message_at')
+          .eq('company_id', profile.company_id)
+          .not('last_customer_message_at', 'is', null)
+          .limit(20);
+
+        if (attendanceData && attendanceData.length > 0) {
+          const avg =
+            attendanceData.reduce((acc, c) => {
+              const t1 = new Date(c.created_at).getTime();
+              const t2 = new Date(c.last_customer_message_at).getTime();
+              return acc + (t2 - t1);
+            }, 0) / attendanceData.length;
+
+          const mins = Math.max(0.5, Math.floor(avg / 60000));
+          setAvgAttendance(`${mins} min`);
+        } else {
+          setAvgAttendance('—');
+        }
+
+        if (active !== null) setActiveCount(String(active));
+        setTotalCRM(String(totalCombinedCRM));
+        if (agents !== null) setOnlineAgents(String(agents));
+
+        // 5. Atividades recentes
+        const { data: convs } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .select('*')
+          .eq('company_id', profile.company_id)
+          .order('last_customer_message_at', { ascending: false })
+          .limit(5);
+
+        if (convs?.length) {
+          setRecentActivities(
+            convs.map((c: Record<string, unknown>) => {
+              const lastAt = c.last_customer_message_at as string | null | undefined;
+              const displayName =
+                (c.sender_name as string) ||
+                (c.customer_name as string) ||
+                (c.sender_number as string) ||
+                (c.customer_phone as string) ||
+                'Cliente';
+              return {
+                id: c.id as string,
+                type: 'ATENDIMENTO',
+                user: displayName,
+                action: 'Mensagem recebida',
+                time: lastAt ? new Date(lastAt).toLocaleString('pt-BR') : '—',
+                icon: <MessageSquare size={14} />,
+                color: '#D9FF00',
+                details: (c.last_message as string) || 'Iniciou uma nova conversa.',
+              };
+            })
+          );
+        } else {
+          setRecentActivities([]);
+        }
+
+        // 6. Volume de mensagens (últimos 12 meses) — dados reais em `whatsapp_messages`
+        const mData = INITIAL_MONTHLY_DELIVERY.map((b) => ({ ...b }));
+        const wData = INITIAL_WEEKLY_DELIVERY.map((b) => ({ ...b }));
+
+        const { data: convIdRows } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .select('id')
+          .eq('company_id', profile.company_id);
+
+        const convIds = (convIdRows ?? []).map((r) => r.id as string).filter(Boolean);
+        const since = new Date();
+        since.setFullYear(since.getFullYear() - 1);
+        const sinceIso = since.toISOString();
+
+        const timestamps: string[] = [];
+        const chunk = 400;
+        for (let i = 0; i < convIds.length; i += chunk) {
+          const slice = convIds.slice(i, i + chunk);
+          const { data: msgRows } = await supabaseZaptro
+            .from('whatsapp_messages')
+            .select('created_at')
+            .in('conversation_id', slice)
+            .gte('created_at', sinceIso);
+          for (const row of msgRows ?? []) {
+            if (row?.created_at) timestamps.push(row.created_at as string);
+          }
+        }
+
+        for (const iso of timestamps) {
+          const d = new Date(iso);
+          if (!Number.isFinite(d.getTime())) continue;
+          const month = d.getMonth();
+          const day = (d.getDay() + 6) % 7;
+          if (mData[month]) mData[month].mensagens += 1;
+          if (wData[day]) wData[day].mensagens += 1;
+        }
+
+        const startToday = new Date();
+        startToday.setHours(0, 0, 0, 0);
+        let msgsToday = 0;
+        for (const iso of timestamps) {
+          const t = new Date(iso).getTime();
+          if (Number.isFinite(t) && t >= startToday.getTime()) msgsToday += 1;
+        }
+        setMessagesTodayCount(String(msgsToday));
+
+        setMonthlyChartData(mData);
+        setWeeklyChartData(wData);
+      } catch (e) {
+        console.error('[ZaptroDashboard] fetchStats', e);
       }
-
-      if (active !== null) setActiveCount(active.toString());
-      setTotalCRM(totalCombinedCRM.toString());
-      if (agents !== null) setOnlineAgents(agents.toString());
-      
-      // 5. Atividades Recentes
-      const { data: convs } = await supabaseZaptro
-        .from('whatsapp_conversations')
-        .select('*')
-        .eq('company_id', profile.company_id)
-        .order('last_customer_message_at', { ascending: false })
-        .limit(5);
-
-      if (convs) {
-        setRecentActivities(convs.map((c) => ({
-          id: c.id,
-          type: 'ATENDIMENTO',
-          user: c.customer_name || c.customer_phone || 'Cliente',
-          action: 'Mensagem recebida',
-          time: new Date(c.last_customer_message_at).toLocaleString('pt-BR'),
-          icon: <MessageSquare size={14}/>,
-          color: '#D9FF00',
-          details: c.last_message || 'Iniciou uma nova conversa.'
-        })));
-      }
-
-      // 6. Gráficos de Propostas (Real de LocalStorage)
-      const quotes = readAllQuotesFlattened(profile.company_id);
-      
-      const mData = [...INITIAL_MONTHLY_DELIVERY];
-      const wData = [...INITIAL_WEEKLY_DELIVERY];
-
-      quotes.forEach(q => {
-        const d = new Date(q.createdAt);
-        const month = d.getMonth();
-        const day = (d.getDay() + 6) % 7; // Seg = 0
-        if (mData[month]) mData[month].propostas += 1;
-        if (wData[day]) wData[day].propostas += 1;
-      });
-
-      setMonthlyChartData(mData);
-      setWeeklyChartData(wData);
     };
-    
+
     void fetchStats();
 
-    // Inscrição Realtime
     const channel = supabaseZaptro
       .channel('dashboard_sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_conversations' }, () => {
-        fetchStats();
+        void fetchStats();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_messages' }, () => {
+        void fetchStats();
       })
       .subscribe();
 
     return () => {
       supabaseZaptro.removeChannel(channel);
     };
-  }, [profile?.company_id, location.search, agentCtx.totalCRM]);
+  }, [profile?.company_id, profile?.role, profile?.full_name, location.search, navigate]);
 
   useEffect(() => {
     try {
@@ -783,31 +938,31 @@ const ZaptroDashboardContent: React.FC = () => {
     () =>
       [
         {
-          label: 'Conversas Ativas',
+          label: 'Conversas ativas',
           value: activeCount,
-          change: '+Ativas',
+          change: 'Abertas / em espera',
           positive: true,
           icon: MessageSquare,
           color: 'linear-gradient(135deg, #D9FF00 0%, #A3E635 100%)',
         },
         {
-          label: 'Total Base CRM',
-          value: totalCRM,
-          change: 'Contatos',
+          label: 'Mensagens hoje',
+          value: messagesTodayCount,
+          change: 'Hoje',
           positive: true,
-          icon: Users,
+          icon: Inbox,
           color: 'linear-gradient(135deg, #D9FF00 0%, #84CC16 100%)',
         },
         {
-          label: 'Agentes de Atendimento',
-          value: onlineAgents,
-          change: 'Equipe',
+          label: 'Total de contatos',
+          value: totalCRM,
+          change: 'Base',
           positive: true,
-          icon: ShieldCheck,
+          icon: Users,
           color: 'linear-gradient(135deg, #22C55E 0%, #D9FF00 100%)',
         },
         {
-          label: 'Média de Atendimento',
+          label: 'Tempo médio de resposta',
           value: avgAttendance,
           change: 'SLA',
           positive: true,
@@ -815,7 +970,7 @@ const ZaptroDashboardContent: React.FC = () => {
           color: 'linear-gradient(135deg, #EF4444 0%, #D9FF00 100%)',
         },
       ] as const,
-    [activeCount, totalCRM, onlineAgents, avgAttendance]
+    [activeCount, totalCRM, messagesTodayCount, avgAttendance]
   );
 
   const submitDigest = (e: React.FormEvent) => {
@@ -826,62 +981,598 @@ const ZaptroDashboardContent: React.FC = () => {
     setDigestInput('');
   };
 
+  const dashFirstName = useMemo(
+    () => profile?.full_name?.trim().split(/\s+/)[0] ?? '',
+    [profile?.full_name]
+  );
+
+  const dashFooterLinks = useMemo(
+    () =>
+      [
+        {
+          label: 'Histórico',
+          sub: 'Actividade e responsáveis',
+          Icon: Clock,
+          to: ZAPTRO_ROUTES.HISTORY,
+        },
+        {
+          label: 'Equipa',
+          sub: 'Membros e permissões',
+          Icon: Users,
+          to: ZAPTRO_ROUTES.TEAM,
+        },
+        {
+          label: 'Conta',
+          sub: 'Perfil e segurança',
+          Icon: User,
+          to: ZAPTRO_ROUTES.PROFILE,
+        },
+        {
+          label: 'Central de ajuda',
+          sub: 'Configuração e guias',
+          Icon: BookOpen,
+          to: ZAPTRO_ROUTES.SETTINGS_ALIAS,
+        },
+      ] as const,
+    []
+  );
+
+  const dashHiddenEffective = useMemo(
+    () => (dashLayoutEdit ? dashHiddenDraft : dashHiddenSaved),
+    [dashLayoutEdit, dashHiddenDraft, dashHiddenSaved]
+  );
+  const dashShow = useCallback(
+    (id: DashWidgetId) => !dashHiddenEffective.includes(id),
+    [dashHiddenEffective]
+  );
+
+  const startDashLayoutEdit = useCallback(() => {
+    setDashHiddenDraft([...dashHiddenSaved]);
+    setDashLayoutEdit(true);
+    setDashManageWidgetsOpen(true);
+  }, [dashHiddenSaved]);
+
+  const cancelDashLayoutEdit = useCallback(() => {
+    setDashHiddenDraft([...dashHiddenSaved]);
+    setDashLayoutEdit(false);
+    setDashManageWidgetsOpen(false);
+    setDashWidgetFilterMarketingOnly(false);
+  }, [dashHiddenSaved]);
+
+  const saveDashLayoutEdit = useCallback(() => {
+    setDashHiddenSaved([...dashHiddenDraft]);
+    saveDashboardHidden(dashHiddenDraft);
+    setDashLayoutEdit(false);
+    setDashManageWidgetsOpen(false);
+    setDashWidgetFilterMarketingOnly(false);
+  }, [dashHiddenDraft]);
+
+  /** Aplica a selecção do modal ao estado guardado e mantém o modo personalizar aberto. */
+  const confirmDashWidgetModal = useCallback(() => {
+    setDashHiddenSaved([...dashHiddenDraft]);
+    saveDashboardHidden(dashHiddenDraft);
+    setDashManageWidgetsOpen(false);
+    setDashWidgetFilterMarketingOnly(false);
+  }, [dashHiddenDraft]);
+
+  const cancelDashWidgetModal = useCallback(() => {
+    setDashHiddenDraft([...dashHiddenSaved]);
+    setDashManageWidgetsOpen(false);
+    setDashWidgetFilterMarketingOnly(false);
+  }, [dashHiddenSaved]);
+
+  const hideDashWidget = useCallback((id: DashWidgetId) => {
+    setDashHiddenDraft((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  }, []);
+
+  const toggleDashWidgetVisible = useCallback((id: DashWidgetId, visible: boolean) => {
+    setDashHiddenDraft((prev) => {
+      if (visible) return prev.filter((x) => x !== id);
+      return prev.includes(id) ? prev : [...prev, id];
+    });
+  }, []);
+
+  useEffect(() => {
+    if (dashHiddenEffective.includes('assistant')) setDigestPanelOpen(false);
+  }, [dashHiddenEffective]);
+
+  const dashWidgetModalIds = useMemo(() => {
+    if (!dashWidgetFilterMarketingOnly) return DASH_WIDGET_IDS;
+    return DASH_WIDGET_IDS.filter((id) => DASH_WIDGET_CATALOG[id].tags.includes('marketing'));
+  }, [dashWidgetFilterMarketingOnly]);
+
+  /** Acento painel / modal de widgets — verde limão Zaptro (substitui violeta). */
+  const accent = palette.lime;
+  const accentBorder = palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.38)' : 'rgba(15, 23, 42, 0.12)';
+  const accentSoft = palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.14)' : 'rgba(217, 255, 0, 0.22)';
+  const accentText = palette.mode === 'dark' ? '#ecfccb' : '#14532d';
+  const dashEditOutline =
+    palette.mode === 'dark' ? '2px dashed rgba(217, 255, 0, 0.55)' : '2px dashed rgba(20, 83, 45, 0.38)';
 
   return (
     <>
       <div style={styles.container}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+            marginBottom: dashLayoutEdit ? 14 : 10,
+            width: '100%',
+          }}
+        >
+          {!dashLayoutEdit ? (
+            <div style={{ flex: 1 }} />
+          ) : (
+            <span style={{ fontSize: 13, fontWeight: 800, color: palette.textMuted }}>Personalizar página</span>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            {!dashLayoutEdit ? (
+              <button
+                type="button"
+                onClick={startDashLayoutEdit}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 16px',
+                  borderRadius: 14,
+                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : ZAPTRO_SECTION_BORDER}`,
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#fff',
+                  color: palette.text,
+                  fontSize: 13,
+                  fontWeight: 950,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <LayoutGrid size={17} strokeWidth={2.2} />
+                Personalizar página
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={cancelDashLayoutEdit}
+                  style={{
+                    padding: '10px 16px',
+                    borderRadius: 14,
+                    border: 'none',
+                    background: 'transparent',
+                    color: palette.textMuted,
+                    fontSize: 14,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={saveDashLayoutEdit}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: 14,
+                    border: 'none',
+                    background: '#0f172a',
+                    color: '#fff',
+                    fontSize: 14,
+                    fontWeight: 950,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  Salvar página
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {dashLayoutEdit && (
+          <div
+            role="status"
+            style={{
+              width: '100%',
+              boxSizing: 'border-box',
+              marginBottom: 18,
+              padding: '14px 18px',
+              borderRadius: 16,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 14,
+              backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.1)' : 'rgba(217, 255, 0, 0.16)',
+              border: `1px solid ${palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.32)' : 'rgba(15, 23, 42, 0.08)'}`,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, minWidth: 0, flex: '1 1 280px' }}>
+              <Info size={20} color={accent} style={{ flexShrink: 0, marginTop: 1 }} />
+              <p style={{ margin: 0, fontSize: 13, fontWeight: 600, lineHeight: 1.5, color: palette.text }}>
+                Estás a personalizar o teu painel. Os dados são os mesmos de sempre; podes remover widgets e voltar a
+                adicioná-los em «Gerir widgets». Não te esqueças de guardar.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDashManageWidgetsOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                border: 'none',
+                background: 'none',
+                color: palette.mode === 'dark' ? accent : '#14532d',
+                fontWeight: 800,
+                fontSize: 13,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Plus size={17} strokeWidth={2.2} /> Gerir widgets
+            </button>
+          </div>
+        )}
+
+        {dashManageWidgetsOpen && dashLayoutEdit && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="zaptro-dash-widgets-title"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 200000,
+              backgroundColor: 'rgba(15,23,42,0.48)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 20,
+              boxSizing: 'border-box',
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) cancelDashWidgetModal();
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                maxWidth: 900,
+                borderRadius: 22,
+                padding: '28px 32px 26px',
+                backgroundColor: palette.mode === 'dark' ? '#141414' : '#ffffff',
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : ZAPTRO_SECTION_BORDER}`,
+                boxShadow: '0 28px 80px rgba(15, 23, 42, 0.2)',
+                boxSizing: 'border-box',
+                maxHeight: 'min(92vh, 900px)',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  gap: 16,
+                  marginBottom: 18,
+                  flexShrink: 0,
+                }}
+              >
+                <h2
+                  id="zaptro-dash-widgets-title"
+                  style={{
+                    margin: 0,
+                    fontSize: 22,
+                    fontWeight: 950,
+                    letterSpacing: '-0.03em',
+                    color: palette.text,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Selecionar seus widgets
+                </h2>
+                <button
+                  type="button"
+                  aria-label="Fechar"
+                  onClick={cancelDashWidgetModal}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    color: palette.textMuted,
+                    cursor: 'pointer',
+                    padding: 6,
+                    borderRadius: 10,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <X size={22} strokeWidth={2.2} />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDashWidgetFilterMarketingOnly((v) => !v)}
+                style={{
+                  alignSelf: 'flex-start',
+                  padding: '10px 18px',
+                  borderRadius: 999,
+                  border: `1.5px solid ${accent}`,
+                  backgroundColor: dashWidgetFilterMarketingOnly ? accentSoft : 'transparent',
+                  color: accentText,
+                  fontSize: 13,
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  marginBottom: 4,
+                  flexShrink: 0,
+                }}
+              >
+                Selecionar apenas widgets de Marketing
+              </button>
+
+              <div
+                style={{
+                  marginTop: 18,
+                  overflowY: 'auto',
+                  flex: 1,
+                  minHeight: 0,
+                  paddingRight: 4,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 240px), 1fr))',
+                    gap: 16,
+                  }}
+                >
+                  {dashWidgetModalIds.map((id) => {
+                    const selected = !dashHiddenDraft.includes(id);
+                    const meta = DASH_WIDGET_CATALOG[id];
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => toggleDashWidgetVisible(id, !selected)}
+                        style={{
+                          position: 'relative',
+                          textAlign: 'left',
+                          padding: '16px 16px 18px',
+                          borderRadius: 14,
+                          border: `1px solid ${accentBorder}`,
+                          backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#fafafa',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box',
+                          display: 'block',
+                          width: '100%',
+                          minHeight: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            gap: 10,
+                            marginBottom: 12,
+                          }}
+                        >
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                            {meta.tags.includes('operacoes') && (
+                              <span
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 850,
+                                  padding: '4px 10px',
+                                  borderRadius: 999,
+                                  backgroundColor: '#ffedd5',
+                                  color: '#c2410c',
+                                }}
+                              >
+                                Operações
+                              </span>
+                            )}
+                            {meta.tags.includes('marketing') && (
+                              <span
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 850,
+                                  padding: '4px 10px',
+                                  borderRadius: 999,
+                                  backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.16)' : 'rgba(217, 255, 0, 0.28)',
+                                  color: palette.mode === 'dark' ? '#ecfccb' : '#14532d',
+                                }}
+                              >
+                                Marketing
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            aria-hidden
+                            style={{
+                              width: 22,
+                              height: 22,
+                              borderRadius: 6,
+                              flexShrink: 0,
+                              border: `2px solid ${selected ? accent : palette.mode === 'dark' ? 'rgba(255,255,255,0.25)' : '#d4d4d8'}`,
+                              backgroundColor: selected ? accent : 'transparent',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {selected ? <Check size={14} strokeWidth={3} color="#0a0a0a" /> : null}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 15, fontWeight: 950, color: palette.text, marginBottom: 8, lineHeight: 1.25 }}>
+                          {meta.title}
+                        </div>
+                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: palette.textMuted, lineHeight: 1.5 }}>
+                          {meta.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  gap: 22,
+                  marginTop: 26,
+                  paddingTop: 4,
+                  flexShrink: 0,
+                  borderTop: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#f4f4f5'}`,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={cancelDashWidgetModal}
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    color: palette.textMuted,
+                    fontWeight: 850,
+                    fontSize: 15,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    padding: '8px 4px',
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDashWidgetModal}
+                  style={{
+                    padding: '14px 28px',
+                    borderRadius: 999,
+                    border: 'none',
+                    background: '#000000',
+                    color: '#ffffff',
+                    fontWeight: 950,
+                    fontSize: 15,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.18)',
+                  }}
+                >
+                  Confirmar seleção
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {dashShow('hero') && (
         <section
           aria-labelledby="zaptro-dash-hero-title"
           style={{
             position: 'relative',
             width: '100%',
-            borderRadius: 22,
-            border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(15,23,42,0.08)'}`,
+            boxSizing: 'border-box',
+            borderRadius: 28,
+            padding: 'clamp(22px, 3.8vw, 36px) clamp(22px, 3.2vw, 40px)',
+            marginBottom: 4,
+            overflow: 'hidden',
+            background:
+              palette.mode === 'dark'
+                ? 'radial-gradient(ellipse 100% 80% at 0% -30%, rgba(217,255,0,0.1) 0%, transparent 52%), linear-gradient(168deg, #000000 0%, #0a0a0a 48%, #111111 100%)'
+                : 'radial-gradient(ellipse 90% 70% at 12% -15%, rgba(217,255,0,0.14) 0%, transparent 46%), linear-gradient(158deg, #000000 0%, #0a0a0a 42%, #141414 100%)',
+            border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.12)'}`,
             boxShadow:
               palette.mode === 'dark'
-                ? '0 10px 32px rgba(0,0,0,0.35)'
-                : '0 8px 28px rgba(15,23,42,0.06)',
-            overflow: 'visible',
-            boxSizing: 'border-box',
-            padding: 'clamp(18px, 3vw, 28px) clamp(16px, 2.5vw, 24px) clamp(20px, 3vw, 28px)',
+                ? '0 28px 56px -16px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.04)'
+                : '0 28px 56px -16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+            ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4 } : {}),
           }}
         >
+          {dashLayoutEdit && (
+            <button
+              type="button"
+              onClick={() => hideDashWidget('hero')}
+              style={{
+                position: 'absolute',
+                top: 14,
+                right: 14,
+                zIndex: 20,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderRadius: 12,
+                border: '1px solid rgba(255,255,255,0.28)',
+                background: 'rgba(15,23,42,0.65)',
+                color: '#f8fafc',
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              <EyeOff size={15} strokeWidth={2} />
+              Remover widget
+            </button>
+          )}
           <div
             aria-hidden
             style={{
               position: 'absolute',
-              inset: 0,
-              borderRadius: 21,
-              zIndex: 0,
-              pointerEvents: 'none',
-              overflow: 'hidden',
-              ...dashHeroGradientStyle,
+              top: 0,
+              left: '8%',
+              right: '8%',
+              height: 2,
+              borderRadius: '0 0 8px 8px',
+              background: 'linear-gradient(90deg, transparent, rgba(217,255,0,0.55), rgba(217,255,0,0.85), rgba(217,255,0,0.55), transparent)',
+              opacity: 0.9,
             }}
           />
-        <header
-          style={{
-            ...styles.pageHeader,
-            position: 'relative',
-            zIndex: 1,
-            marginBottom: 0,
-            gap: 16,
-            paddingBottom: 'clamp(14px, 2.5vw, 22px)',
-            borderBottom: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.14)' : 'rgba(15,23,42,0.12)'}`,
-          }}
-        >
-           <div style={styles.headerLead}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: 18,
+              marginBottom: 22,
+              position: 'relative',
+              zIndex: 1,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, minWidth: 0, flex: '1 1 280px' }}>
               <button
                 type="button"
                 aria-label="Definir foto ao lado da saudação"
                 title="Sua foto aparece aqui ao salvar"
-                 onClick={() => {
+                onClick={() => {
                   setPendingStatImage(headerHeroImage || sessionAvatarSrc);
                   setUploadModal({ kind: 'hero' });
                 }}
                 style={{
                   ...styles.heroPhotoBtn,
-                  borderColor: palette.mode === 'dark' ? '#404040' : ZAPTRO_SECTION_BORDER,
-                  backgroundColor: palette.mode === 'dark' ? '#111111' : ZAPTRO_FIELD_BG,
+                  width: 58,
+                  height: 58,
+                  borderRadius: 20,
+                  border: '2px solid rgba(217,255,0,0.35)',
+                  backgroundColor: 'rgba(15,23,42,0.55)',
+                  boxShadow: '0 10px 28px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06) inset',
                 }}
               >
                 {headerHeroImage ? (
@@ -889,33 +1580,90 @@ const ZaptroDashboardContent: React.FC = () => {
                 ) : sessionAvatarSrc ? (
                   <img src={sessionAvatarSrc} alt="" style={styles.heroPhotoImg} />
                 ) : (
-                  <span style={{ ...styles.heroPhotoPh, color: palette.text }}>{profile?.full_name?.[0] || 'Z'}</span>
+                  <span style={{ ...styles.heroPhotoPh, color: '#f8fafc' }}>{profile?.full_name?.[0] || 'Z'}</span>
                 )}
                 <span style={styles.heroPhotoCam}>
                   <Camera size={14} color="#FFFFFF" />
                 </span>
               </button>
-              <div style={styles.headerInfo}>
-                <h1 id="zaptro-dash-hero-title" style={ds.headerTitle}>
-                  Olá, {profile?.full_name || 'Comandante'}
-                </h1>
-                <p style={{ ...ds.subtitle, margin: '10px 0 0', fontSize: 13, fontWeight: 600 }}>
-                  Painel principal · resumo da operação
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 950,
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      padding: '5px 12px',
+                      borderRadius: 999,
+                      backgroundColor: 'rgba(217,255,0,0.32)',
+                      color: '#0f172a',
+                      border: '1px solid rgba(217,255,0,0.5)',
+                      backdropFilter: 'blur(8px)',
+                      WebkitBackdropFilter: 'blur(8px)',
+                    }}
+                  >
+                    Beta
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Abrir assistente operacional"
+                    title="Assistente"
+                    onClick={() => setDigestPanelOpen(true)}
+                    style={{
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      background: 'rgba(255,255,255,0.06)',
+                      borderRadius: 999,
+                      padding: 7,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background 0.2s ease',
+                    }}
+                  >
+                    <HelpCircle size={18} color="rgba(248,250,252,0.9)" strokeWidth={2} />
+                  </button>
+                </div>
+                <p
+                  style={{
+                    margin: '0 0 6px',
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(248,250,252,0.45)',
+                  }}
+                >
+                  Painel principal
                 </p>
+                <h1
+                  id="zaptro-dash-hero-title"
+                  style={{
+                    margin: 0,
+                    fontSize: 'clamp(18px, 2.1vw, 24px)',
+                    fontWeight: 800,
+                    color: '#f8fafc',
+                    lineHeight: 1.3,
+                    letterSpacing: '-0.03em',
+                    textWrap: 'balance' as const,
+                  }}
+                >
+                  Olá, {dashFirstName || profile?.full_name || 'Comandante'}. O que queres que eu faça hoje?
+                </h1>
               </div>
-           </div>
-           <div style={styles.headerActions}>
+            </div>
+            <div style={{ ...styles.headerActions, marginLeft: 'auto' }}>
               {isZaptroTenantAdminRole(profile?.role) && (
                 <div
                   style={{
                     ...styles.dashboardCredits,
                     overflow: 'hidden',
-                    backgroundColor: palette.mode === 'dark' ? '#111111' : '#18181b',
-                    border: 'none',
-                    boxShadow:
-                      palette.mode === 'dark'
-                        ? 'inset 0 0 0 1px rgba(255,255,255,0.06)'
-                        : '0 1px 2px rgba(15, 23, 42, 0.08)',
+                    backgroundColor: 'rgba(255,255,255,0.06)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: '0 12px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
                   }}
                   title="O saldo de créditos aparecerá aqui quando o número WhatsApp estiver habilitado para a empresa."
                 >
@@ -935,9 +1683,9 @@ const ZaptroDashboardContent: React.FC = () => {
                       onClick={() => setCreditsVisible((v) => !v)}
                     >
                       {creditsVisible ? (
-                        <Eye size={20} color="#a1a1aa" strokeWidth={2.2} />
+                        <Eye size={20} color={palette.lime} strokeWidth={2.2} />
                       ) : (
-                        <EyeOff size={20} color="#a1a1aa" strokeWidth={2.2} />
+                        <EyeOff size={20} color={palette.lime} strokeWidth={2.2} />
                       )}
                     </button>
                   </div>
@@ -950,58 +1698,138 @@ const ZaptroDashboardContent: React.FC = () => {
                   </div>
                 </div>
               )}
-           </div>
-        </header>
+            </div>
+          </div>
 
-        {!digestPanelOpen ? (
-          <div
-            role="region"
-            aria-label="Assistente operacional"
-            style={{ position: 'relative', zIndex: 1, width: '100%', marginTop: 'clamp(16px, 3vw, 24px)' }}
-          >
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <p
+              style={{
+                margin: '0 0 10px',
+                fontSize: 11,
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'rgba(248,250,252,0.5)',
+              }}
+            >
+              Comando rápido
+            </p>
             <button
               type="button"
-              aria-expanded={false}
+              aria-expanded={digestPanelOpen}
+              aria-controls="zaptro-dash-assistant-panel"
               onClick={() => setDigestPanelOpen(true)}
               style={{
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: 16,
-                padding: 'clamp(18px, 3.5vw, 28px) clamp(22px, 4vw, 32px)',
-                borderRadius: 28,
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.16)' : 'rgba(15,23,42,0.1)'}`,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(17,17,17,0.72)' : 'rgba(255,255,255,0.82)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                color: palette.text,
-                fontWeight: 800,
-                fontSize: 14,
+                gap: 14,
+                padding: '16px 20px',
+                borderRadius: 20,
+                border: '1px solid rgba(15, 23, 42, 0.06)',
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                color: '#475569',
+                fontSize: 15,
+                fontWeight: 600,
                 cursor: 'pointer',
+                textAlign: 'left',
+                boxSizing: 'border-box',
+                boxShadow:
+                  '0 4px 24px rgba(15,23,42,0.08), 0 1px 0 rgba(255,255,255,0.95) inset, 0 0 0 1px rgba(255,255,255,0.4) inset',
                 fontFamily: 'inherit',
+                transition: 'box-shadow 0.2s ease, transform 0.15s ease',
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-                <Sparkles size={18} color={LIME} />
-                Assistente operacional — tocar para expandir
+              <span
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
+                Pergunta ao Zaptro ou pede uma ação — resumo, CRM, histórico…
               </span>
-              <ChevronDown size={20} color={palette.textMuted} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 40,
+                    height: 40,
+                    borderRadius: 14,
+                    backgroundColor: 'rgba(148, 163, 184, 0.16)',
+                  }}
+                  aria-hidden
+                >
+                  <Mic size={20} color="#64748b" strokeWidth={1.9} />
+                </span>
+                <span
+                  style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: 999,
+                    background: `linear-gradient(145deg, ${LIME} 0%, #bef264 100%)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#0a0a0a',
+                    boxShadow: '0 6px 20px rgba(217,255,0,0.35)',
+                  }}
+                  aria-hidden
+                >
+                  <ArrowUp size={22} strokeWidth={2.4} />
+                </span>
+              </span>
             </button>
           </div>
-        ) : (
+        </section>
+        )}
+
+        {dashShow('assistant') && digestPanelOpen && (
         <div
+          id="zaptro-dash-assistant-panel"
           role="region"
           aria-label="Assistente operacional"
           style={{
             width: '100%',
-            marginTop: 'clamp(16px, 3vw, 24px)',
+            marginTop: 16,
             position: 'relative',
-            zIndex: 1,
             boxSizing: 'border-box',
             overflow: 'visible',
+            ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 24, paddingTop: 8 } : {}),
           }}
         >
+          {dashLayoutEdit && (
+            <button
+              type="button"
+              onClick={() => hideDashWidget('assistant')}
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 8,
+                zIndex: 30,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderRadius: 12,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : ZAPTRO_SECTION_BORDER}`,
+                background: palette.mode === 'dark' ? 'rgba(17,17,17,0.9)' : 'rgba(255,255,255,0.95)',
+                color: palette.text,
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              <EyeOff size={15} strokeWidth={2} />
+              Remover widget
+            </button>
+          )}
           <div
             ref={assistantPillRef}
             style={{
@@ -1144,34 +1972,11 @@ const ZaptroDashboardContent: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginTop: 20,
-                  paddingTop: 18,
-                  borderTop: `1px solid ${assistantUi.divider}`,
+                  justifyContent: 'flex-end',
+                  marginTop: 16,
+                  paddingTop: 4,
                 }}
               >
-                <button
-                  type="button"
-                  aria-label="Atalhos rápidos"
-                  title="Atalhos"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDigestAuxOpen((v) => !v);
-                  }}
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 14,
-                    border: `1px solid ${assistantUi.chipBorder}`,
-                    backgroundColor: assistantUi.chipBg,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Plus size={22} color={assistantUi.muted} strokeWidth={1.9} />
-                </button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <button
                     type="button"
@@ -1335,8 +2140,44 @@ const ZaptroDashboardContent: React.FC = () => {
           </div>
         </div>
         )}
-        </section>
 
+        <div style={styles.dashTwoColumn}>
+          <div style={styles.dashLeftColumn}>
+        {dashShow('kpis') && (
+        <div
+          style={{
+            position: 'relative',
+            marginBottom: 0,
+            ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 20, paddingTop: 10 } : {}),
+          }}
+        >
+          {dashLayoutEdit && (
+            <button
+              type="button"
+              onClick={() => hideDashWidget('kpis')}
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 8,
+                zIndex: 10,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderRadius: 12,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                color: palette.text,
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              <EyeOff size={15} strokeWidth={2} />
+              Remover widget
+            </button>
+          )}
         <div
           style={{
             ...styles.statsGrid,
@@ -1413,9 +2254,48 @@ const ZaptroDashboardContent: React.FC = () => {
            );
            })}
         </div>
+        </div>
+        )}
 
+        {(dashShow('chart') || dashShow('feed')) && (
         <div style={styles.mainGrid}>
-           <div style={{...ds.gridCard, flex: 2}}>
+           {dashShow('chart') && (
+           <div
+             style={{
+               position: 'relative',
+               flex: dashShow('feed') ? 2 : '1 1 100%',
+               minWidth: 300,
+               ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 24, paddingTop: 10 } : {}),
+             }}
+           >
+             {dashLayoutEdit && (
+               <button
+                 type="button"
+                 onClick={() => hideDashWidget('chart')}
+                 style={{
+                   position: 'absolute',
+                   top: 6,
+                   right: 10,
+                   zIndex: 10,
+                   display: 'inline-flex',
+                   alignItems: 'center',
+                   gap: 6,
+                   padding: '8px 12px',
+                   borderRadius: 12,
+                   border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                   background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                   color: palette.text,
+                   fontSize: 12,
+                   fontWeight: 800,
+                   cursor: 'pointer',
+                   fontFamily: 'inherit',
+                 }}
+               >
+                 <EyeOff size={15} strokeWidth={2} />
+                 Remover widget
+               </button>
+             )}
+           <div style={{...ds.gridCard, flex: 1, minWidth: 0, width: '100%'}}>
               <div
                 style={{
                   ...styles.cardHeader,
@@ -1437,7 +2317,7 @@ const ZaptroDashboardContent: React.FC = () => {
                        maxWidth: 420,
                      }}
                    >
-                     Gráfico de fluxo de conversas do seu terminal Zaptro.
+                     Visão simples por semana (dias úteis agregados) ou por mês (últimos 12 meses).
                    </p>
                  </div>
                  <div style={{ ...ds.tabGroup, flexShrink: 0 }}>
@@ -1449,7 +2329,7 @@ const ZaptroDashboardContent: React.FC = () => {
                       }}
                       onClick={() => setDeliveryPeriod('week')}
                     >
-                      Semanal
+                      Semana
                     </button>
                     <button
                       type="button"
@@ -1459,7 +2339,7 @@ const ZaptroDashboardContent: React.FC = () => {
                       }}
                       onClick={() => setDeliveryPeriod('month')}
                     >
-                      Mensal
+                      Mês
                     </button>
                  </div>
               </div>
@@ -1492,19 +2372,19 @@ const ZaptroDashboardContent: React.FC = () => {
                       contentStyle={{
                         borderRadius: 14,
                         border: `1px solid ${chartStrokeGrid}`,
-                        backgroundColor: palette.mode === 'dark' ? '#111827' : '#ffffff',
+                        backgroundColor: palette.mode === 'dark' ? '#000000' : '#ffffff',
                         boxShadow: ZAPTRO_SHADOW.md,
                         fontWeight: 800,
                         fontSize: 13,
                         color: palette.text,
                       }}
-                      formatter={(value: number) => [`${value}`, 'Entregas']}
+                      formatter={(value: number) => [`${value}`, 'Mensagens']}
                       labelStyle={{ color: palette.textMuted, fontWeight: 800, fontSize: 11 }}
                     />
                     <Area
                       type="monotone"
-                      dataKey="entregas"
-                      name="Entregas"
+                      dataKey="mensagens"
+                      name="Mensagens"
                       stroke={LIME}
                       strokeWidth={2.8}
                       fill={`url(#${gradId})`}
@@ -1533,13 +2413,86 @@ const ZaptroDashboardContent: React.FC = () => {
                 )}
               </div>
            </div>
+           </div>
+           )}
 
-           <div style={{...ds.gridCard, flex: 1.2}}>
-              <div style={styles.cardHeader}>
-                 <h3 style={ds.cardTitle}>Fila Real-time</h3>
-                 <Activity size={18} color="#CCFF00" />
+           {dashShow('feed') && (
+           <div
+             style={{
+               position: 'relative',
+               flex: dashShow('chart') ? 1.2 : '1 1 100%',
+               minWidth: 300,
+               ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 24, paddingTop: 10 } : {}),
+             }}
+           >
+             {dashLayoutEdit && (
+               <button
+                 type="button"
+                 onClick={() => hideDashWidget('feed')}
+                 style={{
+                   position: 'absolute',
+                   top: 6,
+                   right: 10,
+                   zIndex: 10,
+                   display: 'inline-flex',
+                   alignItems: 'center',
+                   gap: 6,
+                   padding: '8px 12px',
+                   borderRadius: 12,
+                   border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                   background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                   color: palette.text,
+                   fontSize: 12,
+                   fontWeight: 800,
+                   cursor: 'pointer',
+                   fontFamily: 'inherit',
+                 }}
+               >
+                 <EyeOff size={15} strokeWidth={2} />
+                 Remover widget
+               </button>
+             )}
+           <div style={{...ds.gridCard, flex: 1, minWidth: 0, width: '100%'}}>
+              <div
+                style={{
+                  ...styles.cardHeader,
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  gap: 8,
+                  marginBottom: 14,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                  <h3 style={{ ...ds.cardTitle, margin: 0 }}>Fila de atendimento</h3>
+                  <Activity size={18} color="#CCFF00" aria-hidden />
+                </div>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    lineHeight: 1.45,
+                    color: palette.textMuted,
+                  }}
+                >
+                  Quem falou por último e quando — toca num cartão para ver detalhe.
+                </p>
               </div>
               <div style={styles.feedList}>
+                 {recentActivities.length === 0 ? (
+                   <div
+                     style={{
+                       padding: '20px 14px',
+                       textAlign: 'center',
+                       fontSize: 13,
+                       fontWeight: 700,
+                       color: palette.textMuted,
+                       lineHeight: 1.5,
+                     }}
+                   >
+                     Sem conversas recentes na base. Abre «Nova conversa» ou o WhatsApp para começar.
+                   </div>
+                 ) : null}
                  {recentActivities.map((item) => (
                    <div 
                      key={item.id} 
@@ -1566,10 +2519,312 @@ const ZaptroDashboardContent: React.FC = () => {
                 style={ds.viewMoreBtn}
                 onClick={() => navigate(ZAPTRO_ROUTES.HISTORY)}
               >
-                Histórico Completo
+                Histórico completo
               </button>
            </div>
+           </div>
+           )}
         </div>
+        )}
+
+        {connectionStatus === 'failed' ? (
+          <div
+            role="alert"
+            style={{
+              width: '100%',
+              boxSizing: 'border-box',
+              padding: '14px 18px',
+              borderRadius: 16,
+              border: `1px solid ${palette.mode === 'dark' ? 'rgba(248,113,113,0.35)' : 'rgba(220,38,38,0.35)'}`,
+              backgroundColor: palette.mode === 'dark' ? 'rgba(127,29,29,0.25)' : '#FEF2F2',
+              color: palette.mode === 'dark' ? '#fecaca' : '#991b1b',
+              fontSize: 13,
+              fontWeight: 800,
+              lineHeight: 1.45,
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 10,
+            }}
+          >
+            <AlertTriangle size={20} style={{ flexShrink: 0, marginTop: 1 }} aria-hidden />
+            <span>
+              <strong>WhatsApp desconectado ou com erro.</strong> Vai a Configurações → ligação para voltar a receber mensagens.
+            </span>
+          </div>
+        ) : null}
+
+        {dashShow('automation') && (
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 22, paddingTop: 10 } : {}),
+          }}
+        >
+          {dashLayoutEdit && (
+            <button
+              type="button"
+              onClick={() => hideDashWidget('automation')}
+              style={{
+                position: 'absolute',
+                top: 6,
+                right: 10,
+                zIndex: 10,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderRadius: 12,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                color: palette.text,
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              <EyeOff size={15} strokeWidth={2} />
+              Remover widget
+            </button>
+          )}
+        <div
+          style={{
+            ...ds.gridCard,
+            width: '100%',
+            boxSizing: 'border-box',
+            padding: '20px 22px',
+          }}
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14 }}>
+            <div style={{ flex: '1 1 220px', minWidth: 0 }}>
+              <h3 style={{ ...ds.cardTitle, marginBottom: 8 }}>Automação (resumo)</h3>
+              <p style={{ margin: '0 0 8px', fontSize: 13, fontWeight: 700, color: palette.text, lineHeight: 1.45 }}>
+                Agentes de atendimento na equipa: <strong>{onlineAgents}</strong>
+              </p>
+              <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.45 }}>
+                Mensagens automáticas hoje: <strong style={{ color: palette.text }}>—</strong> (métrica em evolução)
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate(`${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=automation`)}
+              style={{
+                ...ds.secBtn,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 16px',
+                borderRadius: 14,
+                fontWeight: 950,
+                fontSize: 13,
+                flexShrink: 0,
+              }}
+            >
+              <Bot size={17} strokeWidth={2.2} /> Abrir automações
+            </button>
+          </div>
+        </div>
+        </div>
+        )}
+          </div>
+
+          {dashShow('promo') && (
+          <div
+            style={{
+              position: 'relative',
+              flex: '1 1 280px',
+              maxWidth: 440,
+              minWidth: 260,
+              boxSizing: 'border-box',
+              ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 24, paddingTop: 10 } : {}),
+            }}
+          >
+            {dashLayoutEdit && (
+              <button
+                type="button"
+                onClick={() => hideDashWidget('promo')}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 10,
+                  zIndex: 10,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '8px 12px',
+                  borderRadius: 12,
+                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                  background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                  color: palette.text,
+                  fontSize: 12,
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <EyeOff size={15} strokeWidth={2} />
+                Remover widget
+              </button>
+            )}
+          <aside
+            style={{
+              ...styles.dashSidePromo,
+              ...ds.gridCard,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              gap: 18,
+              padding: 'clamp(22px, 3vw, 28px)',
+              background:
+                palette.mode === 'dark'
+                  ? 'linear-gradient(165deg, rgba(217,255,0,0.08) 0%, rgba(15,23,42,0.9) 45%, #111111 100%)'
+                  : 'linear-gradient(165deg, rgba(217,255,0,0.22) 0%, #ffffff 38%, #fafafa 100%)',
+            }}
+          >
+            <div>
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontSize: 10,
+                  fontWeight: 950,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  padding: '5px 10px',
+                  borderRadius: 999,
+                  backgroundColor: LIME,
+                  color: '#0a0a0a',
+                  marginBottom: 12,
+                }}
+              >
+                Zaptro Pro
+              </span>
+              <h2
+                style={{
+                  margin: '0 0 10px',
+                  fontSize: 'clamp(18px, 2vw, 22px)',
+                  fontWeight: 950,
+                  letterSpacing: '-0.03em',
+                  color: palette.text,
+                  lineHeight: 1.25,
+                }}
+              >
+                Operação e WhatsApp num só hub
+              </h2>
+              <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: palette.textMuted, lineHeight: 1.55 }}>
+                Inbox, CRM e automações ligados ao teu fluxo logístico — mesmo estilo de painel que conheces, com atalhos à
+                mão.
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, opacity: 0.9 }}>
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 16,
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.35)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                aria-hidden
+              >
+                <Zap size={26} color={palette.lime} fill={palette.mode === 'dark' ? '#111' : '#18181b'} />
+              </div>
+              <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: palette.text, lineHeight: 1.45 }}>
+                Mensagens, equipa e rotas alinhadas ao mesmo tempo real.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate(ZAPTRO_ROUTES.CHAT)}
+              style={{
+                ...ds.priBtn,
+                width: '100%',
+                justifyContent: 'center',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '14px 18px',
+                borderRadius: 14,
+                fontWeight: 950,
+                fontSize: 14,
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                backgroundColor: palette.mode === 'dark' ? palette.lime : '#0f172a',
+                color: palette.mode === 'dark' ? '#0a0a0a' : '#f8fafc',
+              }}
+            >
+              <MessageSquare size={18} strokeWidth={2.2} />
+              Abrir WhatsApp
+            </button>
+          </aside>
+          </div>
+          )}
+        </div>
+
+        {dashShow('resources') && (
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            ...(dashLayoutEdit ? { outline: dashEditOutline, outlineOffset: 4, borderRadius: 20, paddingTop: 10 } : {}),
+          }}
+        >
+          {dashLayoutEdit && (
+            <button
+              type="button"
+              onClick={() => hideDashWidget('resources')}
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 8,
+                zIndex: 10,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 12px',
+                borderRadius: 12,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.15)' : ZAPTRO_SECTION_BORDER}`,
+                background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
+                color: palette.text,
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              <EyeOff size={15} strokeWidth={2} />
+              Remover widget
+            </button>
+          )}
+        <div style={styles.dashFooterGrid} role="navigation" aria-label="Recursos e atalhos">
+          {dashFooterLinks.map(({ label, sub, Icon, to }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => navigate(to)}
+              style={{
+                ...styles.dashFooterCard,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : ZAPTRO_SECTION_BORDER}`,
+                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#ffffff',
+                color: palette.text,
+              }}
+            >
+              <Icon size={20} strokeWidth={2} color={palette.lime} style={{ flexShrink: 0 }} />
+              <span style={{ textAlign: 'left', minWidth: 0 }}>
+                <span style={{ display: 'block', fontSize: 14, fontWeight: 950, letterSpacing: '-0.02em' }}>{label}</span>
+                <span style={{ display: 'block', fontSize: 12, fontWeight: 600, color: palette.textMuted, marginTop: 4 }}>
+                  {sub}
+                </span>
+              </span>
+              <ArrowUpRight size={18} color={palette.textMuted} style={{ flexShrink: 0 }} />
+            </button>
+          ))}
+        </div>
+        </div>
+        )}
       </div>
 
       {/* WELCOME POPUP */}
@@ -1770,9 +3025,40 @@ const ZaptroDashboardContent: React.FC = () => {
   );
 };
 
+/**
+ * Se o preview moderno rebentar (Recharts 3, Leaflet, etc.), mostra o painel clássico — evita tela branca.
+ */
+class ZaptroDashboardPreviewErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[ZaptroDashboard] Preview moderno falhou; a usar painel clássico.', error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ZaptroDashboardContent />;
+    }
+    return this.props.children;
+  }
+}
+
 const ZaptroDashboard: React.FC = () => (
   <ZaptroLayout>
-    <ZaptroDashboardContent />
+    {ZAPTRO_DASHBOARD_MODERN_PREVIEW ? (
+      <ZaptroDashboardPreviewErrorBoundary>
+        <ZaptroDashboardModernPreview />
+      </ZaptroDashboardPreviewErrorBoundary>
+    ) : (
+      <ZaptroDashboardContent />
+    )}
   </ZaptroLayout>
 );
 
@@ -1780,11 +3066,52 @@ const styles: Record<string, any> = {
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '28px',
+    gap: '32px',
     padding: 0,
     boxSizing: 'border-box',
     width: '100%',
     maxWidth: '100%',
+  },
+  /** Modelo tipo painel hosting: coluna principal + cartão lateral. */
+  dashTwoColumn: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 24,
+    width: '100%',
+    alignItems: 'stretch',
+    boxSizing: 'border-box',
+  },
+  dashLeftColumn: {
+    flex: '2 1 560px',
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+  },
+  dashSidePromo: {
+    flex: '1 1 280px',
+    maxWidth: 440,
+    minWidth: 260,
+    boxSizing: 'border-box',
+  },
+  dashFooterGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
+    gap: 16,
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  dashFooterCard: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 14,
+    padding: '16px 18px',
+    borderRadius: 18,
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left',
+    boxShadow: ZAPTRO_SHADOW.sm,
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
   },
   pageHeader: {
     display: 'flex',

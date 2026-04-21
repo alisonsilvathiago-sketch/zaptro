@@ -31,7 +31,7 @@ interface SystemConfigContextType {
 
 const defaultConfigs: SystemConfigs = {
   platformName: 'Logta SaaS',
-  primaryColor: '#7c3aed',
+  primaryColor: '#D9FF00',
   supportEmail: 'suporte@logta.app',
   logoUrl: '',
   allowRegistration: true

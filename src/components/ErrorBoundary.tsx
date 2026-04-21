@@ -26,7 +26,19 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '40px', backgroundColor: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', borderRadius: '12px', margin: '20px' }}>
+        <div
+          style={{
+            padding: '40px',
+            backgroundColor: '#fef2f2',
+            color: '#991b1b',
+            border: '1px solid #fecaca',
+            borderRadius: '12px',
+            margin: '20px auto',
+            maxWidth: 358,
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
           <h1>Algo deu errado na renderização.</h1>
           <p>{this.state.error?.message}</p>
           <pre style={{ fontSize: '12px', marginTop: '20px' }}>{this.state.error?.stack}</pre>

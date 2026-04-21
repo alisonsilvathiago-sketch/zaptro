@@ -48,7 +48,7 @@ const styles: Record<string, any> = {
 
   contentArea: { display: 'flex', flexDirection: 'column', gap: '32px' },
   tabs: { 
-    display: 'flex', gap: '8px', backgroundColor: '#f1f5f9', 
+    display: 'flex', gap: '8px', backgroundColor: '#ebebeb', 
     padding: '6px', borderRadius: '20px', marginBottom: '24px',
     width: 'fit-content', border: '1px solid var(--border)'
   },
@@ -74,7 +74,7 @@ const styles: Record<string, any> = {
     backgroundColor: 'white', borderRadius: '20px', border: '1px solid var(--border)',
     transition: 'all 0.2s', cursor: 'pointer'
   },
-  histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   histMain: { display: 'flex', flexDirection: 'column', gap: '4px' },
   histStatus: { padding: '6px 12px', borderRadius: '10px', fontSize: '10px', fontWeight: '950' }
 };
@@ -224,7 +224,7 @@ const ClientProfile: React.FC = () => {
             </div>
             <div style={styles.statCard}>
               <div><p style={styles.statLabel}>Pedidos Concluídos</p><h2 style={styles.statValue}>{client?.ordersCount}</h2></div>
-              <Package size={24} color="#3b82f6" />
+              <Package size={24} color="#D9FF00" />
             </div>
             <div style={styles.statCard}>
               <div><p style={styles.statLabel}>Saldo Pendente</p><h2 style={{...styles.statValue, color: '#ef4444'}}>{formatCurrency(client?.pending || 0)}</h2></div>
@@ -342,7 +342,7 @@ const ClientProfile: React.FC = () => {
                   </div>
                   {/* Espaço para o histórico de chat filtrado por telefone */}
                   <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
-                     <div style={{padding: '20px', backgroundColor: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', gap: '12px'}}>
+                     <div style={{padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', gap: '12px'}}>
                         <div style={{width: '32px', height: '32px', backgroundColor: 'var(--primary)', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: '900'}}>Z</div>
                         <div>
                            <p style={{margin: 0, fontSize: '13px', fontWeight: '700'}}>Zaptro Automação</p>
@@ -374,7 +374,7 @@ const ClientProfile: React.FC = () => {
                   </div>
                   <div style={styles.statCard}>
                      <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
-                        <div style={{width: '40px', height: '40px', backgroundColor: '#eff6ff', borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><FileText color="#3b82f6" size={20} /></div>
+                        <div style={{width: '40px', height: '40px', backgroundColor: 'rgba(217, 255, 0, 0.12)', borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><FileText color="#D9FF00" size={20} /></div>
                         <div>
                            <p style={{margin: 0, fontSize: '14px', fontWeight: '800'}}>Comprovante_Entrega_9921.jpg</p>
                            <p style={{margin: 0, fontSize: '11px', color: '#94a3b8'}}>Anexado via WhatsApp</p>

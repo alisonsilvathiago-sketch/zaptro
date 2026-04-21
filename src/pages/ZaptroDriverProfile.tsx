@@ -111,7 +111,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
 
   const border = palette.sidebarBorder;
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : '#FFFFFF';
-  const soft = isDark ? 'rgba(255,255,255,0.06)' : '#F8FAFC';
+  const soft = isDark ? 'rgba(255,255,255,0.06)' : '#f4f4f4';
 
   if (loading) {
     return (

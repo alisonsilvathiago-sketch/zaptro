@@ -40,7 +40,7 @@ const PermissionsPage: React.FC = () => {
   ];
 
   const actions = [
-    { id: 'view', label: 'Visualizar', color: '#3b82f6' },
+    { id: 'view', label: 'Visualizar', color: '#D9FF00' },
     { id: 'create', label: 'Criar / Adicionar', color: '#10b981' },
     { id: 'edit', label: 'Editar Registros', color: '#f59e0b' },
     { id: 'delete', label: 'Excluir / Deletar', color: '#ef4444' },

@@ -421,7 +421,7 @@ const UserProfileContent: React.FC = () => {
                      )}
                   </div>
 
-                  <div style={{display:'flex', gap:'20px', alignItems:'center', marginBottom:'32px', padding:'20px', backgroundColor:'#f8fafc', borderRadius:'24px', border:'1px solid #e2e8f0'}}>
+                  <div style={{display:'flex', gap:'20px', alignItems:'center', marginBottom:'32px', padding:'20px', backgroundColor:'#f4f4f4', borderRadius:'24px', border:'1px solid #e2e8f0'}}>
                      <div style={{width:'80px', height:'80px', backgroundColor:'white', borderRadius:'16px', border:'1px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden'}}>
                         {companyData.logo_url ? <img src={companyData.logo_url} style={{width:'100%', height:'100%', objectFit:'contain'}} /> : <Building size={32} color="#94a3b8" />}
                         <label style={{...styles.avatarLabel, bottom:0, right:0, borderRadius:'4px'}}>
@@ -518,7 +518,7 @@ const UserProfileContent: React.FC = () => {
 
 const styles: Record<string, any> = {
   loading: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: '700' },
-  container: { paddingBottom: '100px', backgroundColor: '#F8FAFC', minHeight: '100vh' },
+  container: { paddingBottom: '100px', backgroundColor: '#f4f4f4', minHeight: '100vh' },
   
   heroHeader: { position: 'relative' as const, height: '240px', backgroundColor: '#DBEAFE', overflow: 'hidden' },
   heroBg: { 
@@ -535,14 +535,14 @@ const styles: Record<string, any> = {
   
   tabsCol: { width: '300px', display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   userInfoMini: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '16px' },
-  avatarMini: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#D9FF00', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: '900' },
+  avatarMini: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#D9FF00', color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: '900' },
   userInfoText: { flex: 1, overflow: 'hidden' },
   miniName: { fontSize: '14px', fontWeight: '800', color: '#0F172A', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   miniEmail: { fontSize: '12px', color: '#64748B', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
 
   tabNav: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   tabBtn: { display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 20px', borderRadius: '16px', border: 'none', backgroundColor: 'white', border: '1px solid #E2E8F0', color: '#64748B', fontWeight: '700', fontSize: '14px', cursor: 'pointer', textAlign: 'left' as const, transition: '0.2s' },
-  tabActive: { backgroundColor: '#F1F5F9', border: '2px solid #D9FF00', color: '#000' },
+  tabActive: { backgroundColor: '#ebebeb', border: '2px solid #D9FF00', color: '#000' },
 
   contentCol: { flex: 1, display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   cardSection: { backgroundColor: 'white', padding: '40px', borderRadius: '32px', border: '1px solid #E2E8F0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05)' },
@@ -556,30 +556,30 @@ const styles: Record<string, any> = {
   fieldLabel: { fontSize: '12px', fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   fieldValue: { fontSize: '15px', color: '#1E293B', fontWeight: '600', margin: 0 },
   lockInfo: { fontSize: '10px', color: '#94A3B8', marginLeft: '8px', display: 'inline-flex', alignItems: 'center', gap: '4px' },
-  input: { height: '48px', padding: '0 16px', borderRadius: '12px', border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC', fontSize: '14px', outline: 'none', transition: '0.2s', '&:focus': { borderColor: '#D9FF00', backgroundColor: 'white' } },
+  input: { height: '48px', padding: '0 16px', borderRadius: '12px', border: '1px solid #E2E8F0', backgroundColor: '#f4f4f4', fontSize: '14px', outline: 'none', transition: '0.2s', '&:focus': { borderColor: '#D9FF00', backgroundColor: 'white' } },
   saveBtnFull: { height: '54px', width: '100%', marginTop: '40px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
 
   perfGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' },
-  perfCard: { display: 'flex', alignItems: 'center', gap: '20px', padding: '24px', backgroundColor: '#F8FAFC', borderRadius: '24px', border: '1px solid #E2E8F0' },
+  perfCard: { display: 'flex', alignItems: 'center', gap: '20px', padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '24px', border: '1px solid #E2E8F0' },
   perfLabel: { fontSize: '12px', color: '#64748B', fontWeight: '800', textTransform: 'uppercase' as const },
   perfValue: { fontSize: '20px', fontWeight: '900', color: '#0F172A', margin: 0 },
 
   historySection: { marginBottom: '40px' },
   subTitle: { fontSize: '16px', fontWeight: '900', color: '#0F172A', marginBottom: '20px' },
   pontoList: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  pontoRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '16px', fontSize: '13px', color: '#334155', fontWeight: '600' },
+  pontoRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', fontSize: '13px', color: '#334155', fontWeight: '600' },
   pontoTime: { padding: '4px 10px', backgroundColor: '#DBEAFE', color: '#0F172A', borderRadius: '8px', fontWeight: '800' },
 
   notesSection: {},
-  emptyNote: { textAlign: 'center' as const, padding: '40px', backgroundColor: '#F8FAFC', borderRadius: '24px', border: '1px dashed #CBD5E1', color: '#64748B', fontSize: '14px' },
+  emptyNote: { textAlign: 'center' as const, padding: '40px', backgroundColor: '#f4f4f4', borderRadius: '24px', border: '1px dashed #CBD5E1', color: '#64748B', fontSize: '14px' },
 
-  securityBox: { borderBottom: '1px solid #F1F5F9', paddingBottom: '32px', marginBottom: '32px' },
+  securityBox: { borderBottom: '1px solid #e8e8e8', paddingBottom: '32px', marginBottom: '32px' },
   passwordInputArea: { display: 'flex', gap: '16px', marginTop: '16px' },
   passWrapper: { flex: 1, position: 'relative' as const },
   eyeBtn: { position: 'absolute' as const, right: '12px', top: '15px', border: 'none', background: 'none', cursor: 'pointer', color: '#94A3B8' },
   primaryBtnSmall: { padding: '0 24px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' },
 
-  securityItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', backgroundColor: '#F8FAFC', borderRadius: '24px', cursor: 'pointer' },
+  securityItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '24px', cursor: 'pointer' },
   secInfo: { display: 'flex', gap: '16px', alignItems: 'center' },
   secTitle: { fontSize: '15px', fontWeight: '800', color: '#0F172A', margin: 0 },
   secDesc: { fontSize: '13px', color: '#64748B', margin: '4px 0 0 0' },

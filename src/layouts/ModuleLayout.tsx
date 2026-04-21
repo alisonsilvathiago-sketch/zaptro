@@ -119,7 +119,7 @@ const styles = {
   },
   topNav: {
     display: 'flex',
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#f4f4f4',
     padding: '6px',
     borderRadius: '18px',
     border: '1px solid var(--border)',

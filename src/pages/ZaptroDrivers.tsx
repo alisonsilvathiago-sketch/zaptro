@@ -17,7 +17,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
   const border = p.sidebarBorder;
   const surface = d ? 'rgba(255,255,255,0.04)' : '#FFFFFF';
   const surface2 = d ? 'rgba(255,255,255,0.06)' : p.searchBg;
-  const soft = d ? 'rgba(255,255,255,0.06)' : '#F8FAFC';
+  const soft = d ? 'rgba(255,255,255,0.06)' : '#f4f4f4';
 
   return {
     container: { padding: 0, maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box' },
@@ -26,7 +26,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       width: 56,
       height: 56,
       borderRadius: 18,
-      backgroundColor: d ? 'rgba(217,255,0,0.12)' : '#F1F5F9',
+      backgroundColor: d ? 'rgba(217,255,0,0.12)' : '#ebebeb',
       border: `1px solid ${border}`,
       display: 'flex',
       alignItems: 'center',

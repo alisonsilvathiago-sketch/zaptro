@@ -94,3 +94,27 @@ CREATE POLICY "whatsapp_instances_authenticated_rw"
   TO authenticated
   USING (true)
   WITH CHECK (true);
+
+-- 4) Fluxo de automação WhatsApp (ZaptroAutomation — menu, boas-vindas, opções)
+CREATE TABLE IF NOT EXISTS public.whatsapp_automation_flows (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id uuid NOT NULL REFERENCES public.whatsapp_companies (id) ON DELETE CASCADE,
+  name text NOT NULL DEFAULT 'Padrao',
+  welcome_message text DEFAULT '',
+  options jsonb NOT NULL DEFAULT '[]'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT whatsapp_automation_flows_company_name_key UNIQUE (company_id, name)
+);
+
+ALTER TABLE public.whatsapp_automation_flows ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "whatsapp_automation_flows_authenticated_rw" ON public.whatsapp_automation_flows;
+CREATE POLICY "whatsapp_automation_flows_authenticated_rw"
+  ON public.whatsapp_automation_flows
+  FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.whatsapp_automation_flows TO authenticated;

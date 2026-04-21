@@ -215,7 +215,7 @@ const ZaptroHistory: React.FC = () => {
                       <div
                         style={{
                           ...styles.typeBadge,
-                          backgroundColor: '#F1F5F9',
+                          backgroundColor: '#ebebeb',
                           color: '#000000',
                           borderLeft: '2px solid #D9FF00',
                         }}
@@ -377,7 +377,7 @@ const styles: Record<string, React.CSSProperties> = {
   table: { width: '100%', borderCollapse: 'collapse' },
   trHead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
   th: { padding: '20px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '900', color: '#000000', textTransform: 'uppercase', letterSpacing: '1px' },
-  tr: { borderBottom: '1px solid #F1F5F9', transition: '0.2s', cursor: 'pointer' },
+  tr: { borderBottom: '1px solid #e8e8e8', transition: '0.2s', cursor: 'pointer' },
   td: { padding: '20px 24px', fontSize: '14px', color: '#1E293B', fontWeight: '500' },
 
   typeBadge: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800' },
@@ -386,7 +386,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: '28px',
     height: '28px',
     borderRadius: '8px',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#ebebeb',
     color: '#64748B',
     display: 'flex',
     alignItems: 'center',
@@ -432,7 +432,7 @@ const styles: Record<string, React.CSSProperties> = {
   detailsBox: { backgroundColor: '#FBFBFC', padding: '24px', borderRadius: '20px', border: '1px solid #EBEBEC', marginTop: '8px' },
   detailsHeader: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '950', color: '#0F172A', marginBottom: '16px', textTransform: 'uppercase' },
   detailsText: { fontSize: '14px', color: '#475569', fontWeight: '600', lineHeight: '1.6', margin: 0 },
-  modalFooter: { marginTop: '32px', borderTop: '1px solid #F1F5F9', paddingTop: '24px', display: 'flex', justifyContent: 'center' },
+  modalFooter: { marginTop: '32px', borderTop: '1px solid #e8e8e8', paddingTop: '24px', display: 'flex', justifyContent: 'center' },
   closeBtnModal: {
     padding: '14px 32px',
     backgroundColor: '#0F172A',

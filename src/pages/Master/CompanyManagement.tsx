@@ -218,7 +218,7 @@ const CompanyManagement: React.FC = () => {
       <div style={styles.statsGrid}>
          <div style={styles.statCard}>
             <div style={styles.statHeader}>
-               <div style={{...styles.statIcon, backgroundColor: '#eff6ff', color: '#2563eb'}}><Building2 size={20} /></div>
+               <div style={{...styles.statIcon, backgroundColor: 'rgba(217, 255, 0, 0.12)', color: '#D9FF00'}}><Building2 size={20} /></div>
                <span style={styles.statLabel}>Total de Empresas</span>
             </div>
             <div style={styles.statValue}>{stats.total}</div>
@@ -274,17 +274,17 @@ const CompanyManagement: React.FC = () => {
                   <AreaChart data={growthData}>
                      <defs>
                         <linearGradient id="colorComp" x1="0" y1="0" x2="0" y2="1">
-                           <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
-                           <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                           <stop offset="5%" stopColor="#D9FF00" stopOpacity={0.1}/>
+                           <stop offset="95%" stopColor="#D9FF00" stopOpacity={0}/>
                         </linearGradient>
                      </defs>
                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                      <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                      <Tooltip 
                         contentStyle={{borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-lg)'}}
-                        itemStyle={{fontWeight: 700, color: '#2563eb'}}
+                        itemStyle={{fontWeight: 700, color: '#D9FF00'}}
                      />
-                     <Area type="monotone" dataKey="companies" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorComp)" />
+                     <Area type="monotone" dataKey="companies" stroke="#D9FF00" strokeWidth={3} fillOpacity={1} fill="url(#colorComp)" />
                   </AreaChart>
                </ResponsiveContainer>
             </div>
@@ -354,8 +354,8 @@ const CompanyManagement: React.FC = () => {
                    <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
                       <span style={{
                          ...styles.planBadge,
-                         backgroundColor: company.plan === 'OURO' ? '#fef3c7' : company.plan === 'PRATA' ? '#eff6ff' : '#f1f5f9',
-                         color: company.plan === 'OURO' ? '#92400e' : company.plan === 'PRATA' ? '#2563eb' : '#64748b'
+                         backgroundColor: company.plan === 'OURO' ? '#fef3c7' : company.plan === 'PRATA' ? 'rgba(217, 255, 0, 0.12)' : '#f1f5f9',
+                         color: company.plan === 'OURO' ? '#92400e' : company.plan === 'PRATA' ? '#D9FF00' : '#64748b'
                       }}>
                          {company.plan || 'BRONZE'}
                       </span>
@@ -384,7 +384,7 @@ const CompanyManagement: React.FC = () => {
                 <td style={styles.td}>
                    <div style={styles.actions}>
                       <button 
-                         style={{...styles.actionBtn, backgroundColor: '#f1f5f9', color: 'var(--primary)'}} 
+                         style={{...styles.actionBtn, backgroundColor: '#ebebeb', color: 'var(--primary)'}} 
                          title="Visualizar Detalhes"
                          onClick={() => openDetails(company)}
                       >
@@ -723,7 +723,7 @@ const styles = {
   
   listCard: { backgroundColor: 'white', borderRadius: '28px', border: '1px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  tableHead: { backgroundColor: '#f8fafc', borderBottom: '1px solid var(--border)' },
+  tableHead: { backgroundColor: '#f4f4f4', borderBottom: '1px solid var(--border)' },
   th: { padding: '18px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
   tr: { borderBottom: '1px solid var(--border)', transition: 'background 0.2s' },
   td: { padding: '20px 24px' },
@@ -743,7 +743,7 @@ const styles = {
   
   // Modal Styles
   modalContent: { padding: '0px' },
-  modalTabs: { display: 'flex', borderBottom: '1px solid var(--border)', backgroundColor: '#f8fafc', padding: '0 20px' },
+  modalTabs: { display: 'flex', borderBottom: '1px solid var(--border)', backgroundColor: '#f4f4f4', padding: '0 20px' },
   tabBtn: { padding: '20px 24px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '800', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' as const, transition: 'all 0.2s' },
   activeTab: { color: 'var(--primary)', borderBottom: '3px solid var(--primary)' },
   tabContent: { padding: '32px', minHeight: '400px' },
@@ -758,18 +758,18 @@ const styles = {
   listTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--primary)' },
   smallAddBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' },
   smallTable: { width: '100%', borderCollapse: 'collapse' as const },
-  roleBadge: { backgroundColor: '#f1f5f9', color: '#475569', padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '800' },
+  roleBadge: { backgroundColor: '#ebebeb', color: '#475569', padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '800' },
   iconOnlyBtn: { padding: '6px', border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer' },
   
   permissionsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' },
   permissionCard: { padding: '20px', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' },
-  permIcon: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
+  permIcon: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
   permTitle: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)' },
   permDesc: { fontSize: '12px', color: '#94a3b8', fontWeight: '500' },
   
   financeView: { display: 'flex', flexDirection: 'column' as const },
-  planSummary: { display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '24px', backgroundColor: '#f8fafc', borderRadius: '20px', gap: '24px' },
-  billingRow: { display: 'flex', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid #f1f5f9', fontSize: '13px', fontWeight: '600' },
+  planSummary: { display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '20px', gap: '24px' },
+  billingRow: { display: 'flex', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid #e8e8e8', fontSize: '13px', fontWeight: '600' },
   
   auditView: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   auditItem: { display: 'flex', gap: '16px' },
@@ -777,7 +777,7 @@ const styles = {
   auditText: { fontSize: '14px', color: 'var(--primary)' },
   auditDate: { fontSize: '12px', color: '#94a3b8', fontWeight: '600' },
   
-  modalFooter: { padding: '24px 32px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', gap: '16px', backgroundColor: '#f8fafc' },
+  modalFooter: { padding: '24px 32px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', gap: '16px', backgroundColor: '#f4f4f4' },
   dangerBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #fee2e2', borderRadius: '12px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' },
 
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px', padding: '20px' },
@@ -785,7 +785,7 @@ const styles = {
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   label: { fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
   formInput: { padding: '14px 18px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', fontWeight: '600', outline: 'none', transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)' },
-  subdomainInputBox: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 18px', height: '48px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f8fafc' },
+  subdomainInputBox: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 18px', height: '48px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4' },
   formInputSub: { border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: '14px', textAlign: 'right' as const, fontWeight: '800', color: 'var(--primary)' },
   saveBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', fontSize: '15px', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.3)' }
 };

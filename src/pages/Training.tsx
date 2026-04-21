@@ -101,11 +101,11 @@ const Training: React.FC = () => {
           </div>
           <div style={styles.kpiCard}>
              <div style={styles.kpiInfo}><p style={styles.kpiLabel}>Tempo Total Conteúdo</p><h2 style={styles.kpiValue}>24h 45m</h2></div>
-             <Clock size={32} color="#3b82f6" />
+             <Clock size={32} color="#D9FF00" />
           </div>
           <div style={styles.kpiCard}>
              <div style={styles.kpiInfo}><p style={styles.kpiLabel}>Pessoas Assistindo</p><h2 style={styles.kpiValue}>1.240</h2></div>
-             <Users size={32} color="#8b5cf6" />
+             <Users size={32} color="#D9FF00" />
           </div>
           <div style={styles.kpiCard}>
              <div style={styles.kpiInfo}><p style={styles.kpiLabel}>Taxa de Conclusão</p><h2 style={styles.kpiValue}>92%</h2></div>
@@ -310,7 +310,7 @@ const styles = {
   courseDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5' },
   courseFooter: { marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid var(--border)' },
   meta: { fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' },
-  playBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', width: '100%', justifyContent: 'center', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '800', cursor: 'pointer', marginTop: '10px' },
+  playBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', width: '100%', justifyContent: 'center', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '800', cursor: 'pointer', marginTop: '10px' },
   upgradeCard: { textAlign: 'center' as const, padding: '80px', backgroundColor: 'white', borderRadius: '32px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '20px' },
   emptyView: { textAlign: 'center' as const, padding: '100px', backgroundColor: 'white', borderRadius: '32px', border: '1px solid var(--border)', color: '#94a3b8' },
   empty: { textAlign: 'center' as const, padding: '40px', color: 'var(--text-muted)', gridColumn: '1 / -1' }

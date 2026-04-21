@@ -109,14 +109,14 @@ const CompanySubscription: React.FC = () => {
 
            <div style={styles.paymentSelector}>
               <button 
-                style={{...styles.paymentBtn, borderColor: billingType === 'PIX' ? '#8b5cf6' : '#e2e8f0'}} 
+                style={{...styles.paymentBtn, borderColor: billingType === 'PIX' ? '#D9FF00' : '#e2e8f0'}} 
                 onClick={() => setBillingType('PIX')}
               >
                 <div style={styles.pIcon}><Zap size={16} /></div>
                 <span>PIX</span>
               </button>
               <button 
-                style={{...styles.paymentBtn, borderColor: billingType === 'BOLETO' ? '#8b5cf6' : '#e2e8f0'}}
+                style={{...styles.paymentBtn, borderColor: billingType === 'BOLETO' ? '#D9FF00' : '#e2e8f0'}}
                 onClick={() => setBillingType('BOLETO')}
               >
                 <div style={styles.pIcon}><FileText size={16} /></div>
@@ -136,13 +136,13 @@ const CompanySubscription: React.FC = () => {
         {/* Informações de Segurança */}
         <div style={styles.infoSide}>
            <div style={styles.infoCard}>
-              <ShieldCheck size={24} color="#8b5cf6" />
+              <ShieldCheck size={24} color="#D9FF00" />
               <h4 style={styles.infoTitle}>Pagamento Seguro</h4>
               <p style={styles.infoText}>Utilizamos tecnologia Asaas para processar suas faturas de forma criptografada e automática.</p>
            </div>
            
            <div style={styles.infoCard}>
-              <ExternalLink size={24} color="#3b82f6" />
+              <ExternalLink size={24} color="#D9FF00" />
               <h4 style={styles.infoTitle}>Deseja Upgrade?</h4>
               <p style={styles.infoText}>Fale com nosso gerente de contas Master para expandir seus limites de frota e usuários.</p>
            </div>
@@ -153,14 +153,14 @@ const CompanySubscription: React.FC = () => {
 };
 
 const styles = {
-  container: { padding: '40px', backgroundColor: '#F8FAFC', minHeight: '100vh' },
+  container: { padding: '40px', backgroundColor: '#f4f4f4', minHeight: '100vh' },
   header: { marginBottom: '40px' },
   title: { fontSize: '28px', fontWeight: '900', color: '#1e293b' },
   subtitle: { fontSize: '15px', color: '#64748b' },
   main: { display: 'grid', gridTemplateColumns: '1fr 340px', gap: '32px' },
   planCard: { backgroundColor: 'white', padding: '40px', borderRadius: '32px', border: '1px solid #e2e8f0', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)' },
   planHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  planBadge: { padding: '6px 14px', backgroundColor: '#f1f5f9', color: '#475569', borderRadius: '10px', fontSize: '11px', fontWeight: '800', letterSpacing: '1px' },
+  planBadge: { padding: '6px 14px', backgroundColor: '#ebebeb', color: '#475569', borderRadius: '10px', fontSize: '11px', fontWeight: '800', letterSpacing: '1px' },
   planPrice: { fontSize: '32px', fontWeight: '900', color: '#1e293b' },
   perMonth: { fontSize: '14px', color: '#94a3b8', fontWeight: '500' },
   statusBox: { marginBottom: '32px' },
@@ -173,7 +173,7 @@ const styles = {
   payBtn: { width: '100%', padding: '18px', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.2s' },
   paymentSelector: { display: 'flex', gap: '12px', marginBottom: '20px' },
   paymentBtn: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '12px', backgroundColor: 'white', border: '2px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '13px', fontWeight: '700', color: '#1e293b' },
-  pIcon: { width: '24px', height: '24px', backgroundColor: '#f1f5f9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  pIcon: { width: '24px', height: '24px', backgroundColor: '#ebebeb', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   infoSide: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   infoCard: { padding: '24px', backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0' },
   infoTitle: { fontSize: '16px', fontWeight: '800', color: '#1e293b', marginTop: '16px', marginBottom: '8px' },

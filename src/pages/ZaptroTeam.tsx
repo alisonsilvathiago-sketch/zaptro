@@ -12,12 +12,16 @@ import {
   Info,
   X,
   Check,
-  Users,
   Shield,
+  Users,
+  Activity,
+  Layers,
+  Trophy,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
+import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER } from '../constants/zaptroUi';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
@@ -104,7 +108,7 @@ function ZaptroPermCheckbox({
           height: ZAPTRO_PERM_CB_SIZE,
           borderRadius: ZAPTRO_PERM_CB_RADIUS,
           border: `2px solid ${checked ? '#000000' : borderColor}`,
-          backgroundColor: checked ? '#D9FF00' : isDark ? '#111827' : '#FFFFFF',
+          backgroundColor: checked ? '#D9FF00' : isDark ? '#000000' : '#FFFFFF',
           alignItems: 'center',
           justifyContent: 'center',
           boxSizing: 'border-box',
@@ -354,7 +358,7 @@ const ZaptroTeamContent: React.FC = () => {
     padding: '12px 14px',
     borderRadius: 14,
     border: `1px solid ${modalBorder}`,
-    backgroundColor: isDark ? '#0f172a' : '#F8FAFC',
+    backgroundColor: isDark ? '#0f172a' : '#f4f4f4',
     color: modalText,
     fontWeight: 700,
     fontSize: 14,
@@ -382,8 +386,8 @@ const ZaptroTeamContent: React.FC = () => {
       `}</style>
       <header style={styles.header}>
         <div>
-          <h1 style={styles.title}>Equipe & Performance</h1>
-          <p style={styles.subtitle}>Colaboradores da transportadora — permissões e áreas de atuação.</p>
+          <h1 style={{ ...styles.title, color: palette.text }}>Equipe & Performance</h1>
+          <p style={{ ...styles.subtitle, color: palette.textMuted }}>Colaboradores da transportadora — permissões e áreas de atuação.</p>
         </div>
         {isTenantAdmin && (
           <button type="button" style={styles.primaryBtn} onClick={() => setAddOpen(true)}>
@@ -414,29 +418,38 @@ const ZaptroTeamContent: React.FC = () => {
       </div>
 
       <div style={styles.statsBar}>
-        <div style={styles.statCard}>
-          <h4 style={styles.sVal}>{loading ? '—' : members.length}</h4>
-          <p style={styles.sLab}>TOTAL NA BASE</p>
-        </div>
-        <div style={styles.statCard}>
-          <h4 style={styles.sVal}>{loading ? '—' : onlineCount}</h4>
-          <p style={styles.sLab}>NO PAINEL AGORA</p>
-        </div>
-        <div style={styles.statCard}>
-          <h4 style={styles.sVal}>{loading ? '—' : new Set(members.map((m) => m.role)).size}</h4>
-          <p style={styles.sLab}>FUNÇÕES DISTINTAS</p>
-        </div>
-        <div style={styles.statCard}>
-          <h4 style={{ ...styles.sVal, fontSize: rankedMembers[0] ? 22 : 28 }}>
-            {rankedMembers[0]
+        <ZaptroKpiMetricCard
+          icon={Users}
+          title="TOTAL NA BASE"
+          value={loading ? '—' : members.length}
+          titleCaps
+        />
+        <ZaptroKpiMetricCard
+          icon={Activity}
+          title="NO PAINEL AGORA"
+          value={loading ? '—' : onlineCount}
+          titleCaps
+        />
+        <ZaptroKpiMetricCard
+          icon={Layers}
+          title="FUNÇÕES DISTINTAS"
+          value={loading ? '—' : new Set(members.map((m) => m.role)).size}
+          titleCaps
+        />
+        <ZaptroKpiMetricCard
+          icon={Trophy}
+          title="TOP DO RANKING"
+          value={
+            rankedMembers[0]
               ? (() => {
                   const w = (rankedMembers[0].full_name || '—').trim().split(/\s+/)[0];
                   return w.length > 12 ? `${w.slice(0, 12)}…` : w;
                 })()
-              : '—'}
-          </h4>
-          <p style={styles.sLab}>TOP DO RANKING</p>
-        </div>
+              : '—'
+          }
+          titleCaps
+          valueSize={rankedMembers[0] ? 'lg' : 'xl'}
+        />
       </div>
 
       <div
@@ -446,11 +459,11 @@ const ZaptroTeamContent: React.FC = () => {
       >
         {(
           [
-            { id: 'members' as const, label: 'Membros', Icon: Users },
-            { id: 'ranking' as const, label: 'Ranking', Icon: Star },
-            { id: 'permissions' as const, label: 'Acessos', Icon: Shield },
+            { id: 'members' as const, label: 'Membros' },
+            { id: 'ranking' as const, label: 'Ranking' },
+            { id: 'permissions' as const, label: 'Acessos' },
           ] as const
-        ).map(({ id, label, Icon }) => {
+        ).map(({ id, label }) => {
           const on = activeTab === id;
           return (
             <button
@@ -465,14 +478,13 @@ const ZaptroTeamContent: React.FC = () => {
                 ...styles.tabPill,
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 8,
+                gap: 0,
                 border: on ? '1px solid #18181b' : '1px solid transparent',
                 backgroundColor: on ? '#ffffff' : 'transparent',
                 color: on ? '#000000' : '#71717a',
                 boxShadow: on ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
               }}
             >
-              <Icon size={16} strokeWidth={2.2} aria-hidden />
               {label}
             </button>
           );
@@ -1099,10 +1111,10 @@ const ZaptroTeam: React.FC<ZaptroTeamProps> = ({ hideLayout = false }) => {
 };
 
 const styles: Record<string, React.CSSProperties> = {
-  container: { backgroundColor: '#FFFFFF' },
+  container: { backgroundColor: 'transparent', width: '100%', minWidth: 0, boxSizing: 'border-box' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' },
-  title: { fontSize: '38px', fontWeight: 950, color: '#000', margin: 0, letterSpacing: '-2px' },
-  subtitle: { fontSize: '15px', color: '#94A3B8', fontWeight: 600, marginTop: '6px' },
+  title: { fontSize: '38px', fontWeight: 950, margin: 0, letterSpacing: '-2px' },
+  subtitle: { fontSize: '15px', fontWeight: 600, marginTop: '6px' },
   primaryBtn: {
     backgroundColor: '#000',
     color: '#FFF',
@@ -1143,9 +1155,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   searchInput: { border: 'none', background: 'transparent', outline: 'none', fontSize: '14px', fontWeight: 700, flex: 1, minWidth: 0 },
   statsBar: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '36px' },
-  statCard: { padding: '24px', backgroundColor: '#FFF', border: '1px solid #EBEBEC', borderRadius: '28px', boxShadow: ZAPTRO_SHADOW.md },
-  sVal: { fontSize: '28px', fontWeight: 950, margin: 0 },
-  sLab: { fontSize: '11px', fontWeight: 950, color: '#94A3B8', marginTop: '6px' },
   tabBar: {
     display: 'flex',
     flexWrap: 'wrap',

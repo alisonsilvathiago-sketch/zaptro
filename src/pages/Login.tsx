@@ -40,7 +40,7 @@ const styles: Record<string, any> = {
     flexDirection: 'row',
     overflow: 'hidden',
     overflowY: 'auto',
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#ebebeb',
     fontFamily: 'Inter, sans-serif',
     boxSizing: 'border-box',
   },
@@ -90,7 +90,7 @@ const styles: Record<string, any> = {
     flexShrink: 0,
   },
   submitBtn: { width: '100%', padding: '20px', backgroundColor: '#0f172a', color: '#D9FF00', borderRadius: '18px', fontSize: '15px', fontWeight: '950', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '5px' },
-  googleBtn: { width: '100%', padding: '16px', backgroundColor: '#FFF', color: '#000', borderRadius: '18px', fontSize: '11px', fontWeight: '950', border: '2px solid #F1F5F9', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '12px' },
+  googleBtn: { width: '100%', padding: '16px', backgroundColor: '#FFF', color: '#000', borderRadius: '18px', fontSize: '11px', fontWeight: '950', border: '2px solid #e8e8e8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '12px' },
   linkBtn: { background: 'none', border: 'none', color: '#000', fontSize: '14px', cursor: 'pointer', width: '100%', marginTop: '25px', textAlign: 'center' }
 };
 

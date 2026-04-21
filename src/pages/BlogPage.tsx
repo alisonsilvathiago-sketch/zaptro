@@ -156,10 +156,10 @@ const BlogPage: React.FC = () => {
 };
 
 const styles: Record<string, any> = {
-  container: { backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: 'Inter, sans-serif' },
+  container: { backgroundColor: '#f4f4f4', minHeight: '100vh', fontFamily: 'Inter, sans-serif' },
   hero: { backgroundColor: '#0F172A', padding: '120px 40px', textAlign: 'center' as const, color: 'white' },
   heroContent: { maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '24px' },
-  badge: { fontSize: '11px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '2px', backgroundColor: 'rgba(59, 130, 246, 0.15)', padding: '6px 16px', borderRadius: '30px' },
+  badge: { fontSize: '11px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '2px', backgroundColor: 'rgba(217, 255, 0, 0.15)', padding: '6px 16px', borderRadius: '30px' },
   title: { fontSize: '48px', fontWeight: '950', letterSpacing: '-2px', margin: 0 },
   subtitle: { fontSize: '18px', color: '#94A3B8', lineHeight: '1.6' },
   searchBox: { 
@@ -181,16 +181,16 @@ const styles: Record<string, any> = {
   meta: { fontSize: '12px', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '6px' },
   cardTitle: { fontSize: '24px', fontWeight: '900', color: '#0F172A', margin: 0, lineHeight: '1.3' },
   cardExcerpt: { fontSize: '15px', color: '#64748B', lineHeight: '1.6', margin: 0 },
-  cardFooter: { marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #F1F5F9' },
+  cardFooter: { marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #e8e8e8' },
   authorArea: { display: 'flex', alignItems: 'center', gap: '10px' },
-  authorAvatar: { width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#F1F5F9', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '900' },
+  authorAvatar: { width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#ebebeb', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '900' },
   authorName: { fontSize: '13px', fontWeight: '700', color: '#475569', margin: 0 },
   readMore: { fontSize: '13px', fontWeight: '800', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px' },
   cardImageArea: { position: 'relative' as const },
   cardImg: { width: '100%', height: '100%', objectFit: 'cover' as const },
 
   sidebar: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
-  sideCard: { backgroundColor: '#F1F5F9', padding: '32px', borderRadius: '32px', border: '1px solid #E2E8F0' },
+  sideCard: { backgroundColor: '#ebebeb', padding: '32px', borderRadius: '32px', border: '1px solid #E2E8F0' },
   sideTitle: { fontSize: '18px', fontWeight: '900', color: '#0F172A', marginBottom: '20px' },
   tagList: { listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   tagListLi: { fontSize: '13px', fontWeight: '700', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' },

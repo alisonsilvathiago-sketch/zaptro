@@ -373,7 +373,7 @@ const styles = {
   moduleLabel: { fontSize: '13px', fontWeight: '900', color: 'white', marginBottom: '12px', paddingLeft: '8px' },
   lessonsInSide: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   sideLessonItem: { padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', transition: 'all 0.2s' },
-  activeSideItem: { backgroundColor: 'rgba(124, 58, 237, 0.15)', border: '1px solid rgba(124, 58, 237, 0.3)' },
+  activeSideItem: { backgroundColor: 'rgba(217, 255, 0, 0.15)', border: '1px solid rgba(217, 255, 0, 0.3)' },
   sideIconWrap: { width: '24px', height: '24px', borderRadius: '6px', backgroundColor: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   sideLessonName: { flex: 1, fontSize: '13px', fontWeight: '600', color: '#CBD5E1' },
   sideLessonTime: { fontSize: '10px', color: '#64748B', fontWeight: '700' }

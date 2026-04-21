@@ -763,8 +763,8 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     gap: 10,
     padding: '10px 16px',
-    borderBottom: '1px solid #f1f5f9',
-    backgroundColor: '#f8fafc',
+    borderBottom: '1px solid #e8e8e8',
+    backgroundColor: '#f4f4f4',
   },
   recipientSearchInput: {
     flex: 1,
@@ -794,7 +794,7 @@ const styles: Record<string, any> = {
     gap: 10,
     padding: '10px 16px',
     border: 'none',
-    borderBottom: '1px solid #f8fafc',
+    borderBottom: '1px solid #e8e8e8',
     background: '#fff',
     cursor: 'pointer',
     fontFamily: 'inherit',
@@ -806,10 +806,10 @@ const styles: Record<string, any> = {
   recipientSearchEmpty: { margin: 0, padding: '16px 20px', fontSize: 13, fontWeight: 600, color: '#64748b' },
 
   searchPanel: { flex: 1, display: 'flex', flexDirection: 'column' as const, backgroundColor: 'white' },
-  searchBar: { padding: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #f1f5f9' },
+  searchBar: { padding: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #e8e8e8' },
   searchInput: { border: 'none', outline: 'none', fontSize: '14px', flex: 1 },
   contactResults: { flex: 1, overflowY: 'auto' as const },
-  contactRow: { padding: '12px 24px', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', borderBottom: '1px solid #f8fafc', '&:hover': { backgroundColor: '#f1f5f9' } },
+  contactRow: { padding: '12px 24px', display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer', borderBottom: '1px solid #e8e8e8', '&:hover': { backgroundColor: '#ebebeb' } },
   contactName: { fontSize: '13px', fontWeight: '700', color: '#1e293b', margin: 0 },
   contactRole: { fontSize: '11px', color: '#64748b', margin: 0 },
 
@@ -831,8 +831,8 @@ const styles: Record<string, any> = {
   msgBubble: { padding: '10px 14px', borderRadius: '16px', fontSize: '14px', lineHeight: '1.4' },
   attachmentLink: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', marginTop: '6px', color: 'inherit', textDecoration: 'underline' },
   
-  inputArea: { padding: '16px 20px', borderTop: '1px solid #f1f5f9' },
-  inputWrapper: { display: 'flex', gap: '8px', backgroundColor: '#f1f5f9', padding: '6px 6px 6px 14px', borderRadius: '24px', alignItems: 'center' },
+  inputArea: { padding: '16px 20px', borderTop: '1px solid #e8e8e8' },
+  inputWrapper: { display: 'flex', gap: '8px', backgroundColor: '#ebebeb', padding: '6px 6px 6px 14px', borderRadius: '24px', alignItems: 'center' },
   input: { flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: '14px', color: '#1e293b' },
   sendBtn: { width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
 
@@ -890,8 +890,8 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     gap: '10px',
     padding: '14px 16px',
-    borderBottom: '1px solid #f1f5f9',
-    backgroundColor: '#f8fafc',
+    borderBottom: '1px solid #e8e8e8',
+    backgroundColor: '#f4f4f4',
   },
   zaptroQuickInput: {
     flex: 1,

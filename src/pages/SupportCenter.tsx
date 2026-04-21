@@ -160,7 +160,7 @@ const SupportCenter: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch(status) {
       case 'OPEN': return '#ef4444';
-      case 'IN_PROGRESS': return '#3b82f6';
+      case 'IN_PROGRESS': return '#D9FF00';
       case 'PENDING': return '#f59e0b';
       case 'RESOLVED': return '#10b981';
       default: return '#94a3b8';
@@ -365,11 +365,11 @@ const styles: Record<string, any> = {
   mainGrid: { display: 'grid', gridTemplateColumns: '360px 1fr', gap: '24px', flex: 1, maxHeight: 'calc(100vh - 250px)' },
   sidebar: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   listHeader: { padding: '20px', borderBottom: '1px solid var(--border)' },
-  searchBox: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#f8fafc', padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0' },
+  searchBox: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#f4f4f4', padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0' },
   searchInput: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '13px', fontWeight: '500' },
   ticketList: { flex: 1, overflowY: 'auto', padding: '10px' },
   ticketItem: { padding: '16px', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s', border: '1px solid transparent', marginBottom: '8px' },
-  ticketActive: { backgroundColor: '#f5f3ff', border: '1px solid #ddd6fe' },
+  ticketActive: { backgroundColor: 'rgba(217, 255, 0, 0.18)', border: '1px solid #ddd6fe' },
   ticketTop: { display: 'flex', justifyContent: 'space-between', marginBottom: '4px' },
   ticketId: { fontSize: '11px', fontWeight: '800', color: '#94a3b8' },
   ticketDate: { fontSize: '11px', color: '#94a3b8' },
@@ -395,13 +395,13 @@ const styles: Record<string, any> = {
   masterRow: { justifyContent: 'flex-start' },
   messageBubble: { maxWidth: '70%', padding: '16px', borderRadius: '20px' },
   clientBubble: { backgroundColor: 'var(--primary)', color: 'white', borderRadius: '20px 20px 0 20px' },
-  masterBubble: { backgroundColor: '#f1f5f9', color: 'var(--primary)', borderRadius: '20px 20px 20px 0' },
+  masterBubble: { backgroundColor: '#ebebeb', color: 'var(--primary)', borderRadius: '20px 20px 20px 0' },
   msgHeader: { display: 'flex', justifyContent: 'space-between', gap: '12px', marginBottom: '4px', fontSize: '11px', fontWeight: '800' },
   msgTime: { opacity: 0.7, fontWeight: '400' },
   msgText: { fontSize: '14px', lineHeight: '1.5', margin: 0 },
   
   chatFooter: { padding: '24px 32px', borderTop: '1px solid var(--border)' },
-  inputArea: { display: 'flex', gap: '12px', backgroundColor: '#f8fafc', padding: '8px 8px 8px 16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
+  inputArea: { display: 'flex', gap: '12px', backgroundColor: '#f4f4f4', padding: '8px 8px 8px 16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
   input: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '14px', fontWeight: '500' },
   sendBtn: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   

@@ -15,7 +15,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import FleetMap from '../components/FleetMap';
 
-const COLORS = ['#8B5CF6', '#F97316', '#3B82F6', '#10B981', '#6366F1'];
+const COLORS = ['#D9FF00', '#F97316', '#D9FF00', '#10B981', '#D9FF00'];
 
 const IntelligenceDashboard: React.FC = () => {
   const { profile } = useAuth();
@@ -38,10 +38,10 @@ const IntelligenceDashboard: React.FC = () => {
     setLoading(true);
     const mockData = {
       kpis: [
-        { label: 'Faturamento Total', value: 'R$ 284.150', trend: '+12.5%', isUp: true, icon: DollarSign, color: '#8b5cf6' },
+        { label: 'Faturamento Total', value: 'R$ 284.150', trend: '+12.5%', isUp: true, icon: DollarSign, color: '#D9FF00' },
         { label: 'Fretes Concluídos', value: '1.248', trend: '+8.2%', isUp: true, icon: Truck, color: '#10b981' },
         { label: 'Ticket Médio', value: 'R$ 227', trend: '-2.1%', isUp: false, icon: Zap, color: '#f59e0b' },
-        { label: 'Ocupação de Frota', value: '84%', trend: '+5.0%', isUp: true, icon: Activity, color: '#3b82f6' },
+        { label: 'Ocupação de Frota', value: '84%', trend: '+5.0%', isUp: true, icon: Activity, color: '#D9FF00' },
       ],
       revenueHistory: [
         { name: 'Jan', receita: 4000, custo: 2400 },
@@ -83,7 +83,7 @@ const IntelligenceDashboard: React.FC = () => {
       {/* CONTEXTUAL BI SIDEBAR */}
       <aside style={styles.biSidebar}>
          <div style={styles.biSidebarHeader}>
-            <TrendingUp size={18} color="#7c3aed" />
+            <TrendingUp size={18} color="#D9FF00" />
             <span style={styles.biSidebarTitle}>Radar BI</span>
          </div>
          <nav style={styles.biNav}>
@@ -116,7 +116,7 @@ const IntelligenceDashboard: React.FC = () => {
          </nav>
          
          <div style={styles.aiCard}>
-            <Zap size={20} color="#7c3aed" />
+            <Zap size={20} color="#D9FF00" />
             <p style={styles.aiText}>Logta AI sugere aumentar frota em 12% para atender demanda de Maio.</p>
             <button style={styles.aiBtn}>Ver Insight →</button>
          </div>
@@ -167,15 +167,15 @@ const IntelligenceDashboard: React.FC = () => {
                   <AreaChart data={data?.revenueHistory}>
                     <defs>
                       <linearGradient id="colorRec" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.1}/>
-                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#D9FF00" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="#D9FF00" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                     <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                     <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
-                    <Area type="monotone" dataKey="receita" stroke="#8B5CF6" strokeWidth={3} fillOpacity={1} fill="url(#colorRec)" />
+                    <Area type="monotone" dataKey="receita" stroke="#D9FF00" strokeWidth={3} fillOpacity={1} fill="url(#colorRec)" />
                     <Area type="monotone" dataKey="custo" stroke="#f43f5e" strokeWidth={2} strokeDasharray="5 5" fill="none" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -326,63 +326,63 @@ const StarIcon = ({ style }: any) => (
 );
 
 const styles: Record<string, any> = {
-  dashboardWrapper: { display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' },
+  dashboardWrapper: { display: 'flex', minHeight: '100vh', backgroundColor: '#f4f4f4' },
   biSidebar: { width: '280px', backgroundColor: 'white', borderRight: '1px solid #e2e8f0', padding: '32px', display: 'flex', flexDirection: 'column' as const, gap: '32px', position: 'sticky' as const, top: 0, height: '100vh' },
   biSidebarHeader: { display: 'flex', alignItems: 'center', gap: '12px' },
-  biSidebarTitle: { fontSize: '18px', fontWeight: '950', color: '#111827', letterSpacing: '-0.5px' },
+  biSidebarTitle: { fontSize: '18px', fontWeight: '950', color: '#000000', letterSpacing: '-0.5px' },
   biNav: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   biNavItem: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', fontSize: '14px', fontWeight: '800', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s' },
-  biNavItemActive: { backgroundColor: '#f5f3ff', color: '#7c3aed' },
-  biDivider: { height: '1px', backgroundColor: '#f1f5f9', margin: '8px 0' },
+  biNavItemActive: { backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00' },
+  biDivider: { height: '1px', backgroundColor: '#ebebeb', margin: '8px 0' },
   
-  aiCard: { marginTop: 'auto', backgroundColor: '#f5f3ff', padding: '20px', borderRadius: '20px', border: '1px solid rgba(124, 58, 237, 0.1)' },
-  aiText: { fontSize: '12px', color: '#7c3aed', fontWeight: '700', lineHeight: '1.5', margin: '12px 0' },
-  aiBtn: { width: '100%', padding: '10px', backgroundColor: 'white', border: '1px solid #7c3aed', color: '#7c3aed', borderRadius: '10px', fontSize: '11px', fontWeight: '900', cursor: 'pointer' },
+  aiCard: { marginTop: 'auto', backgroundColor: 'rgba(217, 255, 0, 0.18)', padding: '20px', borderRadius: '20px', border: '1px solid rgba(217, 255, 0, 0.1)' },
+  aiText: { fontSize: '12px', color: '#D9FF00', fontWeight: '700', lineHeight: '1.5', margin: '12px 0' },
+  aiBtn: { width: '100%', padding: '10px', backgroundColor: 'white', border: '1px solid #D9FF00', color: '#D9FF00', borderRadius: '10px', fontSize: '11px', fontWeight: '900', cursor: 'pointer' },
 
   contentArea: { flex: 1, padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '40px', overflowY: 'auto' as const },
-  loader: { padding: '100px', textAlign: 'center' as const, color: '#7c3aed', fontWeight: '900' },
+  loader: { padding: '100px', textAlign: 'center' as const, color: '#D9FF00', fontWeight: '900' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: '28px', fontWeight: '950', color: '#111827', margin: 0, letterSpacing: '-1.2px' },
+  title: { fontSize: '28px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1.2px' },
   subtitle: { fontSize: '15px', color: '#64748b', margin: 0 },
   filterBar: { display: 'flex', gap: '12px' },
   filterBtn: { padding: '10px 18px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '800', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' },
-  refreshBtn: { padding: '10px 20px', backgroundColor: '#7c3aed', color: 'white', borderRadius: '12px', border: 'none', fontWeight: '900', fontSize: '13px', cursor: 'pointer' },
+  refreshBtn: { padding: '10px 20px', backgroundColor: '#D9FF00', color: '#000000', borderRadius: '12px', border: 'none', fontWeight: '900', fontSize: '13px', cursor: 'pointer' },
 
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' },
   kpiCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '20px' },
   kpiIcon: { width: '56px', height: '56px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   kpiInfo: { display: 'flex', flexDirection: 'column' as const, gap: '2px' },
   kpiLabel: { fontSize: '12px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const },
-  kpiValue: { fontSize: '22px', fontWeight: '950', color: '#111827', margin: 0 },
+  kpiValue: { fontSize: '22px', fontWeight: '950', color: '#000000', margin: 0 },
   kpiTrend: { fontSize: '12px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '4px' },
 
   mainGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' },
   chartCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0' },
   chartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  chartTitle: { fontSize: '16px', fontWeight: '900', color: '#111827', margin: 0 },
+  chartTitle: { fontSize: '16px', fontWeight: '900', color: '#000000', margin: 0 },
   
   driverList: { display: 'flex', flexDirection: 'column' as const, gap: '16px', marginTop: '24px' },
-  driverRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '16px', backgroundColor: '#f8fafc' },
+  driverRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '16px', backgroundColor: '#f4f4f4' },
   driverInitial: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#e2e8f0', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900' },
-  driverName: { fontSize: '14px', fontWeight: '900', color: '#111827' },
+  driverName: { fontSize: '14px', fontWeight: '900', color: '#000000' },
   driverTrips: { fontSize: '11px', color: '#94a3b8', fontWeight: '800' },
   driverScore: { fontSize: '14px', fontWeight: '950', color: '#10b981' },
   viewMoreBtn: { width: '100%', marginTop: '20px', padding: '12px', background: 'none', border: '1px dashed #e2e8f0', borderRadius: '14px', color: '#94a3b8', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
 
   podGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', marginTop: '24px' },
-  podItem: { backgroundColor: '#f8fafc', padding: '12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' },
+  podItem: { backgroundColor: '#f4f4f4', padding: '12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' },
   podImageGroup: { position: 'relative' as const },
   podThumb: { width: '48px', height: '48px', borderRadius: '12px', objectFit: 'cover' as const },
   podInfo: { flex: 1 },
-  podClient: { fontSize: '13px', fontWeight: '850', color: '#111827' },
+  podClient: { fontSize: '13px', fontWeight: '850', color: '#000000' },
   podTime: { fontSize: '11px', color: '#94a3b8', fontWeight: '700' },
   podViewBtn: { border: 'none', background: 'none', color: '#cbd5e1', cursor: 'pointer' },
   emptyPOD: { padding: '40px', textAlign: 'center' as const, color: '#94a3b8', fontSize: '14px', fontWeight: '700', gridColumn: 'span 3' },
 
   podModalOverlay: { position: 'fixed' as const, inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' },
   podModalContent: { backgroundColor: 'white', width: '100%', maxWidth: '900px', borderRadius: '32px', overflow: 'hidden' },
-  podMHeader: { padding: '32px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  podMTitle: { fontSize: '20px', fontWeight: '950', color: '#111827', margin: 0 },
+  podMHeader: { padding: '32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  podMTitle: { fontSize: '20px', fontWeight: '950', color: '#000000', margin: 0 },
   podMSubtitle: { fontSize: '14px', color: '#64748b', margin: '4px 0 0 0' },
   podMClose: { background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' },
   podMBody: { padding: '32px', display: 'grid', gridTemplateColumns: '1fr 300px', gap: '32px' },
@@ -390,10 +390,10 @@ const styles: Record<string, any> = {
   podMPhotos: { display: 'flex', flexDirection: 'column' as const },
   photoRow: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' },
   fullPhoto: { width: '100%', height: '220px', borderRadius: '20px', objectFit: 'cover' as const },
-  podMSide: { display: 'flex', flexDirection: 'column' as const, gap: '24px', backgroundColor: '#f8fafc', padding: '24px', borderRadius: '24px' },
+  podMSide: { display: 'flex', flexDirection: 'column' as const, gap: '24px', backgroundColor: '#f4f4f4', padding: '24px', borderRadius: '24px' },
   podMSignature: { backgroundColor: 'white', borderRadius: '16px', padding: '12px', border: '1px solid #e2e8f0' },
   podMCoord: { fontSize: '13px', fontWeight: '800', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' },
-  mapLink: { display: 'flex', alignItems: 'center', gap: '8px', color: '#2563eb', fontSize: '13px', fontWeight: '800', textDecoration: 'none' }
+  mapLink: { display: 'flex', alignItems: 'center', gap: '8px', color: '#D9FF00', fontSize: '13px', fontWeight: '800', textDecoration: 'none' }
 };
 
 export default IntelligenceDashboard;

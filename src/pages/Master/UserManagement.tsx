@@ -185,8 +185,8 @@ const UserManagement: React.FC = () => {
                   <td style={styles.td}>
                      <span style={{
                         ...styles.roleBadge,
-                        backgroundColor: user.role === 'ADMIN' ? '#fdf2f2' : user.role.startsWith('MASTER') ? '#f5f3ff' : '#f1f5f9',
-                        color: user.role === 'ADMIN' ? '#991b1b' : user.role.startsWith('MASTER') ? '#5b21b6' : '#475569'
+                        backgroundColor: user.role === 'ADMIN' ? '#fdf2f2' : user.role.startsWith('MASTER') ? 'rgba(217, 255, 0, 0.18)' : '#f1f5f9',
+                        color: user.role === 'ADMIN' ? '#991b1b' : user.role.startsWith('MASTER') ? '#000000' : '#475569'
 
                      }}>
                         {user.role}
@@ -196,7 +196,7 @@ const UserManagement: React.FC = () => {
                      <div 
                         style={{
                            ...styles.zaptroStatus,
-                           backgroundColor: user.tem_zaptro ? '#ecfdf5' : '#f8fafc',
+                           backgroundColor: user.tem_zaptro ? '#ecfdf5' : '#f4f4f4',
                            color: user.tem_zaptro ? '#10b981' : '#94a3b8',
                            borderColor: user.tem_zaptro ? '#d1fae5' : '#e2e8f0',
                            cursor: 'pointer'
@@ -240,13 +240,13 @@ const styles: Record<string, any> = {
   searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)' },
   searchInput: { border: 'none', outline: 'none', width: '100%', fontSize: '14px', fontWeight: '600' },
   
-  filterGroup: { display: 'flex', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '12px', gap: '4px' },
+  filterGroup: { display: 'flex', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '12px', gap: '4px' },
   filterTab: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: '800', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px', background: 'none' },
   activeFilter: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
 
   listCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  tableHead: { backgroundColor: '#f8fafc', borderBottom: '1px solid var(--border)' },
+  tableHead: { backgroundColor: '#f4f4f4', borderBottom: '1px solid var(--border)' },
   th: { padding: '16px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' },
   tr: { borderBottom: '1px solid var(--border)', transition: 'background 0.2s' },
   td: { padding: '18px 24px' },
@@ -259,7 +259,7 @@ const styles: Record<string, any> = {
   userName: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)' },
   userEmail: { fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' },
 
-  companyBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: '#f8fafc', borderRadius: '10px', color: '#475569', fontSize: '12px', fontWeight: '700', border: '1px solid #e2e8f0' },
+  companyBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: '#f4f4f4', borderRadius: '10px', color: '#475569', fontSize: '12px', fontWeight: '700', border: '1px solid #e2e8f0' },
   roleBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900' },
   
   zaptroStatus: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', border: '1px solid', width: 'fit-content' },

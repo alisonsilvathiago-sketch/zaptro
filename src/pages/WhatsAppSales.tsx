@@ -634,7 +634,7 @@ const ZaptroMarketing: React.FC = () => {
             </p>
             <h1
               className="zt-hero-headline"
-              aria-label="O CRM de WhatsApp que o seu negócio precisa. Rápido, seguro e personalizável."
+              aria-label="Do Zap ao. Que seu negócio precisa. Rápido, seguro e personalizável."
             >
               <span className="zt-hero-headline-line zt-hero-headline-line--hook zt-hero-an zt-hero-an-2a">
                 <span
@@ -644,7 +644,7 @@ const ZaptroMarketing: React.FC = () => {
                     transformOrigin: 'center top',
                   }}
                 >
-                  O CRM de WhatsApp
+                  Do Zap ao
                 </span>
                 <span
                   className="zt-hero-hook-row zt-hero-hook-row--bottom"
@@ -2299,13 +2299,12 @@ const ZaptroMarketing: React.FC = () => {
           min-width: 0;
           overflow-x: hidden;
         }
+        /* Só anima translateY — nunca esconder o hero com opacity:0 (alguns motores / conflitos deixam opacity presa em 0 → “página branca”). */
         @keyframes ztHeroRise {
           from {
-            opacity: 0;
             transform: translateY(28px);
           }
           to {
-            opacity: 1;
             transform: translateY(0);
           }
         }
@@ -2649,7 +2648,7 @@ const ZaptroMarketing: React.FC = () => {
           padding-bottom: 30px;
         }
         .zt-hero-an {
-          opacity: 0;
+          opacity: 1;
           animation: ztHeroRise 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .zt-hero-an-1 { animation-delay: 0.05s; }
@@ -4031,8 +4030,8 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 999px;
           flex-shrink: 0;
         }
-        .zt-bento-dot--blue { background: #3b82f6; }
-        .zt-bento-dot--purple { background: #8b5cf6; }
+        .zt-bento-dot--blue { background: #D9FF00; }
+        .zt-bento-dot--purple { background: #D9FF00; }
         .zt-bento-dot--orange { background: #f97316; }
         .zt-bento-dot--green { background: #22c55e; }
         .zt-bento-segbar {
@@ -4043,8 +4042,8 @@ const ZaptroMarketing: React.FC = () => {
           background: #e2e8f0;
         }
         .zt-bento-seg { min-width: 4px; }
-        .zt-bento-seg--blue { background: #3b82f6; }
-        .zt-bento-seg--purple { background: #8b5cf6; }
+        .zt-bento-seg--blue { background: #D9FF00; }
+        .zt-bento-seg--purple { background: #D9FF00; }
         .zt-bento-seg--orange { background: #f97316; }
         .zt-bento-seg--green { background: #22c55e; }
         .zt-bento-flow-label {
@@ -4164,7 +4163,7 @@ const ZaptroMarketing: React.FC = () => {
           height: 22px;
           padding: 0 6px;
           border-radius: 999px;
-          background: #7c3aed;
+          background: #D9FF00;
           color: ${WHITE};
           font-size: 11px;
           font-weight: 900;
@@ -4193,7 +4192,7 @@ const ZaptroMarketing: React.FC = () => {
           width: 32px;
           height: 32px;
           border-radius: 999px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: linear-gradient(135deg, #D9FF00, #D9FF00);
           color: ${WHITE};
           font-size: 11px;
           font-weight: 900;
@@ -4205,7 +4204,7 @@ const ZaptroMarketing: React.FC = () => {
           background: linear-gradient(135deg, #f97316, #fb923c);
         }
         .zt-bento-chat-av--c {
-          background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+          background: linear-gradient(135deg, #000000, #D9FF00);
         }
         .zt-bento-chat-av--d {
           background: linear-gradient(135deg, #10b981, #34d399);
@@ -4257,13 +4256,13 @@ const ZaptroMarketing: React.FC = () => {
           font-size: 11px;
           font-weight: 600;
           color: #334155;
-          border-top: 1px solid #f1f5f9;
+          border-top: 1px solid #e8e8e8;
         }
         .zt-bento-table-row:first-child {
           border-top: none;
         }
         .zt-bento-table-row--head {
-          background: #f8fafc;
+          background: #f4f4f4;
           font-size: 10px;
           font-weight: 800;
           text-transform: uppercase;
@@ -5183,7 +5182,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 12px;
           border: 1px dashed #cbd5e1;
           padding: 10px;
-          background: #f8fafc;
+          background: #f4f4f4;
         }
         .zt-steps-col-h {
           font-size: 9px;
@@ -5686,7 +5685,7 @@ const ZaptroMarketing: React.FC = () => {
           display: grid;
           grid-template-columns: 52px minmax(0, 282px) minmax(0, 540px) minmax(0, 138px);
           min-height: 280px;
-          background: #f8fafc;
+          background: #f4f4f4;
         }
         /* Tablet/telemóvel: só rail + conversa (uma thread); lista oculta — demo animada nas mensagens */
         @media (max-width: 900px) {
@@ -5914,7 +5913,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-thread-av--b {
           background: #f4f4f4;
-          color: #1e3a8a;
+          color: #000000;
           border-color: rgba(30, 58, 138, 0.2);
         }
         .zt-idemo-thread-body {
@@ -5979,7 +5978,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 12px;
           overflow: hidden;
           border: 1px solid #e2e8f0;
-          background: #f8fafc;
+          background: #f4f4f4;
         }
         .zt-idemo-chat-av-img {
           width: 100%;
@@ -6256,7 +6255,7 @@ const ZaptroMarketing: React.FC = () => {
           gap: 6px;
           padding: 10px 8px;
           border-radius: 12px;
-          background: #f8fafc;
+          background: #f4f4f4;
           border: 1px solid #e2e8f0;
         }
         .zt-idemo-side-avatar {

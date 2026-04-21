@@ -9,12 +9,22 @@ export const ZAPTRO_ROUTE_LIVE_STORAGE_KEY = 'zaptro_route_live_v1';
 
 const KEY = ZAPTRO_ROUTE_LIVE_STORAGE_KEY;
 
+const LOCATION_TRAIL_MAX = 150;
+
+export type RouteLiveTrailPoint = {
+  lat: number;
+  lng: number;
+  at: string;
+};
+
 export type RouteLiveBucket = {
   status: RouteExecutionStatus;
   updatedAt: string;
   lastLat?: number;
   lastLng?: number;
   lastLocAt?: string;
+  /** Pontos GPS gravados ao longo do tempo (demo local) — desenha o percurso no rastreio público. */
+  locationTrail?: RouteLiveTrailPoint[];
   /** Pedido «Solicitar contacto com cliente» — visto pela operação no link público como aviso. */
   contactRequestedAt?: string | null;
   /** Motorista reportou problema. */
@@ -58,6 +68,20 @@ function writeAll(map: Record<string, RouteLiveBucket>) {
   localStorage.setItem(KEY, JSON.stringify(map));
 }
 
+function appendTrailPoint(
+  prevTrail: RouteLiveTrailPoint[] | undefined,
+  lat: number,
+  lng: number,
+  at: string,
+): RouteLiveTrailPoint[] {
+  const next = prevTrail?.length ? [...prevTrail] : [];
+  const last = next[next.length - 1];
+  if (last && last.lat === lat && last.lng === lng) return next;
+  next.push({ lat, lng, at });
+  if (next.length > LOCATION_TRAIL_MAX) next.splice(0, next.length - LOCATION_TRAIL_MAX);
+  return next;
+}
+
 /** Mescla estado da rota e notifica outras abas / página pública no mesmo browser. */
 export function patchRouteLive(token: string, patch: Partial<RouteLiveBucket>): RouteLiveBucket {
   const t = normToken(token);
@@ -71,6 +95,15 @@ export function patchRouteLive(token: string, patch: Partial<RouteLiveBucket>): 
     ...patch,
     updatedAt: new Date().toISOString(),
   };
+  if (typeof patch.lastLat === 'number' && typeof patch.lastLng === 'number') {
+    const at =
+      typeof patch.lastLocAt === 'string' && patch.lastLocAt.trim()
+        ? patch.lastLocAt
+        : typeof next.lastLocAt === 'string' && next.lastLocAt.trim()
+          ? next.lastLocAt
+          : next.updatedAt;
+    next.locationTrail = appendTrailPoint(prev.locationTrail, patch.lastLat, patch.lastLng, at);
+  }
   map[t] = next;
   writeAll(map);
   try {

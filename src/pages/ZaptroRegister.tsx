@@ -302,7 +302,7 @@ const styles: Record<string, any> = {
   successText: { fontSize: '15px', color: '#64748B', fontWeight: '600' },
   logoCircleWrapper: { position: 'relative' },
   logoPreviewCircle: { width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e4e4e7' },
-  fileIconBox: { width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+  fileIconBox: { width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center' }
 };
 
 export default ZaptroRegister;

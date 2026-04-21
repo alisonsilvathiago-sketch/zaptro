@@ -126,7 +126,7 @@ const Inventory: React.FC = () => {
                    <AlertCircle size={24} color="#ef4444" />
                  </div>
               </div>
-              <div style={styles.chartCard}><div style={styles.cardHeader}><h3>Movimentação Semanal</h3></div><div style={{padding:'24px', height:'300px', backgroundColor:'#f8fafc', borderRadius:'16px', display:'flex', alignItems:'center', justifyContent:'center', color:'#94a3b8'}}>Gráfico de Movimentação</div></div>
+              <div style={styles.chartCard}><div style={styles.cardHeader}><h3>Movimentação Semanal</h3></div><div style={{padding:'24px', height:'300px', backgroundColor:'#f4f4f4', borderRadius:'16px', display:'flex', alignItems:'center', justifyContent:'center', color:'#94a3b8'}}>Gráfico de Movimentação</div></div>
            </div>
         )}
 
@@ -255,14 +255,14 @@ const styles: Record<string, any> = {
   kpiInfo: { display: 'flex', flexDirection: 'column', gap: '4px' },
   kpiLabel: { fontSize: '12px', fontWeight: '700', color: '#94a3b8', margin: 0 },
   chartCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
-  cardHeader: { padding: '20px 24px', borderBottom: '1px solid #f1f5f9' },
+  cardHeader: { padding: '20px 24px', borderBottom: '1px solid #e8e8e8' },
   actionBar: { display: 'flex', justifyContent: 'flex-end' },
   btnPrimary: { padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #f1f5f9' },
-  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #f1f5f9', color: '#475569' },
-  iconBtnTable: { padding: '8px', borderRadius: '8px', border: 'none', backgroundColor: '#f8fafc', cursor: 'pointer', color: '#64748B' },
+  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8' },
+  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
+  iconBtnTable: { padding: '8px', borderRadius: '8px', border: 'none', backgroundColor: '#f4f4f4', cursor: 'pointer', color: '#64748B' },
   labelSimple: { fontSize: '11px', fontWeight: '700', color: '#94a3b8', display: 'block', marginBottom: '4px' }
 };
 

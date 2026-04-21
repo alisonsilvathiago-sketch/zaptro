@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Globe, Image, Palette, Shield, Sparkles } from 'lucide-react';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
@@ -17,11 +17,37 @@ export const ZaptroWhiteLabelInner: React.FC<ZaptroWhiteLabelInnerProps> = ({ em
   const { palette, canCustomizeTenant } = useZaptroTheme();
   const isDark = palette.mode === 'dark';
 
+  const embeddedShell = useMemo(
+    () =>
+      ({
+        width: '100%' as const,
+        maxWidth: '100%' as const,
+        boxSizing: 'border-box' as const,
+        borderRadius: 22,
+        border: `1px solid ${isDark ? 'rgba(148, 163, 184, 0.2)' : '#e8e8ec'}`,
+        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.5)' : '#fafafb',
+        boxShadow: isDark ? 'inset 0 1px 0 rgba(255,255,255,0.04)' : '0 1px 2px rgba(15, 23, 42, 0.04)',
+        overflow: 'hidden' as const,
+      }) satisfies React.CSSProperties,
+    [isDark],
+  );
+
+  const embeddedInner = useMemo(
+    () =>
+      ({
+        padding: '22px 22px 28px',
+        boxSizing: 'border-box' as const,
+      }) satisfies React.CSSProperties,
+    [],
+  );
+
   if (!canCustomizeTenant) {
     if (embedded) {
       return (
-        <div style={{ width: '100%', maxWidth: '100%', padding: '8px 0 24px', boxSizing: 'border-box' }}>
-          <ZaptroCompanyBrandingEditor showHeading={false} />
+        <div style={embeddedShell}>
+          <div style={embeddedInner}>
+            <ZaptroCompanyBrandingEditor showHeading={false} embedded />
+          </div>
         </div>
       );
     }
@@ -30,8 +56,10 @@ export const ZaptroWhiteLabelInner: React.FC<ZaptroWhiteLabelInnerProps> = ({ em
 
   if (embedded) {
     return (
-      <div style={{ width: '100%', maxWidth: '100%', padding: '8px 0 24px', boxSizing: 'border-box' }}>
-        <ZaptroCompanyBrandingEditor showHeading={false} />
+      <div style={embeddedShell}>
+        <div style={embeddedInner}>
+          <ZaptroCompanyBrandingEditor showHeading={false} embedded />
+        </div>
       </div>
     );
   }

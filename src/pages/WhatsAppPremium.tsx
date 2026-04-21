@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Send,
@@ -21,14 +21,19 @@ import {
   AlertTriangle,
   X,
   Copy,
+  BellOff,
+  Star,
 } from 'lucide-react';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
+import { useTenant } from '../context/TenantContext';
+import { ZAPTRO_FIELD_BG, ZAPTRO_SOFT_NEUTRAL_MUTED } from '../constants/zaptroUi';
 import { isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { toastError, toastSuccess } from '../lib/toast';
+import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import {
   readAllConversationCargo,
   persistConversationCargoPhase,
@@ -38,6 +43,9 @@ import {
 import { readExternalApiIntegrations } from '../constants/zaptroExternalApisStore';
 
 const LIME = '#D9FF00';
+
+/** Telefones na UI — sempre Arial (fallbacks genéricos). */
+const WHATSAPP_PHONE_FONT_FAMILY = 'Arial, Helvetica, sans-serif' as const;
 
 interface Message {
   id: string;
@@ -65,6 +73,34 @@ interface Conversation {
   status: string;
   connection_id?: string;
   assigned_to?: string | null;
+  /** Conversa de equipa / grupo (quando a API enviar ou em seeds de demo). */
+  is_group?: boolean;
+  /** Contador de não lidas quando existir na base ou em demo. */
+  unread_count?: number;
+}
+
+const WA_INBOX_STARRED_KEY = 'zaptro_wa_inbox_starred_v1';
+
+type WaInboxFilter = 'all' | 'unread' | 'starred' | 'groups';
+
+function readInboxStarredIds(): Set<string> {
+  try {
+    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(WA_INBOX_STARRED_KEY) : null;
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(arr) ? arr.filter((x: unknown) => typeof x === 'string') : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function persistInboxStarred(ids: Set<string>) {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(WA_INBOX_STARRED_KEY, JSON.stringify([...ids]));
+    }
+  } catch {
+    /* ignore */
+  }
 }
 
 function isZaptroDemoConversationId(id: string): boolean {
@@ -218,20 +254,23 @@ const WhatsAppPremiumContent: React.FC = () => {
   const navigate = useNavigate();
   const { waThread } = useParams<{ waThread?: string }>();
   const { profile, isMaster } = useAuth();
+  const { company } = useTenant();
   const { palette } = useZaptroTheme();
   
   const [activeSession, setActiveSession] = useState<string | null>(null);
+  /** Verificação Evolution / gateway — animação «a conectar» no painel direito enquanto `checking`. */
+  const [waGatewayStatus, setWaGatewayStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedChat, setSelectedChat] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [waInboxFilter, setWaInboxFilter] = useState<WaInboxFilter>('all');
+  const [starredChatIds, setStarredChatIds] = useState<Set<string>>(readInboxStarredIds);
   const [sending, setSending] = useState(false);
   /** Estado logístico da carga por conversa (demo + UI até existir coluna dedicada no backend). */
   const [cargoPhaseByChat, setCargoPhaseByChat] = useState<Record<string, CargoPhase>>({});
-  /** Nome do responsável em conversas de demonstração (sem linha na base). */
-  const [demoAssigneeByChat, setDemoAssigneeByChat] = useState<Record<string, string>>({});
   const [assigning, setAssigning] = useState(false);
   const [teamMembers, setTeamMembers] = useState<TeamPick[]>([]);
   const [transferOpen, setTransferOpen] = useState(false);
@@ -267,6 +306,7 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'Conseguem slot para descarga amanhã no CD Guarulhos?',
         last_customer_message_at: agoIso(4),
         status: 'open',
+        unread_count: 2,
       },
       {
         id: 'zaptro-demo-2',
@@ -275,6 +315,7 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'Preciso de bitrem Curitiba → Joinville com POD digital.',
         last_customer_message_at: agoIso(35),
         status: 'open',
+        unread_count: 0,
       },
       {
         id: 'zaptro-demo-3',
@@ -283,6 +324,8 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'Cliente pediu status da carga — SLA 20 min.',
         last_customer_message_at: agoIso(90),
         status: 'open',
+        is_group: true,
+        unread_count: 1,
       },
     ];
   }, []);
@@ -299,6 +342,7 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'Preciso atualizar a janela de coleta em Porto Alegre.',
         last_customer_message_at: agoIso(40),
         status: 'open',
+        unread_count: 1,
       },
       {
         id: 'zaptro-active-5521977112200',
@@ -308,6 +352,7 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'Confirmam temperatura -18°C no trecho RJ → DF?',
         last_customer_message_at: agoIso(18),
         status: 'open',
+        unread_count: 3,
       },
       {
         id: 'zaptro-active-5585991234400',
@@ -317,6 +362,8 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_message: 'NF-e disponível — podem seguir com o embarque?',
         last_customer_message_at: agoIso(12),
         status: 'open',
+        is_group: true,
+        unread_count: 0,
       },
     ];
   }, []);
@@ -328,7 +375,14 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const displayConversations =
     conversations.length > 0 ? conversations : mergedDemoConversations;
-  const isPreviewInbox = conversations.length === 0 && !loading;
+  /**
+   * Badge «Demo» + aviso de pré-visualização: só enquanto não há conversas reais em `whatsapp_conversations`
+   * para esta empresa. Some assim que a API (ou realtime) preencher `conversations`.
+   */
+  const showDemoInboxNotice = useMemo(
+    () => !loading && conversations.length === 0,
+    [loading, conversations.length]
+  );
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -408,21 +462,43 @@ const WhatsAppPremiumContent: React.FC = () => {
   }, [profile?.company_id]);
 
   useEffect(() => {
-    if (!profile?.company_id) return;
+    if (!profile?.company_id) {
+      setActiveSession(null);
+      setWaGatewayStatus('offline');
+      return;
+    }
+
+    let cancelled = false;
+    setWaGatewayStatus('checking');
+    const companyId = profile.company_id;
 
     const findActiveSession = async () => {
       try {
-        const instanceName = profile?.company_id ? `instance_${profile.company_id.substring(0, 8)}` : 'default';
+        const instanceName = `instance_${companyId.substring(0, 8)}`;
         const { data } = await supabaseZaptro.functions.invoke('evolution-gateway', {
-          body: { action: 'status', instanceName }
+          body: { action: 'status', instanceName },
         });
-        if (data?.connected) setActiveSession(instanceName);
+        if (cancelled) return;
+        if (data?.connected) {
+          setActiveSession(instanceName);
+          setWaGatewayStatus('connected');
+        } else {
+          setActiveSession(null);
+          setWaGatewayStatus('offline');
+        }
       } catch (e) {
         console.error('Erro ao verificar sessão:', e);
+        if (!cancelled) {
+          setActiveSession(null);
+          setWaGatewayStatus('offline');
+        }
       }
     };
 
-    findActiveSession();
+    void findActiveSession();
+    return () => {
+      cancelled = true;
+    };
   }, [profile?.company_id]);
 
   // 2. Carregar Conversas
@@ -436,9 +512,10 @@ const WhatsAppPremiumContent: React.FC = () => {
           .select('*')
           .eq('company_id', profile.company_id);
 
-        // LÓGICA MULTI-ATENDENTE: Agentes veem o que é deles. Master/Admin vê TUDO.
-        if (profile.role === 'agent') {
-          query = query.eq('assigned_to', profile.id);
+        // Multi-atendente: agente vê conversas atribuídas a si **e** fila sem dono (para «Atribuir responsável»).
+        const role = (profile.role || '').toLowerCase();
+        if (role === 'agent' && profile.id) {
+          query = query.or(`assigned_to.eq.${profile.id},assigned_to.is.null`);
         }
 
         const { data, error } = await query.order('last_customer_message_at', { ascending: false });
@@ -462,7 +539,7 @@ const WhatsAppPremiumContent: React.FC = () => {
       .subscribe();
 
     return () => { supabaseZaptro.removeChannel(channel); };
-  }, [profile?.company_id]);
+  }, [profile?.company_id, profile?.id, profile?.role]);
 
   // 3. Carregar Mensagens (ou thread de demonstração)
   useEffect(() => {
@@ -621,6 +698,34 @@ const WhatsAppPremiumContent: React.FC = () => {
     return chat.sender_name || chat.sender_number || 'Novo Contato';
   };
 
+  const filteredInboxList = useMemo(() => {
+    let list = displayConversations;
+    if (waInboxFilter === 'unread') {
+      list = list.filter((c) => (c.unread_count ?? 0) > 0);
+    } else if (waInboxFilter === 'starred') {
+      list = list.filter((c) => starredChatIds.has(c.id));
+    } else if (waInboxFilter === 'groups') {
+      list = list.filter((c) => c.is_group === true);
+    }
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter((c) =>
+        (c.sender_name || c.sender_number || 'Novo Contato').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [displayConversations, waInboxFilter, starredChatIds, search]);
+
+  const toggleInboxStar = useCallback((id: string) => {
+    setStarredChatIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      persistInboxStarred(next);
+      return next;
+    });
+  }, []);
+
   const renderAvatar = (chat: Conversation, variant: 'list' | 'header' | 'panel') => {
     const label = (getDisplayName(chat)[0] || 'C').toUpperCase();
     const url = chat.customer_avatar?.trim();
@@ -667,18 +772,6 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const cargoPhaseFor = (chatId: string): CargoPhase => cargoPhaseByChat[chatId] ?? 'transito';
 
-  const responsibleLabel = (chat: Conversation | null): string | null => {
-    if (!chat) return null;
-    if (isZaptroDemoConversationId(chat.id)) {
-      return demoAssigneeByChat[chat.id] ?? null;
-    }
-    if (chat.assigned_to && profile?.id && chat.assigned_to === profile.id) {
-      return profile.full_name?.trim() || profile.email || 'Você';
-    }
-    if (chat.assigned_to) return 'Outro agente';
-    return null;
-  };
-
   const setCargoPhaseForChat = (chatId: string, phase: CargoPhase) => {
     setCargoPhaseByChat((prev) => ({ ...prev, [chatId]: phase }));
     persistConversationCargoPhase(chatId, phase);
@@ -723,18 +816,56 @@ const WhatsAppPremiumContent: React.FC = () => {
     toastSuccess(`${api.name}: portal aberto com referência a esta conversa (parâmetros na URL).`);
   };
 
+  const handleQuickChip = (label: 'Nova carga' | 'Orçamento' | 'Comprovante' | 'Localização') => {
+    if (!selectedChat) return;
+    if (label === 'Nova carga') {
+      notifyZaptro('success', 'Nova carga', 'A abrir Rotas — cria a rota e associa o contacto ao cliente desta conversa.');
+      navigate(ZAPTRO_ROUTES.ROUTES);
+      return;
+    }
+    if (label === 'Orçamento') {
+      notifyZaptro('info', 'Orçamento', 'No CRM escolhe o lead do cliente e gera o link público de orçamento.');
+      navigate(ZAPTRO_ROUTES.COMMERCIAL_CRM);
+      return;
+    }
+    if (sendBlocked) {
+      notifyZaptro('info', label, 'Atribui a conversa a ti para usar o campo de mensagem.');
+      return;
+    }
+    if (label === 'Comprovante') {
+      setNewMessage(
+        (prev) =>
+          `${prev ? `${prev.trim()}\n\n` : ''}Segue o comprovante / documento em anexo. Qualquer dúvida, estamos à disposição.`,
+      );
+      notifyZaptro('success', 'Comprovante', 'Texto modelo inserido no campo de mensagem — anexa o PDF antes de enviar.');
+      return;
+    }
+    if (label === 'Localização') {
+      setNewMessage(
+        (prev) =>
+          `${prev ? `${prev.trim()}\n\n` : ''}Segue o link de acompanhamento da carga em tempo real: `,
+      );
+      notifyZaptro('success', 'Localização', 'Texto modelo inserido — completa com o link público da rota quando existir.');
+    }
+  };
+
   const handleAssignResponsible = async () => {
     if (!selectedChat) return;
     const selfName = profile?.full_name?.trim() || profile?.email || 'Utilizador actual';
 
     if (isZaptroDemoConversationId(selectedChat.id)) {
-      setDemoAssigneeByChat((prev) => ({ ...prev, [selectedChat.id]: selfName }));
       toastSuccess(`Demonstração: ${selfName} ficou como responsável por esta conversa.`);
+      notifyZaptro('success', 'Responsável', 'Nesta demo o estado fica neste browser — em produção grava-se na base.');
       return;
     }
 
     if (!profile?.id || !profile.company_id) {
       toastError('Inicie sessão com uma empresa Zaptro para atribuir conversas reais.');
+      return;
+    }
+
+    if (selectedChat.assigned_to === profile.id) {
+      notifyZaptro('info', 'Responsável', 'Esta conversa já está atribuída a ti. Podes responder normalmente.');
       return;
     }
 
@@ -770,7 +901,7 @@ const WhatsAppPremiumContent: React.FC = () => {
   };
 
   const border = palette.sidebarBorder;
-  const softBg = palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F8FAFC';
+  const softBg = palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : ZAPTRO_FIELD_BG;
   const activeCargo = selectedChat ? cargoPhaseFor(selectedChat.id) : 'transito';
   const pillOn = (key: CargoPhase) =>
     activeCargo === key
@@ -791,7 +922,7 @@ const WhatsAppPremiumContent: React.FC = () => {
       palette.mode === 'dark'
         ? '0 0 0 1px rgba(255,255,255,0.04), 0 24px 48px rgba(0,0,0,0.32)'
         : '0 1px 2px rgba(15,23,42,0.06), 0 20px 44px rgba(15,23,42,0.07)',
-    backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#ffffff',
+    backgroundColor: 'rgba(217, 255, 0, 0.16)',
   };
 
   const callModalName = selectedChat ? getDisplayName(selectedChat) : '';
@@ -799,14 +930,46 @@ const WhatsAppPremiumContent: React.FC = () => {
   const callModalDigits = selectedChat ? digitsForTel(selectedChat.sender_number) : '';
 
   return (
-    <>
+    <ZaptroLayout
+      contentFullWidth
+      scrollAreaTop={
+        selectedChat ? (
+          <p
+            style={{
+              margin: '0 0 12px',
+              fontSize: 12,
+              color: 'rgba(88, 89, 90, 1)',
+              lineHeight: 1.45,
+              fontWeight: 600,
+              paddingLeft: 'clamp(16px, 3vw, 48px)',
+              paddingRight: 'clamp(16px, 3vw, 48px)',
+              boxSizing: 'border-box',
+            }}
+          >
+            Agrupado como no WhatsApp: o que enviaste ou recebeste nesta conversa (NF, fotos, PDFs) aparece aqui para
+            consulta rápida.
+          </p>
+        ) : null
+      }
+    >
+      <>
+      <style>{`
+        @keyframes zaptroWaConnectDot {
+          0%, 80%, 100% { transform: translateY(0) scale(0.75); opacity: 0.35; }
+          40% { transform: translateY(-3px) scale(1); opacity: 1; }
+        }
+        @keyframes zaptroWaConnectBar {
+          0% { transform: translateX(-100%); opacity: 0.5; }
+          100% { transform: translateX(250%); opacity: 1; }
+        }
+      `}</style>
     <div style={shellStyle}>
     <div style={{ ...styles.container, flex: 1, minHeight: 0 }}>
       <div style={{ ...styles.sidebar, borderRight: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
         <div style={styles.sidebarHeader}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
             <h2 style={{ ...styles.sidebarTitle, color: palette.text, marginBottom: 0 }}>Mensagens</h2>
-            {isPreviewInbox && (
+            {showDemoInboxNotice && (
               <span
                 style={{
                   flexShrink: 0,
@@ -828,58 +991,206 @@ const WhatsAppPremiumContent: React.FC = () => {
           <div style={{ ...styles.liveIndicator, marginTop: 10 }}>
             <div style={styles.liveDot} /> Zaptro Pro Intelligence ativa
           </div>
-          {isPreviewInbox && (
-            <p
+          {showDemoInboxNotice && (
+            <div
+              role="status"
+              aria-live="polite"
               style={{
-                margin: '12px 0 0',
-                fontSize: 11,
-                fontWeight: 700,
-                lineHeight: 1.45,
-                color: palette.textMuted,
-                padding: '10px 12px',
-                borderRadius: 14,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.07)' : 'rgba(217,255,0,0.28)',
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.2)' : 'rgba(0,0,0,0.06)'}`,
+                marginTop: 12,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 12,
+                padding: '12px 14px',
+                borderRadius: 10,
+                boxSizing: 'border-box',
+                backgroundColor: palette.mode === 'dark' ? '#182229' : '#f0f2f5',
+                border:
+                  palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(0,0,0,0.06)',
               }}
             >
-              Pré-visualização: conversas fictícias para testar o layout. Quando existirem dados reais, esta lista é
-              substituída automaticamente.
-            </p>
+              <BellOff
+                size={20}
+                strokeWidth={2}
+                color={palette.mode === 'dark' ? '#8696a0' : '#54656f'}
+                style={{ flexShrink: 0, marginTop: 1 }}
+                aria-hidden
+              />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    lineHeight: 1.45,
+                    fontWeight: 400,
+                    color: palette.mode === 'dark' ? '#e9edef' : '#111b21',
+                  }}
+                >
+                  Pré-visualização: conversas fictícias para testar o layout.
+                </p>
+                <p
+                  style={{
+                    margin: '6px 0 0',
+                    fontSize: 12.5,
+                    lineHeight: 1.4,
+                    fontWeight: 400,
+                    color: palette.mode === 'dark' ? '#8696a0' : '#667781',
+                  }}
+                >
+                  Quando existirem dados reais, esta lista é substituída automaticamente.{' '}
+                  <span style={{ color: '#00a884', fontWeight: 500 }}>Modo demonstração</span>
+                </p>
+              </div>
+            </div>
           )}
-          <div style={{...styles.searchBox, backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#F1F5F9', marginTop: '15px' }}>
-            <Search size={16} color="#94A3B8" />
-            <input 
-              placeholder="Buscar conversas…" 
-              style={{...styles.searchInput, color: palette.text}}
+          <div
+            role="tablist"
+            aria-label="Filtro da lista de conversas"
+            style={{
+              marginTop: 14,
+              paddingTop: 13,
+              paddingBottom: 13,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 8,
+              maxWidth: 358,
+              width: '100%',
+            }}
+          >
+            {(
+              [
+                { id: 'all' as const, label: 'Tudo' },
+                { id: 'unread' as const, label: 'Não lidas' },
+                { id: 'starred' as const, label: 'Favoritas' },
+                { id: 'groups' as const, label: 'Grupos' },
+              ] as const
+            ).map(({ id, label }) => {
+              const on = waInboxFilter === id;
+              const dark = palette.mode === 'dark';
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setWaInboxFilter(id)}
+                  title={
+                    id === 'groups'
+                      ? 'Mostrar só conversas de grupo / equipa já registadas'
+                      : id === 'starred'
+                        ? 'Conversas que marcou com a estrela'
+                        : id === 'unread'
+                          ? 'Conversas com mensagens por ler'
+                          : undefined
+                  }
+                  style={{
+                    borderRadius: 999,
+                    padding: '6px 14px',
+                    fontSize: 10,
+                    fontWeight: on ? 700 : 500,
+                    cursor: 'pointer',
+                    border: on
+                      ? '1px solid transparent'
+                      : dark
+                        ? '1px solid rgba(134,150,160,0.28)'
+                        : '1px solid rgba(15,23,42,0.12)',
+                    backgroundColor: on
+                      ? dark
+                        ? 'rgba(255,255,255,0.14)'
+                        : ZAPTRO_SOFT_NEUTRAL_MUTED
+                      : 'transparent',
+                    color: on ? (dark ? '#e9edef' : 'rgba(74, 74, 74, 1)') : dark ? 'rgba(233,237,239,0.55)' : '#64748b',
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <div
+            style={{
+              ...styles.searchBox,
+              width: '100%',
+              maxWidth: 358,
+              boxSizing: 'border-box',
+              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f4f4f4',
+              marginTop: 12,
+            }}
+          >
+            <Search size={16} color="#737373" />
+            <input
+              placeholder="Buscar conversas…"
+              style={{ ...styles.searchInput, color: palette.text }}
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
 
         <div style={styles.chatList}>
           {loading ? (
-            <div style={styles.loadingArea}><Clock className="spin" size={24} color="#D9FF00" /></div>
-          ) : displayConversations.filter(c => getDisplayName(c).toLowerCase().includes(search.toLowerCase())).map(chat => (
-            <div 
-              key={chat.id} 
-              onClick={() => setSelectedChat(chat)}
+            <div style={styles.loadingArea}>
+              <Clock className="spin" size={24} color="#D9FF00" />
+            </div>
+          ) : filteredInboxList.length === 0 ? (
+            <div
               style={{
-                ...styles.chatItem,
-                backgroundColor: selectedChat?.id === chat.id ? 'rgba(217, 255, 0, 0.08)' : 'transparent',
-                borderLeft: selectedChat?.id === chat.id ? '4px solid #D9FF00' : '4px solid transparent'
+                padding: '28px 24px',
+                fontSize: 13,
+                color: palette.textMuted,
+                fontWeight: 600,
+                textAlign: 'center',
+                lineHeight: 1.5,
               }}
             >
-              <div style={styles.avatarWrap}>{renderAvatar(chat, 'list')}</div>
-              <div style={styles.itemMain}>
-                <div style={styles.itemHeader}>
-                  <span style={{...styles.itemName, color: palette.text}}>{getDisplayName(chat)}</span>
-                  <span style={styles.itemTime}>{formatTime(chat.last_customer_message_at)}</span>
-                </div>
-                <p style={styles.itemPreview}>{chat.last_message || 'Nenhuma mensagem'}</p>
-              </div>
+              Nenhuma conversa corresponde a este filtro ou à pesquisa.
             </div>
-          ))}
+          ) : (
+            filteredInboxList.map((chat) => (
+              <div
+                key={chat.id}
+                onClick={() => setSelectedChat(chat)}
+                style={{
+                  ...styles.chatItem,
+                  backgroundColor: selectedChat?.id === chat.id ? 'rgba(217, 255, 0, 0.09)' : 'transparent',
+                  borderLeft: selectedChat?.id === chat.id ? '4px solid #D9FF00' : '4px solid transparent',
+                }}
+              >
+                <div style={styles.avatarWrap}>{renderAvatar(chat, 'list')}</div>
+                <div style={styles.itemMain}>
+                  <div style={styles.itemHeader}>
+                    <span style={{ ...styles.itemName, color: palette.text }}>{getDisplayName(chat)}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                      <button
+                        type="button"
+                        title={starredChatIds.has(chat.id) ? 'Remover dos favoritos' : 'Favoritar conversa'}
+                        aria-pressed={starredChatIds.has(chat.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleInboxStar(chat.id);
+                        }}
+                        style={{
+                          border: 'none',
+                          background: 'transparent',
+                          padding: 4,
+                          margin: 0,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 8,
+                          color: starredChatIds.has(chat.id) ? palette.lime : palette.textMuted,
+                        }}
+                      >
+                        <Star size={15} strokeWidth={2} fill={starredChatIds.has(chat.id) ? 'currentColor' : 'none'} />
+                      </button>
+                      <span style={styles.itemTime}>{formatTime(chat.last_customer_message_at)}</span>
+                    </span>
+                  </div>
+                  <p style={styles.itemPreview}>{chat.last_message || 'Nenhuma mensagem'}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -910,20 +1221,8 @@ const WhatsAppPremiumContent: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  <span style={{ ...styles.phoneLine, color: palette.textMuted }}>{selectedChat.sender_number}</span>
                   <div style={styles.statusRow}>
                     <span style={styles.onlinePill}>● online</span>
-                    <span style={{ ...styles.statusPill, color: palette.textMuted }}>Atendimento: em andamento</span>
-                    <span style={{ ...styles.statusPill, color: palette.lime, fontWeight: 950 }}>
-                      Carga: {CARGO_PHASE_LABEL[activeCargo]}
-                    </span>
-                    {responsibleLabel(selectedChat) ? (
-                      <span style={{ ...styles.statusPill, color: palette.textMuted }}>
-                        Responsável: {responsibleLabel(selectedChat)}
-                      </span>
-                    ) : (
-                      <span style={{ ...styles.statusPill, color: palette.textMuted }}>Sem responsável atribuído</span>
-                    )}
                   </div>
                 </div>
               </div>
@@ -963,43 +1262,78 @@ const WhatsAppPremiumContent: React.FC = () => {
             </div>
 
             <div style={{ ...styles.cargoStrip, borderBottom: `1px solid ${border}`, backgroundColor: softBg }}>
-              <div style={styles.cargoStripInner}>
-                <div style={styles.cargoTitleRow}>
-                  <Truck size={16} color={palette.lime} />
-                  <span style={{ fontSize: 12, fontWeight: 950, color: palette.text, letterSpacing: '0.06em' }}>STATUS DA CARGA</span>
-                </div>
-                <div style={styles.cargoPills}>
-                  {(
-                    [
-                      { id: 'coletado' as const, label: 'Coletado' },
-                      { id: 'transito' as const, label: 'Em trânsito' },
-                      { id: 'entregue' as const, label: 'Entregue' },
-                    ] as const
-                  ).map(({ id, label }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => selectedChat && setCargoPhaseForChat(selectedChat.id, id)}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 16,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: palette.mode === 'dark' ? '4px 0 2px' : '16px 18px',
+                  borderRadius: palette.mode === 'dark' ? 0 : 16,
+                  backgroundColor: palette.mode === 'dark' ? 'transparent' : ZAPTRO_SOFT_NEUTRAL_MUTED,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 14,
+                    width: '100%',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <div
+                    role="group"
+                    aria-label="Estado da carga"
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      gap: 10,
+                      minWidth: 0,
+                      flex: '1 1 220px',
+                    }}
+                  >
+                    {(
+                      [
+                        { id: 'coletado' as const, label: 'Coletado' },
+                        { id: 'transito' as const, label: 'Em trânsito' },
+                        { id: 'entregue' as const, label: 'Entregue' },
+                      ] as const
+                    ).map(({ id, label }) => (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => selectedChat && setCargoPhaseForChat(selectedChat.id, id)}
+                        style={{
+                          ...styles.cargoPill,
+                          border: `1px solid ${border}`,
+                          ...pillOn(id),
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                    <span
                       style={{
-                        ...styles.cargoPill,
-                        border: `1px solid ${border}`,
-                        ...pillOn(id),
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        marginLeft: 4,
+                        paddingLeft: 6,
+                        borderLeft: `1px solid ${border}`,
+                        minHeight: 28,
+                        boxSizing: 'border-box',
                       }}
+                      aria-hidden={true}
                     >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                <div style={styles.cargoMeta}>
-                  <span style={styles.metaItem}>
-                    <MapPin size={14} /> Origem → Destino
-                  </span>
-                  <span style={styles.metaItem}>
-                    <Calendar size={14} /> Prazo: —{' '}
-                  </span>
-                  <span style={styles.metaItem}>
-                    <DollarSign size={14} /> Frete: —{' '}
-                  </span>
+                      <Truck size={18} color={palette.lime} aria-hidden />
+                    </span>
+                  </div>
                   <button
                     type="button"
                     onClick={handleUpdateCargoStatus}
@@ -1013,12 +1347,45 @@ const WhatsAppPremiumContent: React.FC = () => {
                     Atualizar status
                   </button>
                 </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    columnGap: 20,
+                    rowGap: 12,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    paddingTop: 4,
+                    borderTop: palette.mode === 'dark' ? `1px solid rgba(255,255,255,0.08)` : `1px solid rgba(0,0,0,0.07)`,
+                  }}
+                >
+                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
+                    <MapPin size={15} strokeWidth={2.2} /> Origem → Destino
+                  </span>
+                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
+                    <Calendar size={15} strokeWidth={2.2} /> Prazo: —
+                  </span>
+                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
+                    <DollarSign size={15} strokeWidth={2.2} /> Frete: —
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div style={{ ...styles.aiHint, borderBottom: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
-              <Sparkles size={16} color={palette.lime} />
-              <span style={{ color: palette.textMuted, fontSize: 13, fontWeight: 600 }}>{assistantHint}</span>
+            <div
+              style={{
+                ...styles.aiHint,
+                borderBottom: `1px solid ${border}`,
+                backgroundColor: palette.mode === 'dark' ? palette.sidebarBg : '#f4f4f4',
+              }}
+            >
+              <Sparkles size={16} color={palette.lime} style={{ flexShrink: 0 }} />
+              <span style={{ color: palette.textMuted, fontSize: 13, fontWeight: 600, flex: 1, minWidth: 0 }}>
+                {assistantHint}
+              </span>
             </div>
 
             {slaBreached ? (
@@ -1041,7 +1408,12 @@ const WhatsAppPremiumContent: React.FC = () => {
               </div>
             ) : null}
 
-            <div style={styles.messagesArea}>
+            <div
+              style={{
+                ...styles.messagesArea,
+                backgroundColor: palette.mode === 'dark' ? palette.searchBg : ZAPTRO_FIELD_BG,
+              }}
+            >
               {messages.map((msg) => {
                 const isOut = msg.direction === 'out';
                 return (
@@ -1077,7 +1449,12 @@ const WhatsAppPremiumContent: React.FC = () => {
 
             <div style={{ ...styles.quickBar, borderTop: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
               {(['Nova carga', 'Orçamento', 'Comprovante', 'Localização'] as const).map((label) => (
-                <button key={label} type="button" style={{ ...styles.quickChip, borderColor: border, color: palette.text }}>
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => handleQuickChip(label)}
+                  style={{ ...styles.quickChip, borderColor: border, color: palette.text }}
+                >
                   {label}
                 </button>
               ))}
@@ -1227,7 +1604,11 @@ const WhatsAppPremiumContent: React.FC = () => {
             <div style={{ ...styles.inputFooter, backgroundColor: palette.sidebarBg }}>
               <form
                 onSubmit={handleSendMessage}
-                style={{ ...styles.inputContainer, backgroundColor: palette.mode === 'dark' ? '#111' : '#F1F5F9', border: `1px solid ${border}` }}
+                style={{
+                  ...styles.inputContainer,
+                  backgroundColor: palette.mode === 'dark' ? '#111' : '#f4f4f4',
+                  border: `1px solid ${border}`,
+                }}
               >
                 <button type="button" style={styles.inputSideBtn} title="Anexo" disabled={sendBlocked}>
                   <Paperclip size={18} color={palette.textMuted} />
@@ -1268,7 +1649,7 @@ const WhatsAppPremiumContent: React.FC = () => {
               Zaptro Pro Messenger
             </h2>
             <p style={{ color: palette.textMuted, maxWidth: 400, fontWeight: 600, fontSize: 14, lineHeight: 1.55, margin: 0 }}>
-              {isPreviewInbox
+              {showDemoInboxNotice
                 ? 'As conversas à esquerda são de demonstração — escolha uma para ver o painel completo (carga, chat e lateral).'
                 : 'Selecione uma conversa à esquerda. O painel central reúne chat, status da carga e ações rápidas.'}
             </p>
@@ -1286,13 +1667,94 @@ const WhatsAppPremiumContent: React.FC = () => {
       >
         {selectedChat ? (
           <>
-            <div style={styles.rightHead}>
+            <div style={{ ...styles.rightHead, width: '100%', boxSizing: 'border-box' }}>
               {renderAvatar(selectedChat, 'panel')}
-              <h3 style={{ margin: '12px 0 4px', fontSize: 18, fontWeight: 950 }}>{getDisplayName(selectedChat)}</h3>
-              <p style={{ margin: 0, fontSize: 12, color: palette.textMuted, fontWeight: 600 }}>Cliente / empresa</p>
+              <h3 style={{ margin: '12px 0 6px', fontSize: 15, fontWeight: 950, color: palette.text }}>{getDisplayName(selectedChat)}</h3>
+              <p
+                style={{
+                  margin: '0 0 6px',
+                  fontSize: 22,
+                  fontWeight: 600,
+                  color: 'rgba(102, 237, 83, 1)',
+                  letterSpacing: '0.01em',
+                  fontVariantNumeric: 'tabular-nums',
+                  lineHeight: 1.25,
+                  fontFamily: WHATSAPP_PHONE_FONT_FAMILY,
+                }}
+              >
+                {selectedChat.sender_number}
+              </p>
+              <p style={{ margin: '0 0 10px', fontSize: 12, color: palette.textMuted, fontWeight: 700 }}>
+                {company?.name?.trim() || 'A tua empresa'} · contacto WhatsApp
+              </p>
+              {waGatewayStatus === 'checking' && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                  style={{
+                    margin: '0 0 12px',
+                    padding: '9px 7px',
+                    borderRadius: 8,
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.08)' : 'rgba(217, 255, 0, 0.33)',
+                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.2)' : 'rgba(0,0,0,0.06)'}`,
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 3,
+                      borderRadius: 999,
+                      overflow: 'hidden',
+                      marginBottom: 8,
+                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '100%',
+                        width: '42%',
+                        borderRadius: 999,
+                        background: `linear-gradient(90deg, transparent, ${palette.lime}, transparent)`,
+                        animation: 'zaptroWaConnectBar 1.35s ease-in-out infinite',
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} aria-hidden>
+                      {[0, 1, 2].map((i) => (
+                        <span
+                          key={i}
+                          style={{
+                            width: 7,
+                            height: 7,
+                            borderRadius: '50%',
+                            backgroundColor: palette.lime,
+                            animation: `zaptroWaConnectDot 1s ease-in-out ${i * 0.15}s infinite`,
+                          }}
+                        />
+                      ))}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        lineHeight: 1.3,
+                        color: palette.mode === 'dark' ? 'rgba(233,237,239,0.85)' : 'rgba(74, 74, 74, 1)',
+                        letterSpacing: 0,
+                      }}
+                    >
+                      A conectar ao gateway WhatsApp…
+                    </span>
+                  </div>
+                </div>
+              )}
+              <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>
+                PERFIL · TUDO O QUE PARTILHAS COM O CLIENTE
+              </p>
             </div>
             <div style={styles.rightSection}>
-              <h4 style={styles.rightH4}>Documentos</h4>
+              <h4 style={styles.rightH4}>Documentos, mídia e envios</h4>
               <button type="button" style={{ ...styles.docRow, borderColor: border }} onClick={() => openNotaFiscalFromChat()}>
                 <FileText size={18} color={palette.lime} />
                 <span style={{ flex: 1, minWidth: 0, color: palette.text }}>Nota fiscal</span>
@@ -1305,14 +1767,20 @@ const WhatsAppPremiumContent: React.FC = () => {
                 )}
               </button>
               <button type="button" style={{ ...styles.docRow, borderColor: border }}>
-                <Package size={18} color={palette.lime} /> Fotos da carga
+                <ImageIcon size={18} color={palette.lime} /> Imagens e vídeos do chat
+              </button>
+              <button type="button" style={{ ...styles.docRow, borderColor: border }}>
+                <Package size={18} color={palette.lime} /> Fotos da carga / POD
+              </button>
+              <button type="button" style={{ ...styles.docRow, borderColor: border }}>
+                <Paperclip size={18} color={palette.lime} /> Outros anexos
               </button>
             </div>
             <div style={styles.rightSection}>
               <h4 style={styles.rightH4}>Resumo logístico</h4>
               <p style={{ margin: 0, fontSize: 13, color: palette.textMuted, lineHeight: 1.55, fontWeight: 600 }}>
                 Estado da carga nesta conversa: <strong style={{ color: palette.text }}>{CARGO_PHASE_LABEL[activeCargo]}</strong>.
-                Origem, destino e frete continuam na barra acima do chat.
+                Origem, destino e frete estão na barra compacta acima das mensagens.
               </p>
             </div>
             <div style={styles.rightSection}>
@@ -1430,12 +1898,23 @@ const WhatsAppPremiumContent: React.FC = () => {
               padding: '14px 16px',
               borderRadius: 16,
               border: `1px solid ${border}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f8fafc',
+              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : ZAPTRO_FIELD_BG,
               marginBottom: 14,
             }}
           >
             <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>TELEFONE</p>
-            <p style={{ margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>{callModalPhone}</p>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 22,
+                fontWeight: 950,
+                letterSpacing: '-0.02em',
+                fontVariantNumeric: 'tabular-nums',
+                fontFamily: WHATSAPP_PHONE_FONT_FAMILY,
+              }}
+            >
+              {callModalPhone}
+            </p>
           </div>
 
           <p
@@ -1527,31 +2006,49 @@ const WhatsAppPremiumContent: React.FC = () => {
         </div>
       </div>
     ) : null}
-    </>
+      </>
+    </ZaptroLayout>
   );
 };
 
 const WhatsAppPremium: React.FC = () => {
   return (
-    <ZaptroLayout contentFullWidth>
+    <>
       <WhatsAppPremiumContent />
       <style>{`
         .spin { animation: rotate 2s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
-    </ZaptroLayout>
+    </>
   );
 };
 
 const styles: Record<string, React.CSSProperties> = {
   container: { display: 'flex', height: '100%', overflow: 'hidden', width: '100%', minHeight: 0 },
-  sidebar: { width: '320px', minWidth: 280, display: 'flex', flexDirection: 'column' },
+  sidebar: { width: '358px', minWidth: 280, display: 'flex', flexDirection: 'column' },
   sidebarHeader: { padding: '24px 30px' },
-  sidebarTitle: { margin: '0 0 8px 0', fontSize: '28px', fontWeight: 950, letterSpacing: '-1.5px' },
-  liveIndicator: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#10B981', fontWeight: 800, textTransform: 'uppercase' },
-  liveDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' },
-  searchBox: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px', borderRadius: '15px' },
-  searchInput: { border: 'none', background: 'transparent', outline: 'none', flex: 1, fontSize: '14px', fontWeight: 600 },
+  sidebarTitle: { margin: '0 0 8px 0', fontSize: '26px', fontWeight: 600, letterSpacing: '0.1px' },
+  liveIndicator: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '10px',
+    color: 'rgba(75, 231, 8, 1)',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+  },
+  liveDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' },
+  searchBox: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px', borderRadius: '8px' },
+  searchInput: {
+    border: 'none',
+    background: 'transparent',
+    outline: 'none',
+    flex: 1,
+    fontSize: '14px',
+    fontWeight: 600,
+    padding: '9px 7px',
+    borderRadius: 8,
+  },
   chatList: { flex: 1, overflowY: 'auto' },
   /** `align-items: flex-start` evita que a coluna do avatar herde altura errada e fique “achatada” (ex.: 240×30). */
   chatItem: { display: 'flex', alignItems: 'flex-start', gap: '15px', padding: '20px 30px', cursor: 'pointer' },
@@ -1571,12 +2068,23 @@ const styles: Record<string, React.CSSProperties> = {
   itemMain: { flex: 1, minWidth: 0 },
   itemHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '4px' },
   itemName: { fontWeight: 900, fontSize: '15px' },
-  itemTime: { fontSize: '11px', color: '#94A3B8', fontWeight: 700 },
-  itemPreview: { fontSize: '13px', color: '#94A3B8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', margin: 0 },
-  centerColumn: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' },
+  itemTime: { fontSize: '10px', color: '#737373', fontWeight: 700, lineHeight: 1.3 },
+  itemPreview: { fontSize: '13px', color: '#737373', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', margin: 0 },
+  /** Base 224px — evita coluna central colapsar (~96px) quando o flex reparte espaço. */
+  centerColumn: { flex: '1 1 224px', minWidth: 224, display: 'flex', flexDirection: 'column' },
   chatHeader: { padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' },
   headerProfile: { display: 'flex', alignItems: 'center', gap: '15px', minWidth: 0 },
-  headerActions: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' },
+  headerActions: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    gap: 10,
+    flexWrap: 'nowrap',
+    width: 326,
+    marginTop: 12,
+    boxSizing: 'border-box',
+    fontSize: 14,
+  },
   iconRound: {
     width: 42,
     height: 42,
@@ -1592,54 +2100,51 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '10px 16px',
     borderRadius: 14,
     border: 'none',
-    background: '#0F172A',
+    background: 'rgba(41, 41, 41, 1)',
     color: '#fff',
     fontWeight: 950,
     fontSize: 12,
     cursor: 'pointer',
   },
-  phoneLine: { display: 'block', fontSize: 12, fontWeight: 700, marginTop: 4 },
-  statusRow: { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 },
-  onlinePill: { fontSize: 11, fontWeight: 800, color: '#10B981' },
-  statusPill: { fontSize: 11, fontWeight: 800 },
-  cargoStrip: { padding: '12px 24px' },
-  cargoStripInner: { display: 'flex', flexDirection: 'column', gap: 10 },
-  cargoTitleRow: { display: 'flex', alignItems: 'center', gap: 8 },
+  statusRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
+    width: 326,
+    boxSizing: 'border-box',
+    fontSize: 14,
+  },
+  onlinePill: { fontSize: 10, fontWeight: 800, color: 'rgba(75, 231, 8, 1)', lineHeight: 1.3 },
+  statusPill: { fontSize: 10, fontWeight: 800, lineHeight: 1.3 },
+  cargoStrip: { padding: '14px 22px 16px' },
   cargoPills: { display: 'flex', flexWrap: 'wrap', gap: 8 },
   cargoPill: {
-    padding: '8px 14px',
+    padding: '10px 16px',
     borderRadius: 999,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 900,
     cursor: 'pointer',
     border: '1px solid',
   },
-  cargoMeta: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    gap: 14,
-    fontSize: 12,
-    fontWeight: 700,
-  },
-  metaItem: { display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748B' },
+  metaItem: { display: 'inline-flex', alignItems: 'center', gap: 8, lineHeight: 1.45 },
   updateCargoBtn: {
-    marginLeft: 'auto',
-    padding: '8px 14px',
+    padding: '10px 16px',
     borderRadius: 12,
     border: '1px solid #CBD5E1',
     background: '#fff',
     fontWeight: 950,
-    fontSize: 12,
+    fontSize: 13,
     cursor: 'pointer',
+    flexShrink: 0,
   },
   aiHint: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 24px' },
-  activeName: { margin: 0, fontSize: '18px', fontWeight: 950 },
+  activeName: { margin: 0, fontSize: '17px', fontWeight: 950 },
   messagesArea: { flex: 1, padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', minHeight: 0 },
   msgRow: { display: 'flex' },
   bubble: { maxWidth: '70%', padding: '14px 20px' },
   msgText: { margin: 0, fontSize: '14px', lineHeight: 1.6 },
-  quickBar: { display: 'flex', flexWrap: 'wrap', gap: 8, padding: '12px 24px' },
+  quickBar: { display: 'flex', flexWrap: 'wrap', gap: 10, padding: '16px 28px', alignItems: 'center', boxSizing: 'border-box' },
   quickChip: {
     padding: '8px 12px',
     borderRadius: 12,
@@ -1649,8 +2154,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     cursor: 'pointer',
   },
-  inputFooter: { padding: '16px 24px 24px' },
-  inputContainer: { display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '20px' },
+  inputFooter: { padding: '18px 28px 26px', boxSizing: 'border-box' },
+  inputContainer: { display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 14px', borderRadius: '20px' },
   inputSideBtn: { border: 'none', background: 'transparent', cursor: 'pointer', padding: 6, display: 'flex', alignItems: 'center' },
   inputField: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '15px', fontWeight: 600, minWidth: 0 },
   sendBtn: { border: 'none', backgroundColor: '#D9FF00', width: '45px', height: '45px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
@@ -1665,10 +2170,10 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 12,
   },
   loadingArea: { padding: '60px', textAlign: 'center' },
-  rightPanel: { width: 300, minWidth: 260, maxWidth: 360, overflowY: 'auto', display: 'flex', flexDirection: 'column' },
-  rightHead: { padding: '24px 20px', textAlign: 'center', borderBottom: '1px solid rgba(148,163,184,0.25)' },
+  rightPanel: { width: 358, minWidth: 280, maxWidth: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' },
+  rightHead: { padding: '24px 20px', textAlign: 'center', borderBottom: '1px solid rgba(148,163,184,0.25)', boxSizing: 'border-box' },
   rightSection: { padding: '18px 20px', borderBottom: '1px solid rgba(148,163,184,0.2)' },
-  rightH4: { margin: '0 0 12px', fontSize: 11, fontWeight: 950, letterSpacing: '0.12em', color: '#64748B' },
+  rightH4: { margin: '0 0 12px', fontSize: 11, fontWeight: 600, letterSpacing: 0, color: 'rgba(135, 135, 135, 1)' },
   docRow: {
     display: 'flex',
     alignItems: 'center',

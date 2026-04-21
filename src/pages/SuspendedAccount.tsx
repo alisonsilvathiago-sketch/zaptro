@@ -96,7 +96,7 @@ const styles = {
     marginBottom: '40px'
   },
   infoBox: {
-    backgroundColor: '#f8fafc', padding: '32px', borderRadius: '32px',
+    backgroundColor: '#f4f4f4', padding: '32px', borderRadius: '32px',
     border: '1px solid var(--border)', marginBottom: '40px', textAlign: 'left' as const
   },
   infoLabel: {

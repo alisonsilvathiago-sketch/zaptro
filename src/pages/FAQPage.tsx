@@ -82,7 +82,7 @@ const FAQPage: React.FC = () => {
       <main style={styles.main}>
          <div style={styles.faqList}>
             {filteredFaqs.map((f, i) => (
-               <div key={i} style={{...styles.faqItem, backgroundColor: openIndex === i ? 'white' : '#F8FAFC', borderColor: openIndex === i ? 'var(--primary)' : '#E2E8F0'}}>
+               <div key={i} style={{...styles.faqItem, backgroundColor: openIndex === i ? 'white' : '#f4f4f4', borderColor: openIndex === i ? 'var(--primary)' : '#E2E8F0'}}>
                   <button style={styles.questionBtn} onClick={() => setOpenIndex(openIndex === i ? null : i)}>
                      <div style={styles.qText}>
                         <div style={{...styles.iconBox, backgroundColor: openIndex === i ? 'var(--primary-light)' : 'white'}}>
@@ -121,7 +121,7 @@ const FAQPage: React.FC = () => {
 const styles: Record<string, any> = {
   container: { minHeight: '100vh', backgroundColor: 'white', paddingBottom: '100px' },
   header: { 
-     padding: '120px 40px', backgroundColor: '#F8FAFC', textAlign: 'center' as const, 
+     padding: '120px 40px', backgroundColor: '#f4f4f4', textAlign: 'center' as const, 
      display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px' 
   },
   title: { fontSize: '40px', fontWeight: '950', color: '#0F172A', letterSpacing: '-2.0px', margin: 0 },

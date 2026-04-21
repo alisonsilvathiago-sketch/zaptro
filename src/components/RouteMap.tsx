@@ -61,11 +61,13 @@ const RouteMap: React.FC<RouteMapProps> = ({ stops, center = [-23.5505, -46.6333
 
         {/* Desenhar a linha que conecta as paradas */}
         {sortedCoords.length > 1 && (
-          <Polyline 
-            positions={sortedCoords} 
-            color="var(--accent)" 
-            weight={4} 
-            opacity={0.6}
+          <Polyline
+            positions={sortedCoords}
+            color="#D9FF00"
+            weight={5}
+            opacity={0.85}
+            lineCap="round"
+            lineJoin="round"
             dashArray="10, 10"
           />
         )}

@@ -152,7 +152,7 @@ const HR: React.FC = () => {
        <div style={styles.kpiGrid}>
           <div style={styles.kpiCard}>
              <div style={styles.kpiInfo}><p style={styles.kpiLabel}>Total Equipe</p><h2 style={styles.kpiValue}>{employees.length}</h2></div>
-             <div style={{...styles.kpiIconWrapper, backgroundColor: '#eff6ff'}}><Users size={24} color="#3b82f6" /></div>
+             <div style={{...styles.kpiIconWrapper, backgroundColor: 'rgba(217, 255, 0, 0.12)'}}><Users size={24} color="#D9FF00" /></div>
           </div>
           <div style={styles.kpiCard}>
              <div style={styles.kpiInfo}><p style={styles.kpiLabel}>Clima Organizacional</p><h2 style={styles.kpiValue}>92%</h2></div>
@@ -328,8 +328,8 @@ const styles: Record<string, any> = {
   dashboardMainGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' },
   chartCol: { display: 'flex', flexDirection: 'column', gap: '24px' },
   chartCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
-  cardHeader: { padding: '20px 24px', borderBottom: '1px solid #f1f5f9' },
-  noteCard: { backgroundColor: '#f8fafc', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
+  cardHeader: { padding: '20px 24px', borderBottom: '1px solid #e8e8e8' },
+  noteCard: { backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
   avatarMini: { width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800' },
   filterBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e2e8f0', width: '400px' },
@@ -339,8 +339,8 @@ const styles: Record<string, any> = {
   btnPrimary: { padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #f1f5f9' },
-  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #f1f5f9', color: '#475569' },
+  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8' },
+  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
   userCell: { display: 'flex', alignItems: 'center', gap: '12px' },
   avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900' },
   uName: { fontWeight: '800', color: '#1e293b', margin: 0 },
@@ -348,7 +348,7 @@ const styles: Record<string, any> = {
   iconBtn: { padding: '8px', borderRadius: '8px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#94a3b8' },
   checkinPopup: { position: 'fixed', bottom: '32px', right: '32px', width: '300px', backgroundColor: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', zIndex: 1000 },
   emojiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' },
-  emojiBtn: { padding: '12px', borderRadius: '12px', border: '1px solid #f1f5f9', backgroundColor: '#f8fafc', cursor: 'pointer', fontSize: '20px' },
+  emojiBtn: { padding: '12px', borderRadius: '12px', border: '1px solid #e8e8e8', backgroundColor: '#f4f4f4', cursor: 'pointer', fontSize: '20px' },
   input: { padding: '14px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none' },
   btnPrimaryLarge: { padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', cursor: 'pointer' },
   btnPrimaryFull: { width: '100%', padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', cursor: 'pointer' },

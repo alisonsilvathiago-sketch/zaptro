@@ -231,7 +231,7 @@ const MasterStaff: React.FC = () => {
       <div style={styles.statsGrid}>
          <div style={styles.statCard}>
             <div style={styles.statHeader}>
-               <div style={{...styles.statIcon, backgroundColor: '#f5f3ff', color: '#7c3aed'}}><ShieldCheck size={20} /></div>
+               <div style={{...styles.statIcon, backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00'}}><ShieldCheck size={20} /></div>
                <span style={styles.statLabel}>Total HQ</span>
             </div>
             <div style={styles.statValue}>{stats.total}</div>
@@ -247,7 +247,7 @@ const MasterStaff: React.FC = () => {
          </div>
          <div style={styles.statCard}>
             <div style={styles.statHeader}>
-               <div style={{...styles.statIcon, backgroundColor: '#eff6ff', color: '#2563eb'}}><Key size={20} /></div>
+               <div style={{...styles.statIcon, backgroundColor: 'rgba(217, 255, 0, 0.12)', color: '#D9FF00'}}><Key size={20} /></div>
                <span style={styles.statLabel}>Audit Trail (24h)</span>
             </div>
             <div style={styles.statValue}>{stats.recentLogs}</div>
@@ -299,7 +299,7 @@ const MasterStaff: React.FC = () => {
                         </td>
                         <td style={styles.td}>
                            <div style={styles.roleContainer}>
-                              <Shield size={14} color="#7c3aed" />
+                              <Shield size={14} color="#D9FF00" />
                               <span style={styles.roleBadge}>{member.tier}</span>
                            </div>
                         </td>
@@ -388,7 +388,7 @@ const MasterStaff: React.FC = () => {
       <LogtaModal isOpen={isPermModalOpen} onClose={() => setIsPermModalOpen(false)} width="650px" title={`Permissões: ${selectedMember?.profile.full_name}`}>
          <div style={styles.permContainer}>
             <div style={styles.permHeader}>
-               <Lock size={18} color="#7c3aed" />
+               <Lock size={18} color="#D9FF00" />
                <span style={styles.permTitle}>Configuração de Acesso por Módulo</span>
             </div>
             
@@ -431,13 +431,13 @@ const MasterStaff: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0', backgroundColor: 'transparent', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  bread: { fontSize: '10px', fontWeight: '900', color: '#7c3aed', marginBottom: '4px', opacity: 0.6 },
-  title: { fontSize: '28px', fontWeight: '950', color: '#111827', letterSpacing: '-1.5px', margin: 0 },
+  bread: { fontSize: '10px', fontWeight: '900', color: '#D9FF00', marginBottom: '4px', opacity: 0.6 },
+  title: { fontSize: '28px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
   subtitle: { color: '#64748b', fontSize: '15px', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#64748b' },
-  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#7c3aed', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(124, 58, 237, 0.2)' },
-  performanceBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', color: '#111827' },
+  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
+  performanceBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', color: '#000000' },
   
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '32px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: 'var(--shadow-sm)' },
@@ -448,47 +448,47 @@ const styles: Record<string, any> = {
   statFooter: { fontSize: '11px', color: '#94a3b8', fontWeight: '600' },
 
   mainCard: { backgroundColor: 'white', borderRadius: '28px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' },
-  cardHeader: { padding: '24px 32px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between' },
-  searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f8fafc', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e2e8f0', width: '400px' },
+  cardHeader: { padding: '24px 32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between' },
+  searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f4f4f4', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e2e8f0', width: '400px' },
   searchInput: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '14px', fontWeight: '600', width: '100%', color: '#1e293b' },
   filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
 
   table: { width: '100%', borderCollapse: 'collapse' as const },
   thead: { backgroundColor: '#f9fafb', textAlign: 'left' as const },
   th: { padding: '16px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  tr: { borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' },
+  tr: { borderBottom: '1px solid #e8e8e8', transition: 'background 0.2s' },
   td: { padding: '16px 32px' },
   memberCell: { display: 'flex', alignItems: 'center', gap: '12px' },
   memberName: { fontSize: '15px', fontWeight: '800', color: '#1e293b' },
   memberEmail: { fontSize: '12px', color: '#94a3b8', margin: 0, fontWeight: '500' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#f5f3ff', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '18px' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '18px' },
   roleContainer: { display: 'flex', alignItems: 'center', gap: '6px' },
-  roleBadge: { fontSize: '11px', fontWeight: '800', color: '#7c3aed', letterSpacing: '0.5px' },
+  roleBadge: { fontSize: '11px', fontWeight: '800', color: '#D9FF00', letterSpacing: '0.5px' },
   departmentText: { fontSize: '13px', color: '#64748b', fontWeight: '700' },
   statusBox: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px' },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%' },
   actions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-  iconBtn: { padding: '10px', border: 'none', backgroundColor: '#f8fafc', borderRadius: '10px', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s' },
+  iconBtn: { padding: '10px', border: 'none', backgroundColor: '#f4f4f4', borderRadius: '10px', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s' },
 
   form: { padding: '10px', display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   labelForm: { fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px' },
-  input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', backgroundColor: '#f8fafc', fontWeight: '700', outline: 'none', fontSize: '14px' },
+  input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none', fontSize: '14px' },
   hintText: { fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
-  submitBtn: { padding: '18px', backgroundColor: '#7c3aed', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', marginTop: '12px', boxShadow: '0 10px 20px -5px rgba(124, 58, 237, 0.3)' },
+  submitBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', marginTop: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.3)' },
 
   permContainer: { padding: '10px' },
-  permHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #f1f5f9' },
+  permHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #e8e8e8' },
   permTitle: { fontSize: '16px', fontWeight: '900', color: '#1e293b' },
   matrixList: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
-  moduleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' },
+  moduleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e8e8e8' },
   moduleName: { display: 'flex', flexDirection: 'column' as const, gap: '2px' },
   actionGrid: { display: 'flex', gap: '20px' },
   actionCheck: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#64748b' },
   permFooter: { marginTop: '32px', display: 'flex', justifyContent: 'flex-end', gap: '12px' },
   cancelBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
-  savePermBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#7c3aed', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' }
+  savePermBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' }
 };
 
 export default MasterStaff;

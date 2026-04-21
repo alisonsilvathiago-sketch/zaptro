@@ -68,7 +68,7 @@ export function getZaptroPlanVerifiedTier(
 export const ZAPTRO_VERIFIED_SEAL_META = {
   standard: {
     label: 'Plano Profissional — transportadora verificada',
-    bg: '#3b82f6',
+    bg: '#D9FF00',
   },
   premium: {
     label: 'Plano Premium — transportadora verificada',

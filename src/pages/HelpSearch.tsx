@@ -153,18 +153,18 @@ const styles: Record<string, any> = {
   main: { maxWidth: '1200px', margin: '0 auto' },
   loading: { padding: '80px', textAlign: 'center', color: '#64748B', fontWeight: '600' },
   emptyState: { textAlign: 'center', padding: '100px 40px', color: '#94a3b8' },
-  backBtn: { marginTop: '24px', padding: '12px 24px', backgroundColor: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#0f172a', fontWeight: '800', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' },
+  backBtn: { marginTop: '24px', padding: '12px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '12px', color: '#0f172a', fontWeight: '800', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' },
 
   resultsList: { display: 'grid', gridTemplateColumns: '1fr', gap: '20px' },
   resultCard: { 
-    backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #f1f5f9',
+    backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #e8e8e8',
     cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', gap: '12px',
     '&:hover': { borderColor: 'var(--primary)', transform: 'translateY(-4px)', boxShadow: '0 12px 30px rgba(0,0,0,0.05)' }
   },
-  categoryBadge: { width: 'fit-content', padding: '4px 10px', backgroundColor: '#f5f3ff', color: 'var(--primary)', borderRadius: '8px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase' },
+  categoryBadge: { width: 'fit-content', padding: '4px 10px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '8px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase' },
   articleTitle: { fontSize: '20px', fontWeight: '900', color: '#1e293b' },
   articleExcerpt: { fontSize: '15px', color: '#64748B', lineHeight: '1.6' },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '16px', borderTop: '1px solid #f8fafc' },
+  cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '16px', borderTop: '1px solid #e8e8e8' },
   meta: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#94a3b8' },
   link: { display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '800', fontSize: '14px' }
 };

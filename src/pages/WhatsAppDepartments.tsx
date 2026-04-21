@@ -214,7 +214,7 @@ const styles: Record<string, any> = {
   addBtn: { backgroundColor: '#000', color: '#FFF', border: 'none', padding: '16px 28px', borderRadius: '18px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '950', cursor: 'pointer' },
   
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' },
-  card: { backgroundColor: 'white', borderRadius: '32px', border: '1.5px solid #F1F5F9', padding: '30px', position: 'relative', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' },
+  card: { backgroundColor: 'white', borderRadius: '32px', border: '1.5px solid #e8e8e8', padding: '30px', position: 'relative', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' },
   cardEdit: { backgroundColor: '#FFFFFF', borderRadius: '32px', border: '2.5px solid #000', padding: '30px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)' },
   badge: { position: 'absolute', top: '30px', right: '30px', backgroundColor: '#EEFCEF', color: '#10B981', padding: '6px 14px', borderRadius: '14px', fontSize: '11px', fontWeight: '950' },
   cardHeader: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '25px' },
@@ -230,7 +230,7 @@ const styles: Record<string, any> = {
   hint: { fontSize: '12px', color: '#94A3B8', margin: 0, fontWeight: '500', lineHeight: '1.4' },
   formActions: { display: 'flex', gap: '15px', marginTop: '10px' },
   saveBtn: { flex: 1, backgroundColor: '#000', color: '#D9FF00', border: 'none', padding: '18px', borderRadius: '18px', fontWeight: '950', cursor: 'pointer' },
-  cancelBtn: { padding: '18px 24px', backgroundColor: '#F1F5F9', border: 'none', borderRadius: '18px', fontWeight: '950', color: '#64748B', cursor: 'pointer' },
+  cancelBtn: { padding: '18px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '18px', fontWeight: '950', color: '#64748B', cursor: 'pointer' },
   empty: { gridColumn: '1 / -1', padding: '80px', textAlign: 'center', backgroundColor: '#FBFBFC', borderRadius: '40px', color: '#94A3B8', fontWeight: '600' }
 };
 

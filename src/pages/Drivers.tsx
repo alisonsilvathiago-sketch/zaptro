@@ -149,7 +149,7 @@ const Drivers: React.FC = () => {
    const renderKPIs = () => (
       <div style={styles.kpiGrid}>
          <div style={styles.kpiCard}>
-            <div style={{...styles.kpiIconBox, backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6'}}>
+            <div style={{...styles.kpiIconBox, backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#D9FF00'}}>
                <Users size={24} />
             </div>
             <div style={styles.kpiInfo}>
@@ -167,7 +167,7 @@ const Drivers: React.FC = () => {
             </div>
          </div>
          <div style={styles.kpiCard}>
-            <div style={{...styles.kpiIconBox, backgroundColor: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6'}}>
+            <div style={{...styles.kpiIconBox, backgroundColor: 'rgba(139, 92, 246, 0.1)', color: '#D9FF00'}}>
                <Truck size={24} />
             </div>
             <div style={styles.kpiInfo}>
@@ -453,7 +453,7 @@ const Drivers: React.FC = () => {
                                </div>
                             </td>
                             <td style={styles.td}>
-                               <span style={{...styles.badgeLink, backgroundColor: driver.type === 'Agregado' ? '#f5f3ff' : '#eff6ff', color: driver.type === 'Agregado' ? '#8b5cf6' : '#3b82f6'}}>
+                               <span style={{...styles.badgeLink, backgroundColor: driver.type === 'Agregado' ? 'rgba(217, 255, 0, 0.18)' : 'rgba(217, 255, 0, 0.12)', color: driver.type === 'Agregado' ? '#D9FF00' : '#D9FF00'}}>
                                   {driver.type}
                                </span>
                             </td>
@@ -495,13 +495,13 @@ const Drivers: React.FC = () => {
 };
 
 const styles: Record<string, any> = {
-  container: { padding: '40px', backgroundColor: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
+  container: { padding: '40px', backgroundColor: '#f4f4f4', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   titleArea: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   badge: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 12px', borderRadius: '30px', width: 'fit-content', letterSpacing: '1px' },
   titleText: { fontSize: '32px', fontWeight: '950', color: '#0f172a', letterSpacing: '-1.5px' },
   headerActions: { display: 'flex', gap: '12px' },
-  primaryBtn: { height: '52px', padding: '0 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 15px -3px rgba(124, 58, 237, 0.3)' },
+  primaryBtn: { height: '52px', padding: '0 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.3)' },
   
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
   kpiCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
@@ -522,8 +522,8 @@ const styles: Record<string, any> = {
 
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const, borderBottom: '1px solid #f1f5f9' },
-  td: { padding: '16px 24px', borderBottom: '1px solid #f1f5f9' },
+  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const, borderBottom: '1px solid #e8e8e8' },
+  td: { padding: '16px 24px', borderBottom: '1px solid #e8e8e8' },
   tr: { transition: 'background 0.2s' },
 
   formGrid: { display: 'flex', flexDirection: 'column' as const, gap: '20px', padding: '10px' },
@@ -539,7 +539,7 @@ const styles: Record<string, any> = {
   uSub: { fontSize: '12px', color: '#64748b', margin: 0 },
   badgeLink: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' as const },
   scoreRow: { display: 'flex', alignItems: 'center', gap: '8px' },
-  scoreBar: { height: '6px', backgroundColor: '#f1f5f9', borderRadius: '3px', flex: 1 },
+  scoreBar: { height: '6px', backgroundColor: '#ebebeb', borderRadius: '3px', flex: 1 },
   statusDotLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: '700' },
   pulseDot: { width: '8px', height: '8px', borderRadius: '50%' },
   view360Btn: { padding: '6px 16px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', border: 'none', borderRadius: '10px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' },
@@ -556,7 +556,7 @@ const styles: Record<string, any> = {
   heroSub: { fontSize: '14px', color: '#64748b', margin: '8px 0 0 0' },
   statusTag: { padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' as const },
   heroStats: { display: 'flex', gap: '16px' },
-  miniStat: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#334155' },
+  miniStat: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#334155' },
 
   profileMainGrid: { display: 'grid', gridTemplateColumns: '1.8fr 1fr', gap: '24px' },
   profileColumnMain: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
@@ -570,29 +570,29 @@ const styles: Record<string, any> = {
   timelineList: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   timelineItem: { display: 'flex', gap: '16px', position: 'relative' as const },
   timelineDot: { width: '12px', height: '12px', borderRadius: '50%', backgroundColor: 'var(--primary)', marginTop: '6px', zIndex: 1 },
-  timelineContent: { flex: 1, backgroundColor: '#f8fafc', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
+  timelineContent: { flex: 1, backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
   timelineRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' },
   timelineText: { fontSize: '13px', color: '#64748b', margin: 0, lineHeight: '1.5' },
 
   tableMini: { marginTop: '16px' },
-  miniTh: { textAlign: 'left' as const, fontSize: '11px', fontWeight: '800', color: '#94a3b8', padding: '12px 0', borderBottom: '1px solid #f1f5f9', textTransform: 'uppercase' as const },
-  miniTd: { padding: '12px 0', fontSize: '13px', borderBottom: '1px solid #f1f5f9' },
+  miniTh: { textAlign: 'left' as const, fontSize: '11px', fontWeight: '800', color: '#94a3b8', padding: '12px 0', borderBottom: '1px solid #e8e8e8', textTransform: 'uppercase' as const },
+  miniTd: { padding: '12px 0', fontSize: '13px', borderBottom: '1px solid #e8e8e8' },
 
   sideCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0' },
   sideCardTitle: { fontSize: '15px', fontWeight: '800', color: '#0f172a', margin: 0 },
   healthMetric: { marginTop: '24px' },
   healthHeader: { display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '700', marginBottom: '8px', color: '#64748b' },
-  healthBar: { height: '8px', backgroundColor: '#f1f5f9', borderRadius: '10px', overflow: 'hidden' },
+  healthBar: { height: '8px', backgroundColor: '#ebebeb', borderRadius: '10px', overflow: 'hidden' },
   healthFill: { height: '100%', backgroundColor: '#ef4444', borderRadius: '10px' },
   pontoSummary: { marginTop: '24px' },
-  pontoItem: { display: 'flex', gap: '12px', alignItems: 'center', backgroundColor: '#f8fafc', padding: '12px', borderRadius: '12px' },
-  sideDivider: { height: '1px', backgroundColor: '#f1f5f9', margin: '24px 0' },
+  pontoItem: { display: 'flex', gap: '12px', alignItems: 'center', backgroundColor: '#f4f4f4', padding: '12px', borderRadius: '12px' },
+  sideDivider: { height: '1px', backgroundColor: '#ebebeb', margin: '24px 0' },
   docListMini: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   docTitleMini: { fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, marginBottom: '4px' },
-  docItemMini: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#334155', padding: '8px 12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' },
+  docItemMini: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#334155', padding: '8px 12px', backgroundColor: '#f4f4f4', borderRadius: '8px', border: '1px solid #e8e8e8' },
   
   feedbackList: { display: 'flex', flexDirection: 'column' as const, gap: '16px', marginTop: '24px' },
-  feedbackItem: { padding: '16px', borderLeft: '3px solid var(--primary)', backgroundColor: '#f8fafc' },
+  feedbackItem: { padding: '16px', borderLeft: '3px solid var(--primary)', backgroundColor: '#f4f4f4' },
   typeBadge: { fontSize: '9px', fontWeight: '900', padding: '2px 8px', borderRadius: '4px', marginBottom: '8px', width: 'fit-content' },
   fullActionBtn: { width: '100%', height: '44px', marginTop: '24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s' },
   

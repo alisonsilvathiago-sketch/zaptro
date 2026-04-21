@@ -75,10 +75,10 @@ const MasterAdmin: React.FC = () => {
 
   const shortcuts = [
     { label: 'Auditoria de Logs', icon: History, path: '/auditoria', color: '#ff4b4b', desc: 'Rastreabilidade total de ações' },
-    { label: 'Intelligence Hub', icon: BarChart3, path: '/dashboard', color: '#7c3aed', desc: 'BI & Performance de Logística' },
+    { label: 'Intelligence Hub', icon: BarChart3, path: '/dashboard', color: '#D9FF00', desc: 'BI & Performance de Logística' },
     { label: 'Gestão de Empresas', icon: Building2, path: '/master/empresas', color: '#10b981', desc: 'Controle de instâncias e planos' },
-    { label: 'Gestão de Usuários', icon: Users, path: '/master/usuarios', color: '#8b5cf6', desc: 'Separação de usuários e produtos' },
-    { label: 'CRM Expansão', icon: Briefcase, path: '/master/crm', color: '#2563eb', desc: 'Pipeline de vendas corporativo' },
+    { label: 'Gestão de Usuários', icon: Users, path: '/master/usuarios', color: '#D9FF00', desc: 'Separação de usuários e produtos' },
+    { label: 'CRM Expansão', icon: Briefcase, path: '/master/crm', color: '#D9FF00', desc: 'Pipeline de vendas corporativo' },
 
     { label: 'Financeiro Master', icon: DollarSign, path: '/master/financeiro', color: '#f59e0b', desc: 'Faturamento e recorrência (MRR)' },
   ];
@@ -131,7 +131,7 @@ const MasterAdmin: React.FC = () => {
       <div style={styles.kpiGrid}>
          <div style={styles.kpiCard}>
             <div style={styles.kpiHeader}>
-               <div style={{...styles.kpiIcon, backgroundColor: '#eff6ff', color: '#2563eb'}}><Globe size={20} /></div>
+               <div style={{...styles.kpiIcon, backgroundColor: 'rgba(217, 255, 0, 0.12)', color: '#D9FF00'}}><Globe size={20} /></div>
                <span style={styles.kpiLabel}>Empresas Onboarded</span>
             </div>
             <h2 style={styles.kpiValue}>{metrics.totalCompanies}</h2>
@@ -152,7 +152,7 @@ const MasterAdmin: React.FC = () => {
          </div>
          <div style={styles.kpiCard}>
             <div style={styles.kpiHeader}>
-               <div style={{...styles.kpiIcon, backgroundColor: '#f5f3ff', color: '#7c3aed'}}><Users size={20} /></div>
+               <div style={{...styles.kpiIcon, backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00'}}><Users size={20} /></div>
                <span style={styles.kpiLabel}>Usuários Ativos</span>
             </div>
             <h2 style={styles.kpiValue}>{metrics.activeUsers}</h2>
@@ -182,8 +182,8 @@ const MasterAdmin: React.FC = () => {
                   <AreaChart data={chartData}>
                      <defs>
                         <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                           <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.1}/>
-                           <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
+                           <stop offset="5%" stopColor="#D9FF00" stopOpacity={0.1}/>
+                           <stop offset="95%" stopColor="#D9FF00" stopOpacity={0}/>
                         </linearGradient>
                      </defs>
                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -191,9 +191,9 @@ const MasterAdmin: React.FC = () => {
                      <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                      <Tooltip 
                         contentStyle={{borderRadius: '16px', border: 'none', boxShadow: 'var(--shadow-lg)'}}
-                        itemStyle={{fontWeight: 800, color: '#7c3aed'}}
+                        itemStyle={{fontWeight: 800, color: '#D9FF00'}}
                      />
-                     <Area type="monotone" dataKey="revenue" stroke="#7c3aed" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
+                     <Area type="monotone" dataKey="revenue" stroke="#D9FF00" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
                   </AreaChart>
                </ResponsiveContainer>
             </div>
@@ -255,7 +255,7 @@ const styles: Record<string, any> = {
   kpiValue: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', marginBottom: '8px' },
   kpiFooter: { display: 'flex', alignItems: 'center', gap: '6px' },
 
-  tabContainer: { display: 'flex', gap: '4px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '14px', width: 'fit-content' },
+  tabContainer: { display: 'flex', gap: '4px', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '14px', width: 'fit-content' },
   tabLink: { padding: '8px 16px', borderRadius: '10px', fontSize: '12px', fontWeight: '800', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '8px' },
   tabActive: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
 

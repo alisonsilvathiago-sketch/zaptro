@@ -15,16 +15,16 @@ const ModulePage: React.FC = () => {
     const path = location.pathname;
     
     // CRM
-    if (path.includes('/crm/clientes')) return { title: 'Gestão de Clientes', Icon: Users, color: '#8b5cf6' };
-    if (path.includes('/crm/leads')) return { title: 'Pipeline de Leads', Icon: Target, color: '#8b5cf6' };
-    if (path.includes('/crm/pedidos')) return { title: 'Pedidos de Venda', Icon: ShoppingCart, color: '#8b5cf6' };
-    if (path.includes('/crm/historico')) return { title: 'Histórico Comercial', Icon: HistoryIcon, color: '#8b5cf6' };
-    if (path.includes('/crm/perfil')) return { title: 'Perfil do Cliente', Icon: User, color: '#8b5cf6' };
+    if (path.includes('/crm/clientes')) return { title: 'Gestão de Clientes', Icon: Users, color: '#D9FF00' };
+    if (path.includes('/crm/leads')) return { title: 'Pipeline de Leads', Icon: Target, color: '#D9FF00' };
+    if (path.includes('/crm/pedidos')) return { title: 'Pedidos de Venda', Icon: ShoppingCart, color: '#D9FF00' };
+    if (path.includes('/crm/historico')) return { title: 'Histórico Comercial', Icon: HistoryIcon, color: '#D9FF00' };
+    if (path.includes('/crm/perfil')) return { title: 'Perfil do Cliente', Icon: User, color: '#D9FF00' };
     
     // LOGISTICA
-    if (path.includes('/logistica/rotas')) return { title: 'Planejamento de Rotas', Icon: Map, color: '#3b82f6' };
-    if (path.includes('/logistica/mapa')) return { title: 'Mapa em Tempo Real', Icon: Activity, color: '#3b82f6' };
-    if (path.includes('/logistica/historico')) return { title: 'Histórico de Entregas', Icon: HistoryIcon, color: '#3b82f6' };
+    if (path.includes('/logistica/rotas')) return { title: 'Planejamento de Rotas', Icon: Map, color: '#D9FF00' };
+    if (path.includes('/logistica/mapa')) return { title: 'Mapa em Tempo Real', Icon: Activity, color: '#D9FF00' };
+    if (path.includes('/logistica/historico')) return { title: 'Histórico de Entregas', Icon: HistoryIcon, color: '#D9FF00' };
     
     // RH
     if (path.includes('/rh/funcionarios')) return { title: 'Quadro de Colaboradores', Icon: Users, color: '#ec4899' };
@@ -43,8 +43,8 @@ const ModulePage: React.FC = () => {
     if (path.includes('/estoque/saidas')) return { title: 'Saída / Expedição', Icon: ShoppingCart, color: '#f59e0b' };
 
     // FROTA
-    if (path.includes('/frota/veiculos')) return { title: 'Gestão de Veículos', Icon: Truck, color: '#6366f1' };
-    if (path.includes('/frota/historico')) return { title: 'Histórico da Frota', Icon: HistoryIcon, color: '#6366f1' };
+    if (path.includes('/frota/veiculos')) return { title: 'Gestão de Veículos', Icon: Truck, color: '#D9FF00' };
+    if (path.includes('/frota/historico')) return { title: 'Histórico da Frota', Icon: HistoryIcon, color: '#D9FF00' };
 
     return { title: 'Visão Geral', Icon: LayoutDashboard, color: 'var(--primary)' };
   };
@@ -156,7 +156,7 @@ const styles = {
   tableHeader: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 100px', padding: '16px 24px', borderBottom: '2px solid var(--border)', fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
   tableRow: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 100px', padding: '16px 24px', alignItems: 'center', borderBottom: '1px solid var(--border)', backgroundColor: 'white' },
   idCell: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatarMini: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'var(--primary)' },
+  avatarMini: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'var(--primary)' },
   itemName: { fontWeight: '700', fontSize: '15px', color: '#1e293b' },
   itemSub: { fontSize: '12px', color: '#64748b' },
   contactCell: { display: 'flex', flexDirection: 'column' as const },

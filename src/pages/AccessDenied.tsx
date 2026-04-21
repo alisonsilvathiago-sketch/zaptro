@@ -23,7 +23,7 @@ const AccessDenied: React.FC = () => {
       flexDirection: 'column', 
       alignItems: 'center', 
       justifyContent: 'center',
-      backgroundColor: '#f8fafc',
+      backgroundColor: '#f4f4f4',
       padding: '20px',
       textAlign: 'center'
     }}>

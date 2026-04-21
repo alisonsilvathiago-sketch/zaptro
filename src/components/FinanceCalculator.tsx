@@ -224,14 +224,14 @@ const FinanceCalculator: React.FC = () => {
 
   const styles = {
     container: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px', minHeight: '400px' },
-    calcWrap: { backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '20px', border: '1px solid #E2E8F0' },
+    calcWrap: { backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '20px', border: '1px solid #E2E8F0' },
     displayArea: { backgroundColor: '#0F172A', color: 'white', padding: '16px', borderRadius: '14px', textAlign: 'right' as const, marginBottom: '16px', minHeight: '80px', display: 'flex', flexDirection: 'column' as const, justifyContent: 'flex-end', gap: '4px' },
     exprLabel: { fontSize: '13px', color: '#94A3B8', fontFamily: 'monospace' },
     resLabel: { fontSize: '24px', fontWeight: '900', fontFamily: 'monospace' },
     
     grid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' },
     btn: { height: '44px', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s', backgroundColor: 'white', color: '#1E293B', border: '1px solid #E2E8F0' },
-    btnOp: { backgroundColor: '#F1F5F9', color: 'var(--primary)', border: '1px solid #E2E8F0' },
+    btnOp: { backgroundColor: '#ebebeb', color: 'var(--primary)', border: '1px solid #E2E8F0' },
     btnEq: { gridColumn: 'span 2', backgroundColor: '#10B981', color: 'white', border: 'none' },
     
     form: { marginTop: '16px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },

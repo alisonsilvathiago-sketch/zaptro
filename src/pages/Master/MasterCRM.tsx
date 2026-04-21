@@ -33,16 +33,16 @@ const MasterCRM: React.FC = () => {
 
   const funnelStages = [
     { id: 'leads', name: 'Novo Lead', color: '#94a3b8' },
-    { id: 'contato', name: 'Primeiro Contato', color: '#3b82f6' },
-    { id: 'negociacao', name: 'Negociação', color: '#8b5cf6' },
+    { id: 'contato', name: 'Primeiro Contato', color: '#D9FF00' },
+    { id: 'negociacao', name: 'Negociação', color: '#D9FF00' },
     { id: 'proposta', name: 'Proposta Enviada', color: '#f59e0b' },
     { id: 'fechamento', name: 'Fechamento', color: '#10b981' }
   ];
 
   const statsData = [
     { name: 'Leads', value: 45, color: '#94a3b8' },
-    { name: 'Contato', value: 30, color: '#3b82f6' },
-    { name: 'Negoc.', value: 20, color: '#8b5cf6' },
+    { name: 'Contato', value: 30, color: '#D9FF00' },
+    { name: 'Negoc.', value: 20, color: '#D9FF00' },
     { name: 'Proposta', value: 15, color: '#f59e0b' },
     { name: 'Fechado', value: 10, color: '#10b981' },
   ];
@@ -85,7 +85,7 @@ const MasterCRM: React.FC = () => {
       <div style={styles.statsGrid}>
          <div style={styles.statCard}>
             <div style={styles.statHeader}>
-               <div style={{...styles.statIcon, backgroundColor: '#eff6ff', color: '#2563eb'}}><Target size={20} /></div>
+               <div style={{...styles.statIcon, backgroundColor: 'rgba(217, 255, 0, 0.12)', color: '#D9FF00'}}><Target size={20} /></div>
                <span style={styles.statLabel}>Pipeline Total</span>
             </div>
             <div style={styles.statValue}>R$ 1.2M</div>
@@ -180,8 +180,8 @@ const MasterCRM: React.FC = () => {
                        <div key={lead.id} style={styles.leadCard} onClick={() => setSelectedLead(lead)}>
                           <div style={styles.cardTop}>
                              <span style={{...styles.potentialTag, 
-                                backgroundColor: lead.potential === 'OURO' ? '#fef3c7' : '#eff6ff', 
-                                color: lead.potential === 'OURO' ? '#92400e' : '#2563eb'
+                                backgroundColor: lead.potential === 'OURO' ? '#fef3c7' : 'rgba(217, 255, 0, 0.12)', 
+                                color: lead.potential === 'OURO' ? '#92400e' : '#D9FF00'
                              }}>{lead.potential}</span>
                              <span style={styles.cardValue}>R$ {lead.value.toLocaleString()}</span>
                           </div>
@@ -404,7 +404,7 @@ const styles = {
   mStatValue: { fontSize: '20px', fontWeight: '900', color: 'var(--primary)' },
 
   kanbanBoard: { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', minHeight: '600px', alignItems: 'flex-start' },
-  kanbanColumn: { backgroundColor: '#f1f5f9', borderRadius: '20px', padding: '16px', display: 'flex', flexDirection: 'column' as const, gap: '16px', minHeight: '500px' },
+  kanbanColumn: { backgroundColor: '#ebebeb', borderRadius: '20px', padding: '16px', display: 'flex', flexDirection: 'column' as const, gap: '16px', minHeight: '500px' },
   columnHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' },
   columnDot: { width: '8px', height: '8px', borderRadius: '50%' },
   columnTitle: { fontSize: '13px', fontWeight: '800', color: '#475569', flex: 1 },
@@ -417,15 +417,15 @@ const styles = {
   cardValue: { fontSize: '11px', fontWeight: '800', color: 'var(--primary)' },
   leadName: { fontSize: '14px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '4px' },
   leadLoc: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #f8fafc', marginTop: '12px', paddingTop: '12px' },
+  cardFooter: { display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e8e8e8', marginTop: '12px', paddingTop: '12px' },
   leadUser: { fontSize: '10px', fontWeight: '700', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' },
   leadTime: { fontSize: '9px', fontWeight: '600', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' },
   columnAddBtn: { border: '2px dashed #cbd5e1', background: 'none', borderRadius: '12px', padding: '12px', color: '#94a3b8', fontSize: '12px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s' },
 
   tableWrapper: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  th: { backgroundColor: '#f8fafc', padding: '16px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  tr: { borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' },
+  th: { backgroundColor: '#f4f4f4', padding: '16px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  tr: { borderBottom: '1px solid #e8e8e8', transition: 'background 0.2s' },
   td: { padding: '16px 24px' },
   lNameTable: { fontSize: '15px', fontWeight: '800', color: 'var(--primary)' },
   lLocTable: { fontSize: '12px', color: '#94a3b8', fontWeight: '600' },
@@ -436,7 +436,7 @@ const styles = {
 
   // Modal Detail Styles
   modalContent: { padding: '0px' },
-  modalHeader: { padding: '24px 32px', backgroundColor: '#f8fafc', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  modalHeader: { padding: '24px 32px', backgroundColor: '#f4f4f4', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   modalBadgeRow: { display: 'flex', gap: '8px' },
   modalPrice: { fontSize: '20px', fontWeight: '950', color: 'var(--primary)' },
   modalTabs: { display: 'flex', gap: '32px', padding: '0 32px', borderBottom: '1px solid var(--border)' },
@@ -452,7 +452,7 @@ const styles = {
   logDot: { width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--primary)', marginTop: '6px' },
   logText: { fontSize: '13px', color: '#475569' },
   logDate: { fontSize: '11px', color: '#94a3b8', fontWeight: '700' },
-  modalFooter: { padding: '24px 32px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', backgroundColor: '#f8fafc' },
+  modalFooter: { padding: '24px 32px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', backgroundColor: '#f4f4f4' },
   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
   secondaryBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
 
@@ -462,7 +462,7 @@ const styles = {
   formGrid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   label: { fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const },
-  input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f8fafc', fontWeight: '700', outline: 'none' },
+  input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none' },
   submitBtn: { padding: '18px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', marginTop: '12px', boxShadow: 'var(--shadow-lg)' }
 };
 

@@ -172,11 +172,11 @@ const Dashboard: React.FC = () => {
   const segment = getSegmentConfig(tenantCompany?.segment);
 
   const kpis = [
-    { label: segment.primaryLabel, value: metrics.todayDeliveries, sub: `${metrics.activeRoutes} ${segment.terminology.fleet.toLowerCase()} on`, Icon: segment.mainIcon, color: '#8b5cf6', trend: '+14%' },
+    { label: segment.primaryLabel, value: metrics.todayDeliveries, sub: `${metrics.activeRoutes} ${segment.terminology.fleet.toLowerCase()} on`, Icon: segment.mainIcon, color: '#D9FF00', trend: '+14%' },
     { label: segment.terminology.drivers, value: metrics.activeDrivers, sub: `${metrics.teamTotal} no total`, Icon: Users, color: '#10b981', trend: '+8%' },
     { label: segment.specialKpi, value: segment.specialKpi.includes('Temp') ? '4.5°C' : (metrics.monthlyRevenue / 1000).toFixed(1) + 'k', sub: segment.terminology.load, Icon: segment.specialKpiIcon, color: '#f59e0b', trend: 'Ok' },
-    { label: 'Relacionamento (CRM)', value: metrics.totalClients, sub: `${metrics.activeLeads} novos leads`, Icon: UserPlus, color: '#3b82f6', trend: 'Crescente' },
-    { label: 'Estoque Central', value: metrics.inventoryCount, sub: 'Itens em almoxarifado', Icon: Package, color: '#6366f1', trend: 'Equilibrado' },
+    { label: 'Relacionamento (CRM)', value: metrics.totalClients, sub: `${metrics.activeLeads} novos leads`, Icon: UserPlus, color: '#D9FF00', trend: 'Crescente' },
+    { label: 'Estoque Central', value: metrics.inventoryCount, sub: 'Itens em almoxarifado', Icon: Package, color: '#D9FF00', trend: 'Equilibrado' },
     { label: 'Logta Academy', value: '45', sub: 'Treinamentos concluídos', Icon: GraduationCap, color: '#f43f5e', trend: 'Alto Comprometimento' },
     { label: 'Frota & Ativos', value: metrics.totalFleet, sub: 'Veículos cadastrados', Icon: Truck, color: '#06b6d4', trend: '100% Up' },
     { label: 'Agenda Operacional', value: 'CALENDARIO', sub: 'Compromissos críticos', Icon: Calendar, color: '#ef4444', trend: 'Monitorado' },
@@ -317,8 +317,8 @@ const Dashboard: React.FC = () => {
               <AreaChart data={dataLabels}>
                 <defs>
                   <linearGradient id="colorEntregas" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#D9FF00" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#D9FF00" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -327,7 +327,7 @@ const Dashboard: React.FC = () => {
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-lg)' }}
                 />
-                <Area type="monotone" dataKey="entregas" stroke="#8B5CF6" strokeWidth={3} fillOpacity={1} fill="url(#colorEntregas)" />
+                <Area type="monotone" dataKey="entregas" stroke="#D9FF00" strokeWidth={3} fillOpacity={1} fill="url(#colorEntregas)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

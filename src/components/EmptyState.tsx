@@ -55,7 +55,7 @@ const styles = {
     textAlign: 'center' as const,
     backgroundColor: 'white',
     borderRadius: '32px',
-    border: '1px solid #f1f5f9',
+    border: '1px solid #e8e8e8',
     margin: '20px 0',
     animation: 'fadeIn 0.6s ease-out'
   },
@@ -76,7 +76,7 @@ const styles = {
     width: '120px',
     height: '120px',
     borderRadius: '60px',
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#f4f4f4',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
@@ -110,7 +110,7 @@ const styles = {
     transition: 'all 0.2s',
     '&:hover': {
       transform: 'translateY(-2px)',
-      boxShadow: '0 8px 15px rgba(124, 58, 237, 0.2)'
+      boxShadow: '0 8px 15px rgba(217, 255, 0, 0.2)'
     }
   }
 };

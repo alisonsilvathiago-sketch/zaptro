@@ -142,10 +142,10 @@ const WhatsAppLogin: React.FC = () => {
 };
 
 const styles: Record<string, any> = {
-  container: { height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', backgroundImage: 'radial-gradient(circle at 2px 2px, #e2e8f0 1px, transparent 0)', backgroundSize: '40px 40px' },
-  card: { backgroundColor: 'white', width: '100%', maxWidth: '440px', padding: '60px 40px', borderRadius: '40px', boxShadow: '0 40px 100px -20px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' },
+  container: { height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f4f4f4', backgroundImage: 'radial-gradient(circle at 2px 2px, #e2e8f0 1px, transparent 0)', backgroundSize: '40px 40px' },
+  card: { backgroundColor: 'white', width: '100%', maxWidth: '440px', padding: '60px 40px', borderRadius: '40px', boxShadow: '0 40px 100px -20px rgba(0,0,0,0.1)', border: '1px solid #e8e8e8' },
   header: { textAlign: 'center', marginBottom: '40px' },
-  logoBox: { width: '48px', height: '48px', backgroundColor: '#7C3AED', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' },
+  logoBox: { width: '48px', height: '48px', backgroundColor: '#D9FF00', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' },
   title: { fontSize: '24px', fontWeight: '950', color: '#0f172a', letterSpacing: '-1px' },
   subtitle: { fontSize: '14px', color: '#64748b', marginTop: '8px' },
   form: { display: 'flex', flexDirection: 'column', gap: '24px' },
@@ -153,12 +153,12 @@ const styles: Record<string, any> = {
   label: { fontSize: '12px', fontWeight: '900', color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' },
   inputWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
   icon: { position: 'absolute', left: '16px', color: '#94a3b8' },
-  input: { width: '100%', padding: '16px 16px 16px 48px', borderRadius: '16px', backgroundColor: '#f1f5f9', border: '1px solid #f1f5f9', fontSize: '15px', outline: 'none', transition: 'all 0.2s', '&:focus': { backgroundColor: 'white', borderColor: '#7C3AED' } },
+  input: { width: '100%', padding: '16px 16px 16px 48px', borderRadius: '16px', backgroundColor: '#ebebeb', border: '1px solid #e8e8e8', fontSize: '15px', outline: 'none', transition: 'all 0.2s', '&:focus': { backgroundColor: 'white', borderColor: '#D9FF00' } },
   eyeBtn: { position: 'absolute', right: '16px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' },
-  loginBtn: { padding: '18px', backgroundColor: '#7C3AED', color: 'white', borderRadius: '16px', border: 'none', fontWeight: '900', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', boxShadow: '0 10px 20px -5px rgba(124, 58, 237, 0.4)' },
-  footer: { marginTop: '40px', borderTop: '1px solid #f1f5f9', paddingTop: '32px', textAlign: 'center' },
+  loginBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', borderRadius: '16px', border: 'none', fontWeight: '900', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.4)' },
+  footer: { marginTop: '40px', borderTop: '1px solid #e8e8e8', paddingTop: '32px', textAlign: 'center' },
   upsellText: { fontSize: '13px', color: '#64748b', marginBottom: '16px' },
-  registerBtn: { backgroundColor: 'transparent', border: '1px solid #7C3AED', color: '#7C3AED', padding: '12px 24px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
+  registerBtn: { backgroundColor: 'transparent', border: '1px solid #D9FF00', color: '#D9FF00', padding: '12px 24px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
   features: { display: 'flex', gap: '24px', marginTop: '40px' },
   featItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#94a3b8', fontWeight: '800' }
 };

@@ -202,8 +202,8 @@ const LogtaCalendar: React.FC = () => {
                          {dayEvents.map((t, idx) => (
                             <div key={idx} style={{
                               ...styles.eventChip, 
-                              backgroundColor: t.is_public ? '#ecfdf5' : (t.is_shared ? '#f5f3ff' : '#eff6ff'),
-                              color: t.is_public ? '#059669' : (t.is_shared ? '#8b5cf6' : '#3b82f6')
+                              backgroundColor: t.is_public ? '#ecfdf5' : (t.is_shared ? 'rgba(217, 255, 0, 0.18)' : 'rgba(217, 255, 0, 0.12)'),
+                              color: t.is_public ? '#059669' : (t.is_shared ? '#D9FF00' : '#D9FF00')
                             }}>
                                {t.title}
                             </div>
@@ -271,42 +271,42 @@ const styles = {
   container: { padding: '20px', backgroundColor: '#fcfcfc', minHeight: '100%' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' },
   headerLeft: { display: 'flex', alignItems: 'center', gap: '40px' },
-  title: { fontSize: '24px', fontWeight: '800', color: '#111827' },
-  filterGroup: { display: 'flex', gap: '8px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px' },
+  title: { fontSize: '24px', fontWeight: '800', color: '#000000' },
+  filterGroup: { display: 'flex', gap: '8px', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '10px' },
   filterBtn: { padding: '6px 12px', borderRadius: '8px', border: 'none', background: 'none', fontSize: '13px', fontWeight: '600', color: '#64748b', cursor: 'pointer' },
-  filterActive: { backgroundColor: 'white', color: '#111827', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
+  filterActive: { backgroundColor: 'white', color: '#000000', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
   headerRight: {},
   searchWrap: { display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #e2e8f0', padding: '8px 16px', borderRadius: '12px', backgroundColor: 'white' },
   searchInp: { border: 'none', outline: 'none', fontSize: '14px' },
   
   whiteCard: { backgroundColor: 'white', borderRadius: '20px', border: '1px solid #e2e8f0', overflow: 'hidden' },
-  calNav: { padding: '24px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  calNav: { padding: '24px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   navLeft: { display: 'flex', alignItems: 'center', gap: '16px' },
   dateBox: { padding: '8px', border: '1px solid #e2e8f0', borderRadius: '10px', textAlign: 'center' as const, minWidth: '50px' },
   dateDay: { fontSize: '10px', fontWeight: '800', color: '#94a3b8', display: 'block' },
-  dateNum: { fontSize: '18px', fontWeight: '900', color: '#111827' },
-  monthTitle: { fontSize: '18px', fontWeight: '800', color: '#111827' },
+  dateNum: { fontSize: '18px', fontWeight: '900', color: '#000000' },
+  monthTitle: { fontSize: '18px', fontWeight: '800', color: '#000000' },
   dateRange: { fontSize: '13px', color: '#64748b' },
   
   navRight: { display: 'flex', alignItems: 'center', gap: '16px' },
   arrows: { display: 'flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden' },
   arrowBtn: { padding: '8px', border: 'none', background: 'none', cursor: 'pointer' },
   todayBtn: { padding: '8px 16px', borderLeft: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0', background: 'none', fontSize: '13px', fontWeight: '700', cursor: 'pointer' },
-  addBtn: { backgroundColor: '#111827', color: 'white', padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px', border: 'none', fontWeight: '700', cursor: 'pointer' },
+  addBtn: { backgroundColor: '#000000', color: 'white', padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px', border: 'none', fontWeight: '700', cursor: 'pointer' },
   
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', backgroundColor: '#f8fafc' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', backgroundColor: '#f4f4f4' },
   weekdayLabel: { padding: '12px', textAlign: 'center' as const, fontSize: '12px', fontWeight: '700', color: '#64748b', borderBottom: '1px solid #e2e8f0' },
-  dayCell: { minHeight: '120px', backgroundColor: 'white', borderRight: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', padding: '8px' },
+  dayCell: { minHeight: '120px', backgroundColor: 'white', borderRight: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8', padding: '8px' },
   dayNumber: { fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', display: 'block' },
   todayCell: { backgroundColor: '#fcfcfc' },
-  todayNum: { backgroundColor: '#111827', color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  todayNum: { backgroundColor: '#000000', color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   eventStack: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   eventChip: { padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: '700', whiteSpace: 'nowrap' as const, overflow: 'hidden', textOverflow: 'ellipsis' },
   
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   inpGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   inp: { padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', outline: 'none' },
-  saveBtn: { padding: '14px', backgroundColor: '#8b5cf6', color: 'white', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
+  saveBtn: { padding: '14px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
 };
 
 export default LogtaCalendar;

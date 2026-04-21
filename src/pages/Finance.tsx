@@ -30,7 +30,7 @@ interface Transaction {
   created_at?: string;
 }
 
-const COLORS = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6'];
+const COLORS = ['#D9FF00', '#10b981', '#f59e0b', '#ef4444', '#000000'];
 
 const Finance: React.FC = () => {
   const { profile } = useAuth();
@@ -149,7 +149,7 @@ const Finance: React.FC = () => {
   const renderKPIs = () => (
     <div style={styles.kpiGrid}>
       {[
-        { label: 'Saldo Disponível', value: formatCurrency(kpis.balance), color: '#7c3aed', icon: CreditCard, bg: '#f5f3ff', trend: '+8.2%', up: true },
+        { label: 'Saldo Disponível', value: formatCurrency(kpis.balance), color: '#D9FF00', icon: CreditCard, bg: 'rgba(217, 255, 0, 0.18)', trend: '+8.2%', up: true },
         { label: 'Receitas (Pagas)', value: formatCurrency(kpis.income), color: '#10b981', icon: ArrowUpRight, bg: '#ecfdf5', trend: '+12.5%', up: true },
         { label: 'Despesas (Pagas)', value: formatCurrency(kpis.expense), color: '#ef4444', icon: ArrowDownRight, bg: '#fef2f2', trend: '-3.1%', up: false },
         { label: 'A Receber (Pendente)', value: formatCurrency(kpis.pending), color: '#f59e0b', icon: Clock, bg: '#fffbeb', trend: `${kpis.overdue} vencidos`, up: false },
@@ -297,7 +297,7 @@ const Finance: React.FC = () => {
               { label: 'Contas vencendo hoje', value: '3', color: '#f59e0b', bg: '#fffbeb' },
               { label: 'Em atraso', value: String(kpis.overdue), color: '#ef4444', bg: '#fef2f2' },
               { label: 'Pagamentos (questa semana)', value: '7', color: '#10b981', bg: '#ecfdf5' },
-              { label: 'Receitas previstas (30 dias)', value: formatCurrency(kpis.pending), color: '#7c3aed', bg: '#f5f3ff' },
+              { label: 'Receitas previstas (30 dias)', value: formatCurrency(kpis.pending), color: '#D9FF00', bg: 'rgba(217, 255, 0, 0.18)' },
             ].map((alert, i) => (
               <div key={i} style={{ ...styles.alertItem, backgroundColor: alert.bg }}>
                 <div style={{ ...styles.alertDot, backgroundColor: alert.color }} />
@@ -391,8 +391,8 @@ const Finance: React.FC = () => {
         ].map((insight, i) => (
           <div key={i} style={{
             ...styles.insightItem,
-            backgroundColor: insight.type === 'positive' ? '#ecfdf5' : insight.type === 'warning' ? '#fffbeb' : '#eff6ff',
-            borderLeftColor: insight.type === 'positive' ? '#10b981' : insight.type === 'warning' ? '#f59e0b' : '#3b82f6',
+            backgroundColor: insight.type === 'positive' ? '#ecfdf5' : insight.type === 'warning' ? '#fffbeb' : 'rgba(217, 255, 0, 0.12)',
+            borderLeftColor: insight.type === 'positive' ? '#10b981' : insight.type === 'warning' ? '#f59e0b' : '#D9FF00',
           }}>
             <span style={{ fontSize: '20px' }}>{insight.icon}</span>
             <p style={styles.insightText}>{insight.text}</p>
@@ -536,7 +536,7 @@ const styles: Record<string, any> = {
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
   kpiCard: {
     backgroundColor: 'white', padding: '24px', borderRadius: '24px',
-    border: '1px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+    border: '1px solid #e8e8e8', boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
   },
   kpiTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   kpiIcon: { width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
@@ -547,12 +547,12 @@ const styles: Record<string, any> = {
   filterBar: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     backgroundColor: 'white', padding: '16px 20px', borderRadius: '18px',
-    border: '1px solid #f1f5f9', gap: '16px', flexWrap: 'wrap'
+    border: '1px solid #e8e8e8', gap: '16px', flexWrap: 'wrap'
   },
   searchWrapper: {
     display: 'flex', alignItems: 'center', gap: '10px',
-    flex: 1, minWidth: '220px', backgroundColor: '#f8fafc',
-    borderRadius: '12px', padding: '10px 16px', border: '1px solid #f1f5f9'
+    flex: 1, minWidth: '220px', backgroundColor: '#f4f4f4',
+    borderRadius: '12px', padding: '10px 16px', border: '1px solid #e8e8e8'
   },
   searchIcon: { color: '#94a3b8', flexShrink: 0 },
   searchInput: { border: 'none', outline: 'none', fontSize: '14px', backgroundColor: 'transparent', flex: 1, color: 'var(--text-main)' },
@@ -572,13 +572,13 @@ const styles: Record<string, any> = {
     display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px'
   },
   calcBtn: {
-    padding: '10px 18px', borderRadius: '12px', backgroundColor: '#f5f3ff',
-    color: 'var(--primary)', border: '1px solid rgba(124,58,237,0.2)', fontWeight: '800',
+    padding: '10px 18px', borderRadius: '12px', backgroundColor: 'rgba(217, 255, 0, 0.18)',
+    color: 'var(--primary)', border: '1px solid rgba(217, 255, 0, 0.2)', fontWeight: '800',
     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px'
   },
 
   chartsGrid: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' },
-  chartCard: { backgroundColor: 'white', padding: '28px', borderRadius: '24px', border: '1px solid #f1f5f9' },
+  chartCard: { backgroundColor: 'white', padding: '28px', borderRadius: '24px', border: '1px solid #e8e8e8' },
   chartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   chartTitle: { fontSize: '16px', fontWeight: '900', color: 'var(--text-main)', margin: '0 0 20px 0' },
   refreshBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' },
@@ -591,13 +591,13 @@ const styles: Record<string, any> = {
   alertLabel: { flex: 1, fontSize: '13px', fontWeight: '700', color: '#475569' },
   alertValue: { fontSize: '14px', fontWeight: '900' },
 
-  tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #f1f5f9', overflow: 'hidden' },
+  tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e8e8e8', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #f1f5f9', backgroundColor: '#fcfdfe' },
-  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #f1f5f9', color: '#475569' },
+  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8', backgroundColor: '#fcfdfe' },
+  td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
   tr: { transition: 'background-color 0.2s' },
   statusTag: { padding: '5px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' },
-  categoryBadge: { padding: '4px 8px', backgroundColor: '#f8fafc', borderRadius: '8px', fontSize: '11px', color: '#64748b', fontWeight: '700', border: '1px solid #f1f5f9' },
+  categoryBadge: { padding: '4px 8px', backgroundColor: '#f4f4f4', borderRadius: '8px', fontSize: '11px', color: '#64748b', fontWeight: '700', border: '1px solid #e8e8e8' },
   iconBtn: { padding: '6px', color: '#94a3b8', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '6px' },
 
   intelBanner: { position: 'relative', borderRadius: '24px', overflow: 'hidden', height: '220px' },
@@ -608,12 +608,12 @@ const styles: Record<string, any> = {
     display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '48px'
   },
   intelBadge: {
-    display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(124,58,237,0.3)',
+    display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.3)',
     color: '#c4b5fd', borderRadius: '20px', fontSize: '10px', fontWeight: '900', letterSpacing: '1px',
     border: '1px solid rgba(196,181,253,0.3)'
   },
 
-  intelInsights: { backgroundColor: 'white', padding: '28px', borderRadius: '24px', border: '1px solid #f1f5f9' },
+  intelInsights: { backgroundColor: 'white', padding: '28px', borderRadius: '24px', border: '1px solid #e8e8e8' },
   insightItem: {
     display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px 20px',
     borderRadius: '14px', borderLeft: '4px solid transparent', marginBottom: '12px'

@@ -219,7 +219,7 @@ const MasterNotifications: React.FC = () => {
            <div style={styles.historyList}>
               {history.map(n => (
                  <div key={n.id} style={styles.historyItem}>
-                    <div style={{...styles.priorityDot, backgroundColor: n.priority === 'CRITICAL' ? '#ef4444' : n.priority === 'HIGH' ? '#f59e0b' : '#3b82f6'}} />
+                    <div style={{...styles.priorityDot, backgroundColor: n.priority === 'CRITICAL' ? '#ef4444' : n.priority === 'HIGH' ? '#f59e0b' : '#D9FF00'}} />
                     <div style={styles.historyContent}>
                        <div style={styles.hTitleRow}>
                           <span style={styles.hTitle}>{n.title}</span>
@@ -244,29 +244,29 @@ const MasterNotifications: React.FC = () => {
 const styles = {
   container: { padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  title: { fontSize: '28px', fontWeight: '950', color: '#111827', margin: 0, letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1px' },
   subtitle: { fontSize: '16px', color: '#6b7280', margin: 0 },
   
   grid: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px' },
   card: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', padding: '32px', height: 'fit-content' },
   cardHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
-  cardTitle: { fontSize: '18px', fontWeight: '900', color: '#111827', margin: 0 },
+  cardTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
   
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
-  tabGroup: { display: 'flex', gap: '8px', backgroundColor: '#f1f5f9', padding: '6px', borderRadius: '16px', marginBottom: '8px' },
+  tabGroup: { display: 'flex', gap: '8px', backgroundColor: '#ebebeb', padding: '6px', borderRadius: '16px', marginBottom: '8px' },
   tab: { flex: 1, padding: '10px', borderRadius: '12px', border: 'none', background: 'none', color: '#64748b', fontSize: '13px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
   tabActive: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
   
   field: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   row: { display: 'flex', gap: '16px' },
   label: { fontSize: '12px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
-  input: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#111827', fontWeight: '700', outline: 'none', backgroundColor: '#f8fafc' },
-  textarea: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#111827', fontWeight: '700', outline: 'none', backgroundColor: '#f8fafc', minHeight: '100px', resize: 'none' as const },
-  select: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#111827', fontWeight: '700', outline: 'none', backgroundColor: '#f8fafc' },
+  input: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#000000', fontWeight: '700', outline: 'none', backgroundColor: '#f4f4f4' },
+  textarea: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#000000', fontWeight: '700', outline: 'none', backgroundColor: '#f4f4f4', minHeight: '100px', resize: 'none' as const },
+  select: { padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', fontSize: '15px', color: '#000000', fontWeight: '700', outline: 'none', backgroundColor: '#f4f4f4' },
   submitBtn: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '12px' },
   
   historyList: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
-  historyItem: { display: 'flex', gap: '16px', padding: '20px', borderRadius: '24px', border: '1px solid #f1f5f9', backgroundColor: '#fff', transition: 'all 0.2s' },
+  historyItem: { display: 'flex', gap: '16px', padding: '20px', borderRadius: '24px', border: '1px solid #e8e8e8', backgroundColor: '#fff', transition: 'all 0.2s' },
   priorityDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0, marginTop: '6px' },
   historyContent: { flex: 1 },
   hTitleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },

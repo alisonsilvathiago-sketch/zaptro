@@ -59,6 +59,9 @@ export const isZaptroProductPath = (pathname: string) => {
   if (p.startsWith('/whatsapp')) return true;
   if (p.startsWith('/zaptro')) return true;
   if (p.startsWith('/ocorrencia/')) return true;
+  /** Motorista (/rota) e rastreio público (/acompanhar) — mesmo produto Zaptro. */
+  if (p.startsWith('/rota/')) return true;
+  if (p.startsWith('/acompanhar/')) return true;
   const zaptroCanonical = new Set<string>([
     ZAPTRO_ROUTES.DASHBOARD,
     ZAPTRO_ROUTES.CLIENTS,

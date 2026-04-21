@@ -257,11 +257,11 @@ const DeliveryAction: React.FC = () => {
 };
 
 const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#F8FAFC', paddingBottom: '40px' },
+  container: { minHeight: '100vh', backgroundColor: '#f4f4f4', paddingBottom: '40px' },
   loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '900' },
   header: { backgroundColor: 'white', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', position: 'sticky' as const, top: 0, zIndex: 10 },
   backBtn: { background: 'none', border: 'none', color: '#64748b' },
-  title: { fontSize: '16px', fontWeight: '900', color: '#111827', margin: 0 },
+  title: { fontSize: '16px', fontWeight: '900', color: '#000000', margin: 0 },
   
   infoSection: { padding: '24px' },
   infoCard: { backgroundColor: 'var(--primary)', padding: '24px', borderRadius: '24px', color: 'white' },

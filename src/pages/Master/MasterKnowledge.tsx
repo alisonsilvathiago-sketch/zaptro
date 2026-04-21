@@ -214,18 +214,18 @@ const styles: Record<string, any> = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' },
   card: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', transition: 'transform 0.2s', display: 'flex', flexDirection: 'column' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '16px' },
-  cardCategory: { padding: '4px 8px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '10px', fontWeight: '900', color: '#64748b' },
+  cardCategory: { padding: '4px 8px', backgroundColor: '#ebebeb', borderRadius: '6px', fontSize: '10px', fontWeight: '900', color: '#64748b' },
   cardActions: { display: 'flex', gap: '4px' },
   actionBtn: { width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', border: 'none', color: '#94a3b8', borderRadius: '8px', cursor: 'pointer' },
   cardTitle: { fontSize: '18px', fontWeight: '850', color: 'var(--text-main)', marginBottom: '12px', lineHeight: '1.4' },
   cardSnippet: { fontSize: '13px', color: '#64748b', lineHeight: '1.6', flex: 1, marginBottom: '20px' },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #f1f5f9' },
+  cardFooter: { display: 'flex', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #e8e8e8' },
   cardStatus: { fontSize: '11px', fontWeight: '700', color: '#10b981' },
   cardDate: { fontSize: '11px', color: '#94a3b8' },
 
   list: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden' },
-  listItem: { display: 'flex', alignItems: 'center', padding: '20px 24px', borderBottom: '1px solid #f1f5f9', gap: '20px' },
-  listIcon: { width: '40px', height: '40px', backgroundColor: '#f1f5f9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  listItem: { display: 'flex', alignItems: 'center', padding: '20px 24px', borderBottom: '1px solid #e8e8e8', gap: '20px' },
+  listIcon: { width: '40px', height: '40px', backgroundColor: '#ebebeb', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   listInfo: { flex: 1 },
   listName: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)' },
   listMeta: { fontSize: '12px', color: '#94a3b8' },
@@ -235,8 +235,8 @@ const styles: Record<string, any> = {
   fRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   fGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
   fLabel: { fontSize: '12px', fontWeight: '850', color: '#64748b', textTransform: 'uppercase' },
-  input: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f8fafc', outline: 'none' },
-  textarea: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f8fafc', outline: 'none', minHeight: '100px', resize: 'none' },
+  input: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', outline: 'none' },
+  textarea: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', outline: 'none', minHeight: '100px', resize: 'none' },
   submitBtn: { marginTop: '10px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' }
 };
 

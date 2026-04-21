@@ -1,65 +1,74 @@
-import React, { useState, useEffect } from 'react';
-
-type LoadingContext = 'dashboard' | 'mensagens' | 'rotas' | 'cargas' | 'orcamentos' | 'motoristas' | 'crm' | 'sistema';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  ZAPTRO_LOADING_AFTER_LAST_MS,
+  ZAPTRO_LOADING_FADE_MS,
+  ZAPTRO_LOADING_PHRASES,
+  ZAPTRO_LOADING_STEP_HOLD_MS,
+  type ZaptroLoadingPhraseContext,
+} from '../../constants/zaptroLoadingPhrases';
 
 interface ZaptroLoadingProps {
-  context?: LoadingContext;
+  context?: ZaptroLoadingPhraseContext;
   onFinished?: () => void;
 }
 
-const PHRASES: Record<LoadingContext, string[]> = {
-  dashboard: ["Inicializando motores", "Carregando métricas", "Preparando visão geral"],
-  mensagens: ["Conectando conversas", "Sincronizando mensagens", "Preparando atendimento"],
-  rotas: ["Calculando rotas", "Sincronizando trajetos", "Preparando execução"],
-  cargas: ["Organizando cargas", "Validando informações", "Preparando operação"],
-  orcamentos: ["Processando valores", "Calculando propostas", "Preparando negociação"],
-  motoristas: ["Carregando equipe", "Sincronizando motoristas", "Preparando operação"],
-  crm: ["Organizando pipeline", "Atualizando oportunidades", "Preparando negociações"],
-  sistema: ["Iniciando sistema", "Conectando módulos", "Finalizando carregamento"]
-};
-
-// Use "sistema" as fallback if context is not provided
 const ZaptroLoading: React.FC<ZaptroLoadingProps> = ({ context = 'sistema', onFinished }) => {
-  const [step, setStep] = useState(0);
+  const steps = ZAPTRO_LOADING_PHRASES[context] ?? ZAPTRO_LOADING_PHRASES.sistema;
+  const [index, setIndex] = useState(0);
   const [opacity, setOpacity] = useState(1);
-  const steps = PHRASES[context] || PHRASES.sistema;
+  const timeoutIdsRef = useRef<number[]>([]);
+  const onFinishedRef = useRef(onFinished);
+  onFinishedRef.current = onFinished;
+
+  const clearTimers = () => {
+    timeoutIdsRef.current.forEach((id) => clearTimeout(id));
+    timeoutIdsRef.current = [];
+  };
 
   useEffect(() => {
-    if (step < steps.length) {
-      const timer = setTimeout(() => {
-        // Fade out
-        setOpacity(0);
-        
-        // Wait for fade out to change text
-        setTimeout(() => {
-          setStep(prev => prev + 1);
-          setOpacity(1);
-        }, 300);
-      }, 900);
+    clearTimers();
+    setIndex(0);
+    setOpacity(1);
+  }, [context]);
 
-      return () => clearTimeout(timer);
-    } else {
-      // Completed last step
-      const finalTimer = setTimeout(() => {
-        if (onFinished) onFinished();
-      }, 500);
-      return () => clearTimeout(finalTimer);
+  useEffect(() => {
+    clearTimers();
+    if (steps.length === 0) {
+      onFinishedRef.current?.();
+      return;
     }
-  }, [step, steps.length, onFinished]);
+    if (index >= steps.length) return;
 
-  // If steps are finished, we can return null (assuming layout handles visibility via parent state)
-  // But for safety, we show the last state until unmounted
-  const currentPhrase = steps[Math.min(step, steps.length - 1)];
+    const isLast = index === steps.length - 1;
+    const q = (fn: () => void, ms: number) => {
+      const id = window.setTimeout(fn, ms);
+      timeoutIdsRef.current.push(id);
+    };
+
+    q(() => {
+      if (isLast) {
+        q(() => onFinishedRef.current?.(), ZAPTRO_LOADING_AFTER_LAST_MS);
+      } else {
+        setOpacity(0);
+        q(() => {
+          setIndex((i) => i + 1);
+          setOpacity(1);
+        }, ZAPTRO_LOADING_FADE_MS);
+      }
+    }, ZAPTRO_LOADING_STEP_HOLD_MS);
+
+    return clearTimers;
+  }, [context, index, steps.length]);
+
+  const phrase =
+    steps.length > 0 ? steps[Math.min(index, steps.length - 1)] : '';
 
   return (
-    <div style={styles.container}>
-      {/* Premium Lima Gradient Background */}
-      <div style={styles.gradientOverlay} />
-      
-      <div style={{ ...styles.content, opacity }}>
-        <p style={styles.loadingText}>{currentPhrase}</p>
+    <div style={styles.container} role="status" aria-live="polite" aria-busy="true">
+      <div style={styles.gradientOverlay} aria-hidden />
+      <div style={styles.content}>
+        <p style={{ ...styles.loadingText, opacity }}>{phrase}</p>
       </div>
-
       <style>{`
         @keyframes zaptro-loading-pulse {
           0% { transform: scale(1); opacity: 0.8; }
@@ -82,7 +91,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    fontFamily: 'Inter, sans-serif'
+    fontFamily: 'Inter, sans-serif',
   },
   gradientOverlay: {
     position: 'absolute',
@@ -91,28 +100,32 @@ const styles: Record<string, React.CSSProperties> = {
     top: '-25%',
     left: '-25%',
     background: 'radial-gradient(circle at center, rgba(217, 255, 0, 0.08) 0%, rgba(0, 0, 0, 0) 60%)',
-    animation: 'zaptro-loading-pulse 4s ease-in-out infinite'
+    animation: 'zaptro-loading-pulse 4s ease-in-out infinite',
   },
   content: {
     position: 'relative',
     zIndex: 10,
     textAlign: 'center',
-    transition: 'opacity 0.3s ease-in-out',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '0px'
+    gap: 0,
+    padding: '0 20px',
   },
   loadingText: {
-    fontSize: '30px',
-    fontWeight: 950,
+    fontSize: 'clamp(24px, 3.6vw, 38px)',
+    fontWeight: 600,
     margin: 0,
-    letterSpacing: '-0.02em',
-    background: 'linear-gradient(to bottom, #FFFFFF 0%, #D9FF00 100%)',
+    maxWidth: 'min(92vw, 640px)',
+    lineHeight: 1.2,
+    letterSpacing: '-0.03em',
+    transition: `opacity ${ZAPTRO_LOADING_FADE_MS}ms ease-in-out`,
+    background: 'linear-gradient(70deg, #ffffff 0%, #e8ffc4 42%, #d9ff00 100%)',
     WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    textShadow: '0 10px 30px rgba(217, 255, 0, 0.2)'
-  }
+    filter: 'drop-shadow(0 10px 28px rgba(0, 0, 0, 0.55))',
+  },
 };
 
 export default ZaptroLoading;

@@ -194,7 +194,7 @@ const MasterFinance: React.FC = () => {
    };
 
    const revenuePie = [
-      { name: 'SaaS (Mensal)', value: 65, color: '#7c3aed' },
+      { name: 'SaaS (Mensal)', value: 65, color: '#D9FF00' },
       { name: 'Créditos WA', value: 20, color: '#10b981' },
       { name: 'Cursos/Info', value: 15, color: '#f59e0b' },
    ];
@@ -218,7 +218,7 @@ const MasterFinance: React.FC = () => {
          <div style={styles.metricsGrid}>
             <div style={styles.metricCardBig}>
                <div style={styles.mCardInfo}>
-                  <div style={{...styles.mIconBox, backgroundColor: '#f5f3ff', color: '#7c3aed'}}><DollarSign size={24} /></div>
+                  <div style={{...styles.mIconBox, backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00'}}><DollarSign size={24} /></div>
                   <div>
                      <span style={styles.mLabel}>MRR ATUAL (Assinaturas)</span>
                      <h2 style={styles.mValue}>{formatCurrency(stats.totalMRR)}</h2>
@@ -275,15 +275,15 @@ const MasterFinance: React.FC = () => {
                      <AreaChart data={mrrHistory}>
                         <defs>
                            <linearGradient id="colorMRR" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.1}/>
-                              <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
+                              <stop offset="5%" stopColor="#D9FF00" stopOpacity={0.1}/>
+                              <stop offset="95%" stopColor="#D9FF00" stopOpacity={0}/>
                            </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                         <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 11, fill: '#94a3b8'}} />
                         <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fill: '#94a3b8'}} />
                         <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: 'var(--shadow-lg)'}} />
-                        <Area type="monotone" dataKey="mrr" stroke="#7c3aed" strokeWidth={4} fillOpacity={1} fill="url(#colorMRR)" />
+                        <Area type="monotone" dataKey="mrr" stroke="#D9FF00" strokeWidth={4} fillOpacity={1} fill="url(#colorMRR)" />
                      </AreaChart>
                   </ResponsiveContainer>
                </div>
@@ -413,7 +413,7 @@ const MasterFinance: React.FC = () => {
                   </div>
                   <div style={styles.drillStatCard}>
                      <span>Saldo Operacional</span>
-                     <h4 style={{color: tenantStats.balance >= 0 ? '#7c3aed' : '#ef4444'}}>{formatCurrency(tenantStats.balance)}</h4>
+                     <h4 style={{color: tenantStats.balance >= 0 ? '#D9FF00' : '#ef4444'}}>{formatCurrency(tenantStats.balance)}</h4>
                   </div>
                </div>
 
@@ -522,13 +522,13 @@ const MasterFinance: React.FC = () => {
 const styles: Record<string, any> = {
    container: { padding: '24px', backgroundColor: 'transparent' },
    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' },
-   badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: '#f5f3ff', color: '#7c3aed', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-   title: { fontSize: '32px', fontWeight: '950', color: '#111827', letterSpacing: '-1.5px', margin: 0 },
+   badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
+   title: { fontSize: '32px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
    subtitle: { color: '#6b7280', fontSize: '15px', fontWeight: '500' },
    headerActions: { display: 'flex', gap: '12px' },
    refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', cursor: 'pointer', color: '#6b7280' },
-   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#7c3aed', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(124, 58, 237, 0.2)' },
-   secondaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', color: '#111827' },
+   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
+   secondaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', color: '#000000' },
 
    metricsGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '20px', marginBottom: '32px' },
    metricCardBig: { position: 'relative' as const, backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
@@ -536,29 +536,29 @@ const styles: Record<string, any> = {
    mCardInfo: { display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '24px' },
    mIconBox: { width: '56px', height: '56px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
    mLabel: { fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-   mValue: { fontSize: '32px', fontWeight: '950', color: '#7c3aed', margin: 0, letterSpacing: '-1px' },
-   mDivider: { height: '1px', backgroundColor: '#f1f5f9', margin: '0 0 20px 0' },
+   mValue: { fontSize: '32px', fontWeight: '950', color: '#D9FF00', margin: 0, letterSpacing: '-1px' },
+   mDivider: { height: '1px', backgroundColor: '#ebebeb', margin: '0 0 20px 0' },
    mSubRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
    mSubLabel: { fontSize: '11px', color: '#94a3b8', fontWeight: '700', display: 'block' },
    mSubValue: { fontSize: '16px', fontWeight: '900', color: '#1e293b' },
    mTrend: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '950' },
-   mValueSmall: { fontSize: '24px', fontWeight: '950', color: '#111827', margin: '4px 0 0 0' },
+   mValueSmall: { fontSize: '24px', fontWeight: '950', color: '#000000', margin: '4px 0 0 0' },
    mStatus: { fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
 
    chartsRow: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', marginBottom: '32px' },
    chartCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb' },
    chartHeader: { marginBottom: '32px' },
-   chartTitle: { fontSize: '18px', fontWeight: '900', color: '#111827', margin: 0 },
+   chartTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
    statsCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' as const },
-   pieLegendGrid: { borderTop: '1px solid #f1f5f9', paddingTop: '20px', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
+   pieLegendGrid: { borderTop: '1px solid #e8e8e8', paddingTop: '20px', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
    legItem: { display: 'flex', alignItems: 'center', gap: '12px' },
    legDot: { width: '8px', height: '8px', borderRadius: '50%' },
    legName: { flex: 1, fontSize: '12px', fontWeight: '700', color: '#64748b' },
-   legValue: { fontSize: '13px', fontWeight: '900', color: '#111827' },
+   legValue: { fontSize: '13px', fontWeight: '900', color: '#000000' },
 
    tableSection: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
-   tableHeader: { padding: '28px 32px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-   tableTitle: { fontSize: '18px', fontWeight: '900', color: '#111827', margin: 0 },
+   tableHeader: { padding: '28px 32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+   tableTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
    tableActions: { display: 'flex', gap: '12px' },
    searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f9fafb', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e5e7eb' },
    searchInput: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '14px', fontWeight: '600', width: '200px' },
@@ -567,17 +567,17 @@ const styles: Record<string, any> = {
    table: { width: '100%', borderCollapse: 'collapse' as const },
    thead: { backgroundColor: '#f9fafb', textAlign: 'left' as const },
    th: { padding: '16px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-   tr: { borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' },
+   tr: { borderBottom: '1px solid #e8e8e8', transition: 'background 0.2s' },
    td: { padding: '20px 32px' },
    companyInfo: { display: 'flex', flexDirection: 'column' as const },
-   cName: { fontSize: '15px', fontWeight: '900', color: '#7c3aed' },
+   cName: { fontSize: '15px', fontWeight: '900', color: '#D9FF00' },
    cId: { fontSize: '10px', color: '#94a3b8', fontWeight: '700' },
    planBadge: { padding: '4px 10px', backgroundColor: '#f3f4f6', color: '#4b5563', borderRadius: '8px', fontSize: '11px', fontWeight: '900' },
    dateInfo: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', fontWeight: '700' },
    statusTag: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '900', width: 'fit-content' },
-   priceText: { fontSize: '16px', fontWeight: '900', color: '#111827' },
+   priceText: { fontSize: '16px', fontWeight: '900', color: '#000000' },
    rowActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-   drillBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#f5f3ff', color: '#7c3aed', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' },
+   drillBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' },
    actionBtn: { padding: '8px', border: 'none', backgroundColor: '#f9fafb', borderRadius: '10px', cursor: 'pointer', color: '#64748b' },
 
    overdueAlertBox: { marginTop: '32px', backgroundColor: '#fef2f2', padding: '24px', borderRadius: '24px', border: '1px solid rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', gap: '20px' },
@@ -590,7 +590,7 @@ const styles: Record<string, any> = {
    modalContent: { padding: '10px' },
    drillStats: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '32px' },
    drillStatCard: { padding: '20px', backgroundColor: '#f9fafb', borderRadius: '20px', border: '1px solid #e5e7eb' },
-   modalTableContainer: { maxHeight: '400px', overflowY: 'auto' as const, border: '1px solid #f1f5f9', borderRadius: '16px' },
+   modalTableContainer: { maxHeight: '400px', overflowY: 'auto' as const, border: '1px solid #e8e8e8', borderRadius: '16px' },
    drillTable: { width: '100%', borderCollapse: 'collapse' as const },
    miniBtn: { padding: '6px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#94a3b8' },
    
@@ -599,7 +599,7 @@ const styles: Record<string, any> = {
    fLabel: { fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const },
    fInput: { padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '14px', fontWeight: '600', outline: 'none', backgroundColor: '#f9fafb' },
    fRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
-   saveBtnModal: { padding: '16px', backgroundColor: '#7c3aed', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', marginTop: '10px' }
+   saveBtnModal: { padding: '16px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', marginTop: '10px' }
 };
 
 export default MasterFinance;

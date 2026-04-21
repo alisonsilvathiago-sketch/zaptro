@@ -229,7 +229,7 @@ const UserProfileSettings: React.FC = () => {
 };
 
 const styles = {
-  pageWrapper: { minHeight: '100vh', backgroundColor: '#F8FAFC' },
+  pageWrapper: { minHeight: '100vh', backgroundColor: '#f4f4f4' },
   banner: { 
     height: '240px', 
     background: 'linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%)', 
@@ -257,7 +257,7 @@ const styles = {
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   cardTitle: { fontSize: '20px', fontWeight: '800', color: '#0F172A' },
   editLink: { display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #E2E8F0', backgroundColor: 'transparent', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', color: '#64748B', fontWeight: '700', cursor: 'pointer' },
-  securityBtn: { display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #DBEAFE', backgroundColor: '#F0F9FF', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', color: '#3B82F6', fontWeight: '700', cursor: 'pointer' },
+  securityBtn: { display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #DBEAFE', backgroundColor: '#F0F9FF', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', color: '#D9FF00', fontWeight: '700', cursor: 'pointer' },
   
   sectionDesc: { fontSize: '14px', color: '#64748B', marginBottom: '24px' },
   
@@ -265,11 +265,11 @@ const styles = {
   dataRow: { display: 'grid', gridTemplateColumns: '240px 1fr', alignItems: 'center' },
   dataLabel: { fontSize: '13px', fontWeight: '700', color: '#64748B' },
   dataValue: { fontSize: '14px', fontWeight: '600', color: '#1E293B' },
-  dataInput: { padding: '10px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '14px', color: '#1E293B', outline: 'none', backgroundColor: '#F8FAFC' },
-  dataLink: { fontSize: '14px', fontWeight: '600', color: '#3B82F6', textDecoration: 'none' },
+  dataInput: { padding: '10px 14px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '14px', color: '#1E293B', outline: 'none', backgroundColor: '#f4f4f4' },
+  dataLink: { fontSize: '14px', fontWeight: '600', color: '#D9FF00', textDecoration: 'none' },
   
   avatarMiniBox: { marginBottom: '16px' },
-  avatarMini: { width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '20px' },
+  avatarMini: { width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000000', fontWeight: '800', fontSize: '20px' },
   
   socialGroup: { display: 'flex', gap: '16px' },
   

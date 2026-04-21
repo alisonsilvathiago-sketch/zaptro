@@ -296,7 +296,7 @@ const AcademyCheckout: React.FC = () => {
 const styles = {
   container: { backgroundColor: '#f3f4f6', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const },
   header: { maxWidth: '1000px', width: '100%', margin: '0 auto', padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  logo: { fontSize: '20px', fontWeight: '950', color: '#111827', letterSpacing: '-1px' },
+  logo: { fontSize: '20px', fontWeight: '950', color: '#000000', letterSpacing: '-1px' },
   countrySelector: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4b5563', backgroundColor: 'white', padding: '6px 14px', borderRadius: '10px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', cursor: 'pointer' },
   
   wrapper: { maxWidth: '1000px', width: '100%', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', paddingBottom: '80px' },
@@ -305,7 +305,7 @@ const styles = {
   inputSection: { display: 'flex', flexDirection: 'column' as const, gap: '16px', marginBottom: '32px' },
   field: { width: '100%' },
   row: { display: 'flex', gap: '16px' },
-  input: { width: '100%', padding: '16px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '15px', color: '#111827', outline: 'none' },
+  input: { width: '100%', padding: '16px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '15px', color: '#000000', outline: 'none' },
   select: { width: '100%', padding: '16px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '15px', backgroundColor: 'white' },
   inputIconWrap: { position: 'relative' as const, display: 'flex', alignItems: 'center' },
   

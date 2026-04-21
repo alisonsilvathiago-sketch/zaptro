@@ -235,7 +235,7 @@ const styles: Record<string, any> = {
   badge: { fontSize: '10px', fontWeight: '950', color: '#94A3B8', letterSpacing: '1px', marginBottom: '16px' },
   clientName: { fontSize: '24px', fontWeight: '950', color: '#000', margin: '0 0 8px 0', letterSpacing: '-1px' },
   clientMeta: { fontSize: '14px', color: '#64748B', fontWeight: '600', margin: '2px 0' },
-  divider: { height: '1px', backgroundColor: '#F1F5F9', margin: '32px 0' },
+  divider: { height: '1px', backgroundColor: '#ebebeb', margin: '32px 0' },
   agentBox: { display: 'flex', alignItems: 'center', gap: '16px' },
   agentAvatar: { width: '42px', height: '42px', borderRadius: '12px', backgroundColor: '#000', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950' },
   agentAvatarImg: { width: '42px', height: '42px', borderRadius: '12px', objectFit: 'cover', display: 'block', flexShrink: 0 },
@@ -243,7 +243,7 @@ const styles: Record<string, any> = {
   val: { fontSize: '15px', fontWeight: '900', color: '#000' },
   sub: { fontSize: '12px', color: '#64748B', margin: '2px 0', fontWeight: '500' },
 
-  notesSection: { backgroundColor: 'white', borderRadius: '28px', padding: '32px', border: '1px solid #F1F5F9' },
+  notesSection: { backgroundColor: 'white', borderRadius: '28px', padding: '32px', border: '1px solid #e8e8e8' },
   notesTitle: { margin: '0 0 20px 0', fontSize: '13px', fontWeight: '950', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' },
   notesList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   noteCard: { padding: '16px', backgroundColor: '#F8F9FA', borderRadius: '16px', borderLeft: '4px solid #D9FF00' },
@@ -274,12 +274,12 @@ const styles: Record<string, any> = {
   sender: { fontSize: '10px', fontWeight: '950', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '6px' },
   bubbleText: { fontSize: '14px', color: '#1E293B', fontWeight: '500', lineHeight: '1.6', margin: 0 },
 
-  observationArea: { marginTop: '56px', paddingTop: '40px', borderTop: '1px solid #F1F5F9' },
+  observationArea: { marginTop: '56px', paddingTop: '40px', borderTop: '1px solid #e8e8e8' },
   obsCollaboratorCard: {
     marginBottom: '24px',
     padding: '20px 22px',
     borderRadius: '22px',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#f4f4f4',
     border: '1px solid #E2E8F0',
   },
   obsCollaboratorEyebrow: {

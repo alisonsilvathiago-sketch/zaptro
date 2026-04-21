@@ -92,7 +92,7 @@ const CertificateView: React.FC = () => {
 };
 
 const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#f1f5f9', padding: '40px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
+  container: { minHeight: '100vh', backgroundColor: '#ebebeb', padding: '40px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
   noPrint: { width: '1000px', display: 'flex', justifyContent: 'space-between', marginBottom: '32px', '@media print': { display: 'none' } } as any,
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', fontWeight: '800', cursor: 'pointer' },
   actions: { display: 'flex', gap: '12px' },
@@ -110,8 +110,8 @@ const styles = {
   badge: { marginBottom: '24px' },
   mainTitle: { fontSize: '48px', fontWeight: '950', color: '#1e293b', marginBottom: '24px', letterSpacing: '4px' },
   introText: { fontSize: '18px', color: '#64748b', margin: '8px 0', fontStyle: 'italic' },
-  studentName: { fontSize: '42px', fontWeight: '800', color: 'var(--primary)', margin: '24px 0', borderBottom: '2px solid #f1f5f9', paddingBottom: '12px', minWidth: '400px' },
-  courseName: { fontSize: '28px', fontWeight: '900', color: '#111827', margin: '24px 0' },
+  studentName: { fontSize: '42px', fontWeight: '800', color: 'var(--primary)', margin: '24px 0', borderBottom: '2px solid #e8e8e8', paddingBottom: '12px', minWidth: '400px' },
+  courseName: { fontSize: '28px', fontWeight: '900', color: '#000000', margin: '24px 0' },
   
   stats: { display: 'flex', gap: '60px', marginTop: '40px' },
   statItem: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
@@ -123,7 +123,7 @@ const styles = {
   sigLine: { width: '200px', height: '1px', backgroundColor: '#cbd5e1' },
   
   validation: { display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' as const },
-  qrMock: { width: '64px', height: '64px', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '900', color: '#cbd5e1' },
+  qrMock: { width: '64px', height: '64px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '900', color: '#cbd5e1' },
   valTitle: { display: 'block', fontSize: '10px', fontWeight: '900', color: '#94a3b8' },
   valCode: { fontSize: '12px', color: '#64748b', fontWeight: '700' },
 

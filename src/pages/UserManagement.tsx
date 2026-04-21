@@ -336,33 +336,33 @@ const styles: Record<string, any> = {
   subtitle: { fontSize: '16px', color: '#64748B', fontWeight: '500', margin: 0 },
   primaryBtn: { backgroundColor: '#0F172A', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   
-  tableCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #F1F5F9', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' },
-  cardToolbar: { padding: '24px', borderBottom: '1px solid #F1F5F9' },
-  search: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#F8FAFC', padding: '12px 20px', borderRadius: '14px' },
+  tableCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e8e8e8', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' },
+  cardToolbar: { padding: '24px', borderBottom: '1px solid #e8e8e8' },
+  search: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f4f4f4', padding: '12px 20px', borderRadius: '14px' },
   searchInput: { border: 'none', background: 'transparent', outline: 'none', width: '100%', fontWeight: '700', fontSize: '14px' },
   
   table: { width: '100%', borderCollapse: 'collapse' },
-  thRow: { backgroundColor: '#F8FAFC', borderBottom: '1px solid #F1F5F9' },
+  thRow: { backgroundColor: '#f4f4f4', borderBottom: '1px solid #e8e8e8' },
   th: { padding: '16px 32px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#94A3B8', letterSpacing: '1px' },
-  tr: { borderBottom: '1px solid #F1F5F9', transition: '0.2s' },
+  tr: { borderBottom: '1px solid #e8e8e8', transition: '0.2s' },
   td: { padding: '20px 32px' },
   
   userCell: { display: 'flex', alignItems: 'center', gap: '16px' },
-  avatar: { width: '40px', height: '40px', borderRadius: '14px', backgroundColor: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950', color: '#0F172A', fontSize: '16px' },
+  avatar: { width: '40px', height: '40px', borderRadius: '14px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950', color: '#0F172A', fontSize: '16px' },
   uName: { display: 'block', fontSize: '15px', fontWeight: '900', color: '#0F172A' },
   uEmail: { fontSize: '12px', color: '#94A3B8' },
-  roleTag: { padding: '6px 14px', backgroundColor: '#F1F5F9', borderRadius: '10px', fontSize: '11px', fontWeight: '950', color: '#64748B' },
+  roleTag: { padding: '6px 14px', backgroundColor: '#ebebeb', borderRadius: '10px', fontSize: '11px', fontWeight: '950', color: '#64748B' },
   modulesStrip: { display: 'flex', gap: '12px' },
   actionRow: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-  iconBtn: { width: '36px', height: '36px', borderRadius: '12px', border: 'none', backgroundColor: '#F8FAFC', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
+  iconBtn: { width: '36px', height: '36px', borderRadius: '12px', border: 'none', backgroundColor: '#f4f4f4', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
 
   form: { display: 'flex', flexDirection: 'column', gap: '20px' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
   label: { fontSize: '13px', fontWeight: '800', color: '#64748B' },
-  input: { padding: '14px', borderRadius: '14px', border: '1.5px solid #F1F5F9', fontSize: '14px', fontWeight: '700', outline: 'none' },
+  input: { padding: '14px', borderRadius: '14px', border: '1.5px solid #e8e8e8', fontSize: '14px', fontWeight: '700', outline: 'none' },
   modulesBlock: { marginTop: '12px' },
   modulesGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginTop: '12px' },
-  mCard: { padding: '20px 10px', border: '2.5px solid #F1F5F9', borderRadius: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: 'all 0.2s' },
+  mCard: { padding: '20px 10px', border: '2.5px solid #e8e8e8', borderRadius: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: 'all 0.2s' },
   saveBtn: { marginTop: '12px', padding: '18px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '20px', fontWeight: '950', fontSize: '16px', cursor: 'pointer' },
 
   // DELETE MODAL
@@ -374,7 +374,7 @@ const styles: Record<string, any> = {
   confirmLabel: { fontSize: '12px', color: '#EF4444', fontWeight: '700', marginBottom: '12px', display: 'block' },
   confirmInput: { width: '100%', padding: '14px', borderRadius: '12px', border: '2.5px solid #FFDCDC', fontSize: '18px', fontWeight: '950', textAlign: 'center', color: '#EF4444', outline: 'none' },
   modalActions: { display: 'flex', gap: '12px' },
-  cancelBtn: { flex: 1, padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: '#F1F5F9', color: '#64748B', fontWeight: '900', cursor: 'pointer' },
+  cancelBtn: { flex: 1, padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: '#ebebeb', color: '#64748B', fontWeight: '900', cursor: 'pointer' },
   deleteBtn: { flex: 1, padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: '#EF4444', color: 'white', fontWeight: '900', cursor: 'pointer' }
 };
 

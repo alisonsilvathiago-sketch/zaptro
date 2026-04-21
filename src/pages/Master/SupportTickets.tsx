@@ -149,7 +149,7 @@ const SupportTickets: React.FC = () => {
     switch(p) {
       case 'URGENT': return '#ef4444';
       case 'HIGH': return '#f97316';
-      case 'MEDIUM': return '#3b82f6';
+      case 'MEDIUM': return '#D9FF00';
       default: return '#10b981';
     }
   };
@@ -211,7 +211,7 @@ const SupportTickets: React.FC = () => {
                            {ticket.priority}
                         </div>
                         <div style={styles.statusIndicator}>
-                           <div style={{...styles.statusDot, backgroundColor: ticket.status === 'OPEN' ? '#ef4444' : '#3b82f6'}} />
+                           <div style={{...styles.statusDot, backgroundColor: ticket.status === 'OPEN' ? '#ef4444' : '#D9FF00'}} />
                            {ticket.status}
                         </div>
                      </div>
@@ -301,12 +301,12 @@ const styles: Record<string, any> = {
   
   ticketListSection: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, overflow: 'hidden' },
   listHeader: { padding: '20px', borderBottom: '1px solid var(--border)', display: 'flex', gap: '12px' },
-  searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#f8fafc', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0' },
+  searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#f4f4f4', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0' },
   searchInput: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '13px', width: '100%' },
-  iconBtn: { padding: '10px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer' },
+  iconBtn: { padding: '10px', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer' },
   ticketsContainer: { flex: 1, overflowY: 'auto' as const },
-  ticketItem: { padding: '20px', borderBottom: '1px solid #f1f5f9', cursor: 'pointer', transition: 'all 0.2s' },
-  ticketItemActive: { backgroundColor: '#f5f3ff', borderLeft: '4px solid var(--primary)' },
+  ticketItem: { padding: '20px', borderBottom: '1px solid #e8e8e8', cursor: 'pointer', transition: 'all 0.2s' },
+  ticketItemActive: { backgroundColor: 'rgba(217, 255, 0, 0.18)', borderLeft: '4px solid var(--primary)' },
   ticketTop: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' },
   companyInfo: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
   dateText: { fontSize: '11px', color: '#94a3b8' },
@@ -330,11 +330,11 @@ const styles: Record<string, any> = {
   messageGroup: { maxWidth: '80%', display: 'flex', flexDirection: 'column' as const },
   messageHeader: { fontSize: '12px', color: '#94a3b8', marginBottom: '8px' },
   mTime: { fontWeight: '400', fontSize: '11px', marginLeft: '6px' },
-  messageContent: { backgroundColor: '#f1f5f9', padding: '16px 20px', borderRadius: '0 16px 16px 16px', fontSize: '14px', color: 'var(--primary)', lineHeight: '1.5' },
+  messageContent: { backgroundColor: '#ebebeb', padding: '16px 20px', borderRadius: '0 16px 16px 16px', fontSize: '14px', color: 'var(--primary)', lineHeight: '1.5' },
   masterBubble: { backgroundColor: 'var(--primary)', color: 'white', borderRadius: '16px 16px 0 16px' },
 
   chatInputArea: { padding: '24px 32px', borderTop: '1px solid var(--border)' },
-  inputWrapper: { display: 'flex', gap: '16px', backgroundColor: '#f1f5f9', padding: '12px 20px', borderRadius: '16px' },
+  inputWrapper: { display: 'flex', gap: '16px', backgroundColor: '#ebebeb', padding: '12px 20px', borderRadius: '16px' },
   mainInput: { flex: 1, border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '14px' },
   sendBtn: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' },
 

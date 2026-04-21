@@ -394,7 +394,7 @@ const styles: Record<string, React.CSSProperties> = {
   kickerRow: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   kickerBackBtn: {
     border: 'none',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#ebebeb',
     borderRadius: 10,
     padding: '6px 8px',
     cursor: 'pointer',
@@ -414,7 +414,7 @@ const styles: Record<string, React.CSSProperties> = {
   pageSub: { margin: '10px 0 0', maxWidth: 640, fontSize: 15, fontWeight: 600, color: '#64748B', lineHeight: 1.5 },
   headerActions: { display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' },
   backBtn: {
-    background: '#F1F5F9',
+    background: '#ebebeb',
     border: 'none',
     color: '#334155',
     display: 'flex',
@@ -450,7 +450,7 @@ const styles: Record<string, React.CSSProperties> = {
   profileCard: {
     backgroundColor: 'white',
     borderRadius: 28,
-    border: '1px solid #F1F5F9',
+    border: '1px solid #e8e8e8',
     padding: 32,
     display: 'flex',
     flexDirection: 'column',
@@ -487,7 +487,7 @@ const styles: Record<string, React.CSSProperties> = {
   infoText: { display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 },
   infoLabel: { fontSize: 9, fontWeight: 950, color: '#94A3B8', letterSpacing: '0.08em' },
   infoValue: { fontSize: 14, fontWeight: 700, color: '#334155', wordBreak: 'break-word' },
-  divider: { width: '100%', height: 1, backgroundColor: '#F1F5F9', margin: '24px 0' },
+  divider: { width: '100%', height: 1, backgroundColor: '#ebebeb', margin: '24px 0' },
   crmStats: { width: '100%', display: 'flex', justifyContent: 'space-around' },
   crmStatItem: { textAlign: 'center' },
   crmStatVal: { display: 'block', fontSize: 20, fontWeight: 950, color: '#000' },
@@ -524,7 +524,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 18,
     backgroundColor: '#fff',
     borderRadius: 20,
-    border: '1px solid #F1F5F9',
+    border: '1px solid #e8e8e8',
     boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
   },
   feedRail: {

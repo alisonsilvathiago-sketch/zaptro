@@ -121,7 +121,7 @@ const TwoFactorVerify: React.FC = () => {
                     style={{
                        ...styles.otpInput,
                        borderColor: digit ? 'var(--primary)' : '#E2E8F0',
-                       backgroundColor: digit ? '#F5F3FF' : '#F8FAFC',
+                       backgroundColor: digit ? '#F5F3FF' : '#f4f4f4',
                        ...(isMobile && { height: '54px', fontSize: '20px' })
                     }}
                   />
@@ -232,7 +232,7 @@ const styles = {
   copyright: { position: 'absolute' as const, bottom: '40px', left: '40px', fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
 
   // Right Side (Visual)
-  visualSection: { flex: 1.1, backgroundColor: '#FAFBFD', margin: '16px', borderRadius: '32px', border: '1px solid #F1F5F9', overflow: 'hidden', display: 'flex' },
+  visualSection: { flex: 1.1, backgroundColor: '#FAFBFD', margin: '16px', borderRadius: '32px', border: '1px solid #e8e8e8', overflow: 'hidden', display: 'flex' },
   visualContent: { flex: 1, padding: '60px', display: 'flex', flexDirection: 'column' as const, justifyContent: 'space-between' },
   visualHeader: { maxWidth: '340px' },
   appIcon: { width: '48px', height: '48px', backgroundColor: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' },
@@ -241,8 +241,8 @@ const styles = {
   
   illustration: { position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' },
   abstractGraphic: { position: 'absolute' as const, width: '100%', height: '100%' },
-  circle1: { position: 'absolute' as const, width: '400px', height: '400px', border: '2px solid rgba(124, 58, 237, 0.04)', borderRadius: '50%', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' },
-  circle2: { position: 'absolute' as const, width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, transparent 70%)', borderRadius: '50%', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' },
+  circle1: { position: 'absolute' as const, width: '400px', height: '400px', border: '2px solid rgba(217, 255, 0, 0.04)', borderRadius: '50%', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' },
+  circle2: { position: 'absolute' as const, width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(217, 255, 0, 0.08) 0%, transparent 70%)', borderRadius: '50%', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' },
   mockupImg: { width: '85%', borderRadius: '24px', boxShadow: '0 40px 100px -20px rgba(0,0,0,0.1)', objectFit: 'cover' as const, zIndex: 1 },
 
   visualFooter: { display: 'flex', gap: '60px' },

@@ -62,7 +62,7 @@ const styles = {
     display: 'flex', 
     flexDirection: 'column' as const, 
     minHeight: '100vh', 
-    backgroundColor: '#f8fafc' 
+    backgroundColor: '#f4f4f4' 
   },
   header: {
     height: '80px',
@@ -98,7 +98,7 @@ const styles = {
   navLinkActive: { 
     display: 'flex', alignItems: 'center', gap: '8px', 
     padding: '10px 20px', borderRadius: '14px', border: 'none', 
-    backgroundColor: '#f1f5f9', color: '#1e293b', 
+    backgroundColor: '#ebebeb', color: '#1e293b', 
     fontWeight: '700', cursor: 'pointer' 
   },
 
@@ -109,13 +109,13 @@ const styles = {
   userBadge: { fontSize: '10px', fontWeight: '700', color: '#94a3b8' },
   avatar: { 
     width: '38px', height: '38px', borderRadius: '12px', 
-    backgroundColor: '#f1f5f9', border: '2px solid white', 
+    backgroundColor: '#ebebeb', border: '2px solid white', 
     boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontWeight: '800', color: '#1e293b'
   },
   logoutBtn: { 
-    padding: '10px', borderRadius: '12px', border: '1px solid #f1f5f9', 
+    padding: '10px', borderRadius: '12px', border: '1px solid #e8e8e8', 
     backgroundColor: 'white', color: '#ef4444', cursor: 'pointer',
     transition: 'all 0.2s'
   },

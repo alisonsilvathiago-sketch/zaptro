@@ -91,7 +91,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
      const isMissingTable = (authError as any)?.code === '42P01';
 
      return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: isZaptro ? '#FFFFFF' : '#F8FAFC', padding: '40px 20px', textAlign: 'center' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: isZaptro ? '#FFFFFF' : '#f4f4f4', padding: '40px 20px', textAlign: 'center' }}>
           <div style={{ color: isZaptro ? '#000000' : '#ef4444', marginBottom: '24px' }}>
             {isZaptro ? (
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-bounce">
@@ -212,7 +212,8 @@ CREATE POLICY "Self insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid()
       location.pathname === '/perfil' ||
       location.pathname.startsWith('/whatsapp') ||
       location.pathname === ZAPTRO_ROUTES.PROFILE ||
-      location.pathname === ZAPTRO_ROUTES.LEGACY_PROFILE;
+      location.pathname === ZAPTRO_ROUTES.LEGACY_PROFILE ||
+      location.pathname === ZAPTRO_ROUTES.BILLING;
 
     // Se o trial expirou e ele ainda está como 'trial', ou se está bloqueado manualmente
     if ((isSuspended || isBillingBlocked || (trialExpired && isTrialing)) && !isOnPaymentPath) {

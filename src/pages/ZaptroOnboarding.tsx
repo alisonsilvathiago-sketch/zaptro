@@ -243,7 +243,7 @@ const styles: Record<string, any> = {
   statusDot: { width: '10px', height: '10px', borderRadius: '50%', boxShadow: '0 0 10px rgba(245, 158, 11, 0.5)' },
   refreshBtn: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   
-  footer: { marginTop: '48px', borderTop: '1px solid #F1F5F9', paddingTop: '24px', display: 'flex', justifyContent: 'space-between' },
+  footer: { marginTop: '48px', borderTop: '1px solid #e8e8e8', paddingTop: '24px', display: 'flex', justifyContent: 'space-between' },
   footerLink: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }
 };
 

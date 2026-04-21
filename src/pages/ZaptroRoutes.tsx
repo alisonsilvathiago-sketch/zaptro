@@ -1,6 +1,21 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, ExternalLink, LayoutGrid, List, Search, Trash2, Truck, Workflow, X } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  LayoutGrid,
+  List,
+  MapPinned,
+  Radio,
+  Search,
+  Trash2,
+  Truck,
+  Workflow,
+  X,
+} from 'lucide-react';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
@@ -22,11 +37,26 @@ import {
 } from '../constants/zaptroCrmActiveRoutes';
 import { getZaptroPlanVerifiedTier } from '../utils/zaptroPlanVerifiedSeal';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { hasZaptroGranularPermission, isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { zaptroProfileInitials } from '../utils/zaptroDriverSelfProfile';
 
+const FleetMap = React.lazy(() => import('../components/FleetMap'));
+
 const LIME = '#D9FF00';
+
+/** Cinzas neutros na página Rotas (evitar fundos tipo slate / #e8eaef). */
+const ROUTES_UI_NEUTRAL = {
+  /** Rail do toggle Cartões/Lista — um pouco mais escuro que #f4f4f4 */
+  railBg: '#ebebeb',
+  borderHairline: 'rgba(0,0,0,0.09)',
+  shadowCard: 'rgba(0,0,0,0.06)',
+  shadowInset: 'rgba(0,0,0,0.05)',
+  shadowSegment: 'rgba(0,0,0,0.14)',
+  segmentActiveBg: '#0a0a0a',
+  modalOverlay: 'rgba(0,0,0,0.48)',
+} as const;
 
 const ROUTES_VIEW_STORAGE_PREFIX = 'zaptro_routes_view_v1_';
 
@@ -149,9 +179,9 @@ function getRouteCardVisual(row: ActiveRouteRow): RouteCardVisual {
   if (row.status === 'encerrada') {
     return {
       title: 'Encerrada',
-      accent: '#94a3b8',
-      iconBg: 'rgba(148,163,184,0.22)',
-      iconFg: '#475569',
+      accent: '#737373',
+      iconBg: 'rgba(115,115,115,0.2)',
+      iconFg: '#404040',
       ...photos,
     };
   }
@@ -194,9 +224,9 @@ function getRouteCardVisual(row: ActiveRouteRow): RouteCardVisual {
     default:
       return {
         title: 'Iniciar rota',
-        accent: '#2563eb',
-        iconBg: 'rgba(37,99,235,0.16)',
-        iconFg: '#1d4ed8',
+        accent: '#525252',
+        iconBg: 'rgba(64,64,64,0.14)',
+        iconFg: '#262626',
         ...photos,
       };
   }
@@ -215,7 +245,7 @@ const RouteCardDualAvatars: React.FC<{
     setDrFail(false);
   }, [visual.companyPhotoUrl, visual.driverPhotoUrl]);
   const edge = mode === 'dark' ? 'rgba(255,255,255,0.12)' : border;
-  const dotRing = mode === 'dark' ? 'rgba(15,23,42,0.96)' : '#ffffff';
+  const dotRing = mode === 'dark' ? 'rgba(0,0,0,0.92)' : '#ffffff';
   const companyHoverTitle = visual.companyDisplayName
     ? `Empresa: ${visual.companyDisplayName}`
     : 'Empresa: nome ainda não definido (aparece quando a rota grava o nome público)';
@@ -265,41 +295,55 @@ const RouteCardDualAvatars: React.FC<{
           placeholder(visual.iconBg, visual.companyInitials, visual.iconFg)
         )}
       </div>
-      <div style={{ position: 'relative', width: 36, height: 36, flexShrink: 0 }}>
-        {visual.driverPhotoUrl && !drFail ? (
-          <img
-            src={visual.driverPhotoUrl}
-            alt=""
-            width={36}
-            height={36}
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          flexShrink: 0,
+          display: 'grid',
+          gridTemplateColumns: '36px',
+          gridTemplateRows: '36px',
+          overflow: 'visible',
+        }}
+      >
+        <div style={{ gridRow: 1, gridColumn: 1, position: 'relative', width: 36, height: 36, overflow: 'visible' }}>
+          {visual.driverPhotoUrl && !drFail ? (
+            <img
+              src={visual.driverPhotoUrl}
+              alt=""
+              width={36}
+              height={36}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                objectFit: 'cover',
+                border: `1px solid ${edge}`,
+                display: 'block',
+                boxSizing: 'border-box',
+              }}
+              onError={() => setDrFail(true)}
+            />
+          ) : (
+            placeholder('rgba(115,115,115,0.2)', visual.driverInitials, '#525252')
+          )}
+          <div
+            title={visual.title}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              objectFit: 'cover',
-              border: `1px solid ${edge}`,
-              display: 'block',
+              position: 'absolute',
+              right: 2,
+              bottom: 2,
+              width: 11,
+              height: 11,
+              borderRadius: 999,
+              backgroundColor: visual.accent,
+              border: `2px solid ${dotRing}`,
               boxSizing: 'border-box',
+              zIndex: 2,
+              pointerEvents: 'none',
             }}
-            onError={() => setDrFail(true)}
           />
-        ) : (
-          placeholder('rgba(148,163,184,0.22)', visual.driverInitials, '#64748b')
-        )}
-        <div
-          title={visual.title}
-          style={{
-            position: 'absolute',
-            right: -1,
-            bottom: -1,
-            width: 11,
-            height: 11,
-            borderRadius: 999,
-            backgroundColor: visual.accent,
-            border: `2px solid ${dotRing}`,
-            boxSizing: 'border-box',
-          }}
-        />
+        </div>
       </div>
     </div>
   );
@@ -334,6 +378,8 @@ const ZaptroRoutesInner: React.FC = () => {
   const [statusTab, setStatusTab] = useState<RoutesStatusTab>('all');
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [detailRouteId, setDetailRouteId] = useState<string | null>(null);
+  /** Painel com mapa (mesmo estilo de ação que «Automação») — vista geral até GPS por rota. */
+  const [showActiveRoutesMap, setShowActiveRoutesMap] = useState(false);
 
   const persistViewMode = useCallback(
     (mode: 'cards' | 'list') => {
@@ -422,6 +468,24 @@ const ZaptroRoutesInner: React.FC = () => {
 
   const hasActiveFilters = Boolean(routeSearch.trim() || dateFrom || dateTo || statusTab !== 'all');
 
+  const routesHeaderGhostBtn = useMemo(
+    (): React.CSSProperties => ({
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
+      padding: '13px 20px',
+      borderRadius: 16,
+      border: `1px solid ${border}`,
+      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#fff',
+      color: text,
+      fontWeight: 900,
+      fontSize: 14,
+      cursor: 'pointer',
+      fontFamily: 'inherit',
+    }),
+    [border, palette.mode, text],
+  );
+
   const inputShell: React.CSSProperties = {
     width: '100%',
     boxSizing: 'border-box',
@@ -431,7 +495,7 @@ const ZaptroRoutesInner: React.FC = () => {
     fontSize: 13,
     fontWeight: 600,
     color: text,
-    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f8fafc',
+    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
     fontFamily: 'inherit',
     outline: 'none',
   };
@@ -547,24 +611,18 @@ const ZaptroRoutesInner: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [detailRow]);
 
-  const kpiCard = (label: string, value: string | number, hint: string, accent?: boolean) => (
-    <div
+  const kpiCard = (label: string, value: string | number, hint: string, Icon: LucideIcon, accent?: boolean) => (
+    <ZaptroKpiMetricCard
       key={label}
-      style={{
-        padding: '18px 20px',
-        borderRadius: 22,
-        border: `1px solid ${border}`,
-        borderLeft: accent ? `3px solid ${LIME}` : `1px solid ${border}`,
-        backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-        boxShadow: palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.32)' : '0 8px 30px rgba(15,23,42,0.06)',
-        boxSizing: 'border-box',
-        minWidth: 0,
-      }}
-    >
-      <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.1em', color: muted }}>{label}</p>
-      <p style={{ margin: '10px 0 0', fontSize: 30, fontWeight: 950, color: text, letterSpacing: '-0.03em', lineHeight: 1.1 }}>{value}</p>
-      <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: muted, lineHeight: 1.4 }}>{hint}</p>
-    </div>
+      icon={Icon}
+      title={label}
+      value={value}
+      subtitle={hint}
+      accentBorder={!!accent}
+      titleCaps
+      valueSize="hero"
+      style={{ boxShadow: palette.mode === 'dark' ? 'none' : `0 4px 24px ${ROUTES_UI_NEUTRAL.shadowCard}` }}
+    />
   );
 
   return (
@@ -581,11 +639,17 @@ const ZaptroRoutesInner: React.FC = () => {
     >
       <header style={{ marginBottom: 24 }}>
         <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 950, letterSpacing: '0.12em', color: muted }}>OPERAÇÃO</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-          <div style={{ flex: '1 1 260px', minWidth: 0 }}>
-            <h1 style={{ margin: 0, fontSize: 30, fontWeight: 950, letterSpacing: '-1px', color: text }}>Rotas</h1>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <div
+            style={{
+              flex: '1 1 260px',
+              minWidth: 0,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: 14,
+            }}
+          >
             {canOpenCrm ? (
               <button
                 type="button"
@@ -594,42 +658,61 @@ const ZaptroRoutesInner: React.FC = () => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 8,
-                  padding: '12px 18px',
+                  padding: '13px 20px',
                   borderRadius: 16,
                   border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F4F4F5',
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : ROUTES_UI_NEUTRAL.railBg,
                   color: text,
                   fontWeight: 900,
-                  fontSize: 13,
+                  fontSize: 14,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
+                  flexShrink: 0,
                 }}
               >
                 <ArrowLeft size={18} strokeWidth={2.2} /> CRM
               </button>
             ) : null}
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 38,
+                fontWeight: 950,
+                letterSpacing: '-1.2px',
+                color: text,
+                flex: '1 1 160px',
+                minWidth: 0,
+              }}
+            >
+              Rotas
+            </h1>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
             {canOpenAutomation ? (
               <button
                 type="button"
                 onClick={() => navigate(`${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=automation`)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '12px 18px',
-                  borderRadius: 16,
-                  border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#fff',
-                  color: text,
-                  fontWeight: 900,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                }}
+                style={routesHeaderGhostBtn}
               >
                 <Workflow size={18} strokeWidth={2.2} /> Automação
               </button>
             ) : null}
+            <button
+              type="button"
+              aria-pressed={showActiveRoutesMap}
+              onClick={() => setShowActiveRoutesMap((v) => !v)}
+              style={{
+                ...routesHeaderGhostBtn,
+                ...(showActiveRoutesMap
+                  ? {
+                      border: `1px solid ${LIME}`,
+                      backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.22)',
+                    }
+                  : {}),
+              }}
+            >
+              <MapPinned size={18} strokeWidth={2.2} /> Mapa rotas ativas
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -641,13 +724,13 @@ const ZaptroRoutesInner: React.FC = () => {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
-                padding: '12px 18px',
+                padding: '13px 20px',
                 borderRadius: 16,
                 border: `1px solid ${border}`,
                 backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.35)',
                 color: text,
                 fontWeight: 900,
-                fontSize: 13,
+                fontSize: 14,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -667,11 +750,76 @@ const ZaptroRoutesInner: React.FC = () => {
           width: '100%',
         }}
       >
-        {kpiCard('TOTAL', stats.total, 'Rotas registadas nesta empresa.', true)}
-        {kpiCard('ATIVAS', stats.ativas, 'Em curso — partilha o link do motorista.')}
-        {kpiCard('ENCERRADAS', stats.encerradas, 'Histórico na lista abaixo.')}
-        {kpiCard('COM ESTADO LIVE', stats.comLive, 'Token com dados em tempo real (demo local).')}
+        {kpiCard('TOTAL', stats.total, 'Rotas registadas nesta empresa.', LayoutGrid, true)}
+        {kpiCard('ATIVAS', stats.ativas, 'Em curso — partilha o link do motorista.', Truck)}
+        {kpiCard('ENCERRADAS', stats.encerradas, 'Histórico na lista abaixo.', CheckCircle2)}
+        {kpiCard('COM ESTADO LIVE', stats.comLive, 'Token com dados em tempo real (demo local).', Radio)}
       </div>
+
+      {showActiveRoutesMap ? (
+        <section
+          style={{
+            borderRadius: 22,
+            marginBottom: 22,
+            overflow: 'hidden',
+            border: `1px solid ${border}`,
+            backgroundColor: cardBg,
+            boxShadow: palette.mode === 'dark' ? 'none' : ZAPTRO_SHADOW.xs,
+            boxSizing: 'border-box',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              padding: '14px 18px',
+              borderBottom: `1px solid ${border}`,
+            }}
+          >
+            <div style={{ minWidth: 0 }}>
+              <p style={{ margin: 0, fontSize: 13, fontWeight: 950, color: text }}>Mapa operacional</p>
+              <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 600, color: muted, lineHeight: 1.45 }}>
+                <strong style={{ color: text }}>{stats.ativas}</strong> rotas ativas na lista · vista de exemplo (frota). Com GPS no token, os marcadores passam a refletir a operação real.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowActiveRoutesMap(false)}
+              style={{
+                ...routesHeaderGhostBtn,
+                padding: '10px 16px',
+                fontSize: 13,
+              }}
+            >
+              Fechar mapa
+            </button>
+          </div>
+          <div style={{ height: 'min(52vh, 520px)', minHeight: 360, width: '100%', position: 'relative' }}>
+            <Suspense
+              fallback={
+                <div
+                  style={{
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: muted,
+                  }}
+                >
+                  A carregar mapa…
+                </div>
+              }
+            >
+              <FleetMap />
+            </Suspense>
+          </div>
+        </section>
+      ) : null}
 
       <section
         style={{
@@ -783,9 +931,9 @@ const ZaptroRoutesInner: React.FC = () => {
                   gap: 4,
                   borderRadius: 14,
                   border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(0,0,0,0.5)' : '#e8eaef',
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(0,0,0,0.5)' : ROUTES_UI_NEUTRAL.railBg,
                   boxShadow:
-                    palette.mode === 'dark' ? 'inset 0 1px 0 rgba(255,255,255,0.06)' : 'inset 0 1px 2px rgba(15,23,42,0.06)',
+                    palette.mode === 'dark' ? 'inset 0 1px 0 rgba(255,255,255,0.06)' : `inset 0 1px 2px ${ROUTES_UI_NEUTRAL.shadowInset}`,
                   flexShrink: 0,
                 }}
               >
@@ -805,7 +953,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       viewMode === 'cards'
                         ? palette.mode === 'dark'
                           ? LIME
-                          : '#0f172a'
+                          : ROUTES_UI_NEUTRAL.segmentActiveBg
                         : 'transparent',
                     color:
                       viewMode === 'cards' ? (palette.mode === 'dark' ? '#0a0a0a' : LIME) : muted,
@@ -817,7 +965,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       viewMode === 'cards'
                         ? palette.mode === 'dark'
                           ? '0 2px 10px rgba(217,255,0,0.35)'
-                          : '0 2px 8px rgba(15,23,42,0.15)'
+                          : `0 2px 8px ${ROUTES_UI_NEUTRAL.shadowSegment}`
                         : 'none',
                     transition: 'background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease',
                   }}
@@ -840,7 +988,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       viewMode === 'list'
                         ? palette.mode === 'dark'
                           ? LIME
-                          : '#0f172a'
+                          : ROUTES_UI_NEUTRAL.segmentActiveBg
                         : 'transparent',
                     color: viewMode === 'list' ? (palette.mode === 'dark' ? '#0a0a0a' : LIME) : muted,
                     fontWeight: viewMode === 'list' ? 950 : 700,
@@ -851,7 +999,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       viewMode === 'list'
                         ? palette.mode === 'dark'
                           ? '0 2px 10px rgba(217,255,0,0.35)'
-                          : '0 2px 8px rgba(15,23,42,0.15)'
+                          : `0 2px 8px ${ROUTES_UI_NEUTRAL.shadowSegment}`
                         : 'none',
                     transition: 'background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease',
                   }}
@@ -980,6 +1128,14 @@ const ZaptroRoutesInner: React.FC = () => {
                   >
                     <div style={{ height: 5, width: '100%', backgroundColor: visual.accent, flexShrink: 0 }} />
                     <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        minHeight: 0,
+                      }}
+                    >
+                    <div
                       role="button"
                       tabIndex={0}
                       title="Ver detalhes da rota"
@@ -1060,24 +1216,26 @@ const ZaptroRoutesInner: React.FC = () => {
                           {r.internalNote}
                         </p>
                       ) : null}
+                    </div>
                       <div
-                        role="presentation"
-                        onClick={(e) => e.stopPropagation()}
-                        onKeyDown={(e) => e.stopPropagation()}
                         style={{
                           display: 'flex',
                           flexDirection: 'row',
                           flexWrap: 'nowrap',
                           alignItems: 'stretch',
                           gap: 6,
-                          marginTop: 'auto',
-                          paddingTop: 8,
-                          borderTop: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(226,232,240,0.9)'}`,
+                          flexShrink: 0,
+                          padding: '8px 14px 12px',
+                          borderTop: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : ROUTES_UI_NEUTRAL.borderHairline}`,
                         }}
                       >
                       <button
                         type="button"
-                        onClick={() => window.open(driverUrl, '_blank', 'noopener,noreferrer')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          window.open(driverUrl, '_blank', 'noopener,noreferrer');
+                        }}
                         style={{
                           ...btnRow,
                           border: `1px solid ${border}`,
@@ -1089,14 +1247,16 @@ const ZaptroRoutesInner: React.FC = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
                           void navigator.clipboard?.writeText(publicUrl).catch(() => {});
                           notifyZaptro('success', 'Copiado', 'Link público na área de transferência.');
                         }}
                         style={{
                           ...btnRow,
                           border: `1px solid ${border}`,
-                          background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f8fafc',
+                          background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                           color: text,
                         }}
                       >
@@ -1105,7 +1265,11 @@ const ZaptroRoutesInner: React.FC = () => {
                       {r.status === 'ativa' ? (
                         <button
                           type="button"
-                          onClick={() => closeRoute(r.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            closeRoute(r.id);
+                          }}
                           style={{
                             ...btnRow,
                             border: `1px solid ${border}`,
@@ -1126,7 +1290,7 @@ const ZaptroRoutesInner: React.FC = () => {
             <div style={{ width: '100%', overflowX: 'auto', borderRadius: 16, border: `1px solid ${border}` }}>
               <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#fff' }}>
                 <thead>
-                  <tr style={{ backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f8fafc', borderBottom: `1px solid ${border}` }}>
+                  <tr style={{ backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f4f4f4', borderBottom: `1px solid ${border}` }}>
                     <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>ESTADO</th>
                     <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>CLIENTE / REF.</th>
                     <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>TOKEN</th>
@@ -1165,7 +1329,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         }}
                         tabIndex={0}
                         style={{
-                          borderBottom: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f1f5f9'}`,
+                          borderBottom: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#e8e8e8'}`,
                           cursor: 'pointer',
                         }}
                       >
@@ -1200,20 +1364,24 @@ const ZaptroRoutesInner: React.FC = () => {
                           <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 6, justifyContent: 'flex-end' }}>
                             <button
                               type="button"
-                              onClick={() => window.open(driverUrl, '_blank', 'noopener,noreferrer')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(driverUrl, '_blank', 'noopener,noreferrer');
+                              }}
                               style={{ ...btnList, background: '#000', color: LIME, border: `1px solid ${border}` }}
                             >
                               <ExternalLink size={12} /> Motorista
                             </button>
                             <button
                               type="button"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 void navigator.clipboard?.writeText(publicUrl).catch(() => {});
                                 notifyZaptro('success', 'Copiado', 'Link público na área de transferência.');
                               }}
                               style={{
                                 ...btnList,
-                                background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f8fafc',
+                                background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                                 color: text,
                               }}
                             >
@@ -1222,7 +1390,10 @@ const ZaptroRoutesInner: React.FC = () => {
                             {r.status === 'ativa' ? (
                               <button
                                 type="button"
-                                onClick={() => closeRoute(r.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  closeRoute(r.id);
+                                }}
                                 style={{ ...btnList, background: 'transparent', color: muted }}
                               >
                                 Encerrar
@@ -1247,7 +1418,7 @@ const ZaptroRoutesInner: React.FC = () => {
             position: 'fixed',
             inset: 0,
             zIndex: 6000,
-            backgroundColor: 'rgba(15,23,42,0.45)',
+            backgroundColor: ROUTES_UI_NEUTRAL.modalOverlay,
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -1307,7 +1478,7 @@ const ZaptroRoutesInner: React.FC = () => {
                 fontSize: 14,
                 fontWeight: 600,
                 color: text,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F8FAFC',
+                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                 marginBottom: 16,
                 fontFamily: 'inherit',
               }}
@@ -1327,7 +1498,7 @@ const ZaptroRoutesInner: React.FC = () => {
                 fontSize: 13,
                 fontWeight: 600,
                 color: text,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F8FAFC',
+                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                 marginBottom: 20,
                 resize: 'vertical' as const,
                 fontFamily: 'inherit',
@@ -1379,7 +1550,7 @@ const ZaptroRoutesInner: React.FC = () => {
             position: 'fixed',
             inset: 0,
             zIndex: 6100,
-            backgroundColor: 'rgba(15,23,42,0.45)',
+            backgroundColor: ROUTES_UI_NEUTRAL.modalOverlay,
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -1448,7 +1619,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       padding: 12,
                       borderRadius: 16,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f8fafc',
+                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f4f4f4',
                     }}
                   >
                     <RouteCardDualAvatars visual={dv} border={border} mode={palette.mode} />
@@ -1528,7 +1699,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         padding: '10px 14px',
                         borderRadius: 14,
                         border: `1px solid ${border}`,
-                        background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f8fafc',
+                        background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                         color: text,
                         fontWeight: 900,
                         fontSize: 13,
@@ -1543,7 +1714,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   <div
                     style={{
                       paddingTop: 16,
-                      borderTop: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(226,232,240,0.95)'}`,
+                      borderTop: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : ROUTES_UI_NEUTRAL.borderHairline}`,
                     }}
                   >
                     <p style={{ margin: '0 0 12px', fontSize: 12, fontWeight: 600, color: muted, lineHeight: 1.45 }}>

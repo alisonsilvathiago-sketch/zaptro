@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import SEOManager from './components/SEOManager';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -18,12 +18,16 @@ import ZaptroProfile from './pages/ZaptroProfile';
 import ZaptroHistory from './pages/ZaptroHistory';
 import ZaptroClients from './pages/ZaptroClients';
 import ZaptroQuotesList from './pages/ZaptroQuotesList';
+import ZaptroPublicQuote from './pages/ZaptroPublicQuote';
 import ZaptroRoutes from './pages/ZaptroRoutes';
 import ZaptroDrivers from './pages/ZaptroDrivers';
 import ZaptroBilling from './pages/ZaptroBilling';
 import ZaptroLogistics from './pages/ZaptroLogistics';
 import ZaptroOccurrence from './pages/ZaptroOccurrence';
 import ZaptroClientDetail from './pages/ZaptroClientDetail';
+import ZaptroDriverRoute from './pages/ZaptroDriverRoute';
+import ZaptroPublicTrack from './pages/ZaptroPublicTrack';
+import ZaptroOpenStreetMap from './pages/ZaptroOpenStreetMap';
 import { ZAPTRO_ROUTES } from './constants/zaptroRoutes';
 
 const App: React.FC = () => {
@@ -37,6 +41,11 @@ const App: React.FC = () => {
       <Routes>
         {/* Landing & Auth (Públicas) */}
         <Route path="/" element={<WhatsAppSales />} />
+        {/* Orçamento — página pública (token na URL); sem login */}
+        <Route path="/orcamento/:token" element={<ZaptroPublicQuote />} />
+        {/* Execução de rota: motorista e cliente — públicos (token na URL); sem login */}
+        <Route path="/rota/:token" element={<ZaptroDriverRoute />} />
+        <Route path="/acompanhar/:token" element={<ZaptroPublicTrack />} />
         <Route path={ZAPTRO_ROUTES.COMPANY_LOGIN} element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path={ZAPTRO_ROUTES.REGISTER} element={<ZaptroRegister />} />
@@ -54,6 +63,7 @@ const App: React.FC = () => {
         <Route path="/clientes/perfil/:id" element={<ProtectedRoute><ZaptroClientDetail /></ProtectedRoute>} />
         <Route path={ZAPTRO_ROUTES.TEAM} element={<ProtectedRoute><ZaptroTeam /></ProtectedRoute>} />
         <Route path={ZAPTRO_ROUTES.HISTORY} element={<ProtectedRoute><ZaptroHistory /></ProtectedRoute>} />
+        <Route path={ZAPTRO_ROUTES.OPENSTREETMAP} element={<ProtectedRoute><ZaptroOpenStreetMap /></ProtectedRoute>} />
         <Route path={ZAPTRO_ROUTES.CLIENTS} element={<ProtectedRoute><ZaptroClients /></ProtectedRoute>} />
         <Route path={ZAPTRO_ROUTES.SETTINGS_ALIAS} element={<ProtectedRoute><ZaptroSettings /></ProtectedRoute>} />
         <Route path={ZAPTRO_ROUTES.PROFILE} element={<ProtectedRoute><ZaptroProfile /></ProtectedRoute>} />

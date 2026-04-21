@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Plus,
-  MoreHorizontal,
   Phone,
   MapPin,
+  Percent,
   Package,
   Calendar,
   CalendarClock,
@@ -27,9 +27,13 @@ import {
   Link2,
   Send,
   CheckCircle2,
+  Check,
   Copy,
+  Paperclip,
+  MoreVertical,
 } from 'lucide-react';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
+import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
@@ -43,6 +47,7 @@ import {
   quotesStorageKey,
   quotePublicPath,
 } from '../constants/zaptroQuotes';
+import { isZaptroBrandingEntitledByPlan } from '../utils/zaptroBrandingEntitlement';
 import {
   fetchCrmTasksForLead,
   insertCrmTask,
@@ -54,8 +59,23 @@ import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { resolveMemberAvatarUrl } from '../utils/zaptroAvatar';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
+import {
+  ZAPTRO_CARD_BG_DARK,
+  zaptroCardRowStyle,
+  zaptroCardSurfaceStyle,
+} from '../constants/zaptroCardSurface';
 
 const LIME = '#D9FF00';
+/** Fundos e traços derivados de #D9FF00 (opacidade). */
+const LIME_TINT = {
+  xxs: 'rgba(217, 255, 0, 0.06)',
+  xs: 'rgba(217, 255, 0, 0.1)',
+  sm: 'rgba(217, 255, 0, 0.14)',
+  md: 'rgba(217, 255, 0, 0.22)',
+  lg: 'rgba(217, 255, 0, 0.35)',
+  xl: 'rgba(217, 255, 0, 0.5)',
+  xxl: 'rgba(217, 255, 0, 0.65)',
+} as const;
 
 type Stage = 'novos' | 'atendimento' | 'negociacao' | 'fechado' | 'perdido';
 
@@ -84,11 +104,11 @@ type CrmLead = {
 };
 
 const STAGES: { id: Stage; label: string; accent: string; probHint: string }[] = [
-  { id: 'novos', label: 'Novos Leads', accent: '#EAB308', probHint: 'Prob. fecho típica ~12%' },
-  { id: 'atendimento', label: 'Em Atendimento', accent: '#3B82F6', probHint: '~32% ponderado' },
-  { id: 'negociacao', label: 'Negociação', accent: '#A855F7', probHint: '~62% ponderado' },
-  { id: 'fechado', label: 'Fechado', accent: '#22C55E', probHint: 'Ganho 100%' },
-  { id: 'perdido', label: 'Perdido', accent: '#EF4444', probHint: 'Arquivado' },
+  { id: 'novos', label: 'Novos Leads', accent: LIME_TINT.lg, probHint: 'Prob. fecho típica ~12%' },
+  { id: 'atendimento', label: 'Em Atendimento', accent: LIME_TINT.xl, probHint: '~32% ponderado' },
+  { id: 'negociacao', label: 'Negociação', accent: LIME_TINT.xxl, probHint: '~62% ponderado' },
+  { id: 'fechado', label: 'Fechado', accent: LIME, probHint: 'Ganho 100%' },
+  { id: 'perdido', label: 'Perdido', accent: LIME_TINT.md, probHint: 'Arquivado' },
 ];
 
 /** Peso para valor esperado no pipeline (pré-visualização comercial, não contabilidade). */
@@ -115,6 +135,26 @@ function leadHeat(lead: CrmLead): { label: string; variant: 'hot' | 'warm' | 'st
     return { label: `Sem movimento · ${d}d`, variant: 'stale' };
   }
   return { label: 'Frio', variant: 'cold' };
+}
+
+const PASTEL_CARD_LIGHT = [
+  'rgba(217, 255, 0, 0.1)',
+  'rgba(217, 255, 0, 0.12)',
+  'rgba(217, 255, 0, 0.14)',
+  'rgba(217, 255, 0, 0.16)',
+  'rgba(217, 255, 0, 0.18)',
+] as const;
+const PASTEL_CARD_DARK = [
+  'rgba(217, 255, 0, 0.12)',
+  'rgba(217, 255, 0, 0.16)',
+  'rgba(217, 255, 0, 0.2)',
+  'rgba(217, 255, 0, 0.24)',
+  'rgba(217, 255, 0, 0.28)',
+] as const;
+
+function pastelCardBg(leadId: string, dark: boolean): string {
+  const idx = Math.abs(leadId.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % PASTEL_CARD_LIGHT.length;
+  return dark ? PASTEL_CARD_DARK[idx] : PASTEL_CARD_LIGHT[idx];
 }
 
 function waDigits(phone: string): string {
@@ -189,7 +229,7 @@ function timelineKindLabel(k: CrmTimelineKind): string {
     case 'proposal':
       return 'Proposta';
     case 'negotiation':
-      return 'Negociação';
+      return 'Oportunidade';
     case 'route':
       return 'Rota';
     case 'assign':
@@ -294,17 +334,6 @@ const ZaptroCrmContent: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const isAdmin = isZaptroTenantAdminRole(profile?.role);
 
-  useEffect(() => {
-    const action = searchParams.get('action');
-    if (action === 'new_proposal') {
-      openProposalModal();
-      setSearchParams({}, { replace: true });
-    } else if (action === 'new_negociation' || action === 'new_negotiation') {
-      openNegotiationModal();
-      setSearchParams({}, { replace: true });
-    }
-  }, [searchParams]);
-
   const [leads, setLeads] = useState<CrmLead[]>([]);
   const [teamOptions, setTeamOptions] = useState<{ id: string; full_name: string | null; avatar_url?: string | null }[]>([]);
   const [dragId, setDragId] = useState<string | null>(null);
@@ -326,9 +355,14 @@ const ZaptroCrmContent: React.FC = () => {
   const [activeRoutes, setActiveRoutes] = useState<ActiveRouteRow[]>([]);
   const [crmUiMode, setCrmUiMode] = useState<'kanban' | 'listas'>('kanban');
   const [proposalOpen, setProposalOpen] = useState(false);
-  const [proposalForm, setProposalForm] = useState({ leadId: '', title: '', value: '', validUntil: '', notes: '' });
-  const [negotiationOpen, setNegotiationOpen] = useState(false);
-  const [negotiationForm, setNegotiationForm] = useState({ leadId: '', title: '', targetValue: '', deadline: '', notes: '' });
+  const [proposalForm, setProposalForm] = useState<{
+    kind: 'proposal' | 'negotiation';
+    leadId: string;
+    title: string;
+    value: string;
+    schedule: string;
+    notes: string;
+  }>({ kind: 'proposal', leadId: '', title: '', value: '', schedule: '', notes: '' });
 
   const [quotesByLead, setQuotesByLead] = useState<Record<string, FreightQuote[]>>({});
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
@@ -351,6 +385,23 @@ const ZaptroCrmContent: React.FC = () => {
   const [taskForm, setTaskForm] = useState({ title: '', dueAt: '', notes: '' });
   const [taskSaving, setTaskSaving] = useState(false);
   const [callModalLead, setCallModalLead] = useState<CrmLead | null>(null);
+
+  /** Um único fluxo: o modal escolhe Proposta vs Oportunidade. URLs só pré-seleccionam o tipo. */
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action !== 'new_proposal' && action !== 'new_negociation' && action !== 'new_negotiation') return;
+    const kind: 'proposal' | 'negotiation' = action === 'new_proposal' ? 'proposal' : 'negotiation';
+    setProposalForm({
+      kind,
+      leadId: detail?.id || leads[0]?.id || '',
+      title: '',
+      value: '',
+      schedule: '',
+      notes: '',
+    });
+    setProposalOpen(true);
+    setSearchParams({}, { replace: true });
+  }, [searchParams, detail?.id, leads, setSearchParams]);
 
   const companyId = profile?.company_id || '';
   /** Sem empresa no perfil ainda: mesmo assim mostramos o Kanban com dados locais de demonstração. */
@@ -880,88 +931,66 @@ const ZaptroCrmContent: React.FC = () => {
     });
   };
 
-  const openProposalModal = () => {
-    setProposalForm((f) => ({
-      ...f,
+  const openProposalModal = (presetKind: 'proposal' | 'negotiation' = 'proposal') => {
+    setProposalForm({
+      kind: presetKind,
       leadId: detail?.id || leads[0]?.id || '',
       title: '',
       value: '',
-      validUntil: '',
+      schedule: '',
       notes: '',
-    }));
+    });
     setProposalOpen(true);
-  };
-
-  const openNegotiationModal = () => {
-    setNegotiationForm((f) => ({
-      ...f,
-      leadId: detail?.id || leads[0]?.id || '',
-      title: '',
-      targetValue: '',
-      deadline: '',
-      notes: '',
-    }));
-    setNegotiationOpen(true);
   };
 
   const submitProposal = () => {
     if (!proposalForm.leadId || !proposalForm.title.trim()) {
-      notifyZaptro('info', 'Proposta', 'Escolhe um lead e preenche o título da proposta.');
+      notifyZaptro(
+        'info',
+        proposalForm.kind === 'proposal' ? 'Proposta' : 'Oportunidade',
+        proposalForm.kind === 'proposal'
+          ? 'Escolhe um lead e preenche o título da proposta.'
+          : 'Escolhe um lead e o título da oportunidade.',
+      );
       return;
     }
     const val = Number(String(proposalForm.value).replace(/\D/g, '')) || 0;
-    const parts = [
-      val ? `Valor: ${formatBrl(val)}` : null,
-      proposalForm.validUntil.trim() ? `Validade: ${proposalForm.validUntil.trim()}` : null,
-      proposalForm.notes.trim() ? proposalForm.notes.trim() : null,
-    ].filter(Boolean) as string[];
+    const isProposal = proposalForm.kind === 'proposal';
+    const parts = isProposal
+      ? ([
+          val ? `Valor: ${formatBrl(val)}` : null,
+          proposalForm.schedule.trim() ? `Validade: ${proposalForm.schedule.trim()}` : null,
+          proposalForm.notes.trim() ? proposalForm.notes.trim() : null,
+        ].filter(Boolean) as string[])
+      : ([
+          val ? `Valor alvo: ${formatBrl(val)}` : null,
+          proposalForm.schedule.trim() ? `Prazo: ${proposalForm.schedule.trim()}` : null,
+          proposalForm.notes.trim() ? proposalForm.notes.trim() : null,
+        ].filter(Boolean) as string[]);
     appendLeadEvent(proposalForm.leadId, {
       at: new Date().toISOString(),
-      kind: 'proposal',
-      title: `Proposta comercial: ${proposalForm.title.trim()}`,
+      kind: isProposal ? 'proposal' : 'negotiation',
+      title: isProposal
+        ? `Proposta comercial: ${proposalForm.title.trim()}`
+        : `Oportunidade: ${proposalForm.title.trim()}`,
       body: parts.join('\n') || undefined,
       actor: profile?.full_name || '—',
     });
     setProposalOpen(false);
-    setProposalForm({ leadId: '', title: '', value: '', validUntil: '', notes: '' });
-    notifyZaptro('success', 'Proposta', 'Registada no histórico do lead. PDF e envio por e-mail serão ligados ao backend.');
+    setProposalForm({ kind: 'proposal', leadId: '', title: '', value: '', schedule: '', notes: '' });
+    notifyZaptro(
+      'success',
+      isProposal ? 'Proposta' : 'Oportunidade',
+      isProposal
+        ? 'Registada no histórico do lead. PDF e envio por e-mail serão ligados ao backend.'
+        : 'Registada no histórico do lead.',
+    );
     const lead = leads.find((l) => l.id === proposalForm.leadId);
     appendZaptroActivityLog(crmStorageId, {
       type: 'atendimento',
       actorName: profile?.full_name || '—',
       clientLabel: lead?.clientName || 'Lead',
-      action: `Proposta: ${proposalForm.title.trim()}`,
-      details: parts.join(' · ') || undefined,
-    });
-  };
-
-  const submitNegotiation = () => {
-    if (!negotiationForm.leadId || !negotiationForm.title.trim()) {
-      notifyZaptro('info', 'Negociação', 'Escolhe um lead e o título da negociação.');
-      return;
-    }
-    const val = Number(String(negotiationForm.targetValue).replace(/\D/g, '')) || 0;
-    const parts = [
-      val ? `Valor alvo: ${formatBrl(val)}` : null,
-      negotiationForm.deadline.trim() ? `Prazo: ${negotiationForm.deadline.trim()}` : null,
-      negotiationForm.notes.trim() ? negotiationForm.notes.trim() : null,
-    ].filter(Boolean) as string[];
-    appendLeadEvent(negotiationForm.leadId, {
-      at: new Date().toISOString(),
-      kind: 'negotiation',
-      title: `Negociação: ${negotiationForm.title.trim()}`,
-      body: parts.join('\n') || undefined,
-      actor: profile?.full_name || '—',
-    });
-    setNegotiationOpen(false);
-    setNegotiationForm({ leadId: '', title: '', targetValue: '', deadline: '', notes: '' });
-    notifyZaptro('success', 'Negociação', 'Registada no histórico do lead.');
-    const negLead = leads.find((l) => l.id === negotiationForm.leadId);
-    appendZaptroActivityLog(crmStorageId, {
-      type: 'atendimento',
-      actorName: profile?.full_name || '—',
-      clientLabel: negLead?.clientName || 'Lead',
-      action: `Negociação: ${negotiationForm.title.trim()}`,
+      action: isProposal ? `Proposta: ${proposalForm.title.trim()}` : `Oportunidade: ${proposalForm.title.trim()}`,
       details: parts.join(' · ') || undefined,
     });
   };
@@ -997,6 +1026,13 @@ const ZaptroCrmContent: React.FC = () => {
     const now = new Date().toISOString();
     const id = `qt-${Date.now()}`;
     const token = `qt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
+    const cargo = quoteForm.cargoType.trim() || '—';
+    const wq = quoteForm.weightQty.trim() || '—';
+    const branded = isZaptroBrandingEntitledByPlan(company);
+    const primaryHex =
+      branded && company?.primary_color && /^#[0-9A-Fa-f]{3,8}$/.test(company.primary_color.trim())
+        ? company.primary_color.trim()
+        : undefined;
     const q: FreightQuote = {
       id,
       leadId: detail.id,
@@ -1004,8 +1040,11 @@ const ZaptroCrmContent: React.FC = () => {
       clientNameSnapshot: detail.clientName,
       origin: quoteForm.origin.trim(),
       destination: quoteForm.destination.trim(),
-      cargoType: quoteForm.cargoType.trim() || '—',
-      weightQty: quoteForm.weightQty.trim() || '—',
+      cargoType: cargo,
+      weightQty: wq,
+      productService: [cargo, wq].filter((x) => x && x !== '—').join(' · ') || 'Frete rodoviário',
+      quantity: wq,
+      quoteValue: val,
       freightValue: val,
       deliveryDeadline: quoteForm.deliveryDeadline.trim() || '—',
       notes: quoteForm.notes.trim(),
@@ -1013,6 +1052,10 @@ const ZaptroCrmContent: React.FC = () => {
       createdAt: now,
       updatedAt: now,
       history: [{ at: now, action: 'Orçamento criado', detail: `Por ${profile?.full_name || 'Equipa'}` }],
+      issuerCompanyName: company?.name?.trim() || 'Transportadora',
+      issuerLogoUrl: company?.logo_url?.trim() || null,
+      issuerPdfBranded: branded,
+      issuerPrimaryColor: primaryHex,
     };
     const map = { ...readQuotesMap(crmStorageId) };
     map[detail.id] = [...(map[detail.id] || []), q];
@@ -1110,10 +1153,11 @@ const ZaptroCrmContent: React.FC = () => {
     });
   };
 
-  const cardBg = palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#FFFFFF';
   const border = palette.mode === 'dark' ? '#334155' : '#E4E4E7';
+  const panelCard = () => zaptroCardSurfaceStyle(palette.mode === 'dark');
+  const rowCard = () => zaptroCardRowStyle(palette.mode === 'dark');
 
-  const renderCard = (lead: CrmLead, accent: string) => {
+  const renderCard = (lead: CrmLead) => {
     const canAct = canActOnLead(lead, isAdmin, profile?.id);
     const lockedByOther = !canAct && !!lead.assigneeId;
     const av = lead.assigneeId
@@ -1123,23 +1167,41 @@ const ZaptroCrmContent: React.FC = () => {
           profile ? { id: profile.id, avatar_url: profile.avatar_url } : null
         )
       : null;
-    const tagColor =
-      lead.tag === 'urgente' ? '#DC2626' : lead.tag === 'vip' ? '#A855F7' : lead.tag === 'retorno' ? '#2563EB' : '#64748B';
+    const isDark = palette.mode === 'dark';
+    const clientLogo = lead.clientLogoUrl?.trim() || null;
+    const tagColor = LIME;
+    const tagLabelColor = isDark ? '#fafafa' : '#000000';
     const heat = leadHeat(lead);
     const idleDays = daysSinceContact(lead.createdAt);
     const heatColors =
       heat.variant === 'hot'
-        ? { bg: 'rgba(239,68,68,0.12)', fg: '#B91C1C' }
+        ? { bg: LIME_TINT.sm, fg: isDark ? '#fafafa' : '#000000' }
         : heat.variant === 'stale'
-          ? { bg: 'rgba(245,158,11,0.16)', fg: '#B45309' }
+          ? { bg: LIME_TINT.xs, fg: isDark ? '#fafafa' : '#000000' }
           : heat.variant === 'warm'
-            ? { bg: 'rgba(59,130,246,0.12)', fg: '#1D4ED8' }
-            : { bg: 'rgba(100,116,139,0.12)', fg: '#64748B' };
-    const stripe =
-      heat.variant === 'hot' ? '#EF4444' : heat.variant === 'stale' ? '#F59E0B' : heat.variant === 'warm' ? '#3B82F6' : accent;
-    const clientPhoto =
-      lead.clientLogoUrl?.trim() ||
-      `https://picsum.photos/seed/${encodeURIComponent(`zaptro-crm-lead-${lead.id}`)}/96/96`;
+            ? { bg: 'rgba(217, 255, 0, 0.13)', fg: isDark ? '#fafafa' : '#000000' }
+            : { bg: LIME_TINT.xxs, fg: palette.textMuted };
+    const pastelBase = pastelCardBg(lead.id, isDark);
+    const cardSurface = dragId === lead.id ? (isDark ? LIME_TINT.md : LIME_TINT.sm) : pastelBase;
+    const progressPct = Math.round((lead.progress / 5) * 100);
+    const stableHash = Math.abs(lead.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0));
+    const commentCount = stableHash % 12;
+    const attachCount = (stableHash >> 3) % 6;
+    const checklist = [
+      { label: 'Dados e contacto', done: lead.progress >= 1 },
+      { label: 'Rota e mercadoria', done: lead.progress >= 3 },
+      { label: 'Proposta / follow-up', done: lead.progress >= 5 },
+    ] as const;
+    const cargoSlug = (lead.cargoType.split(/\s+/)[0] || 'carga')
+      .slice(0, 14)
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '');
+    const tagChips: string[] = [`#${cargoSlug || 'carga'}`];
+    if (lead.tag) tagChips.push(`#${lead.tag}`);
+    else tagChips.push('#logística');
+    const chipBg = isDark ? 'rgba(217,255,0,0.1)' : 'rgba(217,255,0,0.12)';
+    const chipBorder = isDark ? 'rgba(217,255,0,0.22)' : 'rgba(0,0,0,0.1)';
 
     const qaBtn: React.CSSProperties = {
       flex: '1 1 auto',
@@ -1150,13 +1212,16 @@ const ZaptroCrmContent: React.FC = () => {
       gap: 6,
       padding: '8px 8px',
       borderRadius: 12,
-      border: `1px solid ${border}`,
-      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
+      border: `1px solid ${isDark ? 'rgba(217,255,0,0.2)' : 'rgba(217,255,0,0.22)'}`,
+      backgroundColor: isDark ? 'rgba(217,255,0,0.06)' : 'rgba(255,255,255,0.92)',
       fontSize: 11,
       fontWeight: 900,
-      color: palette.text,
+      color: isDark ? '#fafafa' : '#000000',
       cursor: 'pointer',
     };
+
+    const dotFill = (i: number) =>
+      i <= lead.progress ? LIME : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)';
 
     return (
       <div
@@ -1182,62 +1247,54 @@ const ZaptroCrmContent: React.FC = () => {
           }
         }}
         style={{
-          borderRadius: 24,
-          padding: 18,
-          backgroundColor: dragId === lead.id ? (palette.mode === 'dark' ? '#1e293b' : '#F8FAFC') : cardBg,
-          border: lockedByOther ? `1px solid ${palette.mode === 'dark' ? '#475569' : '#CBD5E1'}` : `1px solid ${border}`,
-          borderLeft: `4px solid ${stripe}`,
+          borderRadius: 22,
+          padding: 16,
+          backgroundColor: cardSurface,
+          border: lockedByOther
+            ? `1px solid ${isDark ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.3)'}`
+            : `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}`,
           boxShadow: lockedByOther
-            ? `0 0 0 2px ${palette.mode === 'dark' ? 'rgba(148,163,184,0.35)' : 'rgba(100,116,139,0.25)'}, ${
-                heat.variant === 'hot'
-                  ? '0 10px 28px rgba(239,68,68,0.12)'
-                  : heat.variant === 'stale'
-                    ? '0 8px 22px rgba(245,158,11,0.1)'
-                    : ZAPTRO_SHADOW.md
-              }`
+            ? `0 0 0 2px ${isDark ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.28)'}, ${ZAPTRO_SHADOW.md}`
             : heat.variant === 'hot'
-              ? '0 10px 28px rgba(239,68,68,0.12)'
+              ? '0 12px 32px rgba(217,255,0,0.14)'
               : heat.variant === 'stale'
-                ? '0 8px 22px rgba(245,158,11,0.1)'
-                : ZAPTRO_SHADOW.md,
+                ? '0 10px 26px rgba(217,255,0,0.1)'
+                : '0 8px 24px rgba(15,23,42,0.06)',
           cursor: canAct ? 'grab' : 'default',
           textAlign: 'left',
           transition: 'transform 0.15s ease, box-shadow 0.15s ease',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
-          <span style={{ fontSize: 16, fontWeight: 950, color: palette.text, letterSpacing: '-0.03em', lineHeight: 1.2, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-            {lockedByOther && (
-              <span title="Responsável: outro utilizador — só leitura neste cartão" style={{ flexShrink: 0, color: palette.textMuted }}>
-                <Lock size={18} strokeWidth={2.4} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 10 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', minWidth: 0 }}>
+            {tagChips.slice(0, 3).map((t) => (
+              <span
+                key={t}
+                style={{
+                  fontSize: 10,
+                  fontWeight: 850,
+                  padding: '4px 9px',
+                  borderRadius: 10,
+                  backgroundColor: chipBg,
+                  color: palette.text,
+                  border: `1px solid ${chipBorder}`,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {t}
               </span>
-            )}
-            <img
-              src={clientPhoto}
-              alt=""
-              width={40}
-              height={40}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                objectFit: 'cover',
-                flexShrink: 0,
-                border: `1px solid ${border}`,
-                backgroundColor: palette.mode === 'dark' ? '#1e293b' : '#f4f4f5',
-              }}
-            />
-            <span style={{ minWidth: 0 }}>{lead.clientName}</span>
-          </span>
+            ))}
+          </div>
           <button
             type="button"
             style={{
               border: 'none',
-              background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F4F4F5',
+              background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.65)',
               borderRadius: 10,
               padding: 6,
               cursor: 'pointer',
               color: palette.textMuted,
+              flexShrink: 0,
             }}
             onClick={(e) => {
               e.stopPropagation();
@@ -1245,50 +1302,125 @@ const ZaptroCrmContent: React.FC = () => {
             }}
             aria-label="Mais opções"
           >
-            <MoreHorizontal size={18} />
+            <MoreVertical size={17} strokeWidth={2.2} />
           </button>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10, alignItems: 'center' }}>
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 950,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              padding: '5px 10px',
-              borderRadius: 999,
-              backgroundColor: heatColors.bg,
-              color: heatColors.fg,
-            }}
-          >
-            {heat.variant === 'hot' && <Flame size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />}
-            {heat.variant === 'stale' && <Timer size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />}
-            {heat.label}
-          </span>
-          <span style={{ fontSize: 11, fontWeight: 800, color: palette.textMuted }}>
-            Último contacto: há {idleDays} dia{idleDays === 1 ? '' : 's'} (criação / última gravação local)
-          </span>
+
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+          {lockedByOther && (
+            <span title="Responsável: outro utilizador — só leitura neste cartão" style={{ flexShrink: 0, color: palette.textMuted, paddingTop: 2 }}>
+              <Lock size={17} strokeWidth={2.4} />
+            </span>
+          )}
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 950, color: palette.text, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
+              {lead.clientName}
+            </h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8, alignItems: 'center' }}>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  padding: '4px 9px',
+                  borderRadius: 999,
+                  backgroundColor: heatColors.bg,
+                  color: heatColors.fg,
+                }}
+              >
+                {heat.variant === 'hot' && <Flame size={11} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />}
+                {heat.variant === 'stale' && <Timer size={11} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />}
+                {heat.label}
+              </span>
+              <span style={{ fontSize: 10, fontWeight: 750, color: palette.textMuted }}>
+                Último contacto: há {idleDays} dia{idleDays === 1 ? '' : 's'}
+              </span>
+            </div>
+          </div>
+          {clientLogo ? (
+            <img
+              src={clientLogo}
+              alt=""
+              width={40}
+              height={40}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 14,
+                objectFit: 'cover',
+                flexShrink: 0,
+                border: `1px solid ${chipBorder}`,
+                backgroundColor: isDark ? ZAPTRO_CARD_BG_DARK : '#f4f4f5',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 14,
+                flexShrink: 0,
+                border: `1px solid ${chipBorder}`,
+                backgroundColor: isDark ? LIME_TINT.md : 'rgba(217,255,0,0.1)',
+                color: palette.text,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 950,
+                fontSize: 15,
+              }}
+              aria-hidden
+            >
+              {(lead.clientName || '?')[0].toUpperCase()}
+            </div>
+          )}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Phone size={14} /> {lead.phone}
+
+        <p style={{ margin: '0 0 10px', fontSize: 11, fontWeight: 650, color: palette.textMuted, lineHeight: 1.45 }}>
+          <span style={{ fontWeight: 900, color: palette.text }}>Nota:</span> {lead.origin} → {lead.destination} · {lead.cargoType}
+        </p>
+
+        <ul style={{ margin: '0 0 12px', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {checklist.map((row) => (
+            <li key={row.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 11, fontWeight: 700, color: row.done ? palette.textMuted : palette.text }}>
+              <span
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 999,
+                  marginTop: 1,
+                  flexShrink: 0,
+                  border: `2px solid ${row.done ? LIME : isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.12)'}`,
+                  backgroundColor: row.done ? LIME : 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                aria-hidden
+              >
+                {row.done ? <Check size={10} color="#000000" strokeWidth={3} /> : null}
+              </span>
+              <span style={{ textDecoration: row.done ? 'line-through' : 'none', opacity: row.done ? 0.75 : 1 }}>{row.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Phone size={13} /> {lead.phone}
           </span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <MapPin size={14} /> {lead.origin} → {lead.destination}
-          </span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Package size={14} /> {lead.cargoType}
-          </span>
-          <span style={{ fontSize: 18, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em' }}>{formatBrl(lead.estimatedValue)}</span>
+          <span style={{ fontSize: 17, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em' }}>{formatBrl(lead.estimatedValue)}</span>
         </div>
         {lead.tag && (
           <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Tag size={14} color={tagColor} />
-            <span style={{ fontSize: 11, fontWeight: 950, color: tagColor, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <Tag size={13} color={tagColor} />
+            <span style={{ fontSize: 10, fontWeight: 950, color: tagLabelColor, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {lead.tag}
             </span>
           </div>
         )}
+
         <div role="presentation" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
           <button
             type="button"
@@ -1363,61 +1495,86 @@ const ZaptroCrmContent: React.FC = () => {
           >
             <CalendarClock size={14} /> Follow-up
           </button>
-          <button
-            type="button"
-            style={qaBtn}
-            title="Detalhe e permissões"
-            onClick={() => openDetail(lead)}
-          >
+          <button type="button" style={qaBtn} title="Detalhe e permissões" onClick={() => openDetail(lead)}>
             <Truck size={14} /> Detalhe
           </button>
         </div>
-        <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div
-              key={i}
-              style={{
-                flex: 1,
-                height: 6,
-                borderRadius: 999,
-                backgroundColor: i <= lead.progress ? (palette.mode === 'dark' ? LIME : '#000') : palette.mode === 'dark' ? '#334155' : '#E4E4E7',
-              }}
-            />
-          ))}
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <span
+                key={i}
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: 999,
+                  backgroundColor: dotFill(i),
+                  flexShrink: 0,
+                }}
+              />
+            ))}
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 950, color: palette.textMuted }}>{progressPct}%</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, paddingTop: 12, borderTop: `1px solid ${border}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 10,
+            paddingTop: 12,
+            borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.07)'}`,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', position: 'relative', minHeight: 32 }}>
             {av ? (
-              <img src={av} alt="" style={{ width: 36, height: 36, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+              <img
+                src={av}
+                alt=""
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 999,
+                  objectFit: 'cover',
+                  border: `2px solid ${pastelBase}`,
+                  flexShrink: 0,
+                  backgroundColor: isDark ? LIME_TINT.md : 'rgba(0,0,0,0.06)',
+                }}
+              />
             ) : (
               <div
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 12,
-                  background: '#000',
+                  width: 30,
+                  height: 30,
+                  borderRadius: 999,
+                  border: `2px solid ${pastelBase}`,
+                  background: '#000000',
                   color: LIME,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 950,
-                  fontSize: 14,
-                  flexShrink: 0,
+                  fontSize: 12,
+                  zIndex: 1,
                 }}
               >
                 {(lead.assigneeName || '?')[0].toUpperCase()}
               </div>
             )}
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 950, color: palette.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {lead.assigneeName}
-              </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Calendar size={12} /> Criado {formatDate(lead.createdAt)}
-              </div>
-            </div>
           </div>
-          <div style={{ width: 8, height: 32, borderRadius: 4, backgroundColor: accent, flexShrink: 0 }} aria-hidden />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: palette.textMuted, fontSize: 11, fontWeight: 800 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <MessageSquare size={14} strokeWidth={2.2} /> {commentCount}
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Paperclip size={14} strokeWidth={2.2} /> {attachCount}
+            </span>
+          </div>
+        </div>
+        <div style={{ marginTop: 10, fontSize: 10, fontWeight: 750, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Calendar size={11} /> Criado {formatDate(lead.createdAt)} · {lead.assigneeName}
         </div>
       </div>
     );
@@ -1432,8 +1589,8 @@ const ZaptroCrmContent: React.FC = () => {
           margin: 0,
           padding: '0 0 48px',
           boxSizing: 'border-box',
-          /** Alinhado ao fundo global do painel (evita faixa cinza e garante repaint visível). */
-          backgroundColor: palette.pageBg,
+          /** Transparente: o fundo vem da coluna `ZaptroLayout` (`palette.pageBg`) — evita “caixa” dupla. */
+          backgroundColor: 'transparent',
           minHeight: '100%',
         }}
       >
@@ -1454,7 +1611,9 @@ const ZaptroCrmContent: React.FC = () => {
             }}
           >
             <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-              <h1 style={{ margin: 0, fontSize: 34, fontWeight: 950, letterSpacing: '-1.2px', color: palette.text }}>CRM — Operação Comercial</h1>
+              <h1 style={{ margin: 0, fontSize: 34, fontWeight: 950, letterSpacing: '-1.2px', color: palette.text }}>
+                CRM — Pipeline e contactos
+              </h1>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', justifyContent: 'flex-end' }}>
               <button
@@ -1513,26 +1672,7 @@ const ZaptroCrmContent: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                <FileSpreadsheet size={18} strokeWidth={2.2} /> Nova proposta
-              </button>
-              <button
-                type="button"
-                onClick={openNegotiationModal}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '12px 18px',
-                  borderRadius: 16,
-                  border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-                  color: palette.text,
-                  fontWeight: 900,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                }}
-              >
-                <TrendingUp size={18} strokeWidth={2.2} /> Nova negociação
+                <FileSpreadsheet size={18} strokeWidth={2.2} /> Nova proposta ou oportunidade
               </button>
               <button
                 type="button"
@@ -1560,68 +1700,40 @@ const ZaptroCrmContent: React.FC = () => {
 
         {/* Painel estratégico — cartões alinhados ao resto do painel (borda + sombra suave). */}
         <div className="zaptro-crm-kpi-grid" style={{ width: '100%', marginBottom: 28, boxSizing: 'border-box' }}>
-          <div
-            style={{
-              padding: '20px 22px',
-              borderRadius: 22,
-              border: `1px solid ${border}`,
-              borderLeft: `3px solid ${LIME}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-              boxShadow: palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.32)' : '0 8px 30px rgba(15,23,42,0.06)',
-            }}
-          >
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>VALOR PONDERADO</p>
-            <p style={{ margin: '10px 0 0', fontSize: 32, fontWeight: 950, color: palette.text, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-              {formatBrl(insights.weightedForecast)}
-            </p>
-            <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.4 }}>
-              Em aberto × probabilidade por etapa.
-            </p>
-          </div>
-          <div
-            style={{
-              padding: '20px 22px',
-              borderRadius: 22,
-              border: `1px solid ${border}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-              boxShadow: palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.32)' : '0 8px 30px rgba(15,23,42,0.06)',
-            }}
-          >
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>TAXA DE FECHO</p>
-            <p style={{ margin: '10px 0 0', fontSize: 32, fontWeight: 950, color: palette.text, lineHeight: 1.1 }}>{insights.conversionPct}%</p>
-            <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.4 }}>
-              {stats.fechados} ganhos · {visibleLeads.filter((l) => l.stage === 'perdido').length} perdidos (vista).
-            </p>
-          </div>
-          <div
-            style={{
-              padding: '20px 22px',
-              borderRadius: 22,
-              border: `1px solid ${border}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-              boxShadow: palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.32)' : '0 8px 30px rgba(15,23,42,0.06)',
-            }}
-          >
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>TEMPO MÉDIO</p>
-            <p style={{ margin: '10px 0 0', fontSize: 32, fontWeight: 950, color: palette.text, lineHeight: 1.1 }}>
-              {insights.avgDaysOpen || '—'}
-              {insights.avgDaysOpen ? <span style={{ fontSize: 17, fontWeight: 800 }}> dias</span> : null}
-            </p>
-            <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.4 }}>Média desde a criação do lead (vista).</p>
-          </div>
-          <div
-            style={{
-              padding: '20px 22px',
-              borderRadius: 22,
-              border: `1px solid ${border}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
-              boxShadow: palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.32)' : '0 8px 30px rgba(15,23,42,0.06)',
-            }}
-          >
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>LEADS QUENTES</p>
-            <p style={{ margin: '10px 0 0', fontSize: 32, fontWeight: 950, color: palette.text, lineHeight: 1.1 }}>{insights.hotLeads}</p>
-            <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.4 }}>Urgentes ou em negociação.</p>
-          </div>
+          <ZaptroKpiMetricCard
+            icon={TrendingUp}
+            title="VALOR PONDERADO"
+            value={formatBrl(insights.weightedForecast)}
+            subtitle="Em aberto × probabilidade por etapa."
+            accentBorder
+            titleCaps
+          />
+          <ZaptroKpiMetricCard
+            icon={Percent}
+            title="TAXA DE FECHO"
+            value={`${insights.conversionPct}%`}
+            subtitle={`${stats.fechados} ganhos · ${visibleLeads.filter((l) => l.stage === 'perdido').length} perdidos (vista).`}
+            titleCaps
+          />
+          <ZaptroKpiMetricCard
+            icon={Timer}
+            title="TEMPO MÉDIO"
+            value={
+              <>
+                {insights.avgDaysOpen || '—'}
+                {insights.avgDaysOpen ? <span style={{ fontSize: 18, fontWeight: 800 }}> dias</span> : null}
+              </>
+            }
+            subtitle="Média desde a criação do lead (vista)."
+            titleCaps
+          />
+          <ZaptroKpiMetricCard
+            icon={Flame}
+            title="LEADS QUENTES"
+            value={insights.hotLeads}
+            subtitle="Urgentes ou em negociação."
+            titleCaps
+          />
         </div>
 
         <div
@@ -1705,8 +1817,8 @@ const ZaptroCrmContent: React.FC = () => {
                 gap: 6,
                 padding: '6px 10px',
                 borderRadius: 999,
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(251,191,36,0.45)' : '#FDE68A'}`,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(251,191,36,0.12)' : '#FFFBEB',
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.4)'}`,
+                backgroundColor: palette.mode === 'dark' ? LIME_TINT.xs : 'rgba(217, 255, 0, 0.16)',
                 color: palette.text,
                 fontWeight: 900,
                 fontSize: 11,
@@ -1714,13 +1826,12 @@ const ZaptroCrmContent: React.FC = () => {
                 fontFamily: 'inherit',
               }}
             >
-              <CircleAlert size={14} color="#D97706" aria-hidden />
+              <CircleAlert size={14} color={LIME} aria-hidden />
               {insights.staleInNovos} parado{insights.staleInNovos === 1 ? '' : 's'} em Novos
             </button>
           ) : null}
           <div style={{ flex: 1, minWidth: 12 }} aria-hidden />
-          <div style={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 10, fontWeight: 950, color: palette.textMuted, letterSpacing: '0.06em' }}>VISTA</span>
+          <div style={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: 8 }} role="group" aria-label="Modo de visualização do CRM">
             <button
               type="button"
               onClick={() => setCrmUiMode('kanban')}
@@ -1816,28 +1927,91 @@ const ZaptroCrmContent: React.FC = () => {
                 moveLead(id, col.id);
               }}
               style={{
-                borderRadius: 24,
-                padding: '14px 12px 18px',
-                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#FAFAFA',
-                border: `1px solid ${border}`,
+                borderRadius: 26,
+                padding: '12px 12px 16px',
+                backgroundColor: palette.mode === 'dark' ? LIME_TINT.xxs : 'rgba(217, 255, 0, 0.08)',
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.14)' : 'rgba(0,0,0,0.08)'}`,
                 minHeight: 420,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 12,
               }}
             >
-              <div style={{ height: 4, borderRadius: 999, backgroundColor: col.accent, marginBottom: 4 }} />
-              <div style={{ padding: '0 6px 4px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 950, color: palette.text, letterSpacing: '0.04em' }}>{col.label}</span>
-                  <span style={{ fontSize: 11, fontWeight: 900, color: palette.textMuted }}>{leadsByStage[col.id].length}</span>
+              <div style={{ height: 3, borderRadius: 999, backgroundColor: col.accent, marginBottom: 2 }} />
+              <div style={{ padding: '2px 4px 2px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em', flex: 1, minWidth: 0 }}>
+                    {col.label}
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                    <button
+                      type="button"
+                      title="Novo lead"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCreateOpen(true);
+                      }}
+                      style={{
+                        border: 'none',
+                        background: palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#fff',
+                        borderRadius: 10,
+                        padding: 6,
+                        cursor: 'pointer',
+                        color: palette.text,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: palette.mode === 'dark' ? 'none' : '0 1px 2px rgba(0,0,0,0.06)',
+                      }}
+                      aria-label="Adicionar lead"
+                    >
+                      <Plus size={16} strokeWidth={2.4} />
+                    </button>
+                    <button
+                      type="button"
+                      title="Opções da coluna"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        notifyZaptro('info', 'CRM', 'Opções da coluna em desenvolvimento.');
+                      }}
+                      style={{
+                        border: 'none',
+                        background: palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#fff',
+                        borderRadius: 10,
+                        padding: 6,
+                        cursor: 'pointer',
+                        color: palette.textMuted,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: palette.mode === 'dark' ? 'none' : '0 1px 2px rgba(0,0,0,0.06)',
+                      }}
+                      aria-label="Mais opções da coluna"
+                    >
+                      <MoreVertical size={16} strokeWidth={2.2} />
+                    </button>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        color: palette.textMuted,
+                        minWidth: 22,
+                        textAlign: 'center',
+                        padding: '2px 6px',
+                        borderRadius: 8,
+                        backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.9)',
+                      }}
+                    >
+                      {leadsByStage[col.id].length}
+                    </span>
+                  </div>
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 800, color: palette.textMuted, display: 'block', marginTop: 4, lineHeight: 1.35 }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: palette.textMuted, display: 'block', lineHeight: 1.35 }}>
                   {col.probHint}
                 </span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, overflowY: 'auto', paddingRight: 2 }}>
-                {leadsByStage[col.id].map((lead) => renderCard(lead, col.accent))}
+                {leadsByStage[col.id].map((lead) => renderCard(lead))}
               </div>
             </div>
           ))}
@@ -1991,10 +2165,8 @@ const ZaptroCrmContent: React.FC = () => {
             style={{
               width: '100%',
               maxWidth: 480,
-              borderRadius: 28,
               padding: 28,
-              backgroundColor: cardBg,
-              border: `1px solid ${border}`,
+              ...panelCard(),
               color: palette.text,
             }}
           >
@@ -2022,7 +2194,7 @@ const ZaptroCrmContent: React.FC = () => {
                       padding: '12px 14px',
                       borderRadius: 14,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                       color: palette.text,
                       fontWeight: 700,
                     }}
@@ -2041,7 +2213,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
@@ -2058,7 +2230,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
@@ -2081,7 +2253,7 @@ const ZaptroCrmContent: React.FC = () => {
                       padding: '12px 14px',
                       borderRadius: 14,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                       color: palette.text,
                       fontWeight: 700,
                     }}
@@ -2132,10 +2304,8 @@ const ZaptroCrmContent: React.FC = () => {
               maxWidth: 520,
               maxHeight: '90vh',
               overflowY: 'auto',
-              borderRadius: 28,
               padding: 28,
-              backgroundColor: cardBg,
-              border: `1px solid ${border}`,
+              ...panelCard(),
               color: palette.text,
             }}
           >
@@ -2159,7 +2329,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '10px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f4f4f4',
                   }}
                 >
                   <span
@@ -2196,8 +2366,8 @@ const ZaptroCrmContent: React.FC = () => {
                   marginBottom: 16,
                   padding: '14px 16px',
                   borderRadius: 16,
-                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(251,191,36,0.4)' : '#FDE68A'}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(251,191,36,0.1)' : '#FFFBEB',
+                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.32)' : 'rgba(217,255,0,0.38)'}`,
+                  backgroundColor: palette.mode === 'dark' ? LIME_TINT.xs : 'rgba(217, 255, 0, 0.14)',
                 }}
               >
                 <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 800, color: palette.text, lineHeight: 1.45 }}>
@@ -2269,14 +2439,14 @@ const ZaptroCrmContent: React.FC = () => {
                     marginBottom: 14,
                     padding: '10px 14px',
                     borderRadius: 14,
-                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(248,113,113,0.35)' : '#FECACA'}`,
-                    backgroundColor: palette.mode === 'dark' ? 'rgba(248,113,113,0.08)' : '#FEF2F2',
+                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.3)' : 'rgba(217,255,0,0.35)'}`,
+                    backgroundColor: palette.mode === 'dark' ? LIME_TINT.xxs : 'rgba(217, 255, 0, 0.1)',
                     fontSize: 12,
                     fontWeight: 700,
                     color: palette.text,
                   }}
                 >
-                  <Timer size={18} color="#DC2626" style={{ flexShrink: 0 }} />
+                  <Timer size={18} color={LIME} style={{ flexShrink: 0 }} />
                   <span>
                     Lead parado há <strong>{daysSinceContact(detail.createdAt)}</strong> dias nesta vista — sugere follow-up ou encaminhamento (SLA completo liga-se ao
                     backend).
@@ -2319,7 +2489,7 @@ const ZaptroCrmContent: React.FC = () => {
                         padding: '12px 14px',
                         borderRadius: 14,
                         border: `1px solid ${border}`,
-                        backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                        backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                         color: palette.text,
                         fontWeight: 700,
                       }}
@@ -2393,9 +2563,7 @@ const ZaptroCrmContent: React.FC = () => {
                           justifyContent: 'space-between',
                           gap: 8,
                           padding: 10,
-                          borderRadius: 12,
-                          border: `1px solid ${border}`,
-                          backgroundColor: cardBg,
+                          ...rowCard(),
                           opacity: t.status === 'done' ? 0.65 : 1,
                         }}
                       >
@@ -2502,9 +2670,7 @@ const ZaptroCrmContent: React.FC = () => {
                       key={q.id}
                       style={{
                         padding: 12,
-                        borderRadius: 12,
-                        border: `1px solid ${border}`,
-                        backgroundColor: cardBg,
+                        ...rowCard(),
                         display: 'flex',
                         flexWrap: 'wrap',
                         alignItems: 'center',
@@ -2607,14 +2773,14 @@ const ZaptroCrmContent: React.FC = () => {
                         style={{
                           borderLeft: `3px solid ${
                             ev.kind === 'quote'
-                              ? '#CA8A04'
+                              ? LIME_TINT.xxl
                               : ev.kind === 'proposal'
-                                ? '#A855F7'
+                                ? LIME_TINT.xl
                                 : ev.kind === 'stage'
-                                  ? '#3B82F6'
+                                  ? LIME
                                   : ev.kind === 'assign'
-                                    ? LIME
-                                    : '#64748B'
+                                    ? LIME_TINT.lg
+                                    : LIME_TINT.md
                           }`,
                           paddingLeft: 12,
                         }}
@@ -2819,7 +2985,7 @@ const ZaptroCrmContent: React.FC = () => {
                   padding: '12px 14px',
                   borderRadius: 14,
                   border: `1px solid ${palette.mode === 'dark' ? '#334155' : '#e4e4e7'}`,
-                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f8fafc',
+                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                   color: palette.text,
                   fontWeight: 700,
                   fontFamily: 'inherit',
@@ -2839,7 +3005,7 @@ const ZaptroCrmContent: React.FC = () => {
                   padding: '12px 14px',
                   borderRadius: 14,
                   border: `1px solid ${palette.mode === 'dark' ? '#334155' : '#e4e4e7'}`,
-                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f8fafc',
+                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                   color: palette.text,
                   fontWeight: 700,
                   fontFamily: 'inherit',
@@ -2859,7 +3025,7 @@ const ZaptroCrmContent: React.FC = () => {
                   padding: '12px 14px',
                   borderRadius: 14,
                   border: `1px solid ${palette.mode === 'dark' ? '#334155' : '#e4e4e7'}`,
-                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f8fafc',
+                  backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                   color: palette.text,
                   fontWeight: 700,
                   fontFamily: 'inherit',
@@ -2932,10 +3098,8 @@ const ZaptroCrmContent: React.FC = () => {
               maxWidth: 520,
               maxHeight: '90vh',
               overflowY: 'auto',
-              borderRadius: 28,
               padding: 26,
-              backgroundColor: cardBg,
-              border: `1px solid ${border}`,
+              ...panelCard(),
               color: palette.text,
             }}
           >
@@ -2992,7 +3156,7 @@ const ZaptroCrmContent: React.FC = () => {
                         padding: '12px 14px',
                         borderRadius: 14,
                         border: `1px solid ${border}`,
-                        backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                        backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                         color: palette.text,
                         fontWeight: 700,
                       }}
@@ -3012,7 +3176,7 @@ const ZaptroCrmContent: React.FC = () => {
                       padding: '12px 14px',
                       borderRadius: 14,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                       color: palette.text,
                       fontWeight: 700,
                       resize: 'vertical',
@@ -3094,7 +3258,7 @@ const ZaptroCrmContent: React.FC = () => {
                   style={{
                     padding: 12,
                     borderRadius: 14,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F1F5F9',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#ebebeb',
                     fontSize: 12,
                     wordBreak: 'break-all',
                     marginBottom: 14,
@@ -3189,17 +3353,51 @@ const ZaptroCrmContent: React.FC = () => {
             style={{
               width: '100%',
               maxWidth: 480,
-              borderRadius: 28,
               padding: 28,
-              backgroundColor: cardBg,
-              border: `1px solid ${border}`,
+              ...panelCard(),
               color: palette.text,
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Nova proposta</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Proposta ou oportunidade</h2>
               <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setProposalOpen(false)} aria-label="Fechar">
                 <X size={22} color={palette.textMuted} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <button
+                type="button"
+                onClick={() => setProposalForm((f) => ({ ...f, kind: 'proposal' }))}
+                style={{
+                  flex: 1,
+                  padding: '10px 12px',
+                  borderRadius: 12,
+                  border: proposalForm.kind === 'proposal' ? '1px solid #000' : `1px solid ${border}`,
+                  backgroundColor: proposalForm.kind === 'proposal' ? '#000' : 'transparent',
+                  color: proposalForm.kind === 'proposal' ? LIME : palette.textMuted,
+                  fontWeight: 950,
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Proposta
+              </button>
+              <button
+                type="button"
+                onClick={() => setProposalForm((f) => ({ ...f, kind: 'negotiation' }))}
+                style={{
+                  flex: 1,
+                  padding: '10px 12px',
+                  borderRadius: 12,
+                  border: proposalForm.kind === 'negotiation' ? '1px solid #000' : `1px solid ${border}`,
+                  backgroundColor: proposalForm.kind === 'negotiation' ? '#000' : 'transparent',
+                  color: proposalForm.kind === 'negotiation' ? LIME : palette.textMuted,
+                  fontWeight: 950,
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Oportunidade
               </button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -3212,7 +3410,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
@@ -3228,7 +3426,7 @@ const ZaptroCrmContent: React.FC = () => {
                 </select>
               </label>
               <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Título da proposta
+                {proposalForm.kind === 'proposal' ? 'Título da proposta' : 'Título / tema'}
                 <input
                   style={{
                     marginTop: 6,
@@ -3237,7 +3435,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
@@ -3246,7 +3444,7 @@ const ZaptroCrmContent: React.FC = () => {
                 />
               </label>
               <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Valor (R$)
+                {proposalForm.kind === 'proposal' ? 'Valor (R$)' : 'Valor alvo (R$)'}
                 <input
                   style={{
                     marginTop: 6,
@@ -3255,7 +3453,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
@@ -3264,7 +3462,7 @@ const ZaptroCrmContent: React.FC = () => {
                 />
               </label>
               <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Validade (texto ou data)
+                {proposalForm.kind === 'proposal' ? 'Validade (texto ou data)' : 'Prazo'}
                 <input
                   style={{
                     marginTop: 6,
@@ -3273,12 +3471,12 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                   }}
-                  value={proposalForm.validUntil}
-                  onChange={(e) => setProposalForm((f) => ({ ...f, validUntil: e.target.value }))}
+                  value={proposalForm.schedule}
+                  onChange={(e) => setProposalForm((f) => ({ ...f, schedule: e.target.value }))}
                 />
               </label>
               <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
@@ -3292,7 +3490,7 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '12px 14px',
                     borderRadius: 14,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
+                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
                     resize: 'vertical',
@@ -3311,155 +3509,6 @@ const ZaptroCrmContent: React.FC = () => {
                 Cancelar
               </button>
               <button type="button" onClick={submitProposal} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}>
-                Guardar no histórico
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {negotiationOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 5000,
-            backgroundColor: 'rgba(15,23,42,0.45)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 20,
-          }}
-          onClick={() => setNegotiationOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%',
-              maxWidth: 480,
-              borderRadius: 28,
-              padding: 28,
-              backgroundColor: cardBg,
-              border: `1px solid ${border}`,
-              color: palette.text,
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Nova negociação</h2>
-              <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setNegotiationOpen(false)} aria-label="Fechar">
-                <X size={22} color={palette.textMuted} />
-              </button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Lead
-                <select
-                  style={{
-                    marginTop: 6,
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: 14,
-                    border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
-                    color: palette.text,
-                    fontWeight: 700,
-                  }}
-                  value={negotiationForm.leadId}
-                  onChange={(e) => setNegotiationForm((f) => ({ ...f, leadId: e.target.value }))}
-                >
-                  <option value="">— Escolher —</option>
-                  {leads.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.clientName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Título / tema
-                <input
-                  style={{
-                    marginTop: 6,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    padding: '12px 14px',
-                    borderRadius: 14,
-                    border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
-                    color: palette.text,
-                    fontWeight: 700,
-                  }}
-                  value={negotiationForm.title}
-                  onChange={(e) => setNegotiationForm((f) => ({ ...f, title: e.target.value }))}
-                />
-              </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Valor alvo (R$)
-                <input
-                  style={{
-                    marginTop: 6,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    padding: '12px 14px',
-                    borderRadius: 14,
-                    border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
-                    color: palette.text,
-                    fontWeight: 700,
-                  }}
-                  value={negotiationForm.targetValue}
-                  onChange={(e) => setNegotiationForm((f) => ({ ...f, targetValue: e.target.value }))}
-                />
-              </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Prazo
-                <input
-                  style={{
-                    marginTop: 6,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    padding: '12px 14px',
-                    borderRadius: 14,
-                    border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
-                    color: palette.text,
-                    fontWeight: 700,
-                  }}
-                  value={negotiationForm.deadline}
-                  onChange={(e) => setNegotiationForm((f) => ({ ...f, deadline: e.target.value }))}
-                />
-              </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
-                Notas
-                <textarea
-                  style={{
-                    marginTop: 6,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    minHeight: 80,
-                    padding: '12px 14px',
-                    borderRadius: 14,
-                    border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#F8FAFC',
-                    color: palette.text,
-                    fontWeight: 700,
-                    resize: 'vertical',
-                  }}
-                  value={negotiationForm.notes}
-                  onChange={(e) => setNegotiationForm((f) => ({ ...f, notes: e.target.value }))}
-                />
-              </label>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-              <button
-                type="button"
-                onClick={() => setNegotiationOpen(false)}
-                style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 900, cursor: 'pointer', color: palette.textMuted }}
-              >
-                Cancelar
-              </button>
-              <button type="button" onClick={submitNegotiation} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}>
                 Guardar no histórico
               </button>
             </div>
@@ -3538,7 +3587,7 @@ const ZaptroCrmContent: React.FC = () => {
                 padding: '14px 16px',
                 borderRadius: 16,
                 border: `1px solid ${border}`,
-                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f8fafc',
+                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f4f4f4',
                 marginBottom: 14,
               }}
             >

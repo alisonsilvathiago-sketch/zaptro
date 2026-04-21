@@ -17,7 +17,7 @@ const ZaptroNotFound: React.FC = () => {
       <div style={styles.card}>
          <div style={{
            ...styles.iconBox,
-           backgroundColor: isZaptro ? '#D9FF00' : '#7C3AED'
+           backgroundColor: isZaptro ? '#D9FF00' : '#D9FF00'
          }}>
             <ShieldAlert size={40} color={isZaptro ? '#000' : '#FFF'} />
          </div>
@@ -38,7 +38,7 @@ const ZaptroNotFound: React.FC = () => {
            onClick={() => navigate('/')}
            style={{
              ...styles.btn,
-             backgroundColor: isZaptro ? '#D9FF00' : '#7C3AED',
+             backgroundColor: isZaptro ? '#D9FF00' : '#D9FF00',
              color: isZaptro ? '#000' : '#FFF'
            }}
          >

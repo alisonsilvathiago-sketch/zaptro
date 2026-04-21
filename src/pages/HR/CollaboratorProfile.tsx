@@ -69,10 +69,10 @@ const styles: Record<string, any> = {
     backgroundColor: 'white', borderRadius: '20px', border: '1px solid var(--border)',
     transition: 'all 0.2s'
   },
-  histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   
   tag: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900' },
-  vehicleVinc: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }
+  vehicleVinc: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0' }
 };
 
 const CollaboratorProfile: React.FC = () => {
@@ -281,7 +281,7 @@ const CollaboratorProfile: React.FC = () => {
                            </div>
                            <p style={{margin: 0, fontSize: '13px', color: '#166534'}}>Excelente performance na rota PR-450. Entrega concluída com nota máxima.</p>
                         </div>
-                        <div style={{padding: '16px', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0'}}>
+                        <div style={{padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0'}}>
                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
                               <span style={{fontSize: '11px', fontWeight: '900', color: '#64748b'}}>ATUALIZAÇÃO DOC</span>
                               <span style={{fontSize: '10px', color: '#64748b'}}>02/04</span>
@@ -297,7 +297,7 @@ const CollaboratorProfile: React.FC = () => {
                <div style={{backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden'}}>
                   <table style={{width: '100%', borderCollapse: 'collapse'}}>
                      <thead>
-                        <tr style={{backgroundColor: '#f8fafc'}}>
+                        <tr style={{backgroundColor: '#f4f4f4'}}>
                            <th style={{textAlign: 'left', padding: '16px 24px', fontSize: '11px', textTransform: 'uppercase', color: '#94a3b8'}}>Data</th>
                            <th style={{textAlign: 'left', padding: '16px 24px', fontSize: '11px', textTransform: 'uppercase', color: '#94a3b8'}}>Entrada</th>
                            <th style={{textAlign: 'left', padding: '16px 24px', fontSize: '11px', textTransform: 'uppercase', color: '#94a3b8'}}>Pausa</th>
@@ -308,7 +308,7 @@ const CollaboratorProfile: React.FC = () => {
                      </thead>
                      <tbody>
                         {[...Array(5)].map((_, i) => (
-                           <tr key={i} style={{borderBottom: '1px solid #f1f5f9'}}>
+                           <tr key={i} style={{borderBottom: '1px solid #e8e8e8'}}>
                               <td style={{padding: '16px 24px', fontSize: '13px'}}>{i+10}/04/2026</td>
                               <td style={{padding: '16px 24px', fontSize: '13px'}}>08:02h</td>
                               <td style={{padding: '16px 24px', fontSize: '13px'}}>12:00h</td>

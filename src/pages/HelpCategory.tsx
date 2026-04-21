@@ -156,15 +156,15 @@ const styles: Record<string, any> = {
     alignItems: 'flex-end', paddingBottom: '40px', borderBottom: '1px solid #e2e8f0' 
   },
   headerContent: { display: 'flex', gap: '24px', alignItems: 'center' },
-  iconBox: { width: '80px', height: '80px', borderRadius: '24px', backgroundColor: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  iconBox: { width: '80px', height: '80px', borderRadius: '24px', backgroundColor: 'rgba(217, 255, 0, 0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   title: { fontSize: '32px', fontWeight: '950', color: '#0F172A', letterSpacing: '-1.5px', marginBottom: '8px' },
   subtitle: { fontSize: '16px', color: '#64748B', maxWidth: '600px' },
-  articleCount: { fontSize: '14px', color: '#94a3b8', fontWeight: '600', padding: '8px 16px', borderRadius: '12px', border: '1px solid #f1f5f9' },
+  articleCount: { fontSize: '14px', color: '#94a3b8', fontWeight: '600', padding: '8px 16px', borderRadius: '12px', border: '1px solid #e8e8e8' },
 
   main: { maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 320px', gap: '64px' },
   articlesGrid: { display: 'grid', gridTemplateColumns: '1fr', gap: '16px' },
   articleCard: { 
-    backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #f1f5f9',
+    backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #e8e8e8',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
     transition: 'all 0.2s ease', '&:hover': { transform: 'translateX(8px)', borderColor: 'var(--primary)', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }
   },
@@ -178,7 +178,7 @@ const styles: Record<string, any> = {
   contactBtn: { width: '100%', marginTop: '20px', padding: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
   
   emptyState: { textAlign: 'center', padding: '100px 40px', color: '#94a3b8' },
-  backBtn: { marginTop: '24px', padding: '10px 20px', backgroundColor: '#f1f5f9', border: 'none', borderRadius: '10px', color: '#64748b', fontWeight: '700', cursor: 'pointer' }
+  backBtn: { marginTop: '24px', padding: '10px 20px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '10px', color: '#64748b', fontWeight: '700', cursor: 'pointer' }
 };
 
 export default HelpCategory;

@@ -153,15 +153,15 @@ const VacationsManager: React.FC = () => {
     
     table: { width: '100%', borderCollapse: 'separate' as const, borderSpacing: '0 8px' },
     th: { textAlign: 'left' as const, padding: '12px 16px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const },
-    tr: { backgroundColor: 'white', border: '1px solid #f1f5f9', borderRadius: '16px' },
+    tr: { backgroundColor: 'white', border: '1px solid #e8e8e8', borderRadius: '16px' },
     td: { padding: '16px', fontSize: '14px', fontWeight: '600' },
     
     statusBadge: (status: string) => {
       const colors: any = {
         'EM_ANDAMENTO': { bg: '#ecfdf5', text: '#10b981' },
-        'AGENDADA': { bg: '#eff6ff', text: '#3b82f6' },
+        'AGENDADA': { bg: 'rgba(217, 255, 0, 0.12)', text: '#D9FF00' },
         'PENDENTE': { bg: '#fff7ed', text: '#f97316' },
-        'FINALIZADA': { bg: '#f8fafc', text: '#64748b' },
+        'FINALIZADA': { bg: '#f4f4f4', text: '#64748b' },
         'CANCELADA': { bg: '#fef2f2', text: '#ef4444' }
       };
       const c = colors[status] || { bg: '#f1f5f9', text: '#94a3b8' };
@@ -170,7 +170,7 @@ const VacationsManager: React.FC = () => {
 
     primaryBtn: { padding: '12px 24px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
     calendarGrid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginTop: '20px' },
-    day: { aspectRatio: '1/1', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '8px', position: 'relative' as const },
+    day: { aspectRatio: '1/1', border: '1px solid #e8e8e8', borderRadius: '12px', padding: '8px', position: 'relative' as const },
     dayLabel: { fontSize: '12px', fontWeight: '800', color: '#94a3b8' }
   };
 
@@ -182,7 +182,7 @@ const VacationsManager: React.FC = () => {
              <div><p style={{fontSize: '11px', fontWeight: '800', color: '#94a3b8', margin: 0}}>Atualmente de Férias</p><p style={{fontSize: '28px', fontWeight: '950', margin: 0}}>{stats.total_on}</p></div>
           </div>
           <div style={styles.kpiCard}>
-             <div style={{...styles.kpiIcon, backgroundColor: '#eff6ff', color: '#3b82f6'}}><Calendar size={24} /></div>
+             <div style={{...styles.kpiIcon, backgroundColor: 'rgba(217, 255, 0, 0.12)', color: '#D9FF00'}}><Calendar size={24} /></div>
              <div><p style={{fontSize: '11px', fontWeight: '800', color: '#94a3b8', margin: 0}}>Próximas Férias</p><p style={{fontSize: '28px', fontWeight: '950', margin: 0}}>{stats.scheduled}</p></div>
           </div>
           <div style={styles.kpiCard}>
@@ -190,7 +190,7 @@ const VacationsManager: React.FC = () => {
              <div><p style={{fontSize: '11px', fontWeight: '800', color: '#94a3b8', margin: 0}}>Inconsistências (Vencidas)</p><p style={{fontSize: '28px', fontWeight: '950', margin: 0}}>{stats.expired}</p></div>
           </div>
           <div style={styles.kpiCard}>
-             <div style={{...styles.kpiIcon, backgroundColor: '#f5f3ff', color: 'var(--primary)'}}><Clock size={24} /></div>
+             <div style={{...styles.kpiIcon, backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)'}}><Clock size={24} /></div>
              <div><p style={{fontSize: '11px', fontWeight: '800', color: '#94a3b8', margin: 0}}>Solicitações Pendentes</p><p style={{fontSize: '28px', fontWeight: '950', margin: 0}}>5</p></div>
           </div>
        </div>
@@ -204,7 +204,7 @@ const VacationsManager: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 700}} />
                       <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 700}} />
-                      <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
+                      <Tooltip cursor={{fill: '#f4f4f4'}} contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
                       <Bar dataKey="v" fill="var(--primary)" radius={[6, 6, 0, 0]} barSize={24} />
                    </BarChart>
                 </ResponsiveContainer>
@@ -270,7 +270,7 @@ const VacationsManager: React.FC = () => {
                    <tr key={v.id} style={styles.tr}>
                       <td style={{...styles.td, borderTopLeftRadius: '16px', borderBottomLeftRadius: '16px'}}>
                          <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                            <div style={{width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><User size={16} color="var(--primary)" /></div>
+                            <div style={{width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><User size={16} color="var(--primary)" /></div>
                             <div><p style={{margin: 0, fontWeight: '800'}}>{v.employee_name}</p><p style={{margin: 0, fontSize: '11px', color: '#94a3b8'}}>{v.position}</p></div>
                          </div>
                       </td>
@@ -309,7 +309,7 @@ const VacationsManager: React.FC = () => {
        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
           <h3 style={{margin: 0, fontWeight: '950'}}>Mapa de Ausências Abril 2026</h3>
           <div style={{display: 'flex', gap: '8px'}}>
-             <span style={{display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '700', color: '#3b82f6'}}><div style={{width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#3b82f6'}} /> Férias</span>
+             <span style={{display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '700', color: '#D9FF00'}}><div style={{width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#D9FF00'}} /> Férias</span>
              <span style={{display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '700', color: '#10b981'}}><div style={{width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981'}} /> Treinamento</span>
           </div>
        </div>
@@ -318,8 +318,8 @@ const VacationsManager: React.FC = () => {
           {Array.from({length: 30}).map((_, i) => (
              <div key={i} style={styles.day}>
                 <span style={styles.dayLabel}>{i + 1}</span>
-                {i === 10 && <div style={{marginTop: '4px', padding: '4px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontSize: '10px', fontWeight: '800', borderRadius: '4px'}}>Ana Costa</div>}
-                {i === 15 && <div style={{marginTop: '4px', padding: '4px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontSize: '10px', fontWeight: '800', borderRadius: '4px'}}>Thiago Silva</div>}
+                {i === 10 && <div style={{marginTop: '4px', padding: '4px', backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#D9FF00', fontSize: '10px', fontWeight: '800', borderRadius: '4px'}}>Ana Costa</div>}
+                {i === 15 && <div style={{marginTop: '4px', padding: '4px', backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#D9FF00', fontSize: '10px', fontWeight: '800', borderRadius: '4px'}}>Thiago Silva</div>}
              </div>
           ))}
        </div>
@@ -328,7 +328,7 @@ const VacationsManager: React.FC = () => {
 
   return (
     <div style={{paddingTop: '20px'}}>
-        <div style={{display: 'flex', gap: '8px', marginBottom: '32px', backgroundColor: '#f1f5f9', padding: '6px', borderRadius: '20px', width: 'fit-content', border: '1px solid #e2e8f0'}}>
+        <div style={{display: 'flex', gap: '8px', marginBottom: '32px', backgroundColor: '#ebebeb', padding: '6px', borderRadius: '20px', width: 'fit-content', border: '1px solid #e2e8f0'}}>
            {[
              { id: 'dashboard', label: 'Intelligence Dashboard', icon: TrendingUp },
              { id: 'lista', label: 'Gestão de Férias', icon: Users },
@@ -408,7 +408,7 @@ const VacationsManager: React.FC = () => {
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                    <label style={{fontSize: '13px', fontWeight: '800', color: '#64748b'}}>Total Dias</label>
-                   <div style={{padding: '14px', borderRadius: '12px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', fontWeight: '900', textAlign: 'center'}}>{newRequest.days}</div>
+                   <div style={{padding: '14px', borderRadius: '12px', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', fontWeight: '900', textAlign: 'center'}}>{newRequest.days}</div>
                 </div>
              </div>
 
@@ -436,7 +436,7 @@ const VacationsManager: React.FC = () => {
        >
           {selectedVacation && (
              <div style={{padding: '10px'}}>
-                <div style={{backgroundColor: '#f8fafc', padding: '24px', borderRadius: '24px', border: '1px solid #f1f5f9', marginBottom: '24px'}}>
+                <div style={{backgroundColor: '#f4f4f4', padding: '24px', borderRadius: '24px', border: '1px solid #e8e8e8', marginBottom: '24px'}}>
                    <p style={{fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '8px'}}>STATUS ATUAL</p>
                    <span style={styles.statusBadge(selectedVacation.status)}>{selectedVacation.status}</span>
                 </div>

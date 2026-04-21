@@ -252,7 +252,7 @@ const styles: Record<string, any> = {
   },
   sellBtn: { width: '100%', backgroundColor: '#D2FF00', border: 'none', padding: '12px', borderRadius: '16px', fontWeight: '900', marginTop: '16px', cursor: 'pointer' },
   sellValue: { fontSize: '20px', fontWeight: '900', margin: '4px 0' },
-  sellTrend: { fontSize: '12px', color: '#3b82f6', fontWeight: '700' },
+  sellTrend: { fontSize: '12px', color: '#D9FF00', fontWeight: '700' },
   avatarGroup: { display: 'flex', marginBottom: '16px' },
   avatarBox: { width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ddd', border: '2px solid #fff', marginLeft: '-8px' },
   avatarMore: { fontSize: '10px', fontWeight: '900', padding: '4px' },

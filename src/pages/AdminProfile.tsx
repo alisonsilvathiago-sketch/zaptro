@@ -387,7 +387,7 @@ const AdminProfile: React.FC = () => {
       </div>
 
       <div style={styles.securityNote}>
-        <Shield size={16} color="#7c3aed" />
+        <Shield size={16} color="#D9FF00" />
         <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
           Seus dados de pagamento são criptografados e armazenados com segurança. Nunca compartilhamos seus dados com terceiros.
         </p>
@@ -406,7 +406,7 @@ const AdminProfile: React.FC = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {bankAccounts.map(account => (
-          <div key={account.id} style={{ ...styles.accountCard, border: account.is_main ? '2px solid var(--primary)' : '1px solid #f1f5f9' }}>
+          <div key={account.id} style={{ ...styles.accountCard, border: account.is_main ? '2px solid var(--primary)' : '1px solid #e8e8e8' }}>
             <div style={styles.accountHeader}>
               <div style={styles.accountIcon}>
                 <Landmark size={20} color="var(--primary)" />
@@ -593,7 +593,7 @@ const AdminProfile: React.FC = () => {
             </div>
           </div>
           <div style={styles.securityNote}>
-            <Lock size={14} color="#7c3aed" />
+            <Lock size={14} color="#D9FF00" />
             <span style={{ fontSize: '12px', color: '#64748b' }}>Dados protegidos com criptografia SSL de 256 bits</span>
           </div>
           <button style={styles.btnPrimary} onClick={handleAddCard}>
@@ -618,16 +618,16 @@ const styles: Record<string, any> = {
   heroAvatar: { width: '80px', height: '80px', borderRadius: '20px', border: '3px solid white', overflow: 'hidden', backgroundColor: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   heroInitial: { fontSize: '32px', fontWeight: '900', color: 'white' },
   heroName: { color: 'white', fontSize: '24px', fontWeight: '900', margin: '0 0 4px 0' },
-  heroRole: { display: 'inline-block', padding: '3px 10px', backgroundColor: 'rgba(124,58,237,0.6)', color: '#c4b5fd', borderRadius: '20px', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' },
+  heroRole: { display: 'inline-block', padding: '3px 10px', backgroundColor: 'rgba(217, 255, 0, 0.6)', color: '#c4b5fd', borderRadius: '20px', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' },
   heroCompany: { color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: '6px 0 0 0' },
 
   // Tabs
-  tabBar: { display: 'flex', gap: '4px', backgroundColor: 'white', padding: '8px', borderRadius: '18px', border: '1px solid #f1f5f9', margin: '20px 0 0 0' },
+  tabBar: { display: 'flex', gap: '4px', backgroundColor: 'white', padding: '8px', borderRadius: '18px', border: '1px solid #e8e8e8', margin: '20px 0 0 0' },
   tabBtn: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px 16px', borderRadius: '12px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', fontSize: '14px', fontWeight: '600', color: '#64748b', transition: 'all 0.2s' },
-  tabBtnActive: { backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', boxShadow: '0 4px 12px rgba(124,58,237,0.3)' },
+  tabBtnActive: { backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.3)' },
 
   // Content Card
-  contentCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #f1f5f9', marginTop: '16px', overflow: 'hidden' },
+  contentCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e8e8e8', marginTop: '16px', overflow: 'hidden' },
   formContent: { padding: '36px', display: 'flex', flexDirection: 'column', gap: '24px' },
 
   // Avatar section
@@ -637,11 +637,11 @@ const styles: Record<string, any> = {
   avatarInitial: { fontSize: '36px', fontWeight: '900', color: 'white' },
   avatarOverlay: { position: 'absolute', inset: 0, borderRadius: '24px', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', color: 'white', cursor: 'pointer', opacity: 0, transition: 'opacity 0.2s', fontSize: '11px' },
   avatarName: { fontSize: '22px', fontWeight: '900', color: 'var(--text-main)', margin: '0 0 8px 0' },
-  roleBadge: { display: 'inline-block', padding: '4px 12px', backgroundColor: '#f5f3ff', color: 'var(--primary)', borderRadius: '20px', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' },
+  roleBadge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '20px', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' },
 
   // Empresa
-  empresaHeader: { display: 'flex', alignItems: 'center', gap: '24px', padding: '24px', backgroundColor: '#f8fafc', borderRadius: '20px' },
-  empresaLogo: { width: '72px', height: '72px', borderRadius: '18px', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #e2e8f0' },
+  empresaHeader: { display: 'flex', alignItems: 'center', gap: '24px', padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '20px' },
+  empresaLogo: { width: '72px', height: '72px', borderRadius: '18px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #e2e8f0' },
 
   // Form
   formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' },
@@ -650,12 +650,12 @@ const styles: Record<string, any> = {
   input: { padding: '14px 16px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none', color: 'var(--text-main)', transition: 'border-color 0.2s' },
   formActions: { display: 'flex', justifyContent: 'flex-end' },
   sectionSubtitle: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)', margin: 0 },
-  divider: { height: '1px', backgroundColor: '#f1f5f9' },
+  divider: { height: '1px', backgroundColor: '#ebebeb' },
 
   // Buttons
   btnPrimary: { padding: '14px 24px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' },
   btnOutline: { padding: '8px 16px', borderRadius: '10px', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', fontWeight: '700', cursor: 'pointer', fontSize: '13px' },
-  btnEdit: { padding: '8px', borderRadius: '10px', backgroundColor: '#f1f5f9', color: '#64748b', border: 'none', cursor: 'pointer' },
+  btnEdit: { padding: '8px', borderRadius: '10px', backgroundColor: '#ebebeb', color: '#64748b', border: 'none', cursor: 'pointer' },
   btnDelete: { padding: '8px', borderRadius: '10px', backgroundColor: '#fef2f2', color: '#ef4444', border: 'none', cursor: 'pointer' },
 
   // Card styles
@@ -675,11 +675,11 @@ const styles: Record<string, any> = {
   // Account styles
   accountCard: { backgroundColor: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' },
   accountHeader: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' },
-  accountIcon: { width: '44px', height: '44px', borderRadius: '14px', backgroundColor: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  accountIcon: { width: '44px', height: '44px', borderRadius: '14px', backgroundColor: 'rgba(217, 255, 0, 0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   accountName: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)' },
   accountType: { fontSize: '12px', color: '#64748b', fontWeight: '600' },
-  mainPill: { padding: '4px 12px', backgroundColor: '#f5f3ff', color: 'var(--primary)', borderRadius: '20px', fontSize: '12px', fontWeight: '800' },
-  accountDetails: { display: 'flex', gap: '32px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '14px', marginBottom: '16px', flexWrap: 'wrap' },
+  mainPill: { padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '20px', fontSize: '12px', fontWeight: '800' },
+  accountDetails: { display: 'flex', gap: '32px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '14px', marginBottom: '16px', flexWrap: 'wrap' },
   accountDetail: { display: 'flex', flexDirection: 'column', gap: '4px' },
   accountDetailLabel: { fontSize: '10px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' },
   accountDetailValue: { fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' },
@@ -690,7 +690,7 @@ const styles: Record<string, any> = {
   emptyText: { color: '#94a3b8', fontWeight: '600', margin: 0 },
 
   // Security note
-  securityNote: { display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px solid #f1f5f9' },
+  securityNote: { display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', backgroundColor: '#f4f4f4', borderRadius: '14px', border: '1px solid #e8e8e8' },
 };
 
 export default AdminProfile;

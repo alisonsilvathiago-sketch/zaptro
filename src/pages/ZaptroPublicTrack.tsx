@@ -6,9 +6,80 @@ import {
   type RouteExecutionSnapshot,
   type RouteExecutionStatus,
 } from '../constants/zaptroRouteExecution';
-import { readRouteLive, ZAPTRO_ROUTE_LIVE_STORAGE_KEY, type RouteLiveBucket } from '../constants/zaptroRouteLiveStore';
+import {
+  readRouteLive,
+  ZAPTRO_ROUTE_LIVE_STORAGE_KEY,
+  type RouteLiveBucket,
+  type RouteLiveTrailPoint,
+} from '../constants/zaptroRouteLiveStore';
 
 const LIME = '#D9FF00';
+
+/** Superfície neutra (chips / mapa) — cinza quente, um pouco mais escuro que o slate `#e2e8f0`. */
+const PUBLIC_TRACK_NEUTRAL_SURFACE = '#f4f4f4';
+
+/** Converte trilha GPS em coordenadas SVG (plano local; suficiente para percursos curtos). */
+function trailPolylinePoints(trail: RouteLiveTrailPoint[]): React.ReactNode {
+  if (trail.length === 0) return null;
+  const lats = trail.map((t) => t.lat);
+  const lngs = trail.map((t) => t.lng);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+  const padLat = Math.max((maxLat - minLat) * 0.12, 0.0004);
+  const padLng = Math.max((maxLng - minLng) * 0.12, 0.0004);
+  const loLat = minLat - padLat;
+  const hiLat = maxLat + padLat;
+  const loLng = minLng - padLng;
+  const hiLng = maxLng + padLng;
+  const denomLat = hiLat - loLat || 1;
+  const denomLng = hiLng - loLng || 1;
+  const w = 400;
+  const h = 220;
+  const pad = 14;
+  const innerW = w - pad * 2;
+  const innerH = h - pad * 2;
+  const toXY = (p: RouteLiveTrailPoint) => {
+    const x = pad + ((p.lng - loLng) / denomLng) * innerW;
+    const y = pad + (1 - (p.lat - loLat) / denomLat) * innerH;
+    return { x, y };
+  };
+  const pts = trail.map(toXY);
+  const d = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const last = pts[pts.length - 1];
+  return (
+    <>
+      {trail.length > 1 ? (
+        <path
+          d={d}
+          fill="none"
+          stroke={LIME}
+          strokeWidth={3.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={0.95}
+        />
+      ) : null}
+      {pts.map((p, i) => (
+        <circle
+          key={`${trail[i].at}-${i}`}
+          cx={p.x}
+          cy={p.y}
+          r={i === pts.length - 1 ? 6 : 3.5}
+          fill={i === pts.length - 1 ? '#0f172a' : LIME}
+          stroke="#fff"
+          strokeWidth={1.5}
+        />
+      ))}
+      {trail.length === 1 && last ? (
+        <text x={last.x + 10} y={last.y - 8} fontSize={11} fontWeight={700} fill="#64748b">
+          Última posição
+        </text>
+      ) : null}
+    </>
+  );
+}
 
 function resolveCarrierDisplayName(snap: RouteExecutionSnapshot): string {
   const short = snap.carrierShortName?.trim();
@@ -89,6 +160,37 @@ const ZaptroPublicTrack: React.FC = () => {
     };
   }, [decoded, refreshLive]);
 
+  /** Evita `#root` / `body` brancos à volta da coluna centrada. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const root = document.getElementById('root');
+    const prevHtmlBg = html.style.background;
+    const prevBodyBg = body.style.background;
+    const prevBodyBgColor = body.style.backgroundColor;
+    const prevRootBg = root?.style.background ?? '';
+    const prevRootMinH = root?.style.minHeight ?? '';
+    const prevRootColor = root?.style.color ?? '';
+    html.style.background = PUBLIC_TRACK_NEUTRAL_SURFACE;
+    body.style.background = PUBLIC_TRACK_NEUTRAL_SURFACE;
+    body.style.backgroundColor = PUBLIC_TRACK_NEUTRAL_SURFACE;
+    if (root) {
+      root.style.background = PUBLIC_TRACK_NEUTRAL_SURFACE;
+      root.style.minHeight = '100dvh';
+      root.style.color = '';
+    }
+    return () => {
+      html.style.background = prevHtmlBg;
+      body.style.background = prevBodyBg;
+      body.style.backgroundColor = prevBodyBgColor;
+      if (root) {
+        root.style.background = prevRootBg;
+        root.style.minHeight = prevRootMinH;
+        root.style.color = prevRootColor;
+      }
+    };
+  }, []);
+
   const snap = mergeLive(baseSnap, live);
   const status: RouteExecutionStatus = snap.status;
   const carrierTitle = resolveCarrierDisplayName(snap);
@@ -110,6 +212,16 @@ const ZaptroPublicTrack: React.FC = () => {
       ? `https://www.google.com/maps?q=${live.lastLat},${live.lastLng}`
       : null;
 
+  const displayTrail = useMemo((): RouteLiveTrailPoint[] => {
+    if (!live) return [];
+    const t = live.locationTrail;
+    if (t && t.length > 0) return t;
+    if (live.lastLat != null && live.lastLng != null) {
+      return [{ lat: live.lastLat, lng: live.lastLng, at: live.lastLocAt || live.updatedAt }];
+    }
+    return [];
+  }, [live]);
+
   const fmtTime = (iso?: string | null) => {
     if (!iso) return '';
     try {
@@ -120,21 +232,22 @@ const ZaptroPublicTrack: React.FC = () => {
   };
 
   return (
-    <div style={page}>
+    <div style={pageShell}>
+      <div style={pageInner}>
       <header style={{ textAlign: 'center', marginBottom: 24 }}>
         <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.2em', color: '#a1a1aa' }}>RASTREIO</p>
         <h1
           style={{
             margin: '10px 0 0',
-            fontSize: 38,
+            fontSize: 32,
             fontWeight: 950,
             color: '#0f172a',
             letterSpacing: '-0.04em',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            lineHeight: '51px',
-            minHeight: 51,
+            lineHeight: 1.15,
+            minHeight: 40,
           }}
         >
           {premiumBranding && headerLogoUrl ? (
@@ -179,18 +292,18 @@ const ZaptroPublicTrack: React.FC = () => {
           style={{
             ...card,
             marginBottom: 16,
-            borderColor: 'rgba(59,130,246,0.35)',
-            backgroundColor: '#eff6ff',
+            borderColor: 'rgba(217, 255, 0, 0.35)',
+            backgroundColor: 'rgba(217, 255, 0, 0.12)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-            <Phone size={22} color="#1d4ed8" style={{ flexShrink: 0 }} />
+            <Phone size={22} color="#D9FF00" style={{ flexShrink: 0 }} />
             <div>
               <p style={{ margin: 0, fontSize: 14, fontWeight: 950, color: '#1e40af' }}>Pedido de contacto com o cliente</p>
-              <p style={{ margin: '6px 0 0', fontSize: 13, fontWeight: 600, color: '#1e3a8a', lineHeight: 1.45 }}>
+              <p style={{ margin: '6px 0 0', fontSize: 13, fontWeight: 600, color: '#000000', lineHeight: 1.45 }}>
                 O motorista pediu apoio para falar com o cliente. A operação deve verificar e ligar se necessário.
               </p>
-              <p style={{ margin: '8px 0 0', fontSize: 11, fontWeight: 700, color: '#2563eb' }}>Pedido: {fmtTime(live.contactRequestedAt)}</p>
+              <p style={{ margin: '8px 0 0', fontSize: 11, fontWeight: 700, color: '#D9FF00' }}>Pedido: {fmtTime(live.contactRequestedAt)}</p>
             </div>
           </div>
         </section>
@@ -252,7 +365,7 @@ const ZaptroPublicTrack: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: done ? LIME : '#e2e8f0',
+                    backgroundColor: done ? LIME : PUBLIC_TRACK_NEUTRAL_SURFACE,
                   }}
                 >
                   {i === steps.length - 1 ? (
@@ -278,6 +391,76 @@ const ZaptroPublicTrack: React.FC = () => {
         </p>
       </section>
 
+      {displayTrail.length > 0 ? (
+        <section style={card}>
+          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 950, color: '#64748b', letterSpacing: '0.1em' }}>
+            PERCURSO
+          </p>
+          <p style={{ margin: '0 0 14px', fontSize: 13, fontWeight: 600, color: '#64748b', lineHeight: 1.45 }}>
+            Linha aproximada das posições partilhadas pelo motorista. Cada ponto mostra quando passou por ali (neste
+            ambiente os dados ficam neste browser).
+          </p>
+          <div
+            style={{
+              borderRadius: 16,
+              overflow: 'hidden',
+              border: '1px solid #e2e8f0',
+              backgroundColor: PUBLIC_TRACK_NEUTRAL_SURFACE,
+              marginBottom: 14,
+            }}
+          >
+            <svg viewBox="0 0 400 220" width="100%" height="220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa esquemático do percurso">
+              <rect width="400" height="220" fill="#ebebeb" />
+              {trailPolylinePoints(displayTrail)}
+            </svg>
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 200, overflowY: 'auto' }}>
+            {[...displayTrail]
+              .reverse()
+              .slice(0, 14)
+              .map((pt, i) => (
+                <li
+                  key={`${pt.at}-${pt.lat}-${pt.lng}-${i}`}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    padding: '8px 0',
+                    borderTop: i === 0 ? 'none' : '1px solid #e2e8f0',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: '#475569',
+                  }}
+                >
+                  <span style={{ color: '#94a3b8', fontWeight: 700, flexShrink: 0 }}>{fmtTime(pt.at)}</span>
+                  <span style={{ textAlign: 'right', lineHeight: 1.35 }}>
+                    {pt.lat.toFixed(5)}, {pt.lng.toFixed(5)}
+                  </span>
+                </li>
+              ))}
+          </ul>
+          {mapsUrl ? (
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                marginTop: 12,
+                alignItems: 'center',
+                gap: 8,
+                fontSize: 14,
+                fontWeight: 950,
+                color: '#0f172a',
+              }}
+            >
+              <MapPin size={18} color={LIME} />
+              Abrir última posição no Google Maps
+            </a>
+          ) : null}
+        </section>
+      ) : null}
+
       {!premiumBranding ? (
         <section
           style={{
@@ -294,7 +477,7 @@ const ZaptroPublicTrack: React.FC = () => {
               textAlign: 'center',
               padding: '18px 16px 16px',
               borderBottom: '1px solid rgba(226,232,240,0.9)',
-              backgroundColor: '#fafafa',
+              backgroundColor: PUBLIC_TRACK_NEUTRAL_SURFACE,
               boxSizing: 'border-box',
             }}
           >
@@ -340,13 +523,13 @@ const ZaptroPublicTrack: React.FC = () => {
             style={{
               textAlign: 'center',
               padding: '26px 20px 28px',
-              backgroundColor: '#ffffff',
+              backgroundColor: PUBLIC_TRACK_NEUTRAL_SURFACE,
             }}
           >
             <p
               style={{
                 margin: 0,
-                fontSize: 24,
+                fontSize: 32,
                 fontWeight: 950,
                 color: '#0f172a',
                 lineHeight: 1.2,
@@ -361,17 +544,23 @@ const ZaptroPublicTrack: React.FC = () => {
           </div>
         </section>
       ) : null}
+      </div>
     </div>
   );
 };
 
-const page: React.CSSProperties = {
+const pageShell: React.CSSProperties = {
   minHeight: '100dvh',
-  background: '#ffffff',
-  padding: '24px 18px 40px',
+  width: '100%',
   boxSizing: 'border-box',
+  background: PUBLIC_TRACK_NEUTRAL_SURFACE,
+};
+
+const pageInner: React.CSSProperties = {
   maxWidth: 520,
   margin: '0 auto',
+  padding: '24px 18px 40px',
+  boxSizing: 'border-box',
 };
 
 const card: React.CSSProperties = {

@@ -9,7 +9,7 @@ import SEOManager from '../components/SEOManager';
 
 // 🎨 DESIGN SYSTEM NO TOPO PARA PREVENIR CRASH
 const styles: Record<string, any> = {
-  page: { width: '100vw', height: '100vh', display: 'flex', overflow: 'hidden', backgroundColor: '#f1f5f9', fontFamily: 'Inter, sans-serif' },
+  page: { width: '100vw', height: '100vh', display: 'flex', overflow: 'hidden', backgroundColor: '#ebebeb', fontFamily: 'Inter, sans-serif' },
   leftSide: {
     flex: 1,
     position: 'relative',

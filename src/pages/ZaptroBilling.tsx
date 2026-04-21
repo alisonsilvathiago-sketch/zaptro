@@ -14,6 +14,8 @@ import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { useAuth } from '../context/AuthContext';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
+import { buildLogtaMasterCheckoutUrl } from '../utils/logtaMasterCheckout';
+import { toastError } from '../lib/toast';
 
 // Dados fictícios para demonstração
 const invoices = [
@@ -22,9 +24,12 @@ const invoices = [
   { id: 'INV-1027', date: '15 Fev 2026', amount: 'R$ 247,00', method: 'Boleto Bancário', status: 'pago' },
 ];
 
+type BillingSubscription = { plan_name?: string | null };
+
 const ZaptroBilling: React.FC = () => {
   const { profile } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
+  const [subscription, setSubscription] = useState<BillingSubscription | null>(null);
 
   const plans = [
     {
@@ -70,15 +75,23 @@ const ZaptroBilling: React.FC = () => {
 
   const fetchSubscription = async () => {
     if (!profile?.company_id) return;
-    setLoading(true);
-    const { data } = await supabaseZaptro
-      .from('subscriptions')
-      .select('*')
-      .eq('organization_id', profile.company_id)
-      .maybeSingle();
-    
-    setSubscription(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabaseZaptro
+        .from('subscriptions')
+        .select('*')
+        .eq('organization_id', profile.company_id)
+        .maybeSingle();
+
+      if (error) {
+        console.warn('[ZaptroBilling] subscriptions', error);
+        setSubscription(null);
+        return;
+      }
+      setSubscription((data as BillingSubscription | null) ?? null);
+    } catch (e) {
+      console.warn('[ZaptroBilling] fetchSubscription', e);
+      setSubscription(null);
+    }
   };
 
   React.useEffect(() => { fetchSubscription(); }, [profile?.company_id]);
@@ -94,7 +107,7 @@ const ZaptroBilling: React.FC = () => {
               </div>
               
               {/* Toggle Mensal/Anual */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#F1F5F9', padding: '6px', borderRadius: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#ebebeb', padding: '6px', borderRadius: '14px' }}>
                 <button 
                   onClick={() => setIsAnnual(false)}
                   style={{
@@ -161,9 +174,26 @@ const ZaptroBilling: React.FC = () => {
                        <li key={i} style={styles.featureItem}><CheckCircle2 size={14} color="#D9FF00" /> {f}</li>
                      ))}
                   </ul>
-                  <button 
+                  <button
+                    type="button"
                     style={{...styles.upgradeBtn, backgroundColor: isCurrent ? '#F1F5F9' : '#000', color: isCurrent ? '#64748B' : '#D9FF00'}}
                     disabled={isCurrent}
+                    onClick={() => {
+                      if (isCurrent) return;
+                      const url = buildLogtaMasterCheckoutUrl({
+                        plan: plan.id,
+                        cycle: isAnnual ? 'yearly' : 'monthly',
+                        companyId: profile?.company_id,
+                        email: profile?.email,
+                      });
+                      if (!url) {
+                        toastError(
+                          'Pagamento na Logta Master: define VITE_LOGTA_MASTER_CHECKOUT_URL no .env com o URL de checkout que a equipa Master fornecer.',
+                        );
+                        return;
+                      }
+                      window.location.assign(url);
+                    }}
                   >
                     {isCurrent ? 'PLANO ATIVO' : 'CONTRATAR AGORA'}
                   </button>
@@ -258,10 +288,10 @@ const styles: Record<string, any> = {
   table: { width: '100%', borderCollapse: 'collapse' },
   thead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
   th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#000', textTransform: 'uppercase', letterSpacing: '1px' },
-  tr: { borderBottom: '1px solid #F1F5F9' },
+  tr: { borderBottom: '1px solid #e8e8e8' },
   td: { padding: '20px 24px', fontSize: '14px', color: '#1E293B', fontWeight: '600' },
   badge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '950' },
-  downBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', backgroundColor: '#F1F5F9', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '950', cursor: 'pointer' },
+  downBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '950', cursor: 'pointer' },
 
   upsellBanner: { marginTop: '40px', padding: '32px', backgroundColor: '#111', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: '20px' },
   upsellText: { margin: 0, color: '#94A3B8', fontSize: '15px', fontWeight: '600' },

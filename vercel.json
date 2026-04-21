@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci --prefix logta",
+  "buildCommand": "npm run build --prefix logta",
+  "outputDirectory": "logta/dist",
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/supabase-api/:path*",
+      "destination": "https://zvqsqcxtowqoyqxjapoq.supabase.co/:path*"
+    },
+    { "source": "/login-whatsapp", "destination": "/index.html" },
+    { "source": "/vendas-whatsapp", "destination": "/index.html" },
+    { "source": "/registrar", "destination": "/index.html" },
+    { "source": "/zaptro-registrar", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ]
+}

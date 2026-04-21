@@ -1,0 +1,305 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  Users, Search, Filter, Download, ArrowUpRight, 
+  ChevronRight, Phone, MessageSquare, Calendar,
+  FileSpreadsheet, FileText, User, MoreHorizontal,
+  TrendingUp, Star, Loader2, ArrowLeft
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
+import { supabaseZaptro } from '../lib/supabase-zaptro';
+import { useAuth } from '../context/AuthContext';
+import { zaptroClientProfilePath } from '../constants/zaptroRoutes';
+import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+
+/** Linhas fictícias (mesmo formato que `whatsapp_conversations`) para pré-visualizar a lista e KPIs. */
+export function getZaptroDemoClientById(id: string): any | null {
+  return buildDemoClients().find((c) => c.id === id) ?? null;
+}
+
+function buildDemoClients(): any[] {
+  return [];
+}
+
+const ZaptroClients: React.FC = () => {
+  const navigate = useNavigate();
+  const { profile } = useAuth();
+  const [clients, setClients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  /** Lista preenchida com exemplos (sem empresa ou base vazia / erro). */
+  const [isPreview, setIsPreview] = useState(false);
+
+  const fetchClients = useCallback(async () => {
+    setLoading(true);
+    if (!profile?.company_id) {
+      setClients(buildDemoClients());
+      setIsPreview(true);
+      setLoading(false);
+      return;
+    }
+    try {
+      // Buscando conversas únicas para identificar clientes atendidos
+      const { data, error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .select('*, whatsapp_messages(*)')
+        .eq('company_id', profile.company_id)
+        .order('updated_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Agrupar por número de telefone/contato para ter lista de clientes única
+      const uniqueClients = Array.from(new Map(data?.map((item) => [item.sender_number, item])).values());
+      if (!uniqueClients.length) {
+        setClients(buildDemoClients());
+        setIsPreview(true);
+      } else {
+        setClients(uniqueClients);
+        setIsPreview(false);
+      }
+    } catch (err: any) {
+      setClients(buildDemoClients());
+      setIsPreview(true);
+      notifyZaptro(
+        'warning',
+        'Modo demonstração',
+        err.message
+          ? `Não foi possível carregar do servidor (${err.message}). A mostrar contactos fictícios para testar o layout.`
+          : 'A mostrar contactos fictícios para testar o layout.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [profile?.company_id]);
+
+  useEffect(() => {
+    void fetchClients();
+  }, [fetchClients]);
+
+  const exportToExcel = () => {
+    if (!clients.length) {
+      notifyZaptro('info', 'Nada para exportar', 'Ainda não há clientes na lista. Atenda conversas no WhatsApp e volte aqui.');
+      return;
+    }
+    const headers = ['Nome/Número', 'Status', 'Último Contato', 'Mensagens'];
+    const rows = clients.map(c => [
+      c.sender_name || c.sender_number,
+      c.status,
+      new Date(c.updated_at).toLocaleDateString(),
+      c.whatsapp_messages?.length || 0
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers, ...rows].map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `clientes_zaptro_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    notifyZaptro('success', 'Excel Gerado', 'A lista de clientes foi exportada com sucesso.');
+  };
+
+  const filteredClients = clients.filter(
+    (c) =>
+      (c.sender_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      String(c.sender_number || '').includes(searchTerm)
+  );
+
+  const kpis = [
+    { label: 'Total Base', value: clients.length, icon: Users, color: '#D9FF00' },
+    { label: 'Ativos 24h', value: clients.filter(c => new Date(c.updated_at) > new Date(Date.now() - 86400000)).length, icon: TrendingUp, color: '#D9FF00' },
+    { label: 'Taxa Retenção', value: '88%', icon: Star, color: '#D9FF00' },
+  ];
+
+  return (
+    <ZaptroLayout>
+      <style>{`
+        @keyframes zaptroClientsSpin { to { transform: rotate(360deg); } }
+        .zaptro-clients-spin { animation: zaptroClientsSpin 0.9s linear infinite; }
+      `}</style>
+      <div style={styles.container}>
+        <header style={styles.header}>
+           <div style={styles.headerInfo}>
+              <h1 style={styles.title}>Clientes & CRM</h1>
+              <p style={styles.subtitle}>Gestão estratégica de todos os contatos atendidos pela sua central.</p>
+              {isPreview && (
+                <p
+                  style={{
+                    margin: '12px 0 0',
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: '#14532d',
+                    backgroundColor: 'rgba(217, 255, 0, 0.35)',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    padding: '10px 14px',
+                    borderRadius: 14,
+                    maxWidth: 720,
+                    lineHeight: 1.45,
+                  }}
+                >
+                  Pré-visualização: contactos fictícios para veres o layout da tabela e dos indicadores. Com conversas
+                  reais no projeto, esta lista passa a mostrar os teus clientes automaticamente.
+                </p>
+              )}
+           </div>
+           <div style={styles.actions}>
+              <button style={styles.exportBtn} onClick={exportToExcel}>
+                 <FileSpreadsheet size={16} /> Exportar Excel
+              </button>
+           </div>
+        </header>
+
+        {/* CRM DASHBOARD MINI */}
+        <div style={styles.kpiGrid}>
+           {kpis.map((k, i) => (
+             <div key={i} style={styles.kpiCard}>
+                <div style={{...styles.kpiIcon, backgroundColor: k.color + '15'}}>
+                   <k.icon size={20} color={k.color} />
+                </div>
+                <div style={styles.kpiContent}>
+                   <h3 style={styles.kpiValue}>{k.value}</h3>
+                   <span style={styles.kpiLabel}>{k.label}</span>
+                </div>
+             </div>
+           ))}
+        </div>
+
+        {/* CLIENT LIST AREA */}
+        <div style={styles.listSection}>
+           <div style={styles.toolbar}>
+              <div style={styles.searchBox}>
+                 <Search size={18} color="#94A3B8" />
+                 <input 
+                   placeholder="Buscar por nome ou WhatsApp..." 
+                   style={styles.searchInput} 
+                   value={searchTerm}
+                   onChange={e => setSearchTerm(e.target.value)}
+                 />
+              </div>
+              <button
+                type="button"
+                style={styles.filterBtn}
+                onClick={() =>
+                  notifyZaptro('info', 'Filtros avançados', 'Use a busca acima por nome ou número. Filtros por status chegam em breve.')
+                }
+              >
+                <Filter size={16} /> Filtrar Base
+              </button>
+           </div>
+
+           {loading ? (
+             <div style={styles.loadingArea}><Loader2 className="zaptro-clients-spin" size={32} color="#000" /></div>
+           ) : (
+             <div style={styles.tableCard}>
+                <table style={styles.table}>
+                   <thead>
+                      <tr style={styles.thead}>
+                         <th style={styles.th}>CLIENTE</th>
+                         <th style={styles.th}>STATUS</th>
+                         <th style={styles.th}>ÚLTIMO CONTATO</th>
+                         <th style={styles.th}>INTERAÇÕES</th>
+                         <th style={styles.th}>AÇÕES</th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                      {!filteredClients.length ? (
+                        <tr>
+                          <td colSpan={5} style={{ ...styles.td, textAlign: 'center', padding: 48, color: '#64748B', fontWeight: 700 }}>
+                            Nenhum contacto corresponde à busca. Limpa o filtro ou altera o termo.
+                          </td>
+                        </tr>
+                      ) : (
+                      filteredClients.map(c => (
+                        <tr key={c.id} style={styles.tr}>
+                           <td style={styles.td}>
+                              <div style={styles.clientCell}>
+                                 <div style={styles.avatar}>{c.sender_name?.[0] || <User size={14}/>}</div>
+                                 <div style={styles.clientInfo}>
+                                    <span style={styles.clientName}>{c.sender_name || 'Cliente S/ Nome'}</span>
+                                    <span style={styles.clientPhone}>{c.sender_number}</span>
+                                 </div>
+                              </div>
+                           </td>
+                           <td style={styles.td}>
+                              <span style={{...styles.statBadge, backgroundColor: c.status === 'open' ? '#EEFCEF' : '#F1F5F9', color: c.status === 'open' ? '#10B981' : '#64748B'}}>
+                                 {c.status === 'open' ? 'EM ATENDIMENTO' : 'FINALIZADO'}
+                              </span>
+                           </td>
+                           <td style={styles.td}>
+                              <div style={styles.dateCell}>
+                                 <Calendar size={14} color="#94A3B8" />
+                                 <span>{new Date(c.updated_at).toLocaleDateString()}</span>
+                              </div>
+                           </td>
+                           <td style={styles.td}>
+                              <div style={styles.interactionCell}>
+                                 <MessageSquare size={14} color="#D9FF00" />
+                                 <span>{c.whatsapp_messages?.length || 0} msgs</span>
+                              </div>
+                           </td>
+                           <td style={styles.td}>
+                              <button
+                                style={styles.viewBtn}
+                                type="button"
+                                onClick={() => navigate(zaptroClientProfilePath(String(c.id)))}
+                              >
+                                 Ver Perfil <ChevronRight size={16} />
+                              </button>
+                           </td>
+                        </tr>
+                      ))
+                      )}
+                   </tbody>
+                </table>
+             </div>
+           )}
+        </div>
+      </div>
+    </ZaptroLayout>
+  );
+};
+
+const styles: Record<string, any> = {
+  container: { display: 'flex', flexDirection: 'column', gap: '40px' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-1.5px' },
+  subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '500', margin: '4px 0 0 0' },
+  
+  exportBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#F1F5F9', color: '#000', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '950', cursor: 'pointer' },
+
+  kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' },
+  kpiCard: { padding: '24px', backgroundColor: 'white', border: '1px solid #EBEBEC', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: '20px' },
+  kpiIcon: { width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  kpiValue: { fontSize: '24px', fontWeight: '950', color: '#000', margin: 0 },
+  kpiLabel: { fontSize: '12px', fontWeight: '800', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
+
+  listSection: { display: 'flex', flexDirection: 'column', gap: '24px' },
+  toolbar: { display: 'flex', justifyContent: 'space-between', gap: '16px' },
+  searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#FBFBFC', padding: '14px 20px', borderRadius: '18px', border: '1px solid #EBEBEC' },
+  searchInput: { background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', fontWeight: '600', color: '#000', width: '100%' },
+  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 20px', backgroundColor: '#FBFBFC', border: '1px solid #EBEBEC', borderRadius: '18px', fontSize: '13px', fontWeight: '900', color: '#000000' },
+
+  tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #EBEBEC', overflow: 'hidden' },
+  table: { width: '100%', borderCollapse: 'collapse' },
+  thead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
+  th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#000000', textTransform: 'uppercase', letterSpacing: '1px' },
+  tr: { borderBottom: '1px solid #EBEBEC' },
+  td: { padding: '20px 24px' },
+  
+  clientCell: { display: 'flex', alignItems: 'center', gap: '16px' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#000', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950' },
+  clientName: { display: 'block', fontSize: '14px', fontWeight: '950', color: '#000' },
+  clientPhone: { display: 'block', fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
+  
+  statBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: '950', letterSpacing: '0.5px' },
+  dateCell: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', color: '#475569' },
+  interactionCell: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', color: '#475569' },
+  
+  viewBtn: { padding: '10px 16px', backgroundColor: '#FBFBFC', color: '#000', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '950', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  
+  loadingArea: { padding: '100px', textAlign: 'center' }
+};
+
+export default ZaptroClients;

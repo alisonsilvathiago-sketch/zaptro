@@ -768,7 +768,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                   boxSizing: 'border-box',
                 }}
               >
-                <LayoutGrid size={22} color="#ffffff" strokeWidth={2} />
+                <Zap size={22} color={palette.lime} strokeWidth={2} fill={palette.lime} aria-hidden />
                 {(isMobile || railHover) && <span style={{ ...styles.logoMain, color: '#ffffff', fontSize: 18 }}>ZAPTRO</span>}
               </button>
             </div>

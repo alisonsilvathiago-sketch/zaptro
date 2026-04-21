@@ -34,6 +34,8 @@ export type RouteLiveBucket = {
   /** Plano premium de marca no link público (espelha `RouteExecutionSnapshot`). */
   publicTrackPremiumBranding?: boolean;
   publicHeaderLogoUrl?: string | null;
+  /** Quando a rota estiver associada a um registo em `whatsapp_drivers` (futuro / integração). */
+  fleetDriverId?: string | null;
   /** Dados do motorista (preenchidos no link `/rota/:token`) — visíveis em `/rotas` e rastreio. */
   driverDisplayName?: string | null;
   driverAvatarUrl?: string | null;

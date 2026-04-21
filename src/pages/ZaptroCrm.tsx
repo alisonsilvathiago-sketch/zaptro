@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
+import { CrmKanbanVirtualList } from '../components/Zaptro/CrmKanbanVirtualList';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
@@ -61,21 +62,12 @@ import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import {
   ZAPTRO_CARD_BG_DARK,
+  ZAPTRO_CARD_SHADOW_LIGHT,
   zaptroCardRowStyle,
   zaptroCardSurfaceStyle,
 } from '../constants/zaptroCardSurface';
 
 const LIME = '#D9FF00';
-/** Fundos e traços derivados de #D9FF00 (opacidade). */
-const LIME_TINT = {
-  xxs: 'rgba(217, 255, 0, 0.06)',
-  xs: 'rgba(217, 255, 0, 0.1)',
-  sm: 'rgba(217, 255, 0, 0.14)',
-  md: 'rgba(217, 255, 0, 0.22)',
-  lg: 'rgba(217, 255, 0, 0.35)',
-  xl: 'rgba(217, 255, 0, 0.5)',
-  xxl: 'rgba(217, 255, 0, 0.65)',
-} as const;
 
 type Stage = 'novos' | 'atendimento' | 'negociacao' | 'fechado' | 'perdido';
 
@@ -104,11 +96,11 @@ type CrmLead = {
 };
 
 const STAGES: { id: Stage; label: string; accent: string; probHint: string }[] = [
-  { id: 'novos', label: 'Novos Leads', accent: LIME_TINT.lg, probHint: 'Prob. fecho típica ~12%' },
-  { id: 'atendimento', label: 'Em Atendimento', accent: LIME_TINT.xl, probHint: '~32% ponderado' },
-  { id: 'negociacao', label: 'Negociação', accent: LIME_TINT.xxl, probHint: '~62% ponderado' },
+  { id: 'novos', label: 'Novos Leads', accent: '#94A3B8', probHint: 'Prob. fecho típica ~12%' },
+  { id: 'atendimento', label: 'Em Atendimento', accent: '#64748B', probHint: '~32% ponderado' },
+  { id: 'negociacao', label: 'Negociação', accent: '#475569', probHint: '~62% ponderado' },
   { id: 'fechado', label: 'Fechado', accent: LIME, probHint: 'Ganho 100%' },
-  { id: 'perdido', label: 'Perdido', accent: LIME_TINT.md, probHint: 'Arquivado' },
+  { id: 'perdido', label: 'Perdido', accent: 'rgba(248, 113, 113, 0.95)', probHint: 'Arquivado' },
 ];
 
 /** Peso para valor esperado no pipeline (pré-visualização comercial, não contabilidade). */
@@ -137,24 +129,13 @@ function leadHeat(lead: CrmLead): { label: string; variant: 'hot' | 'warm' | 'st
   return { label: 'Frio', variant: 'cold' };
 }
 
-const PASTEL_CARD_LIGHT = [
-  'rgba(217, 255, 0, 0.1)',
-  'rgba(217, 255, 0, 0.12)',
-  'rgba(217, 255, 0, 0.14)',
-  'rgba(217, 255, 0, 0.16)',
-  'rgba(217, 255, 0, 0.18)',
-] as const;
-const PASTEL_CARD_DARK = [
-  'rgba(217, 255, 0, 0.12)',
-  'rgba(217, 255, 0, 0.16)',
-  'rgba(217, 255, 0, 0.2)',
-  'rgba(217, 255, 0, 0.24)',
-  'rgba(217, 255, 0, 0.28)',
-] as const;
+/** Área do Kanban (tema claro) — cinza muito claro; colunas/cartões em branco. */
+const CRM_KANBAN_PAGE_BG_LIGHT = '#F8F9FA';
+const CRM_KANBAN_COLUMN_BG_LIGHT = '#FFFFFF';
 
-function pastelCardBg(leadId: string, dark: boolean): string {
-  const idx = Math.abs(leadId.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % PASTEL_CARD_LIGHT.length;
-  return dark ? PASTEL_CARD_DARK[idx] : PASTEL_CARD_LIGHT[idx];
+/** Superfície do cartão: branco puro (claro) / cartão Zaptro (escuro), sem lavado verde. */
+function crmKanbanCardBg(_leadId: string, isDark: boolean): string {
+  return isDark ? ZAPTRO_CARD_BG_DARK : '#FFFFFF';
 }
 
 function waDigits(phone: string): string {
@@ -1175,14 +1156,14 @@ const ZaptroCrmContent: React.FC = () => {
     const idleDays = daysSinceContact(lead.createdAt);
     const heatColors =
       heat.variant === 'hot'
-        ? { bg: LIME_TINT.sm, fg: isDark ? '#fafafa' : '#000000' }
+        ? { bg: 'rgba(217, 255, 0, 0.14)', fg: isDark ? '#fafafa' : '#000000' }
         : heat.variant === 'stale'
-          ? { bg: LIME_TINT.xs, fg: isDark ? '#fafafa' : '#000000' }
+          ? { bg: isDark ? 'rgba(245, 158, 11, 0.18)' : 'rgba(254, 243, 199, 0.95)', fg: isDark ? '#fdba74' : '#9a3412' }
           : heat.variant === 'warm'
-            ? { bg: 'rgba(217, 255, 0, 0.13)', fg: isDark ? '#fafafa' : '#000000' }
-            : { bg: LIME_TINT.xxs, fg: palette.textMuted };
-    const pastelBase = pastelCardBg(lead.id, isDark);
-    const cardSurface = dragId === lead.id ? (isDark ? LIME_TINT.md : LIME_TINT.sm) : pastelBase;
+            ? { bg: isDark ? 'rgba(59, 130, 246, 0.16)' : 'rgba(219, 234, 254, 0.95)', fg: isDark ? '#93c5fd' : '#1e40af' }
+            : { bg: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)', fg: palette.textMuted };
+    const cardBase = crmKanbanCardBg(lead.id, isDark);
+    const cardSurface = cardBase;
     const progressPct = Math.round((lead.progress / 5) * 100);
     const stableHash = Math.abs(lead.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0));
     const commentCount = stableHash % 12;
@@ -1200,8 +1181,8 @@ const ZaptroCrmContent: React.FC = () => {
     const tagChips: string[] = [`#${cargoSlug || 'carga'}`];
     if (lead.tag) tagChips.push(`#${lead.tag}`);
     else tagChips.push('#logística');
-    const chipBg = isDark ? 'rgba(217,255,0,0.1)' : 'rgba(217,255,0,0.12)';
-    const chipBorder = isDark ? 'rgba(217,255,0,0.22)' : 'rgba(0,0,0,0.1)';
+    const chipBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+    const chipBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
 
     const qaBtn: React.CSSProperties = {
       flex: '1 1 auto',
@@ -1212,8 +1193,8 @@ const ZaptroCrmContent: React.FC = () => {
       gap: 6,
       padding: '8px 8px',
       borderRadius: 12,
-      border: `1px solid ${isDark ? 'rgba(217,255,0,0.2)' : 'rgba(217,255,0,0.22)'}`,
-      backgroundColor: isDark ? 'rgba(217,255,0,0.06)' : 'rgba(255,255,255,0.92)',
+      border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.1)'}`,
+      backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : '#F4F4F5',
       fontSize: 11,
       fontWeight: 900,
       color: isDark ? '#fafafa' : '#000000',
@@ -1225,7 +1206,6 @@ const ZaptroCrmContent: React.FC = () => {
 
     return (
       <div
-        key={lead.id}
         role="button"
         tabIndex={0}
         draggable={canAct}
@@ -1252,14 +1232,16 @@ const ZaptroCrmContent: React.FC = () => {
           backgroundColor: cardSurface,
           border: lockedByOther
             ? `1px solid ${isDark ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.3)'}`
-            : `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}`,
+            : `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
           boxShadow: lockedByOther
             ? `0 0 0 2px ${isDark ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.28)'}, ${ZAPTRO_SHADOW.md}`
-            : heat.variant === 'hot'
-              ? '0 12px 32px rgba(217,255,0,0.14)'
-              : heat.variant === 'stale'
-                ? '0 10px 26px rgba(217,255,0,0.1)'
-                : '0 8px 24px rgba(15,23,42,0.06)',
+            : dragId === lead.id
+              ? `0 0 0 2px ${LIME}, 0 8px 24px rgba(15,23,42,0.08)`
+              : heat.variant === 'hot'
+                ? `0 0 0 1px rgba(217,255,0,0.4), ${isDark ? '0 8px 24px rgba(0,0,0,0.35)' : ZAPTRO_CARD_SHADOW_LIGHT}`
+                : isDark
+                  ? '0 8px 24px rgba(0,0,0,0.35)'
+                  : ZAPTRO_CARD_SHADOW_LIGHT,
           cursor: canAct ? 'grab' : 'default',
           textAlign: 'left',
           transition: 'transform 0.15s ease, box-shadow 0.15s ease',
@@ -1362,7 +1344,7 @@ const ZaptroCrmContent: React.FC = () => {
                 borderRadius: 14,
                 flexShrink: 0,
                 border: `1px solid ${chipBorder}`,
-                backgroundColor: isDark ? LIME_TINT.md : 'rgba(217,255,0,0.1)',
+                backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
                 color: palette.text,
                 display: 'flex',
                 alignItems: 'center',
@@ -1538,9 +1520,9 @@ const ZaptroCrmContent: React.FC = () => {
                   height: 30,
                   borderRadius: 999,
                   objectFit: 'cover',
-                  border: `2px solid ${pastelBase}`,
+                  border: `2px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
                   flexShrink: 0,
-                  backgroundColor: isDark ? LIME_TINT.md : 'rgba(0,0,0,0.06)',
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
                 }}
               />
             ) : (
@@ -1549,7 +1531,7 @@ const ZaptroCrmContent: React.FC = () => {
                   width: 30,
                   height: 30,
                   borderRadius: 999,
-                  border: `2px solid ${pastelBase}`,
+                  border: `2px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.1)'}`,
                   background: '#000000',
                   color: LIME,
                   display: 'flex',
@@ -1589,8 +1571,8 @@ const ZaptroCrmContent: React.FC = () => {
           margin: 0,
           padding: '0 0 48px',
           boxSizing: 'border-box',
-          /** Transparente: o fundo vem da coluna `ZaptroLayout` (`palette.pageBg`) — evita “caixa” dupla. */
-          backgroundColor: 'transparent',
+          /** Tema claro: cinza SaaS (#F8F9FA); escuro mantém fundo da área principal. */
+          backgroundColor: palette.mode === 'light' ? CRM_KANBAN_PAGE_BG_LIGHT : 'transparent',
           minHeight: '100%',
         }}
       >
@@ -1626,11 +1608,12 @@ const ZaptroCrmContent: React.FC = () => {
                   padding: '12px 18px',
                   borderRadius: 16,
                   border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.35)',
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
                   color: palette.text,
                   fontWeight: 900,
                   fontSize: 13,
                   cursor: 'pointer',
+                  boxShadow: palette.mode === 'light' ? '0 1px 2px rgba(15,23,42,0.06)' : 'none',
                 }}
               >
                 <Truck size={18} strokeWidth={2.2} /> Iniciar rota
@@ -1795,8 +1778,8 @@ const ZaptroCrmContent: React.FC = () => {
               flexShrink: 0,
               padding: '8px 14px',
               borderRadius: 999,
-              border: filter === 'todos' ? `1px solid ${LIME}` : `1px solid ${border}`,
-              backgroundColor: filter === 'todos' ? 'rgba(217,255,0,0.12)' : 'transparent',
+              border: filter === 'todos' ? `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.14)'}` : `1px solid ${border}`,
+              backgroundColor: filter === 'todos' ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)') : 'transparent',
               color: palette.text,
               fontWeight: 950,
               fontSize: 12,
@@ -1817,8 +1800,8 @@ const ZaptroCrmContent: React.FC = () => {
                 gap: 6,
                 padding: '6px 10px',
                 borderRadius: 999,
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.35)' : 'rgba(217,255,0,0.4)'}`,
-                backgroundColor: palette.mode === 'dark' ? LIME_TINT.xs : 'rgba(217, 255, 0, 0.16)',
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.35)' : 'rgba(245, 158, 11, 0.45)'}`,
+                backgroundColor: palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(254, 243, 199, 0.9)',
                 color: palette.text,
                 fontWeight: 900,
                 fontSize: 11,
@@ -1861,8 +1844,8 @@ const ZaptroCrmContent: React.FC = () => {
                 gap: 6,
                 padding: '8px 12px',
                 borderRadius: 12,
-                border: crmUiMode === 'listas' ? `1px solid ${LIME}` : `1px solid ${border}`,
-                backgroundColor: crmUiMode === 'listas' ? 'rgba(217,255,0,0.14)' : palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
+                border: crmUiMode === 'listas' ? `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.14)'}` : `1px solid ${border}`,
+                backgroundColor: crmUiMode === 'listas' ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#F4F4F5') : palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
                 color: palette.text,
                 fontWeight: 950,
                 fontSize: 12,
@@ -1881,7 +1864,7 @@ const ZaptroCrmContent: React.FC = () => {
               padding: '12px 16px',
               borderRadius: 16,
               border: `1px solid ${border}`,
-              backgroundColor: 'rgba(217,255,0,0.08)',
+              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F4F4F5',
               fontSize: 13,
               fontWeight: 700,
               color: palette.text,
@@ -1906,6 +1889,8 @@ const ZaptroCrmContent: React.FC = () => {
             rowGap: 11,
             paddingTop: 16,
             paddingBottom: 16,
+            paddingLeft: palette.mode === 'light' ? 12 : 0,
+            paddingRight: palette.mode === 'light' ? 12 : 0,
             alignItems: 'stretch',
           }}
           className="zaptro-crm-kanban-grid"
@@ -1929,8 +1914,9 @@ const ZaptroCrmContent: React.FC = () => {
               style={{
                 borderRadius: 26,
                 padding: '12px 12px 16px',
-                backgroundColor: palette.mode === 'dark' ? LIME_TINT.xxs : 'rgba(217, 255, 0, 0.08)',
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.14)' : 'rgba(0,0,0,0.08)'}`,
+                backgroundColor: palette.mode === 'dark' ? ZAPTRO_CARD_BG_DARK : CRM_KANBAN_COLUMN_BG_LIGHT,
+                border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
+                boxShadow: palette.mode === 'light' ? '0 1px 3px rgba(15,23,42,0.06)' : 'none',
                 minHeight: 420,
                 display: 'flex',
                 flexDirection: 'column',
@@ -2010,9 +1996,7 @@ const ZaptroCrmContent: React.FC = () => {
                   {col.probHint}
                 </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, overflowY: 'auto', paddingRight: 2 }}>
-                {leadsByStage[col.id].map((lead) => renderCard(lead))}
-              </div>
+              <CrmKanbanVirtualList items={leadsByStage[col.id]} renderItem={(lead) => renderCard(lead)} />
             </div>
           ))}
         </div>
@@ -2340,8 +2324,9 @@ const ZaptroCrmContent: React.FC = () => {
                       textTransform: 'uppercase',
                       padding: '6px 12px',
                       borderRadius: 999,
-                      backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.35)',
-                      color: palette.text,
+                      backgroundColor: '#0a0a0a',
+                      color: LIME,
+                      border: '1px solid rgba(0,0,0,0.2)',
                     }}
                     title={att.hint}
                   >
@@ -2366,8 +2351,8 @@ const ZaptroCrmContent: React.FC = () => {
                   marginBottom: 16,
                   padding: '14px 16px',
                   borderRadius: 16,
-                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.32)' : 'rgba(217,255,0,0.38)'}`,
-                  backgroundColor: palette.mode === 'dark' ? LIME_TINT.xs : 'rgba(217, 255, 0, 0.14)',
+                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F8F9FA',
                 }}
               >
                 <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 800, color: palette.text, lineHeight: 1.45 }}>
@@ -2439,14 +2424,14 @@ const ZaptroCrmContent: React.FC = () => {
                     marginBottom: 14,
                     padding: '10px 14px',
                     borderRadius: 14,
-                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.3)' : 'rgba(217,255,0,0.35)'}`,
-                    backgroundColor: palette.mode === 'dark' ? LIME_TINT.xxs : 'rgba(217, 255, 0, 0.1)',
+                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.35)' : 'rgba(251, 191, 36, 0.45)'}`,
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(254, 243, 199, 0.6)',
                     fontSize: 12,
                     fontWeight: 700,
                     color: palette.text,
                   }}
                 >
-                  <Timer size={18} color={LIME} style={{ flexShrink: 0 }} />
+                  <Timer size={18} color={palette.mode === 'dark' ? '#fbbf24' : '#d97706'} style={{ flexShrink: 0 }} />
                   <span>
                     Lead parado há <strong>{daysSinceContact(detail.createdAt)}</strong> dias nesta vista — sugere follow-up ou encaminhamento (SLA completo liga-se ao
                     backend).
@@ -2738,11 +2723,12 @@ const ZaptroCrmContent: React.FC = () => {
                     padding: '10px 14px',
                     borderRadius: 12,
                     border: `1px solid ${border}`,
-                    background: palette.mode === 'dark' ? 'rgba(217,255,0,0.1)' : 'rgba(217,255,0,0.35)',
+                    background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
                     fontWeight: 950,
                     fontSize: 12,
                     cursor: 'pointer',
                     color: palette.text,
+                    boxShadow: palette.mode === 'light' ? '0 1px 2px rgba(15,23,42,0.05)' : 'none',
                   }}
                 >
                   + Novo orçamento (passo a passo)
@@ -2773,14 +2759,14 @@ const ZaptroCrmContent: React.FC = () => {
                         style={{
                           borderLeft: `3px solid ${
                             ev.kind === 'quote'
-                              ? LIME_TINT.xxl
+                              ? LIME
                               : ev.kind === 'proposal'
-                                ? LIME_TINT.xl
+                                ? '#3b82f6'
                                 : ev.kind === 'stage'
-                                  ? LIME
+                                  ? '#64748b'
                                   : ev.kind === 'assign'
-                                    ? LIME_TINT.lg
-                                    : LIME_TINT.md
+                                    ? '#94a3b8'
+                                    : border
                           }`,
                           paddingLeft: 12,
                         }}

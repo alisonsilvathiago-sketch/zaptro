@@ -31,6 +31,11 @@ export function readActiveRoutes(crmId: string): ActiveRouteRow[] {
 export function writeActiveRoutes(crmId: string, rows: ActiveRouteRow[]): void {
   try {
     localStorage.setItem(routesStorageKey(crmId), JSON.stringify(rows));
+    try {
+      window.dispatchEvent(new CustomEvent('zaptro-crm-active-routes'));
+    } catch {
+      /* ignore */
+    }
   } catch {
     /* ignore */
   }

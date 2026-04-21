@@ -685,7 +685,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
           {/* Right: map */}
           <div style={{ ...c(), padding: 0, overflow: 'hidden', minHeight: 560 }}>
             <div style={{ padding: '20px 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: text }}>Mapa da rota</h2>
+              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: text }}>Rotas de hoje</h2>
               <Zap size={18} color={accent} />
             </div>
             <div
@@ -697,7 +697,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                 overflow: 'hidden',
               }}
             >
-              <DashboardMonochromeMap isDark={isDark} height={440} />
+              <DashboardMonochromeMap isDark={isDark} height={440} crmStorageId={profile?.company_id ?? 'local-demo'} />
               <div
                 style={{
                   position: 'absolute',

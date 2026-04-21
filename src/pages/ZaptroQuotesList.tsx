@@ -42,6 +42,7 @@ import { resolveSessionAvatarUrl } from '../utils/zaptroAvatar';
 import { readZaptroServiceScope, zaptroEffectiveCalcMode } from '../utils/zaptroServiceScope';
 import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 import { zaptroCardSurfaceStyle } from '../constants/zaptroCardSurface';
+import { useDebouncedValue } from '../utils/useDebouncedValue';
 
 const QUOTES_VISTA_KEY = 'zaptro_quotes_vista';
 
@@ -182,10 +183,12 @@ const ZaptroQuotesListContent: React.FC = () => {
 
   const [quoteSearchText, setQuoteSearchText] = useState('');
   const [quoteSearchContact, setQuoteSearchContact] = useState('');
+  const debouncedSearchText = useDebouncedValue(quoteSearchText, 280);
+  const debouncedSearchContact = useDebouncedValue(quoteSearchContact, 280);
 
   const filtered = useMemo(() => {
     let list = leadFilter ? rows.filter((r) => r.leadId === leadFilter) : rows;
-    const q1 = quoteSearchText.trim().toLowerCase();
+    const q1 = debouncedSearchText.trim().toLowerCase();
     if (q1) {
       list = list.filter((r) => {
         const client = (leadMetaMap[r.leadId]?.clientName || r.clientNameSnapshot || '').toLowerCase();
@@ -193,7 +196,7 @@ const ZaptroQuotesListContent: React.FC = () => {
         return blob.includes(q1);
       });
     }
-    const q2 = quoteSearchContact.trim().toLowerCase();
+    const q2 = debouncedSearchContact.trim().toLowerCase();
     if (q2) {
       list = list.filter((r) => {
         const notes = (r.notes || '').toLowerCase();
@@ -202,7 +205,7 @@ const ZaptroQuotesListContent: React.FC = () => {
       });
     }
     return list;
-  }, [rows, leadFilter, quoteSearchText, quoteSearchContact, leadMetaMap]);
+  }, [rows, leadFilter, debouncedSearchText, debouncedSearchContact, leadMetaMap]);
 
   const quotesByStatus = useMemo(() => {
     const empty = (): Record<QuoteStatus, FreightQuoteWithLead[]> => ({
@@ -766,6 +769,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                         flexShrink: 0,
                         border: `1px solid ${border}`,
                         backgroundColor: isDark ? '#0a0a0a' : '#f4f4f4',
+                        display: 'block',
                       };
                       return (
                         <div
@@ -787,13 +791,33 @@ const ZaptroQuotesListContent: React.FC = () => {
                               minWidth: 0,
                             }}
                           >
-                            <img src={clientPic} alt="" title="Cliente" style={avatarBox} />
-                            <img
-                              src={internalPic}
-                              alt=""
-                              title="Responsável / equipa (Kanban ou sessão)"
-                              style={avatarBox}
-                            />
+                            <div
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'stretch',
+                                flexShrink: 0,
+                                width: 28,
+                              }}
+                              aria-hidden
+                            >
+                              <img
+                                src={clientPic}
+                                alt=""
+                                title="Cliente"
+                                loading="lazy"
+                                decoding="async"
+                                style={{ ...avatarBox, position: 'relative', zIndex: 2 }}
+                              />
+                              <img
+                                src={internalPic}
+                                alt=""
+                                title="Responsável / equipa (Kanban ou sessão)"
+                                loading="lazy"
+                                decoding="async"
+                                style={{ ...avatarBox, marginTop: -9, position: 'relative', zIndex: 1 }}
+                              />
+                            </div>
                             <div style={{ fontWeight: 900, fontSize: 13, color: palette.text, lineHeight: 1.3, minWidth: 0 }}>
                               {client}
                             </div>
@@ -863,16 +887,42 @@ const ZaptroQuotesListContent: React.FC = () => {
                   flexShrink: 0,
                   border: `1px solid ${border}`,
                   backgroundColor: isDark ? '#0a0a0a' : '#f4f4f4',
+                  display: 'block',
                 };
                 return (
                   <tr key={q.id} style={{ borderBottom: `1px solid ${border}` }}>
                     <td style={{ padding: '12px 14px', fontWeight: 800, color: palette.text, fontFamily: 'ui-monospace, monospace', fontSize: 12 }}>
                       {q.id.length > 14 ? `${q.id.slice(0, 12)}…` : q.id}
                     </td>
-                    <td style={{ padding: '12px 14px', fontWeight: 700, color: palette.text }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                        <img src={clientPic} alt="" title="Cliente" style={avatarBox} />
-                        <img src={internalPic} alt="" title="Responsável / equipa" style={avatarBox} />
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: palette.text, verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'stretch',
+                            flexShrink: 0,
+                            width: 26,
+                          }}
+                          aria-hidden
+                        >
+                          <img
+                            src={clientPic}
+                            alt=""
+                            title="Cliente"
+                            loading="lazy"
+                            decoding="async"
+                            style={{ ...avatarBox, position: 'relative', zIndex: 2 }}
+                          />
+                          <img
+                            src={internalPic}
+                            alt=""
+                            title="Responsável / equipa"
+                            loading="lazy"
+                            decoding="async"
+                            style={{ ...avatarBox, marginTop: -8, position: 'relative', zIndex: 1 }}
+                          />
+                        </div>
                         <div style={{ minWidth: 0 }}>
                           <div>{client}</div>
                           <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted, marginTop: 2 }}>Lead: {q.leadId}</div>

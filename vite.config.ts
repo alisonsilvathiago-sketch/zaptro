@@ -29,5 +29,20 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 1000,
-  }
+    rollupOptions: {
+      output: {
+        /** Rolldown/Vite 8: `manualChunks` como função — separa bibliotecas pesadas do bundle principal. */
+        manualChunks(id: string) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('recharts')) return 'vendor-recharts';
+          if (id.includes('leaflet') || id.includes('react-leaflet')) return 'vendor-maps';
+          if (id.includes('@supabase')) return 'vendor-supabase';
+          if (id.includes('@tanstack')) return 'vendor-virtual';
+          if (id.includes('react-router')) return 'vendor-react';
+          if (id.includes('react-dom')) return 'vendor-react';
+          if (id.includes('/react/') && id.includes('node_modules/react/')) return 'vendor-react';
+        },
+      },
+    },
+  },
 })

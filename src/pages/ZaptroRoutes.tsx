@@ -22,6 +22,10 @@ import { useTenant } from '../context/TenantContext';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import {
+  ZAPTRO_MAP_ROUTE_HANDOFF_KEY,
+  type ZaptroMapRouteHandoffPayload,
+} from '../constants/zaptroMapRouteHandoff';
+import {
   ROUTE_STATUS_LABEL,
   type RouteExecutionStatus,
   zaptroDriverRoutePath,
@@ -411,6 +415,29 @@ const ZaptroRoutesInner: React.FC = () => {
   useEffect(() => {
     reload();
   }, [reload]);
+
+  /** Rota preparada na página Mapa (OSRM) — aviso único ao entrar em Rotas. */
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(ZAPTRO_MAP_ROUTE_HANDOFF_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(ZAPTRO_MAP_ROUTE_HANDOFF_KEY);
+      const d = JSON.parse(raw) as Partial<ZaptroMapRouteHandoffPayload>;
+      const km = typeof d.distanceKm === 'number' ? d.distanceKm.toFixed(1) : '—';
+      const name = d.driverName?.trim() || 'motorista';
+      notifyZaptro(
+        'info',
+        'Plano vindo do Mapa',
+        `Rota associada a ${name} (~${km} km, ~${typeof d.durationMin === 'number' ? `${d.durationMin} min` : '—'}). Cria ou acompanha a rota operacional na lista abaixo.`,
+      );
+    } catch {
+      try {
+        sessionStorage.removeItem(ZAPTRO_MAP_ROUTE_HANDOFF_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const key = routesStorageKey(crmStorageId);

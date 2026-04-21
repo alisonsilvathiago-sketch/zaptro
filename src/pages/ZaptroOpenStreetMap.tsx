@@ -48,9 +48,9 @@ const ZaptroOpenStreetMap: React.FC = () => {
               Mapa OpenStreetMap
             </h1>
           </div>
-          <p style={{ margin: '12px 0 0', fontSize: 14, fontWeight: 600, color: palette.textMuted, maxWidth: 640, lineHeight: 1.5 }}>
-            Visualização centrada no Brasil. Escolhe origem e destino, traça rota real em estrada (motor OSRM gratuito). Podes ainda
-            adicionar marcadores livres. Sem Google Maps.
+          <p style={{ margin: '12px 0 0', fontSize: 14, fontWeight: 600, color: palette.textMuted, maxWidth: 720, lineHeight: 1.5 }}>
+            Visualização centrada no Brasil. Define origem e destino, traça a rota em estrada (OSRM), escolhe o motorista da entrega e
+            encaminha o percurso por WhatsApp ou abre a página Rotas para operação na frota. Sem Google Maps.
           </p>
         </header>
 

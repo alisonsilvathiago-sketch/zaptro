@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Plus,
@@ -40,7 +40,7 @@ import { useTenant } from '../context/TenantContext';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { appendZaptroActivityLog } from '../constants/zaptroActivityLogStore';
 import { ZAPTRO_ROUTES, zaptroWhatsappInboxThreadPath } from '../constants/zaptroRoutes';
-import { routesStorageKey, type ActiveRouteRow } from '../constants/zaptroCrmActiveRoutes';
+import { routesStorageKey, writeActiveRoutes, type ActiveRouteRow } from '../constants/zaptroCrmActiveRoutes';
 import {
   type FreightQuote,
   QUOTE_STATUS_LABEL,
@@ -57,6 +57,13 @@ import {
 } from '../constants/zaptroCrmTasksDb';
 import { isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
+import {
+  fetchCrmWorkspace,
+  upsertCrmWorkspace,
+  readWorkspaceLocalTouchIso,
+  writeWorkspaceLocalTouchIso,
+  ZAPTRO_CRM_WORKSPACE_PAYLOAD_VERSION,
+} from '../lib/zaptroCrmWorkspaceDb';
 import { resolveMemberAvatarUrl } from '../utils/zaptroAvatar';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
@@ -388,6 +395,13 @@ const ZaptroCrmContent: React.FC = () => {
   /** Sem empresa no perfil ainda: mesmo assim mostramos o Kanban com dados locais de demonstração. */
   const crmStorageId = companyId || 'local-demo';
 
+  /** Evita gravar no Supabase imediatamente a seguir a hidratação remota (debounce). */
+  const workspaceUpsertSuppressUntilRef = useRef(0);
+
+  const bumpWorkspaceLocalTouch = useCallback(() => {
+    if (companyId) writeWorkspaceLocalTouchIso(companyId, new Date().toISOString());
+  }, [companyId]);
+
   const loadFromStorage = useCallback(() => {
     let nextLeads: CrmLead[] = [];
     try {
@@ -452,6 +466,84 @@ const ZaptroCrmContent: React.FC = () => {
     loadFromStorage();
   }, [loadFromStorage]);
 
+  /** Sincroniza com Supabase quando a linha existe e está mais recente que a última edição local. */
+  useEffect(() => {
+    if (!companyId) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const row = await fetchCrmWorkspace(companyId);
+        if (cancelled || !row) return;
+        const localTouch = readWorkspaceLocalTouchIso(companyId);
+        const tLocal = localTouch ? new Date(localTouch).getTime() : 0;
+        const tRemote = new Date(row.updated_at).getTime();
+        if (tRemote <= tLocal) return;
+
+        const p = row.payload;
+        const remoteLeads = Array.isArray(p.leads) ? (p.leads as CrmLead[]) : [];
+        if (remoteLeads.length === 0) return;
+
+        workspaceUpsertSuppressUntilRef.current = Date.now() + 2200;
+
+        setLeads(remoteLeads);
+        if (p.leadEvents && typeof p.leadEvents === 'object' && !Array.isArray(p.leadEvents)) {
+          setLeadEvents(p.leadEvents as Record<string, CrmTimelineEvent[]>);
+        } else {
+          setLeadEvents({});
+        }
+        const qMap =
+          p.quotesByLead && typeof p.quotesByLead === 'object' && !Array.isArray(p.quotesByLead)
+            ? (p.quotesByLead as Record<string, FreightQuote[]>)
+            : {};
+        setQuotesByLead(qMap);
+        const routes = Array.isArray(p.activeRoutes) ? (p.activeRoutes as ActiveRouteRow[]) : [];
+        setActiveRoutes(routes);
+
+        try {
+          localStorage.setItem(storageKey(companyId), JSON.stringify(remoteLeads));
+          localStorage.setItem(
+            eventsStorageKey(companyId),
+            JSON.stringify(
+              p.leadEvents && typeof p.leadEvents === 'object' && !Array.isArray(p.leadEvents) ? p.leadEvents : {}
+            )
+          );
+          writeQuotesMap(companyId, qMap);
+          writeActiveRoutes(companyId, routes);
+        } catch {
+          /* ignore */
+        }
+        writeWorkspaceLocalTouchIso(companyId, row.updated_at);
+      } catch {
+        /* rede / RLS / tabela em falta */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId]);
+
+  useEffect(() => {
+    if (!companyId) return;
+    const t = window.setTimeout(() => {
+      if (Date.now() < workspaceUpsertSuppressUntilRef.current) return;
+      const payload = {
+        v: ZAPTRO_CRM_WORKSPACE_PAYLOAD_VERSION,
+        leads,
+        leadEvents,
+        quotesByLead,
+        activeRoutes,
+      };
+      void upsertCrmWorkspace(companyId, payload)
+        .then((ok) => {
+          if (ok) writeWorkspaceLocalTouchIso(companyId, new Date().toISOString());
+        })
+        .catch(() => {
+          /* tabela em falta ou offline */
+        });
+    }, 1600);
+    return () => window.clearTimeout(t);
+  }, [companyId, leads, leadEvents, quotesByLead, activeRoutes]);
+
   useEffect(() => {
     if (!companyId) return;
     let cancelled = false;
@@ -476,8 +568,9 @@ const ZaptroCrmContent: React.FC = () => {
       } catch {
         /* ignore */
       }
+      bumpWorkspaceLocalTouch();
     },
-    [crmStorageId]
+    [bumpWorkspaceLocalTouch, crmStorageId]
   );
 
   const appendLeadEvent = useCallback(
@@ -498,10 +591,11 @@ const ZaptroCrmContent: React.FC = () => {
         } catch {
           /* ignore */
         }
+        bumpWorkspaceLocalTouch();
         return next;
       });
     },
-    [crmStorageId]
+    [bumpWorkspaceLocalTouch, crmStorageId]
   );
 
   const loadLeadTasks = useCallback(
@@ -624,8 +718,9 @@ const ZaptroCrmContent: React.FC = () => {
       } catch {
         /* ignore */
       }
+      bumpWorkspaceLocalTouch();
     },
-    [crmStorageId]
+    [bumpWorkspaceLocalTouch, crmStorageId]
   );
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Loading from './components/Loading';
 import { ZAPTRO_ROUTES } from './constants/zaptroRoutes';
 import ZaptroPagePermissionRoute from './components/Zaptro/ZaptroPagePermissionRoute';
+import { zaptroSettingsEntryPermissionIds } from './utils/zaptroPagePermissionMap';
 
 const WhatsAppSales = lazy(() => import('./pages/WhatsAppSales'));
 const Login = lazy(() => import('./pages/Login'));
@@ -55,12 +56,57 @@ const App: React.FC = () => {
           <Route path={ZAPTRO_ROUTES.REGISTER} element={<ZaptroRegister />} />
 
           {/* Zaptro Product ONLY (Protegidas) */}
-          <Route path={ZAPTRO_ROUTES.DASHBOARD} element={<ProtectedRoute><ZaptroDashboard /></ProtectedRoute>} />
+          <Route
+            path={ZAPTRO_ROUTES.DASHBOARD}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="inicio">
+                  <ZaptroDashboard />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
           {/* Inbox com thread (telefone em dígitos ou UUID) — CRM «Abrir conversa» usa `/whatsapp/:waThread` */}
-          <Route path={`${ZAPTRO_ROUTES.CHAT}/:waThread`} element={<ProtectedRoute><WhatsAppPremium /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.CHAT} element={<ProtectedRoute><WhatsAppPremium /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.COMMERCIAL_CRM} element={<ProtectedRoute><ZaptroCrm /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.COMMERCIAL_QUOTES} element={<ProtectedRoute><ZaptroQuotesList /></ProtectedRoute>} />
+          <Route
+            path={`${ZAPTRO_ROUTES.CHAT}/:waThread`}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="whatsapp">
+                  <WhatsAppPremium />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.CHAT}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="whatsapp">
+                  <WhatsAppPremium />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.COMMERCIAL_CRM}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="crm">
+                  <ZaptroCrm />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.COMMERCIAL_QUOTES}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="orcamentos">
+                  <ZaptroQuotesList />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path={ZAPTRO_ROUTES.ROUTES}
             element={
@@ -81,7 +127,16 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path={ZAPTRO_ROUTES.DRIVERS} element={<ProtectedRoute><ZaptroDrivers /></ProtectedRoute>} />
+          <Route
+            path={ZAPTRO_ROUTES.DRIVERS}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="motoristas">
+                  <ZaptroDrivers />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path={`${ZAPTRO_ROUTES.DRIVER_PROFILE}/:id`}
             element={
@@ -92,14 +147,86 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path={ZAPTRO_ROUTES.BILLING} element={<ProtectedRoute><ZaptroBilling /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.LOGISTICS} element={<ProtectedRoute><ZaptroLogistics /></ProtectedRoute>} />
-          <Route path="/ocorrencia/:id" element={<ProtectedRoute><ZaptroOccurrence /></ProtectedRoute>} />
-          <Route path="/clientes/perfil/:id" element={<ProtectedRoute><ZaptroClientDetail /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.TEAM} element={<ProtectedRoute><ZaptroTeam /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.HISTORY} element={<ProtectedRoute><ZaptroHistory /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.CLIENTS} element={<ProtectedRoute><ZaptroClients /></ProtectedRoute>} />
-          <Route path={ZAPTRO_ROUTES.SETTINGS_ALIAS} element={<ProtectedRoute><ZaptroSettings /></ProtectedRoute>} />
+          <Route
+            path={ZAPTRO_ROUTES.BILLING}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="faturamento">
+                  <ZaptroBilling />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.LOGISTICS}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="operacoes">
+                  <ZaptroLogistics />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ocorrencia/:id"
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="historico">
+                  <ZaptroOccurrence />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clientes/perfil/:id"
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="clientes">
+                  <ZaptroClientDetail />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.TEAM}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="equipe">
+                  <ZaptroTeam />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.HISTORY}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="historico">
+                  <ZaptroHistory />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.CLIENTS}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="clientes">
+                  <ZaptroClients />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.SETTINGS_ALIAS}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute anyOf={zaptroSettingsEntryPermissionIds()}>
+                  <ZaptroSettings />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
           <Route path={ZAPTRO_ROUTES.PROFILE} element={<ProtectedRoute><ZaptroProfile /></ProtectedRoute>} />
 
           {/* Redirecionamentos de conveniência */}

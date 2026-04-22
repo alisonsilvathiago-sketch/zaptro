@@ -69,6 +69,8 @@ export const isZaptroProductPath = (pathname: string) => {
     ZAPTRO_ROUTES.ROUTES,
     ZAPTRO_ROUTES.COMMERCIAL_QUOTES,
     ZAPTRO_ROUTES.DRIVERS,
+    ZAPTRO_ROUTES.DRIVER_PROFILE,
+    ZAPTRO_ROUTES.OPENSTREETMAP,
     ZAPTRO_ROUTES.TEAM,
     ZAPTRO_ROUTES.HISTORY,
     ZAPTRO_ROUTES.LOGISTICS,
@@ -76,8 +78,11 @@ export const isZaptroProductPath = (pathname: string) => {
     ZAPTRO_ROUTES.PROFILE,
     ZAPTRO_ROUTES.LEGACY_PROFILE,
     ZAPTRO_ROUTES.BILLING,
+    ZAPTRO_ROUTES.COMPANY_LOGIN,
   ]);
   if (zaptroCanonical.has(p)) return true;
+  if (p.startsWith(`${ZAPTRO_ROUTES.DRIVER_PROFILE}/`)) return true;
+  if (p.startsWith(`${ZAPTRO_ROUTES.COMPANY_LOGIN}/`)) return true;
   /** CRM em `/comercial`; sub-rotas (ex. `/comercial/orcamentos`) também são Zaptro. */
   if (p.startsWith(`${ZAPTRO_ROUTES.COMMERCIAL_CRM}/`)) return true;
   return false;
@@ -135,6 +140,11 @@ export const getContext = () => {
       path === ZAPTRO_ROUTES.COMMERCIAL_CRM ||
       path.startsWith(`${ZAPTRO_ROUTES.COMMERCIAL_CRM}/`) ||
       path === ZAPTRO_ROUTES.DRIVERS ||
+      path === ZAPTRO_ROUTES.OPENSTREETMAP ||
+      path === ZAPTRO_ROUTES.DRIVER_PROFILE ||
+      path.startsWith(`${ZAPTRO_ROUTES.DRIVER_PROFILE}/`) ||
+      path === ZAPTRO_ROUTES.ROUTES ||
+      path.startsWith(`${ZAPTRO_ROUTES.COMPANY_LOGIN}/`) ||
       path === ZAPTRO_ROUTES.TEAM ||
       path === ZAPTRO_ROUTES.HISTORY ||
       path === ZAPTRO_ROUTES.LOGISTICS ||

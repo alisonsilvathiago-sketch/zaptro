@@ -214,7 +214,23 @@ function canAccessZaptroRoutesPage(
 ): boolean {
   if (isMaster || isZaptroTenantAdminRole(role)) return true;
   return (
-    hasZaptroGranularPermission(role, permissions, 'crm') || hasZaptroGranularPermission(role, permissions, 'motoristas')
+    hasZaptroGranularPermission(role, permissions, 'rotas') ||
+    hasZaptroGranularPermission(role, permissions, 'crm') ||
+    hasZaptroGranularPermission(role, permissions, 'motoristas')
+  );
+}
+
+function canAccessZaptroMapPage(
+  role: string | null | undefined,
+  permissions: string[] | null | undefined,
+  isMaster: boolean
+): boolean {
+  if (isMaster || isZaptroTenantAdminRole(role)) return true;
+  return (
+    hasZaptroGranularPermission(role, permissions, 'mapa') ||
+    hasZaptroGranularPermission(role, permissions, 'rotas') ||
+    hasZaptroGranularPermission(role, permissions, 'crm') ||
+    hasZaptroGranularPermission(role, permissions, 'operacoes')
   );
 }
 
@@ -273,6 +289,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
     if (p.startsWith(ZAPTRO_ROUTES.COMMERCIAL_QUOTES)) return 'orcamentos';
     if (p.startsWith(ZAPTRO_ROUTES.DRIVERS)) return 'motoristas';
     if (p.startsWith(ZAPTRO_ROUTES.COMMERCIAL_CRM)) return 'crm';
+    if (p.startsWith(ZAPTRO_ROUTES.OPENSTREETMAP)) return 'mapa';
     return 'sistema';
   }, [location.pathname]);
 
@@ -313,6 +330,9 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
     return all.filter((item) => {
       if (item.path === ZAPTRO_ROUTES.ROUTES) {
         return canAccessZaptroRoutesPage(profile?.role, profile?.permissions, isMaster);
+      }
+      if (item.path === ZAPTRO_ROUTES.OPENSTREETMAP) {
+        return canAccessZaptroMapPage(profile?.role, profile?.permissions, isMaster);
       }
       const id = zaptroMenuPathToPageId(item.path);
       if (!id) return true;

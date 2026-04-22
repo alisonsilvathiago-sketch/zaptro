@@ -89,7 +89,9 @@ const Loading: React.FC = () => {
     if (path.startsWith(ZAPTRO_ROUTES.LOGISTICS)) return 'cargas';
     if (path.startsWith(ZAPTRO_ROUTES.COMMERCIAL_QUOTES)) return 'orcamentos';
     if (path.startsWith(ZAPTRO_ROUTES.DRIVERS)) return 'motoristas';
+    if (path.startsWith(ZAPTRO_ROUTES.DRIVER_PROFILE)) return 'motoristas';
     if (path.startsWith(ZAPTRO_ROUTES.COMMERCIAL_CRM)) return 'crm';
+    if (path.startsWith(ZAPTRO_ROUTES.OPENSTREETMAP)) return 'mapa';
     return 'sistema';
   }, [path, isZaptro]);
 

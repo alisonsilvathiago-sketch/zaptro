@@ -8,6 +8,8 @@ export const ZAPTRO_PAGE_REGISTRY = [
   { id: 'inicio', label: 'Painel Central', primaryPath: ZAPTRO_ROUTES.DASHBOARD },
   { id: 'crm', label: 'CRM comercial', primaryPath: ZAPTRO_ROUTES.COMMERCIAL_CRM },
   { id: 'orcamentos', label: 'Orçamentos', primaryPath: ZAPTRO_ROUTES.COMMERCIAL_QUOTES },
+  { id: 'rotas', label: 'Rotas operacionais', primaryPath: ZAPTRO_ROUTES.ROUTES },
+  { id: 'mapa', label: 'Mapa (OSM)', primaryPath: ZAPTRO_ROUTES.OPENSTREETMAP },
   { id: 'whatsapp', label: 'Atendimentos WhatsApp', primaryPath: ZAPTRO_ROUTES.CHAT },
   { id: 'historico', label: 'Histórico e ocorrências', primaryPath: ZAPTRO_ROUTES.HISTORY },
   { id: 'clientes', label: 'Clientes', primaryPath: ZAPTRO_ROUTES.CLIENTS },
@@ -88,6 +90,10 @@ export function zaptroMenuPathToPageId(fullPath: string): ZaptroPagePermissionId
     return 'cfg';
   }
 
+  if (base === ZAPTRO_ROUTES.CHAT || base.startsWith(`${ZAPTRO_ROUTES.CHAT}/`)) {
+    return 'whatsapp';
+  }
+
   for (const r of ZAPTRO_PAGE_REGISTRY) {
     const [pb] = splitPath(r.primaryPath);
     if (pb === base && pb !== ZAPTRO_ROUTES.SETTINGS_ALIAS) return r.id;
@@ -127,6 +133,7 @@ export function pathnameToZaptroPageId(pathname: string, search: string): Zaptro
   if (p === ZAPTRO_ROUTES.CLIENTS || p.startsWith(`${ZAPTRO_ROUTES.CLIENTS}/`)) return 'clientes';
   if (p === ZAPTRO_ROUTES.DRIVER_PROFILE || p.startsWith(`${ZAPTRO_ROUTES.DRIVER_PROFILE}/`)) return 'motoristas';
   if (p === ZAPTRO_ROUTES.PROFILE || p === ZAPTRO_ROUTES.LEGACY_PROFILE) return null;
-  if (p === ZAPTRO_ROUTES.SALES || p === '/' || p.startsWith(`${ZAPTRO_ROUTES.COMPANY_LOGIN}/`)) return null;
+  if (p === ZAPTRO_ROUTES.SALES || p === '/') return null;
+  if (p.startsWith(`${ZAPTRO_ROUTES.COMPANY_LOGIN}/`)) return null;
   return null;
 }

@@ -14,6 +14,7 @@ export type ZaptroLoadingPhraseContext =
   | 'orcamentos'
   | 'motoristas'
   | 'crm'
+  | 'mapa'
   | 'sistema';
 
 export const ZAPTRO_LOADING_PHRASES: Record<ZaptroLoadingPhraseContext, readonly string[]> = {
@@ -24,5 +25,6 @@ export const ZAPTRO_LOADING_PHRASES: Record<ZaptroLoadingPhraseContext, readonly
   orcamentos: ['Processando valores', 'Calculando propostas', 'Preparando negociação'],
   motoristas: ['Carregando equipe', 'Sincronizando motoristas', 'Preparando operação'],
   crm: ['Organizando pipeline', 'Atualizando oportunidades', 'Preparando negociações'],
+  mapa: ['Carregando mapa', 'Sincronizando camadas', 'Preparando navegação'],
   sistema: ['Iniciando sistema', 'Conectando módulos', 'Finalizando carregamento'],
 };

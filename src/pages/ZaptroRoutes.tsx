@@ -355,7 +355,7 @@ const RouteCardDualAvatars: React.FC<{
 
 /** Conteúdo da página: tem de viver **dentro** de `ZaptroLayout` para `useZaptroTheme()` funcionar. */
 const ZaptroRoutesInner: React.FC = () => {
-  const { profile, isMaster } = useAuth();
+  const { profile, isMaster, user } = useAuth();
   const canOpenCrm =
     isMaster || isZaptroTenantAdminRole(profile?.role) || hasZaptroGranularPermission(profile?.role, profile?.permissions, 'crm');
   const canOpenAutomation =
@@ -551,10 +551,13 @@ const ZaptroRoutesInner: React.FC = () => {
       const displayName = company?.name?.trim();
       const tier = getZaptroPlanVerifiedTier(company ?? undefined);
       const premium = tier === 'premium';
+      const notify = (profile?.email || user?.email || '').trim().toLowerCase();
+      const opsNotifyEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notify) ? notify : null;
       patchRouteLive(token, {
         ...(displayName ? { publicCompanyName: displayName } : {}),
         publicTrackPremiumBranding: premium,
         publicHeaderLogoUrl: company?.logo_url?.trim() || null,
+        ...(opsNotifyEmail ? { opsNotifyEmail } : {}),
       });
       setStartModalOpen(false);
       setClientRefDraft('');
@@ -572,7 +575,7 @@ const ZaptroRoutesInner: React.FC = () => {
         details: `Token ${token}${note ? ` · Nota interna: ${note}` : ''}`,
       });
     },
-    [company, crmStorageId, profile?.full_name],
+    [company, crmStorageId, profile?.email, profile?.full_name, user?.email],
   );
 
   const closeRoute = useCallback(

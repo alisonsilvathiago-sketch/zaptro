@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { createAsaasCheckout } from '../../lib/asaas';
+import { fireTransactionalEmailNonBlocking } from '../../lib/fireTransactionalEmail';
 
 const AcademyCheckout: React.FC = () => {
   const { courseId } = useParams();
@@ -82,7 +83,20 @@ const AcademyCheckout: React.FC = () => {
       if (checkout?.invoiceUrl) {
         window.location.href = checkout.invoiceUrl;
       } else if (checkout?.object === 'payment' && checkout.status === 'CONFIRMED') {
-         // Se for cartão e confirmou na hora
+         const { data: sess } = await supabase.auth.getSession();
+         const to = sess.session?.user?.email?.trim().toLowerCase() || formData.email.trim().toLowerCase();
+         if (sess.session?.access_token && to && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+           fireTransactionalEmailNonBlocking(supabase, {
+             kind: 'payment_approved',
+             to,
+             variables: {
+               userName: formData.name,
+               detail: `Pagamento confirmado · ${course?.title || 'Curso Play Logta'}`,
+               ctaUrl: `${window.location.origin}/academy/welcome`,
+               ctaLabel: 'Entrar na Academia',
+             },
+           });
+         }
          navigate('/academy/welcome');
       } else {
         throw new Error('Falha ao processar pagamento. Verifique os dados do cartão.');

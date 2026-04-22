@@ -52,6 +52,8 @@ const App: React.FC = () => {
 
           {/* Zaptro Product ONLY (Protegidas) */}
           <Route path={ZAPTRO_ROUTES.DASHBOARD} element={<ProtectedRoute><ZaptroDashboard /></ProtectedRoute>} />
+          {/* Inbox com thread (telefone em dígitos ou UUID) — CRM «Abrir conversa» usa `/whatsapp/:waThread` */}
+          <Route path={`${ZAPTRO_ROUTES.CHAT}/:waThread`} element={<ProtectedRoute><WhatsAppPremium /></ProtectedRoute>} />
           <Route path={ZAPTRO_ROUTES.CHAT} element={<ProtectedRoute><WhatsAppPremium /></ProtectedRoute>} />
           <Route path={ZAPTRO_ROUTES.COMMERCIAL_CRM} element={<ProtectedRoute><ZaptroCrm /></ProtectedRoute>} />
           <Route path={ZAPTRO_ROUTES.COMMERCIAL_QUOTES} element={<ProtectedRoute><ZaptroQuotesList /></ProtectedRoute>} />

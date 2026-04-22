@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host localhost --port 5174 --strictPort",
+    "dev:mail-api": "npm run dev --prefix server",
     "build": "vite build",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview"

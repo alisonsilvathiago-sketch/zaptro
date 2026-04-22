@@ -11,6 +11,7 @@ import { isZaptroLocalhostDev } from '../utils/zaptroDevBypass';
 import { getZaptroPostLoginLandingUrl } from '../utils/domains';
 import { ZAPTRO_HERO_SPLIT_PANEL_CLASS, zaptroHeroSplitPanelCss } from '../utils/zaptroMarketingHeroBackground';
 import ZaptroHeroParticleCanvas from '../components/Zaptro/ZaptroHeroParticleCanvas';
+import { postZaptroPasswordResetNotice } from '../lib/zaptroMailApi';
 
 /** Só com `isZaptroLocalhostDev()`: entra sem chamar Auth se a senha for a de dev (utilizador não precisa existir no Supabase). */
 const LOCALHOST_DEV_LOGIN_PASSWORD = '123456';
@@ -107,6 +108,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const [authMode, setAuthMode] = useState<'login' | 'forgot'>('login');
 
   const phrases = [
     "RECONHECENDO CREDENCIAIS",
@@ -121,6 +123,38 @@ const Login: React.FC = () => {
     }, 4500);
     return () => clearInterval(interval);
   }, []);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      notifyZaptro('warning', 'E-mail inválido', 'Introduza um e-mail válido para receber o link de recuperação.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const redirectTo = `${window.location.origin}/login`;
+      const { error: resetErr } = await supabaseZaptro.auth.resetPasswordForEmail(normalizedEmail, {
+        redirectTo,
+      });
+      if (resetErr) {
+        notifyZaptro('error', 'Não foi possível enviar', resetErr.message || 'Tente novamente em instantes.');
+        return;
+      }
+      await postZaptroPasswordResetNotice(normalizedEmail);
+      notifyZaptro(
+        'success',
+        'Instruções enviadas',
+        'Se o e-mail estiver cadastrado, verifique a caixa de entrada e o spam. Pode fechar esta mensagem e voltar ao login.',
+      );
+      setAuthMode('login');
+    } catch {
+      notifyZaptro('error', 'Erro de rede', 'Não foi possível concluir o pedido. Tente de novo.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,15 +278,20 @@ const Login: React.FC = () => {
       <div className="login-right-side" style={styles.rightSide}>
          <div style={styles.formContainer}>
             <div style={styles.welcomeBox}>
-               <h1 style={styles.titleBig}>Login Zaptro</h1>
-               <p style={styles.subtitleSmall}>Insira suas credenciais.</p>
+               <h1 style={styles.titleBig}>{authMode === 'forgot' ? 'Recuperar senha' : 'Login Zaptro'}</h1>
+               <p style={styles.subtitleSmall}>
+                 {authMode === 'forgot'
+                   ? 'Enviaremos um link seguro para o e-mail indicado (e o aviso Zaptro, se a API de e-mail estiver activa).'
+                   : 'Insira suas credenciais.'}
+               </p>
             </div>
             {error && <div style={styles.errorBox}><AlertCircle size={18} /> {error}</div>}
-            <form onSubmit={handleLogin} style={styles.formStack}>
+            <form onSubmit={authMode === 'forgot' ? handleForgotPassword : handleLogin} style={styles.formStack}>
                <div style={styles.inputStack}>
                   <Mail size={18} color="#000" />
                   <input type="email" placeholder="E-mail corporativo" style={styles.input} value={email} onChange={e => setEmail(e.target.value)} required />
                </div>
+               {authMode === 'login' ? (
                <div style={styles.inputStack}>
                   <Lock size={18} color="#000" style={{ flexShrink: 0 }} />
                   <input
@@ -279,11 +318,28 @@ const Login: React.FC = () => {
                     {showPassword ? <EyeOff size={20} strokeWidth={2.25} /> : <Eye size={20} strokeWidth={2.25} />}
                   </button>
                </div>
+               ) : null}
                <button type="submit" style={styles.submitBtn} disabled={loading}>
-                  {loading ? <Loader2 size={24} className="spin" /> : 'ENTRAR'}
+                  {loading ? <Loader2 size={24} className="spin" /> : authMode === 'forgot' ? 'ENVIAR LINK' : 'ENTRAR'}
                </button>
 
             </form>
+            {authMode === 'login' ? (
+              <button
+                type="button"
+                style={styles.linkBtn}
+                onClick={() => {
+                  setError(null);
+                  setAuthMode('forgot');
+                }}
+              >
+                Esqueci minha senha
+              </button>
+            ) : (
+              <button type="button" style={styles.linkBtn} onClick={() => { setError(null); setAuthMode('login'); }}>
+                Voltar ao login
+              </button>
+            )}
 
          </div>
       </div>

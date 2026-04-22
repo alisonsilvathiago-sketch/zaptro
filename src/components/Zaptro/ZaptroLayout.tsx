@@ -1362,8 +1362,8 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                     width: '100%',
                     marginLeft: 0,
                     marginRight: 0,
-                    paddingLeft: 'clamp(12px, 2vw, 28px)',
-                    paddingRight: 'clamp(12px, 2vw, 28px)',
+                    paddingLeft: 'clamp(10px, 1.25vw, 20px)',
+                    paddingRight: 'clamp(10px, 1.25vw, 20px)',
                   }
                 : {}),
             }}
@@ -1749,14 +1749,14 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '24px 0 64px',
     boxSizing: 'border-box',
   },
-  /** Coluna centrada e respiro horizontal só no interior (não estreita a zona de scroll). */
+  /** Coluna centrada: largura maior em desktop para menos “faixa” cinzenta à esquerda/direita. */
   contentInner: {
     width: '100%',
-    maxWidth: 1320,
+    maxWidth: 'min(100%, 1720px)',
     marginLeft: 'auto',
     marginRight: 'auto',
-    paddingLeft: 'clamp(8px, 1.5vw, 22px)',
-    paddingRight: 'clamp(8px, 1.5vw, 22px)',
+    paddingLeft: 'clamp(8px, 1vw, 14px)',
+    paddingRight: 'clamp(8px, 1vw, 14px)',
     boxSizing: 'border-box',
   },
 };

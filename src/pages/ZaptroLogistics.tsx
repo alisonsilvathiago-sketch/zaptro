@@ -9,12 +9,14 @@ import {
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { supabase } from '../lib/supabase';
+import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
+import { fireTransactionalEmailNonBlocking } from '../lib/fireTransactionalEmail';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import LogtaModal from '../components/Modal';
 
 const ZaptroLogistics: React.FC = () => {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [shipments, setShipments] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +85,24 @@ const ZaptroLogistics: React.FC = () => {
         });
 
       if (error) throw error;
-      
+
+      const notifyTo = (profile?.email || user?.email || '').trim().toLowerCase();
+      if (notifyTo && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notifyTo) && profile?.company_id) {
+        fireTransactionalEmailNonBlocking(supabaseZaptro, {
+          kind: 'cargo_created',
+          to: notifyTo,
+          companyId: profile.company_id,
+          variables: {
+            userName: profile.full_name || 'Equipa',
+            trackingCode,
+            clientName: newShipment.client_name,
+            destination: newShipment.destination || '—',
+            ctaUrl: `${window.location.origin}/rastreio?code=${encodeURIComponent(trackingCode)}`,
+            ctaLabel: 'Abrir rastreio',
+          },
+        });
+      }
+
       notifyZaptro('success', 'CARGA LANÇADA', `Código de rastreio: ${trackingCode}`);
       setIsAdding(false);
       fetchData();

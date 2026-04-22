@@ -4,6 +4,7 @@ import { Building2, MapPin, Navigation, Package, Phone, Truck, AlertTriangle, Sp
 import {
   DRIVER_AUTOMATION_EVENTS,
   ROUTE_STATUS_LABEL,
+  zaptroPublicTrackPath,
   type RouteExecutionSnapshot,
   type RouteExecutionStatus,
 } from '../constants/zaptroRouteExecution';
@@ -16,6 +17,8 @@ import {
   zaptroProfileInitials,
   type ZaptroDriverSelfProfile,
 } from '../utils/zaptroDriverSelfProfile';
+import { supabaseZaptro } from '../lib/supabase-zaptro';
+import { fireTransactionalEmailNonBlocking } from '../lib/fireTransactionalEmail';
 
 const LIME = '#D9FF00';
 
@@ -69,6 +72,7 @@ const ZaptroDriverRoute: React.FC = () => {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const watchRef = useRef<number | null>(null);
   const lastPersistRef = useRef(0);
+  const routeNotifyEmailSentRef = useRef(false);
 
   const pushDriverProfileToLive = useCallback(
     (p: ZaptroDriverSelfProfile) => {
@@ -173,6 +177,24 @@ const ZaptroDriverRoute: React.FC = () => {
     setStatus(next);
     persistStatus(next);
     pushAutomation(event, msg);
+
+    const live = readRouteLive(decoded);
+    const to = live?.opsNotifyEmail?.trim() ?? '';
+    if (to && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) && (next === 'started' || next === 'delivered')) {
+      const trackUrl = `${window.location.origin}${zaptroPublicTrackPath(decoded)}`;
+      const kind = next === 'started' ? 'delivery_started' : 'delivery_completed';
+      fireTransactionalEmailNonBlocking(supabaseZaptro, {
+        kind,
+        to,
+        variables: {
+          userName: live?.publicCompanyName || 'Operação',
+          message: msg,
+          routeLabel: live?.publicCompanyName ? `${live.publicCompanyName} · ${decoded}` : decoded,
+          ctaUrl: trackUrl,
+          ctaLabel: 'Acompanhar entrega',
+        },
+      });
+    }
   };
 
   const shareLocation = () => {
@@ -186,8 +208,29 @@ const ZaptroDriverRoute: React.FC = () => {
       watchRef.current = null;
       setGpsWatchActive(false);
       setLocActive(false);
+      routeNotifyEmailSentRef.current = false;
       notifyZaptro('info', 'Localização', 'Partilha em tempo real parada. O cliente deixa de receber novas coordenadas neste browser.');
       return;
+    }
+
+    if (!routeNotifyEmailSentRef.current) {
+      routeNotifyEmailSentRef.current = true;
+      const live = readRouteLive(decoded);
+      const to = live?.opsNotifyEmail?.trim() ?? '';
+      if (to && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+        const trackUrl = `${window.location.origin}${zaptroPublicTrackPath(decoded)}`;
+        fireTransactionalEmailNonBlocking(supabaseZaptro, {
+          kind: 'route_notification',
+          to,
+          variables: {
+            userName: live?.publicCompanyName || 'Operação',
+            message: 'A partilha de localização em tempo real foi activada para esta rota.',
+            routeLabel: live?.publicCompanyName ? `${live.publicCompanyName} · ${decoded}` : decoded,
+            ctaUrl: trackUrl,
+            ctaLabel: 'Ver mapa público',
+          },
+        });
+      }
     }
 
     watchRef.current = navigator.geolocation.watchPosition(
@@ -231,6 +274,22 @@ const ZaptroDriverRoute: React.FC = () => {
     setStatus('issue');
     persistStatus('issue', { issueReportedAt: new Date().toISOString() });
     pushAutomation(DRIVER_AUTOMATION_EVENTS.ISSUE_REPORTED, 'Problema na entrega — estado actualizado para o cliente e para a equipa.');
+    const live = readRouteLive(decoded);
+    const to = live?.opsNotifyEmail?.trim() ?? '';
+    if (to && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+      const trackUrl = `${window.location.origin}${zaptroPublicTrackPath(decoded)}`;
+      fireTransactionalEmailNonBlocking(supabaseZaptro, {
+        kind: 'delivery_status',
+        to,
+        variables: {
+          userName: live?.publicCompanyName || 'Operação',
+          status: 'Problema reportado',
+          message: 'O motorista reportou um problema nesta entrega.',
+          ctaUrl: trackUrl,
+          ctaLabel: 'Ver rastreio',
+        },
+      });
+    }
   };
 
   const btn = (active: boolean): React.CSSProperties => ({

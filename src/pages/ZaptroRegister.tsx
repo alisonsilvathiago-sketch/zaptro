@@ -14,6 +14,7 @@ import { ZAPTRO_HERO_SPLIT_PANEL_CLASS, zaptroHeroSplitPanelCss } from '../utils
 import ZaptroHeroParticleCanvas from '../components/Zaptro/ZaptroHeroParticleCanvas';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { getZaptroPostLoginLandingUrl } from '../utils/domains';
+import { fireTransactionalEmailNonBlocking } from '../lib/fireTransactionalEmail';
 
 export const ZapRay = ({ size = 24, color = "#D9FF00", style = {} }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
@@ -116,6 +117,30 @@ const ZaptroRegister: React.FC = () => {
       // 4. Sucesso!
       setCompleted(true);
       notifyZaptro('success', 'ATIVADO COM SUCESSO', 'Conectando ao núcleo master...');
+
+      if (authData.session) {
+        const landing = getZaptroPostLoginLandingUrl({ welcome: 'true' });
+        fireTransactionalEmailNonBlocking(supabaseZaptro, {
+          kind: 'welcome',
+          to: formData.email.trim().toLowerCase(),
+          companyId: companyData.id,
+          variables: {
+            userName: fullName || 'Administrador',
+            ctaUrl: landing,
+            ctaLabel: 'Abrir painel Zaptro',
+          },
+        });
+        fireTransactionalEmailNonBlocking(supabaseZaptro, {
+          kind: 'account_confirmation',
+          to: formData.email.trim().toLowerCase(),
+          companyId: companyData.id,
+          variables: {
+            userName: fullName || 'Administrador',
+            ctaUrl: landing,
+            ctaLabel: 'Confirmar e continuar',
+          },
+        });
+      }
 
       // If email confirmation is enabled, redirect to login.
       if (!authData.session) {

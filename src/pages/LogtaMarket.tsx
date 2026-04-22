@@ -14,6 +14,7 @@ import type { MasterCatalogProduct, MasterProductType } from '../types/index';
 
 import { getContext } from '../utils/domains';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
+import { fireTransactionalEmailNonBlocking } from '../lib/fireTransactionalEmail';
 
 const LogtaMarket: React.FC = () => {
   const context = getContext();
@@ -88,6 +89,21 @@ const LogtaMarket: React.FC = () => {
       }
 
       toastSuccess(`Sua compra de "${selectedProduct.name}" foi concluída!`);
+
+      const { data: sess } = await supabase.auth.getSession();
+      const to = sess.session?.user?.email?.trim().toLowerCase();
+      if (to && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+        fireTransactionalEmailNonBlocking(supabase, {
+          kind: 'payment_approved',
+          to,
+          companyId: company.id,
+          variables: {
+            userName: company.name || 'Cliente',
+            detail: `Compra aprovada: ${selectedProduct.name}`,
+          },
+        });
+      }
+
       setIsCheckoutOpen(false);
       fetchData();
     } catch (err) {

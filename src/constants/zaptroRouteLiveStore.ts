@@ -44,6 +44,8 @@ export type RouteLiveBucket = {
   /** Contadores locais até integração com backend. */
   driverStatsDeliveries?: number;
   driverStatsRoutes?: number;
+  /** E-mail da operação para avisos de estado da rota (definido ao criar a rota). */
+  opsNotifyEmail?: string | null;
 };
 
 function normToken(token: string) {

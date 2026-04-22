@@ -24,7 +24,13 @@ export default defineConfig({
         target: 'https://kgktwaziasxgeseucsoy.supabase.co',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/supabase-api/, ''),
-      }
+      },
+      /** API SendGrid (`server/`) — `VITE_ZAPTRO_MAIL_API_URL=/zaptro-mail-api` */
+      '/zaptro-mail-api': {
+        target: 'http://127.0.0.1:8787',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/zaptro-mail-api/, ''),
+      },
     }
   },
   build: {

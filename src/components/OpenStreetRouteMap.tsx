@@ -179,12 +179,15 @@ export type OpenStreetRouteMapProps = {
   /** Coordenadas iniciais. */
   initialOrigin?: LatLng;
   initialDest?: LatLng;
+  /** Callback ao clicar num veículo. */
+  onVehicleClick?: (id: string) => void;
   /** Frota de veículos para mostrar no mapa. */
   vehicles?: Array<{
     id: string;
     lat: number;
     lng: number;
     label: string;
+    driverName?: string;
     status: 'moving' | 'stopped';
     type?: 'truck' | 'van' | 'car';
   }>;
@@ -201,7 +204,8 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
   driverPos,
   initialOrigin,
   initialDest,
-  vehicles = []
+  vehicles = [],
+  onVehicleClick
 }) => {
   const navigate = useNavigate();
   const [origin, setOrigin] = useState<LatLng | null>(initialOrigin || null);
@@ -355,229 +359,195 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
       }}
     >
       <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 10,
-          alignItems: 'center',
-          padding: '14px 16px',
-          borderRadius: 16,
-          border: '1px solid rgba(15, 23, 42, 0.08)',
-          background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.85) 100%)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginRight: 4 }}>Colocar no mapa:</span>
-        <button
-          type="button"
-          onClick={() => setTool('origin')}
-          style={btnStyle(tool === 'origin')}
-        >
-          Origem
-        </button>
-        <button
-          type="button"
-          onClick={() => setTool('dest')}
-          style={btnStyle(tool === 'dest')}
-        >
-          Destino
-        </button>
-        <button
-          type="button"
-          onClick={() => setTool('pin')}
-          style={btnStyle(tool === 'pin')}
-        >
-          + Marcador
-        </button>
-        <button
-          type="button"
-          onClick={() => void runRoute()}
-          disabled={loading || !origin || !dest}
-          style={{
-            ...btnStyle(false, true),
-            opacity: loading || !origin || !dest ? 0.45 : 1,
-            cursor: loading || !origin || !dest ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {loading ? 'A calcular…' : 'Traçar rota (OSRM)'}
-        </button>
-        <button type="button" onClick={resetAll} style={btnStyle(false, false, true)}>
-          Limpar
-        </button>
-        {tool && (
-          <span style={{ fontSize: 12, color: '#000000', fontWeight: 700 }}>
-            {tool === 'origin' && 'No mapa abaixo: clique onde fica a origem (disco preto).'}
-            {tool === 'dest' && 'No mapa abaixo: clique onde fica o destino (disco branco).'}
-            {tool === 'pin' && 'No mapa abaixo: cada clique adiciona um marcador numerado (1, 2, 3…).'}
-          </span>
-        )}
-      </div>
-
-      <div
-        role="note"
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: '#475569',
-          lineHeight: 1.55,
-          padding: '10px 14px',
-          borderRadius: 14,
-          border: '1px solid rgba(15, 23, 42, 0.08)',
-          background: '#fff',
-        }}
-      >
-        <strong style={{ color: '#0f172a' }}>Onde ficam os marcadores:</strong> no <strong>mapa</strong> (área rectangular logo abaixo), no sítio exato do teu clique — não na barra de ferramentas. Fluxo: <strong>Origem</strong> (disco preto) → <strong>Destino</strong> (disco branco) → opcional <strong>+ Marcador</strong> (1, 2, 3…) → <strong>Traçar rota</strong>.
-      </div>
-
-      {error && (
-        <div
-          style={{
-            padding: '10px 14px',
-            borderRadius: 12,
-            background: '#fef2f2',
-            color: '#991b1b',
-            fontSize: 13,
-            fontWeight: 600,
-            border: '1px solid #fecaca',
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      {route && (
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#000000', display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-          <span>
-            Distância: <strong>{(route.distanceM / 1000).toFixed(1)} km</strong>
-          </span>
-          <span>
-            Tempo estimado (carro): <strong>{Math.round(route.durationS / 60)} min</strong>
-          </span>
-        </div>
-      )}
-
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-          padding: '14px 16px',
-          borderRadius: 16,
-          border: '1px solid rgba(15, 23, 42, 0.08)',
-          background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.85) 100%)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <Truck size={18} color="#0f172a" strokeWidth={2.2} aria-hidden />
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#0f172a', letterSpacing: '0.04em' }}>MOTORISTA E ENTREGA</span>
-        </div>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 600, color: '#64748b' }}>
-          Quem faz a entrega
-          <select
-            value={selectedDriverId}
-            onChange={(e) => setSelectedDriverId(e.target.value)}
-            style={{
-              padding: '10px 12px',
-              borderRadius: 12,
-              border: '1px solid #cbd5e1',
-              background: '#fff',
-              fontWeight: 700,
-              fontSize: 13,
-              color: '#0f172a',
-              fontFamily: 'inherit',
-              cursor: 'pointer',
-              maxWidth: '100%',
-            }}
-          >
-            <option value="">— Escolher motorista —</option>
-            {selectableDrivers.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} · {d.vehicle}
-              </option>
-            ))}
-          </select>
-        </label>
-        <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#475569', lineHeight: 1.5 }}>
-          Com a rota traçada, envia o destino e o percurso ao motorista por WhatsApp (mensagem com link Google Maps) ou abre a página{' '}
-          <strong style={{ color: '#0f172a' }}>Rotas</strong> para registar a operação na frota.
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-          <button
-            type="button"
-            onClick={openWhatsAppToDriver}
-            disabled={!canForwardRoute}
-            style={{
-              ...btnStyle(false, true),
-              opacity: canForwardRoute ? 1 : 0.45,
-              cursor: canForwardRoute ? 'pointer' : 'not-allowed',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-            }}
-          >
-            <Send size={15} strokeWidth={2.2} aria-hidden />
-            Encaminhar rota (WhatsApp)
-          </button>
-          <button type="button" onClick={goToRoutesPage} style={{ ...btnStyle(false), display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            Abrir página Rotas
-          </button>
-        </div>
-      </div>
-
-      <div
         className="zaptro-dashboard-map-bw"
         style={{
           height,
           width: '100%',
-          borderRadius: 20,
+          borderRadius: 24,
           overflow: 'hidden',
-          border: '1px solid rgba(15, 23, 42, 0.1)',
-          boxShadow: '0 12px 40px rgba(15, 23, 42, 0.08)',
+          position: 'relative',
+          border: '1px solid rgba(0,0,0,0.05)',
         }}
       >
-        <MapContainer center={BRAZIL_CENTER} zoom={BRAZIL_ZOOM} style={{ height: '100%', width: '100%' }} scrollWheelZoom>
+        <style>{`
+          .zaptro-grayscale-map .leaflet-tile-container {
+            filter: grayscale(100%) brightness(0.9) contrast(1.1);
+          }
+          .leaflet-popup-content-wrapper {
+            border-radius: 16px !important;
+            padding: 4px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+          }
+          .leaflet-popup-tip {
+            display: none !important;
+          }
+          @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        `}</style>
+
+        {/* Floating Tools Overlay - Glassmorphism */}
+        {mode === 'planning' && (
+          <div style={{
+            position: 'absolute',
+            top: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+            width: 'calc(100% - 40px)',
+            maxWidth: 800,
+          }}>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.85)',
+              backdropFilter: 'blur(12px)',
+              padding: '12px 16px',
+              borderRadius: 20,
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button type="button" onClick={() => setTool('origin')} style={overlayBtnStyle(tool === 'origin')}>Origem</button>
+                <button type="button" onClick={() => setTool('dest')} style={overlayBtnStyle(tool === 'dest')}>Destino</button>
+                <button type="button" onClick={() => setTool('pin')} style={overlayBtnStyle(tool === 'pin')}>+ Ponto</button>
+              </div>
+
+              <div style={{ width: 1, height: 24, background: 'rgba(0,0,0,0.1)' }} />
+
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', flex: 1, minWidth: 200 }}>
+                <select
+                  value={selectedDriverId}
+                  onChange={(e) => setSelectedDriverId(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    borderRadius: 12,
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    background: 'transparent',
+                    fontWeight: 700,
+                    fontSize: 12,
+                    color: '#000',
+                    outline: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <option value="">Motorista...</option>
+                  {selectableDrivers.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => void runRoute()}
+                  disabled={loading || !origin || !dest}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: 12,
+                    border: 'none',
+                    background: '#000',
+                    color: '#D9FF00',
+                    fontWeight: 800,
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    opacity: loading || !origin || !dest ? 0.5 : 1,
+                  }}
+                >
+                  {loading ? 'A calcular...' : 'Gerar Rota'}
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={resetAll} style={{ ...overlayBtnStyle(false), color: '#ef4444' }}>Limpar</button>
+                {canForwardRoute && (
+                  <button onClick={openWhatsAppToDriver} style={{ ...overlayBtnStyle(false), background: '#10b981', color: '#fff', border: 'none' }}>
+                    <Send size={14} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Instruction Tooltip */}
+            {tool && (
+              <div style={{
+                alignSelf: 'center',
+                background: '#000',
+                color: '#D9FF00',
+                padding: '6px 14px',
+                borderRadius: 10,
+                fontSize: 11,
+                fontWeight: 800,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                animation: 'fadeInUp 0.2s ease-out'
+              }}>
+                {tool === 'origin' && 'Clique no mapa para definir a ORIGEM'}
+                {tool === 'dest' && 'Clique no mapa para definir o DESTINO'}
+                {tool === 'pin' && 'Clique para adicionar marcadores numerados'}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Floating Stats Badge */}
+        <div style={{
+          position: 'absolute',
+          top: mode === 'planning' ? 100 : 20,
+          left: 20,
+          zIndex: 1000,
+          backgroundColor: '#fff',
+          color: '#000',
+          padding: '10px 18px',
+          borderRadius: 18,
+          border: '1px solid rgba(0,0,0,0.08)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#D9FF00', boxShadow: '0 0 8px #D9FF00' }} />
+          <span style={{ fontSize: 11, fontWeight: 900, color: '#64748B', letterSpacing: '0.05em' }}>ROTAS DE HOJE</span>
+          <span style={{ fontSize: 14, fontWeight: 900, color: '#000' }}>{vehicles.length}</span>
+        </div>
+
+        <MapContainer 
+          center={BRAZIL_CENTER} 
+          zoom={BRAZIL_ZOOM} 
+          className="zaptro-grayscale-map"
+          style={{ height: '100%', width: '100%' }} 
+          scrollWheelZoom
+          zoomControl={false}
+        >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MapClickBridge tool={tool} onPick={handlePick} />
           <CustomMapControls fitPositions={fitPositions} />
-          {fitPositions.length >= 2 && <FitBounds positions={fitPositions} />}
+          <FitBounds positions={fitPositions} />
 
-          {mode === 'planning' && origin && (
+          {origin && (
             <Marker position={[origin.lat, origin.lng]} icon={originIcon}>
-              <Popup>
-                <strong>Origem</strong>
-                <br />
-                {origin.lat.toFixed(5)}, {origin.lng.toFixed(5)}
-              </Popup>
+              <Popup><strong>Origem</strong></Popup>
             </Marker>
           )}
-          {mode === 'planning' && dest && (
+          {dest && (
             <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
-              <Popup>
-                <strong>Destino</strong>
-                <br />
-                {dest.lat.toFixed(5)}, {dest.lng.toFixed(5)}
-              </Popup>
+              <Popup><strong>Destino</strong></Popup>
             </Marker>
           )}
           
           {mode === 'tracking' && driverPos && (
             <Marker position={[driverPos.lat, driverPos.lng]} icon={ZAPTRO_MAP_DRIVER_ICON}>
-              <Popup>
-                <strong>Motorista em Tempo Real</strong>
-                <br />
-                Localização atual: {driverPos.lat.toFixed(5)}, {driverPos.lng.toFixed(5)}
-              </Popup>
-            </Marker>
-          )}
-          {mode === 'tracking' && dest && (
-            <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
-              <Popup>
-                <strong>Ponto de Entrega</strong>
-              </Popup>
+              <Popup><strong>Posição Atual</strong></Popup>
             </Marker>
           )}
 
@@ -587,31 +557,43 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
               key={v.id} 
               position={[v.lat, v.lng]} 
               icon={ZAPTRO_MAP_VEHICLE_ICON(v.type || 'truck', v.status)}
+              eventHandlers={{
+                click: () => {
+                  if (onVehicleClick) onVehicleClick(v.id);
+                }
+              }}
             >
               <Popup>
-                <div style={{ padding: '4px' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#94A3B8', marginBottom: '4px', textTransform: 'uppercase' }}>
-                    VEÍCULO EM OPERAÇÃO
+                <div style={{ padding: '4px', minWidth: 160 }}>
+                  <div style={{ fontSize: '9px', fontWeight: 800, color: '#94A3B8', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    MONITORAMENTO ZAPTRO
                   </div>
-                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#000' }}>
+                  <div style={{ fontSize: '15px', fontWeight: 900, color: '#000', marginBottom: 2 }}>
+                    {v.driverName || 'Motorista'}
+                  </div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B' }}>
                     {v.label}
                   </div>
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '6px', 
-                    marginTop: '8px',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    color: v.status === 'moving' ? '#10B981' : '#64748B'
+                    marginTop: '10px',
+                    fontSize: '10px',
+                    fontWeight: 900,
+                    color: v.status === 'moving' ? '#10B981' : '#64748B',
+                    padding: '6px 10px',
+                    background: v.status === 'moving' ? '#ecfdf5' : '#f1f5f9',
+                    borderRadius: 8
                   }}>
                     <div style={{ 
                       width: '6px', 
                       height: '6px', 
                       borderRadius: '50%', 
-                      backgroundColor: v.status === 'moving' ? '#10B981' : '#64748B' 
+                      backgroundColor: v.status === 'moving' ? '#10B981' : '#64748B',
+                      animation: v.status === 'moving' ? 'pulse 2s infinite' : 'none'
                     }} />
-                    {v.status === 'moving' ? 'EM MOVIMENTO' : 'PARADO / ESTACIONADO'}
+                    {v.status === 'moving' ? 'EM MOVIMENTO' : 'PARADO'}
                   </div>
                 </div>
               </Popup>
@@ -620,39 +602,33 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
 
           {freePins.map((p) => (
             <Marker key={p.id} position={[p.lat, p.lng]} icon={freeIcon(p.n)}>
-              <Popup>
-                Marcador {p.n}
-                <br />
-                {p.lat.toFixed(5)}, {p.lng.toFixed(5)}
-              </Popup>
+              <Popup>Marcador {p.n}</Popup>
             </Marker>
           ))}
+
           {route && (
             <>
-              {/* SHADOW LINE */}
               <Polyline
                 positions={route.positions}
                 color={ZAPTRO_MAP_ROUTE_COLORS.shadow}
-                weight={12}
-                opacity={0.1}
+                weight={10}
+                opacity={0.15}
                 lineCap="round"
                 lineJoin="round"
               />
-              {/* MAIN BLACK LINE (TRACKING / PATH) */}
               <Polyline
                 positions={route.positions}
                 color={ZAPTRO_MAP_ROUTE_COLORS.main}
-                weight={6}
+                weight={5}
                 opacity={1}
                 lineCap="round"
                 lineJoin="round"
               />
-              {/* ACCENT LIME LINE */}
               <Polyline
                 positions={route.positions}
                 color={ZAPTRO_MAP_ROUTE_COLORS.accent}
-                weight={3}
-                opacity={0.7}
+                weight={2}
+                opacity={0.8}
                 lineCap="round"
                 lineJoin="round"
               />
@@ -661,52 +637,28 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
         </MapContainer>
       </div>
 
-      <p style={{ margin: 0, fontSize: 11, color: '#64748b', lineHeight: 1.5 }}>
-        Rotas calculadas pelo serviço público{' '}
-        <a href="https://project-osrm.org/" target="_blank" rel="noreferrer">
-          OSRM
-        </a>{' '}
-        (uso demonstrativo; para produção aloje o teu próprio servidor ou contrata um plano). Mapas © OpenStreetMap.
-      </p>
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };
 
-function btnStyle(active: boolean, primary?: boolean, danger?: boolean): React.CSSProperties {
-  if (danger) {
-    return {
-      padding: '8px 14px',
-      borderRadius: 12,
-      border: '1px solid #fecaca',
-      background: '#fff',
-      fontWeight: 600,
-      fontSize: 12,
-      cursor: 'pointer',
-      color: '#b91c1c',
-    };
-  }
-  if (primary) {
-    return {
-      padding: '8px 14px',
-      borderRadius: 12,
-      border: 'none',
-      background: '#D9FF00',
-      color: '#000000',
-      fontWeight: 600,
-      fontSize: 12,
-      cursor: 'pointer',
-      opacity: active ? 0.88 : 1,
-    };
-  }
+
+function overlayBtnStyle(active: boolean): React.CSSProperties {
   return {
     padding: '8px 14px',
     borderRadius: 12,
-    border: active ? '2px solid #D9FF00' : '1px solid #cbd5e1',
-    background: active ? '#000' : '#fff',
-    fontWeight: 600,
+    border: '1px solid rgba(0,0,0,0.1)',
+    background: active ? '#000' : 'transparent',
+    color: active ? '#D9FF00' : '#000',
+    fontWeight: 700,
     fontSize: 12,
     cursor: 'pointer',
-    color: active ? '#D9FF00' : '#000000',
+    transition: 'all 0.2s',
   };
 }
 

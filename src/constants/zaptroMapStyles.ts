@@ -66,19 +66,19 @@ export const ZAPTRO_MAP_DRIVER_ICON = L.divIcon({
 
 export const ZAPTRO_MAP_VEHICLE_ICON = (type: 'truck' | 'van' | 'car' = 'truck', status: 'moving' | 'stopped' = 'moving') => {
   const color = status === 'moving' ? '#D9FF00' : '#FFF';
-  const shadow = status === 'moving' ? 'rgba(217, 255, 0, 0.4)' : 'rgba(0,0,0,0.2)';
+  const shadow = status === 'moving' ? 'rgba(217, 255, 0, 0.6)' : 'rgba(0,0,0,0.2)';
   
   return L.divIcon({
     className: 'zaptro-vehicle-marker',
     html: `
-      <div style="filter: drop-shadow(0 4px 10px ${shadow}); transform: scale(1.1); transition: all 0.3s ease;">
+      <div style="filter: drop-shadow(0 4px 12px ${shadow}); transform: scale(1.1); transition: all 0.3s ease;">
         <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <rect x="25" y="15" width="50" height="60" rx="8" fill="#000" />
-          <rect x="30" y="20" width="40" height="15" rx="2" fill="${color}" />
+          <rect x="30" y="20" width="40" height="22" rx="4" fill="${color}" />
           <rect x="25" y="70" width="50" height="10" rx="4" fill="#000" />
           <circle cx="35" cy="80" r="6" fill="#111" />
           <circle cx="65" cy="80" r="6" fill="#111" />
-          <path d="M35 22 L65 22 L62 30 L38 30 Z" fill="rgba(255,255,255,0.2)" />
+          <path d="M35 22 L65 22 L62 32 L38 32 Z" fill="rgba(255,255,255,0.25)" />
         </svg>
       </div>
     `,

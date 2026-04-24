@@ -79,30 +79,24 @@ const ZaptroHomeInicio: React.FC = () => {
 
   
   return (
-    <ZaptroLayout hideTopbar>
+    <ZaptroLayout hideTopbar contentFullWidth>
       <div
         style={{
           boxSizing: 'border-box',
           width: '100%',
           borderRadius: 27,
           overflow: 'hidden',
-          backgroundColor: 'var(--z-p)',
-          backgroundImage: 'linear-gradient(0deg, #000000 5%, #D9FF00 50%, #FFFFFF 95%)',
-          /**
-           * Preenche a viewport menos o padding vertical da área rolável do layout (`24px` + `32px`).
-           * O valor antigo `100dvh - 88px` deixava ~`88px` em falta com `hideTopbar`, criando faixa cinza em baixo.
-           */
+          backgroundColor: '#000',
+          backgroundImage: 'radial-gradient(circle at 50% 120%, rgba(217, 255, 0, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
           minHeight: 'calc(100dvh - 56px)',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           alignItems: 'center',
-          paddingTop: 0,
-          paddingBottom: 0,
-          paddingLeft: 40,
-          paddingRight: 40,
+          padding: '0 24px',
+          position: 'relative',
         }}
       >
+        {/* Header Toolbar */}
         <div
           style={{
             width: '100%',
@@ -110,10 +104,8 @@ const ZaptroHomeInicio: React.FC = () => {
             display: 'flex',
             justifyContent: 'flex-end',
             alignItems: 'center',
-            gap: 20,
-            flexWrap: 'wrap',
-            marginTop: 10,
-            marginBottom: 16,
+            gap: 16,
+            marginTop: 12,
           }}
         >
           <button
@@ -193,56 +185,137 @@ const ZaptroHomeInicio: React.FC = () => {
               <div
                 style={{
                   position: 'absolute',
-                  top: 'calc(100% + 10px)',
+                  top: 'calc(100% + 14px)',
                   right: 0,
-                  width: 300,
-                  borderRadius: 25,
-                  boxShadow: ZAPTRO_SHADOW.lg,
-                  padding: 25,
+                  width: 340,
+                  borderRadius: 28,
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                  padding: 24,
                   zIndex: 50,
                   backgroundColor: palette.hubPopupBg,
                   border: `1px solid ${palette.searchBorder}`,
                   boxSizing: 'border-box',
+                  animation: 'zaptro-hub-pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 }}
               >
-                <div style={{ display: 'flex', gap: 15, marginBottom: 20 }}>
-                  <ShieldCheck size={20} color="#10B981" />
+                <style>{`
+                  @keyframes zaptro-hub-pop-in {
+                    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
+                  }
+                `}</style>
+                
+                {/* Header Section */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+                  <div style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 16,
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <ShieldCheck size={24} color="#10B981" />
+                  </div>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: palette.text }}>Nível de Proteção Ativo</h4>
-                    <p style={{ margin: '4px 0 0 0', fontSize: 13, color: '#94A3B8', fontWeight: 600 }}>Criptografia ponta-a-ponta ativada.</p>
+                    <h4 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: palette.text, letterSpacing: '-0.02em' }}>
+                      Ambiente Seguro
+                    </h4>
+                    <p style={{ margin: '2px 0 0 0', fontSize: 12, color: palette.textMuted, fontWeight: 500 }}>
+                      Criptografia de nível militar ativa
+                    </p>
                   </div>
                 </div>
-                <div
-                  style={{
-                    borderTop: `1px solid ${palette.searchBorder}`,
-                    paddingTop: 20,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 10,
-                  }}
-                >
+
+                {/* Quick Info Grid */}
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: 12, 
+                  marginBottom: 24 
+                }}>
+                  <div style={{
+                    padding: '12px 16px',
+                    borderRadius: 18,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                    border: `1px solid ${palette.searchBorder}`,
+                  }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: palette.textMuted, marginBottom: 4, textTransform: 'uppercase' }}>Latência</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: '#10B981' }}>24ms</div>
+                  </div>
+                  <div style={{
+                    padding: '12px 16px',
+                    borderRadius: 18,
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                    border: `1px solid ${palette.searchBorder}`,
+                  }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: palette.textMuted, marginBottom: 4, textTransform: 'uppercase' }}>Uptime</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: palette.text }}>99.9%</div>
+                  </div>
+                </div>
+
+                {/* Action List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <button
                     type="button"
-                    onClick={() => notifyZaptro('info', 'Suporte', 'Use o menu lateral ou o email de suporte da sua conta.')}
+                    onClick={() => notifyZaptro('info', 'Suporte', 'Use o menu lateral ou o email de suporte.')}
                     style={{
-                      padding: 12,
-                      background: isDark ? palette.searchBg : ZAPTRO_FIELD_BG,
-                      border: 'none',
-                      borderRadius: 12,
+                      padding: '14px 16px',
+                      background: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
+                      border: `1px solid ${palette.searchBorder}`,
+                      borderRadius: 16,
                       fontWeight: 700,
                       cursor: 'pointer',
                       color: palette.text,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 8,
-                      justifyContent: 'center',
+                      gap: 12,
                       fontFamily: 'inherit',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = isDark ? 'rgba(255,255,255,0.1)' : '#f8fafc';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = isDark ? 'rgba(255,255,255,0.05)' : '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
-                    <HelpCircle size={16} /> Suporte
+                    <HelpCircle size={18} /> 
+                    <span style={{ flex: 1 }}>Central de Suporte</span>
+                    <ArrowRight size={14} opacity={0.5} />
                   </button>
-                  <button type="button" style={{ padding: 12, background: 'transparent', border: 'none', color: '#EF4444', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', fontFamily: 'inherit' }} onClick={handleSignOutFromHub}>
-                    <LogOut size={16} /> Sair
+
+                  <button 
+                    type="button" 
+                    onClick={handleSignOutFromHub}
+                    style={{ 
+                      padding: '14px 16px', 
+                      background: 'rgba(239, 68, 68, 0.08)', 
+                      border: '1px solid rgba(239, 68, 68, 0.1)', 
+                      borderRadius: 16, 
+                      color: '#EF4444', 
+                      fontWeight: 800, 
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 12, 
+                      fontFamily: 'inherit',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.12)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <LogOut size={18} /> 
+                    <span>Encerrar Sessão</span>
                   </button>
                 </div>
               </div>
@@ -329,27 +402,24 @@ const ZaptroHomeInicio: React.FC = () => {
           <div
             style={{
               width: '100%',
-              maxWidth: 664,
+              maxWidth: 1400,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               boxSizing: 'border-box',
+              flex: 1,
+              justifyContent: 'center',
             }}
           >
             <div
               style={{
                 width: '100%',
-                height: 266,
-                marginBottom: 20,
-                paddingTop: 'clamp(28px, 4vw, 48px)',
-                paddingBottom: 0,
-                paddingLeft: 'clamp(20px, 3vw, 32px)',
-                paddingRight: 'clamp(20px, 3vw, 32px)',
+                marginBottom: 48,
+                paddingTop: 'clamp(20px, 4vw, 40px)',
                 boxSizing: 'border-box',
                 borderRadius: 24,
                 minHeight: 0,
-                background: 'unset',
-                backgroundColor: 'unset',
+                background: 'transparent',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -402,15 +472,12 @@ const ZaptroHomeInicio: React.FC = () => {
               <h2
                 style={{
                   margin: '0 0 16px',
-                  width: 837,
-                  maxWidth: 762,
-                  height: 132,
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                  fontSize: 76,
+                  width: '100%',
+                  maxWidth: 880,
+                  fontSize: 'clamp(48px, 9vw, 92px)',
                   fontWeight: 900,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 0.9,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 0.95,
                   color: '#000000',
                 }}
               >
@@ -418,18 +485,14 @@ const ZaptroHomeInicio: React.FC = () => {
               </h2>
               <p
                 style={{
-                  margin: '9px 0',
-                  width: 755,
-                  maxWidth: 843,
-                  height: 57,
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  fontSize: 20,
+                  margin: '16px 0 0',
+                  width: '100%',
+                  maxWidth: 640,
+                  fontSize: 'clamp(17px, 2.2vw, 22px)',
                   fontWeight: 400,
-                  lineHeight: 1.5,
+                  lineHeight: 1.4,
                   color: '#000000',
-                  background: 'unset',
-                  backgroundColor: 'unset',
+                  opacity: 0.85,
                 }}
               >
                 Tudo cruzado num só lugar, pergunta que eu te guio.

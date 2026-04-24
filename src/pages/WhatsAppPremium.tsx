@@ -1436,9 +1436,9 @@ const WhatsAppPremiumContent: React.FC = () => {
     const label = (displayName[0] || 'C').toUpperCase();
     const url = chat.customer_avatar?.trim();
 
-    const size = variant === 'list' ? 52 : (variant === 'header' ? 48 : 80);
-    const borderRadius = variant === 'list' ? 18 : (variant === 'header' ? 16 : 24);
-    const badgeSize = variant === 'header' ? 20 : 22;
+    const size = variant === 'list' ? 52 : (variant === 'header' ? 48 : 120);
+    const borderRadius = variant === 'list' ? 18 : (variant === 'header' ? 16 : 32);
+    const badgeSize = variant === 'panel' ? 36 : (variant === 'header' ? 20 : 22);
 
     return (
       <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
@@ -1461,21 +1461,21 @@ const WhatsAppPremiumContent: React.FC = () => {
           )}
         </div>
 
-        {agentPhoto && variant !== 'panel' && (
+        {chat.assigned_to && (
           <div 
             onClick={(e) => {
               e.stopPropagation();
               navigate(zaptroTeamMemberProfilePath(chat.assigned_to!));
             }}
-            title={`Responsável: ${m?.full_name}`}
+            title={`Responsável: ${m?.full_name || 'Agente'}`}
             style={{ 
               position: 'absolute', 
-              top: -4, 
-              left: -4, 
-              width: badgeSize, 
-              height: badgeSize, 
+              top: -6, 
+              left: -6, 
+              width: badgeSize + 4, 
+              height: badgeSize + 4, 
               borderRadius: '50%', 
-              border: `2px solid ${palette.sidebarBg}`,
+              border: `2.5px solid ${palette.sidebarBg}`,
               backgroundColor: '#000',
               overflow: 'hidden',
               display: 'flex',
@@ -1483,13 +1483,17 @@ const WhatsAppPremiumContent: React.FC = () => {
               justifyContent: 'center',
               zIndex: 10,
               cursor: 'pointer',
-              boxShadow: '0 3px 6px rgba(0,0,0,0.4)',
+              boxShadow: '0 3px 8px rgba(0,0,0,0.5)',
               transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
             }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.25)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            <img src={agentPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {agentPhoto ? (
+              <img src={agentPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <User size={badgeSize - 4} color={LIME} />
+            )}
           </div>
         )}
       </div>
@@ -1497,50 +1501,6 @@ const WhatsAppPremiumContent: React.FC = () => {
   };
   
   const old_renderAvatar_placeholder = () => {};
-  /*
-    const label = (getDisplayName(chat)[0] || 'C').toUpperCase();
-    const url = chat.customer_avatar?.trim();
-    const box =
-      variant === 'list'
-        ? { width: 52, height: 52, borderRadius: 18, flexShrink: 0 as const, boxSizing: 'border-box' as const }
-        : variant === 'header'
-          ? { width: 48, height: 48, borderRadius: 16, flexShrink: 0 as const, boxSizing: 'border-box' as const }
-          : {
-              width: 72,
-              height: 72,
-              borderRadius: 22,
-              margin: '0 auto' as const,
-              flexShrink: 0 as const,
-              boxSizing: 'border-box' as const,
-            };
-    if (url) {
-      return (
-        <div style={{ ...box, overflow: 'hidden', border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : '#e4e4e7'}`, backgroundColor: '#0f172a' }}>
-          <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        </div>
-      );
-    }
-    const fontSize = variant === 'panel' ? 28 : variant === 'header' ? 18 : 17;
-    return (
-      <div
-        style={{
-          ...box,
-          backgroundColor: '#000',
-          color: '#D9FF00',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontWeight: 700,
-          fontSize,
-          border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.2)' : 'transparent'}`,
-          boxSizing: 'border-box',
-        }}
-      >
-        {label}
-      </div>
-    );
-  };
-
   const cargoPhaseFor = (chatId: string): CargoPhase => cargoPhaseByChat[chatId] ?? 'transito';
 
   const setCargoPhaseForChat = (chatId: string, phase: CargoPhase) => {
@@ -2348,9 +2308,11 @@ const WhatsAppPremiumContent: React.FC = () => {
             })
           )}
         </div>
-      </div>
+        {/* end sidebar chatList */}
+        </div>
+        {/* end sidebar */}
 
-              <div style={styles.centerColumn}>
+        <div style={styles.centerColumn}>
         {selectedChat ? (
           <div
             style={{
@@ -2379,7 +2341,8 @@ const WhatsAppPremiumContent: React.FC = () => {
                       <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' }} />
                       <span style={styles.onlinePill}>online agora</span>
                     </div>
-              </div>
+                  </div>
+                </div>
 
             {searchInsideOpen ? (
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '0 20px' }}>
@@ -2458,14 +2421,36 @@ const WhatsAppPremiumContent: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <button
                   type="button"
-                  style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
+                  style={{ 
+                    width: 42, 
+                    height: 42, 
+                    borderRadius: 14, 
+                    border: `1px solid ${border}`, 
+                    background: 'transparent', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    cursor: 'pointer', 
+                    color: palette.text 
+                  }}
                   onClick={() => setCallActionModal('voice')}
                 >
                   <Phone size={18} />
                 </button>
                 <button
                   type="button"
-                  style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
+                  style={{ 
+                    width: 42, 
+                    height: 42, 
+                    borderRadius: 14, 
+                    border: `1px solid ${border}`, 
+                    background: 'transparent', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    cursor: 'pointer', 
+                    color: palette.text 
+                  }}
                   onClick={() => setCallActionModal('video')}
                 >
                   <Video size={18} />
@@ -2473,7 +2458,18 @@ const WhatsAppPremiumContent: React.FC = () => {
                 <div style={{ position: 'relative' }} ref={headerMenuRef}>
                   <button
                     type="button"
-                    style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
+                    style={{ 
+                      width: 42, 
+                      height: 42, 
+                      borderRadius: 14, 
+                      border: `1px solid ${border}`, 
+                      background: 'transparent', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      cursor: 'pointer', 
+                      color: palette.text 
+                    }}
                     onClick={() => setHeaderMenuOpen((v) => !v)}
                   >
                     <MoreVertical size={18} />
@@ -2630,8 +2626,7 @@ const WhatsAppPremiumContent: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
-
+              </div>
             {/* AI HINT / SUMMARY */}
             <div
               style={{
@@ -3197,11 +3192,12 @@ const WhatsAppPremiumContent: React.FC = () => {
              </div>
              <h2 style={{ fontSize: 28, fontWeight: 700, color: palette.text, letterSpacing: '-0.04em', margin: '0 0 12px 0' }}>Zaptro Premium Chat</h2>
              <p style={{ fontSize: 16, color: palette.textMuted, fontWeight: 700, maxWidth: 400, lineHeight: 1.5 }}>
-               Selecione uma conversa para começar a gerir os atendimentos e a logística em tempo real.
+               Selecione uma conversa para comecar a gerir os atendimentos e a logistica em tempo real.
              </p>
-          </div>
-        )}
-      </div>
+           </div>
+         )}
+        {/* end centerColumn */}
+        </div>
 
       {/* 3. RIGHT PANEL (Contact Info & Logistics) */}
       {showRightPanel && selectedChat && (
@@ -3219,13 +3215,12 @@ const WhatsAppPremiumContent: React.FC = () => {
              >
                <X size={20} />
              </button>
-             <div style={{ width: 120, height: 120, borderRadius: 24, margin: '0 auto 16px', overflow: 'hidden' }}>
-                <img src={selectedChat.customer_avatar || `https://picsum.photos/seed/${selectedChat.id}/120/120`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-             </div>
-             <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: palette.text }}>{getDisplayName(selectedChat)}</h3>
-             <p style={{ margin: '4px 0 0', fontSize: 14, color: palette.textMuted, fontWeight: 600 }}>{selectedChat.customer_phone}</p>
-          </div>
-
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+                {renderAvatar(selectedChat, "panel")}
+              </div>
+              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: palette.text, textAlign: "center" }}>{getDisplayName(selectedChat)}</h3>
+              <p style={{ margin: "4px 0 0", fontSize: 14, color: palette.textMuted, fontWeight: 600, textAlign: "center" }}>{selectedChat.sender_number || selectedChat.sender_name}</p>
+           </div>
           {/* LOGISTICS SECTION */}
           <div style={{ ...styles.rightSection, borderBottom: `1px solid ${border}` }}>
              <h4 style={styles.rightH4}>LOGÍSTICA EM TEMPO REAL</h4>
@@ -3267,9 +3262,17 @@ const WhatsAppPremiumContent: React.FC = () => {
                     backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.05)' : 'rgba(0,0,0,0.02)',
                     border: `1px solid ${palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.1)' : 'rgba(0,0,0,0.04)'}`
                   }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <User size={16} color={LIME} />
-                    </div>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        {(() => {
+                           const m = teamMembers.find(tm => tm.id === selectedChat.assigned_to);
+                           const photo = m ? resolveMemberAvatarUrl(m.avatar_url, m.id) : null;
+                           return photo ? (
+                             <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                           ) : (
+                             <User size={18} color={LIME} />
+                           );
+                        })()}
+                     </div>
                     <div style={{ flex: 1 }}>
                       <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: LIME, textTransform: 'uppercase' }}>Responsável Zaptro</p>
                       <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: palette.text }}>
@@ -3316,7 +3319,8 @@ const WhatsAppPremiumContent: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+      </div>
+      {/* end styles.container (3 columns) */}
     </div>
 
     {/* MODALS */}
@@ -3436,7 +3440,7 @@ const WhatsAppPremiumContent: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+              </div>
         ) : null}
       </>
       {/* CONTEXT MENU */}
@@ -3877,7 +3881,7 @@ const WhatsAppPremiumContent: React.FC = () => {
           ))}
         </div>
       </LogtaModal>
-    </ZaptroLayout>
+          </ZaptroLayout>
   );
 };
 

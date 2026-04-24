@@ -42,7 +42,7 @@ const styles = {
     border: 'none',
     borderRadius: '16px',
     fontSize: '14px',
-    fontWeight: '800',
+    fontWeight: '600',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',

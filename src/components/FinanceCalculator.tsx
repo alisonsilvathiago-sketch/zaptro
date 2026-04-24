@@ -227,10 +227,10 @@ const FinanceCalculator: React.FC = () => {
     calcWrap: { backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '20px', border: '1px solid #E2E8F0' },
     displayArea: { backgroundColor: '#0F172A', color: 'white', padding: '16px', borderRadius: '14px', textAlign: 'right' as const, marginBottom: '16px', minHeight: '80px', display: 'flex', flexDirection: 'column' as const, justifyContent: 'flex-end', gap: '4px' },
     exprLabel: { fontSize: '13px', color: '#94A3B8', fontFamily: 'monospace' },
-    resLabel: { fontSize: '24px', fontWeight: '900', fontFamily: 'monospace' },
+    resLabel: { fontSize: '24px', fontWeight: '700', fontFamily: 'monospace' },
     
     grid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' },
-    btn: { height: '44px', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s', backgroundColor: 'white', color: '#1E293B', border: '1px solid #E2E8F0' },
+    btn: { height: '44px', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s', backgroundColor: 'white', color: '#1E293B', border: '1px solid #E2E8F0' },
     btnOp: { backgroundColor: '#ebebeb', color: 'var(--primary)', border: '1px solid #E2E8F0' },
     btnEq: { gridColumn: 'span 2', backgroundColor: '#10B981', color: 'white', border: 'none' },
     
@@ -239,7 +239,7 @@ const FinanceCalculator: React.FC = () => {
     
     historyWrap: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
     hHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-    hTitle: { fontSize: '14px', fontWeight: '900', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' },
+    hTitle: { fontSize: '14px', fontWeight: '700', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' },
     hList: { display: 'flex', flexDirection: 'column' as const, gap: '10px', maxHeight: '380px', overflowY: 'auto' as const, paddingRight: '4px' },
     hItem: (sel: boolean) => ({ 
       padding: '12px', borderRadius: '14px', backgroundColor: 'white', border: sel ? '2px solid var(--primary)' : '1px solid #E2E8F0',
@@ -250,12 +250,12 @@ const FinanceCalculator: React.FC = () => {
       display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexShrink: 0
     }),
     hContent: { flex: 1 },
-    hH3: { fontSize: '13px', fontWeight: '800', margin: '0 0 2px 0', color: '#1E293B' },
+    hH3: { fontSize: '13px', fontWeight: '600', margin: '0 0 2px 0', color: '#1E293B' },
     hExpr: { fontSize: '11px', color: '#64748B', fontFamily: 'monospace', marginBottom: '4px', display: 'block' },
-    hRes: { fontSize: '14px', fontWeight: '950', color: 'var(--primary)' },
+    hRes: { fontSize: '14px', fontWeight: '700', color: 'var(--primary)' },
     
     shareBox: { backgroundColor: '#F0F9FF', border: '1px solid #BAE6FD', padding: '12px', borderRadius: '16px', marginTop: 'auto' },
-    shareBtn: { width: '100%', padding: '12px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px' },
+    shareBtn: { width: '100%', padding: '12px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px' },
     linkRow: { display: 'flex', gap: '8px', marginTop: '8px' }
   };
 
@@ -307,7 +307,7 @@ const FinanceCalculator: React.FC = () => {
              {history.length > 0 && (
                 <button 
                   onClick={() => saveHistory([])} 
-                  style={{border: 'none', background: 'none', color: '#94A3B8', fontSize: '11px', fontWeight: '800', cursor: 'pointer'}}
+                  style={{border: 'none', background: 'none', color: '#94A3B8', fontSize: '11px', fontWeight: '600', cursor: 'pointer'}}
                 >
                   Limpar Tudo
                 </button>
@@ -360,8 +360,8 @@ const FinanceCalculator: React.FC = () => {
              ) : (
                 <>
                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
-                      <span style={{fontSize: '12px', fontWeight: '900', color: '#0369A1'}}>LINK ATIVO ✅</span>
-                      <button onClick={() => setIsSharing(false)} style={{border: 'none', background: 'none', color: '#EF4444', fontWeight: '800', fontSize: '11px', cursor: 'pointer'}}>Revogar Acesso</button>
+                      <span style={{fontSize: '12px', fontWeight: '700', color: '#0369A1'}}>LINK ATIVO ✅</span>
+                      <button onClick={() => setIsSharing(false)} style={{border: 'none', background: 'none', color: '#EF4444', fontWeight: '600', fontSize: '11px', cursor: 'pointer'}}>Revogar Acesso</button>
                    </div>
                    <div style={styles.linkRow}>
                       <input readOnly value={sharedLink} style={{...styles.input, flex: 1, height: '44px'}} />

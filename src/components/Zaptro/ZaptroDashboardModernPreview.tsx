@@ -1,4 +1,5 @@
 import React, { useId, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { resolveSessionAvatarUrl } from '../../utils/zaptroAvatar';
 import { Area, AreaChart, Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
@@ -9,6 +10,7 @@ import {
   Gift,
   Maximize2,
   Minus,
+  MessageCircle,
   Package,
   Phone,
   Plus,
@@ -22,7 +24,7 @@ import DashboardMonochromeMap from './DashboardMonochromeMap';
 import ZaptroKpiMetricCard from './ZaptroKpiMetricCard';
 import { zaptroCardSurfaceStyle, zaptroIconOrbStyle } from '../../constants/zaptroCardSurface';
 import { notifyZaptro } from './ZaptroNotificationSystem';
-
+import { zaptroWhatsappInboxThreadPath } from '../../constants/zaptroRoutes';
 /** Mock — identidade preto + lime Zaptro (sem roxo: gráficos usam sempre `palette.lime`). */
 const TEXT = '#000000';
 const MUTED = '#6B7280';
@@ -110,8 +112,8 @@ function ShipmentDonut({ isDark, accent }: { isDark: boolean; accent: string }) 
             pointerEvents: 'none',
           }}
         >
-          <span style={{ fontSize: 15, fontWeight: 950, color: isDark ? '#f8fafc' : TEXT, letterSpacing: '-0.02em' }}>16th</span>
-          <span style={{ fontSize: 13, fontWeight: 800, color: subText(isDark), textTransform: 'uppercase' }}>March</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#f8fafc' : TEXT, letterSpacing: '-0.02em' }}>16th</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: subText(isDark), textTransform: 'uppercase' }}>March</span>
         </div>
       </div>
     </div>
@@ -152,6 +154,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
   const greetingLabel = displayName ? `Olá, ${displayName} 🚀` : 'Olá 🚀';
 
   const [dashDate, setDashDate] = useState(todayIsoDate);
+  const [showCallModal, setShowCallModal] = useState(false);
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   const isDark = palette.mode === 'dark';
@@ -265,7 +268,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: accent,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 28,
                     letterSpacing: '-0.02em',
                   }}
@@ -279,7 +282,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
               style={{
                 margin: 0,
                 fontSize: 'clamp(28px, 4vw, 42px)',
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '-0.04em',
                 color: text,
                 lineHeight: 1.12,
@@ -357,7 +360,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                 border: 'none',
                 background: '#000000',
                 color: '#ffffff',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 14,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -369,7 +372,9 @@ const ZaptroDashboardModernPreview: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
+      <div style={{ width: '100%', maxWidth: 1360, margin: '0 auto 80px', boxSizing: 'border-box' }}>
         {/* KPI row */}
         <div
           style={{
@@ -377,6 +382,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
             gap: 16,
             marginBottom: 20,
+            marginTop: 32,
           }}
         >
           {kpis.map((k) => {
@@ -453,7 +459,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
           {/* Left */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             <div style={{ ...c(), padding: '22px 20px' }}>
-              <h2 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 950, color: text }}>Informação da encomenda</h2>
+              <h2 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 700, color: text }}>Informação da encomenda</h2>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
                 {[
                   { l: 'Comprimento', v: '12.2 m' },
@@ -469,8 +475,8 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                       border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
                     }}
                   >
-                    <div style={{ fontSize: 10, fontWeight: 800, color: sub, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{x.l}</div>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: text, marginTop: 2 }}>{x.v}</div>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: sub, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{x.l}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: text, marginTop: 2 }}>{x.v}</div>
                   </div>
                 ))}
               </div>
@@ -483,12 +489,13 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                   style={{ borderRadius: 999, objectFit: 'cover', flexShrink: 0 }}
                 />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 900, color: text }}>Apollo Nox</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: text }}>Apollo Nox</div>
                   <div style={{ fontSize: 13, color: sub, marginTop: 2 }}>+1 (555) 482‑9011</div>
                 </div>
                 <button
                   type="button"
                   aria-label="Ligar"
+                  onClick={() => setShowCallModal(true)}
                   style={{
                     width: 48,
                     height: 48,
@@ -510,7 +517,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
             </div>
 
             <div style={{ ...c(), padding: '22px 20px 18px' }}>
-              <h2 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 950, color: text }}>Resumo do envio</h2>
+              <h2 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 700, color: text }}>Resumo do envio</h2>
               <p style={{ margin: '0 0 8px', fontSize: 12, color: sub }}>Estado agregado da rota (demo)</p>
               <ShipmentDonut isDark={isDark} accent={accent} />
             </div>
@@ -525,7 +532,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                     <Truck size={24} strokeWidth={2} />
                   </div>
                   <div>
-                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: text }}>Informação da encomenda</h2>
+                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: text }}>Informação da encomenda</h2>
                     <p style={{ margin: '4px 0 0', fontSize: 12, color: sub }}>Despachado · tempo estimado</p>
                   </div>
                 </div>
@@ -535,7 +542,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                     border: 'none',
                     background: 'none',
                     color: accent,
-                    fontWeight: 800,
+                    fontWeight: 600,
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -569,11 +576,11 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: sub, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: sub, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                     Progresso
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 13, fontWeight: 900, color: text }}>Despachado</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: text }}>Despachado</span>
                     <span style={{ color: sub, fontSize: 12 }}>→</span>
                     <span style={{ fontSize: 13, fontWeight: 700, color: sub }}>Tempo estimado</span>
                   </div>
@@ -586,7 +593,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                     border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
                   }}
                 >
-                  <div style={{ fontSize: 12, fontWeight: 950, color: text, marginBottom: 10 }}>Fatura #0472</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: text, marginBottom: 10 }}>Fatura #0472</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {invoiceSteps.map((s) => (
                       <div
@@ -623,7 +630,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <ProgressRing pct={25} isDark={isDark} stroke={accent} />
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: text }}>25% concluído</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: text }}>25% concluído</div>
                     <div style={{ fontSize: 11, color: sub }}>Estado global da encomenda</div>
                   </div>
                 </div>
@@ -651,7 +658,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
             </div>
 
             <div style={{ ...c(), padding: '18px 18px 16px' }}>
-              <h2 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 950, color: text }}>Últimos clientes</h2>
+              <h2 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 700, color: text }}>Últimos clientes</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {latestCustomers.map((u) => (
                   <div
@@ -672,10 +679,10 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                       style={{ borderRadius: 999, objectFit: 'cover' }}
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 900, color: text }}>{u.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: text }}>{u.name}</div>
                       <div style={{ fontSize: 12, color: sub, overflow: 'hidden', textOverflow: 'ellipsis' }}>{u.email}</div>
                     </div>
-                    <div style={{ fontSize: 15, fontWeight: 950, color: text }}>{u.amt}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: text }}>{u.amt}</div>
                   </div>
                 ))}
               </div>
@@ -685,7 +692,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
           {/* Right: map */}
           <div style={{ ...c(), padding: 0, overflow: 'hidden', minHeight: 560 }}>
             <div style={{ padding: '20px 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: text }}>Rotas de hoje</h2>
+              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: text }}>Rotas de hoje</h2>
               <Zap size={18} color={accent} />
             </div>
             <div
@@ -726,7 +733,7 @@ const ZaptroDashboardModernPreview: React.FC = () => {
                 padding: '12px 20px 22px',
                 borderTop: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
                 fontSize: 14,
-                fontWeight: 900,
+                fontWeight: 700,
                 color: text,
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -743,9 +750,88 @@ const ZaptroDashboardModernPreview: React.FC = () => {
 
         <p style={{ margin: '24px 0 0', fontSize: 12, color: sub, textAlign: 'center', lineHeight: 1.5 }}>
           Para o painel Zaptro clássico: <code style={{ fontSize: 11 }}>ZAPTRO_DASHBOARD_MODERN_PREVIEW = false</code> em{' '}
-          <code style={{ fontSize: 11 }}>ZaptroDashboard.tsx</code>.
+          <code style={{ fontSize: 11 }}>ZaptroDashboardResults.tsx</code>.
         </p>
       </div>
+
+      {showCallModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+          }}
+          onClick={() => setShowCallModal(false)}
+        >
+          <div
+            style={{
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              borderRadius: 24,
+              padding: 32,
+              width: 360,
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ width: 80, height: 80, borderRadius: 999, overflow: 'hidden', marginBottom: 16 }}>
+              <img src="https://picsum.photos/seed/apollo-nox/160/160" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <h3 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 700, color: text }}>Apollo Nox</h3>
+            <p style={{ margin: '0 0 24px', fontSize: 16, color: sub, fontWeight: 500 }}>+1 (555) 482‑9011</p>
+            
+            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+              <button
+                onClick={() => setShowCallModal(false)}
+                style={{
+                  flex: 1,
+                  padding: '14px 0',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: isDark ? '#334155' : '#F1F5F9',
+                  color: text,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  cursor: 'pointer',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setShowCallModal(false);
+                  navigate(zaptroWhatsappInboxThreadPath('15554829011'));
+                }}
+                style={{
+                  flex: 1,
+                  padding: '14px 0',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: '#000000',
+                  color: '#D9FF00',
+                  fontWeight: 600,
+                  fontSize: 15,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                }}
+              >
+                <MessageCircle size={18} /> WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

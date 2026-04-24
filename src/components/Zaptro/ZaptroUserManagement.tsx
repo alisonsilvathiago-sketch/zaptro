@@ -276,9 +276,9 @@ const styles: Record<string, any> = {
   container: { display: 'flex', flexDirection: 'column', gap: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   titleArea: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  title: { fontSize: '22px', fontWeight: '900', color: '#0F172A', margin: 0 },
+  title: { fontSize: '22px', fontWeight: '700', color: '#0F172A', margin: 0 },
   subtitle: { fontSize: '14px', color: '#64748B', fontWeight: '500' },
-  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#CCFF00', color: '#000', border: 'none', borderRadius: '14px', fontWeight: '900', cursor: 'pointer' },
+  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#CCFF00', color: '#000', border: 'none', borderRadius: '14px', fontWeight: '700', cursor: 'pointer' },
   
   searchBar: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '16px', padding: '12px 20px', border: '1px solid #EBEBEC' },
   input: { border: 'none', outline: 'none', fontSize: '15px', color: '#0F172A', width: '100%', fontWeight: '500' },
@@ -286,14 +286,14 @@ const styles: Record<string, any> = {
   tableWrapper: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #EBEBEC', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
   tableHead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
-  th: { padding: '16px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: ZAPTRO_TITLE_COLOR, textTransform: 'uppercase' as const, letterSpacing: '1px' },
+  th: { padding: '16px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '700', color: ZAPTRO_TITLE_COLOR, textTransform: 'uppercase' as const, letterSpacing: '1px' },
   tr: { borderBottom: '1px solid #e8e8e8' },
   td: { padding: '16px 24px', fontSize: '14px' },
   userInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '16px' },
-  userName: { display: 'block', color: '#0F172A', fontWeight: '800' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '16px' },
+  userName: { display: 'block', color: '#0F172A', fontWeight: '600' },
   userEmail: { fontSize: '12px', color: '#94A3B8' },
-  roleBadge: { padding: '4px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '800', color: '#0F172A' },
+  roleBadge: { padding: '4px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '600', color: '#0F172A' },
   accessIcons: { display: 'flex', gap: '6px' },
   accessIcon: { width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#FBFBFC', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   actions: { display: 'flex', justifyContent: 'flex-end', gap: '8px' },
@@ -301,9 +301,9 @@ const styles: Record<string, any> = {
 
   form: { display: 'flex', flexDirection: 'column', gap: '20px' },
   field: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '13px', fontWeight: '800', color: ZAPTRO_TITLE_COLOR },
+  label: { fontSize: '13px', fontWeight: '600', color: ZAPTRO_TITLE_COLOR },
   formInput: { padding: '14px', borderRadius: '12px', border: '1px solid #EBEBEC', outline: 'none', fontSize: '15px', fontWeight: '600', color: '#0F172A', backgroundColor: ZAPTRO_FIELD_BG },
-  saveBtn: { padding: '16px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', fontSize: '15px', cursor: 'pointer', marginTop: '12px' }
+  saveBtn: { padding: '16px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '700', fontSize: '15px', cursor: 'pointer', marginTop: '12px' }
 };
 
 export default ZaptroUserManagement;

@@ -159,7 +159,7 @@ const Marketplace: React.FC = () => {
 
 const styles = {
   container: { padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '40px' },
-  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '900' },
+  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '700' },
   
   hero: { 
     background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)', 
@@ -172,37 +172,37 @@ const styles = {
     boxShadow: '0 25px 50px -12px rgba(49, 46, 129, 0.4)'
   },
   heroText: { maxWidth: '600px', display: 'flex', flexDirection: 'column' as const, gap: '16px' },
-  heroBadge: { backgroundColor: 'rgba(255,255,255,0.1)', color: '#A5B4FC', padding: '6px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', width: 'fit-content', display: 'flex', alignItems: 'center', gap: '8px' },
-  heroTitle: { fontSize: '42px', fontWeight: '950', margin: 0, letterSpacing: '-1.5px', lineHeight: '1.1' },
+  heroBadge: { backgroundColor: 'rgba(255,255,255,0.1)', color: '#A5B4FC', padding: '6px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', width: 'fit-content', display: 'flex', alignItems: 'center', gap: '8px' },
+  heroTitle: { fontSize: '42px', fontWeight: '700', margin: 0, letterSpacing: '-1.5px', lineHeight: '1.1' },
   heroSubtitle: { fontSize: '18px', color: '#C7D2FE', margin: 0, lineHeight: '1.6' },
   heroStats: { display: 'flex', gap: '40px' },
   heroStat: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  statNum: { fontSize: '32px', fontWeight: '950', color: 'white' },
-  statLabel: { fontSize: '13px', fontWeight: '800', color: '#A5B4FC' },
+  statNum: { fontSize: '32px', fontWeight: '700', color: 'white' },
+  statLabel: { fontSize: '13px', fontWeight: '600', color: '#A5B4FC' },
 
   filters: { display: 'flex', gap: '12px', pading: '0 8px', overflowX: 'auto' as const },
-  filterBtn: { padding: '12px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#64748b', fontSize: '13px', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' as const },
+  filterBtn: { padding: '12px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#64748b', fontSize: '13px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' as const },
   filterActive: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
 
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '32px' },
   card: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', padding: '32px', display: 'flex', flexDirection: 'column' as const, gap: '16px', transition: 'transform 0.3s, border-color 0.3s', cursor: 'pointer' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   iconWrap: { width: '56px', height: '56px', borderRadius: '18px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  featuredBadge: { backgroundColor: '#fff7ed', color: '#f97316', fontSize: '10px', fontWeight: '900', padding: '4px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase' as const },
-  appName: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
+  featuredBadge: { backgroundColor: '#fff7ed', color: '#f97316', fontSize: '10px', fontWeight: '700', padding: '4px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase' as const },
+  appName: { fontSize: '18px', fontWeight: '700', color: '#000000', margin: 0 },
   appDescription: { fontSize: '14px', color: '#64748b', lineHeight: '1.6', margin: 0, flex: 1 },
   appMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  categoryTag: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
-  priceTag: { fontSize: '13px', fontWeight: '900', color: 'var(--primary)' },
-  installBtn: { width: '100%', padding: '14px', borderRadius: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '900', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
+  categoryTag: { fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  priceTag: { fontSize: '13px', fontWeight: '700', color: 'var(--primary)' },
+  installBtn: { width: '100%', padding: '14px', borderRadius: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '700', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
   installedBtn: { backgroundColor: '#f0fdf4', color: '#10b981', cursor: 'default' },
-  detailsBtn: { background: 'none', border: 'none', color: '#94a3b8', fontSize: '12px', fontWeight: '800', cursor: 'pointer' },
+  detailsBtn: { background: 'none', border: 'none', color: '#94a3b8', fontSize: '12px', fontWeight: '600', cursor: 'pointer' },
 
   partnerSection: { padding: '40px 60px', backgroundColor: '#f4f4f4', borderRadius: '32px', border: '2px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   partnerInfo: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  pTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
+  pTitle: { fontSize: '18px', fontWeight: '700', color: '#000000', margin: 0 },
   pText: { fontSize: '14px', color: '#64748b', margin: 0 },
-  partnerBtn: { backgroundColor: 'white', border: '1px solid #e2e8f0', padding: '14px 24px', borderRadius: '16px', color: '#334155', fontWeight: '800', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }
+  partnerBtn: { backgroundColor: 'white', border: '1px solid #e2e8f0', padding: '14px 24px', borderRadius: '16px', color: '#334155', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }
 };
 
 export default Marketplace;

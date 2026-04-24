@@ -101,7 +101,7 @@ const Clients: React.FC = () => {
                            padding: '4px 12px', 
                            borderRadius: '20px', 
                            fontSize: '10px', 
-                           fontWeight: '900',
+                           fontWeight: '700',
                            backgroundColor: client.status === 'ACTIVE' ? 'var(--success-light)' : 'var(--danger-light)',
                            color: client.status === 'ACTIVE' ? 'var(--success)' : 'var(--danger)'
                         }}>{client.status}</span>
@@ -144,10 +144,10 @@ const Clients: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '900', letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '700', letterSpacing: '-1px' },
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '32px' },
   kpiCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '20px' },
-  kpiLabel: { fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '800' },
+  kpiLabel: { fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '600' },
   filterArea: { display: 'flex', gap: '16px', marginBottom: '24px' },
   searchBox: { flex: 1, backgroundColor: 'white', borderRadius: '16px', border: '1px solid var(--border)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' },
   searchInput: { border: 'none', outline: 'none', width: '100%', fontSize: '14px' },
@@ -157,15 +157,15 @@ const styles: Record<string, any> = {
   th: { textAlign: 'left', padding: '20px 24px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' },
   td: { padding: '20px 24px', fontSize: '14px', borderBottom: '1px solid var(--border)' },
   clientInfo: { display: 'flex', alignItems: 'center', gap: '16px' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900' },
-  btnPrimary: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', cursor: 'pointer' },
-  btnSecondary: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '16px', fontWeight: '800', cursor: 'pointer' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' },
+  btnPrimary: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', cursor: 'pointer' },
+  btnSecondary: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '16px', fontWeight: '600', cursor: 'pointer' },
   iconBtn: { border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)' },
   form: { display: 'flex', flexDirection: 'column', gap: '16px' },
   formRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
   input: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', outline: 'none' },
-  btnPrimaryFull: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', cursor: 'pointer', marginTop: '16px' }
+  btnPrimaryFull: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', cursor: 'pointer', marginTop: '16px' }
 };
 
 export default Clients;

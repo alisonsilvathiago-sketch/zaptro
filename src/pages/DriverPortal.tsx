@@ -144,7 +144,7 @@ const DriverPortal: React.FC = () => {
                          <div style={{flex: 1}}>
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                <h4 style={styles.clientName}>{shipment.clients?.name}</h4>
-                               <span style={{fontSize: '10px', fontWeight: '800', backgroundColor: '#ebebeb', padding: '2px 6px', borderRadius: '4px'}}>ETA: 14:30h</span>
+                               <span style={{fontSize: '10px', fontWeight: '600', backgroundColor: '#ebebeb', padding: '2px 6px', borderRadius: '4px'}}>ETA: 14:30h</span>
                             </div>
                             <p style={styles.addressText}><MapPin size={12} /> {shipment.clients?.address}</p>
                          </div>
@@ -182,39 +182,39 @@ const DriverPortal: React.FC = () => {
 
 const styles = {
   container: { minHeight: '100vh', backgroundColor: '#f4f4f4', paddingBottom: '40px' },
-  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '900' },
+  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '700' },
   header: { backgroundColor: 'white', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', position: 'sticky' as const, top: 0, zIndex: 10 },
   driverInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatar: { width: '44px', height: '44px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '900' },
-  welcome: { fontSize: '16px', fontWeight: '900', color: '#000000', margin: 0 },
+  avatar: { width: '44px', height: '44px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '700' },
+  welcome: { fontSize: '16px', fontWeight: '700', color: '#000000', margin: 0 },
   subText: { fontSize: '12px', color: '#64748b', margin: 0 },
   statusBadge: { width: '40px', height: '40px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' },
 
   startHero: { padding: '60px 24px', textAlign: 'center' as const, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '20px' },
   startIcon: { width: '96px', height: '96px', borderRadius: '32px', backgroundColor: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 20px 25px -5px rgba(16, 185, 129, 0.4)' },
-  heroTitle: { fontSize: '24px', fontWeight: '950', color: '#000000', margin: 0 },
+  heroTitle: { fontSize: '24px', fontWeight: '700', color: '#000000', margin: 0 },
   heroText: { fontSize: '15px', color: '#64748b', margin: 0, maxWidth: '280px' },
-  startBtn: { width: '100%', maxWidth: '280px', padding: '18px', borderRadius: '20px', backgroundColor: '#10b981', color: 'white', border: 'none', fontWeight: '900', fontSize: '16px', cursor: 'pointer', marginTop: '20px', boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.4)' },
+  startBtn: { width: '100%', maxWidth: '280px', padding: '18px', borderRadius: '20px', backgroundColor: '#10b981', color: 'white', border: 'none', fontWeight: '700', fontSize: '16px', cursor: 'pointer', marginTop: '20px', boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.4)' },
 
   activeArea: { padding: '24px' },
   kpiRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' },
   kpiBox: { backgroundColor: 'white', padding: '20px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  kLabel: { fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const },
-  kValue: { fontSize: '18px', fontWeight: '950', color: '#000000' },
+  kLabel: { fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' as const },
+  kValue: { fontSize: '18px', fontWeight: '700', color: '#000000' },
 
-  sectionTitle: { fontSize: '14px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginBottom: '16px' },
+  sectionTitle: { fontSize: '14px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginBottom: '16px' },
   shipmentList: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
   shipCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   shipMain: { display: 'flex', alignItems: 'center', gap: '16px' },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%' },
-  clientName: { fontSize: '15px', fontWeight: '900', color: '#000000', margin: 0 },
+  clientName: { fontSize: '15px', fontWeight: '700', color: '#000000', margin: 0 },
   addressText: { fontSize: '12px', color: '#64748b', margin: 0, display: 'flex', alignItems: 'center', gap: '4px' },
   shipFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e8e8e8', paddingTop: '12px' },
-  weightTag: { fontSize: '11px', fontWeight: '800', color: '#64748b', backgroundColor: '#ebebeb', padding: '4px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px' },
-  statusText: { fontSize: '11px', fontWeight: '900', color: 'var(--primary)' },
+  weightTag: { fontSize: '11px', fontWeight: '600', color: '#64748b', backgroundColor: '#ebebeb', padding: '4px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '4px' },
+  statusText: { fontSize: '11px', fontWeight: '700', color: 'var(--primary)' },
   
   emptyState: { textAlign: 'center' as const, padding: '40px', color: '#94a3b8', fontWeight: '700' },
-  endJourneyBtn: { marginTop: '40px', width: '100%', background: 'none', border: '1px solid #fee2e2', padding: '16px', borderRadius: '20px', color: '#ef4444', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }
+  endJourneyBtn: { marginTop: '40px', width: '100%', background: 'none', border: '1px solid #fee2e2', padding: '16px', borderRadius: '20px', color: '#ef4444', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }
 };
 
 export default DriverPortal;

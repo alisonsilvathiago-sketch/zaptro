@@ -95,10 +95,10 @@ const AcademyMyCourses: React.FC = () => {
 const styles = {
   container: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  title: { fontSize: '28px', fontWeight: '950', color: '#1e293b', letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: '#1e293b', letterSpacing: '-1px' },
   subtitle: { fontSize: '16px', color: '#64748b', fontWeight: '500' },
   
-  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '800' },
+  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '600' },
   
   grid: { 
     display: 'grid', 
@@ -116,8 +116,8 @@ const styles = {
   placeholderCover: { height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' },
   
   cardBody: { padding: '20px', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  category: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', textTransform: 'uppercase' as const, letterSpacing: '1px' },
-  cTitle: { fontSize: '16px', fontWeight: '800', color: '#1e293b', height: '40px', overflow: 'hidden' },
+  category: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase' as const, letterSpacing: '1px' },
+  cTitle: { fontSize: '16px', fontWeight: '600', color: '#1e293b', height: '40px', overflow: 'hidden' },
   
   progressContainer: { display: 'flex', flexDirection: 'column' as const, gap: '6px', marginTop: '8px' },
   progressLabel: { display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
@@ -126,7 +126,7 @@ const styles = {
   
   continueBtn: { 
     marginTop: '8px', padding: '12px', borderRadius: '14px', border: 'none', 
-    backgroundColor: '#1e293b', color: 'white', fontWeight: '800', 
+    backgroundColor: '#1e293b', color: 'white', fontWeight: '600', 
     fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', 
     gap: '8px', cursor: 'pointer' 
   },
@@ -137,7 +137,7 @@ const styles = {
   },
   browseBtn: { 
     marginTop: '24px', padding: '14px 28px', backgroundColor: 'var(--primary)', 
-    color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' 
+    color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' 
   }
 };
 

@@ -95,8 +95,8 @@ const ZaptroKpiMetricCard: React.FC<ZaptroKpiMetricCardProps> = ({
               ? {
                   margin: 0,
                   fontSize: 11,
-                  fontWeight: 950,
-                  letterSpacing: '0.08em',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
                   color: palette.textMuted,
                   textTransform: 'uppercase',
                 }
@@ -122,7 +122,7 @@ const ZaptroKpiMetricCard: React.FC<ZaptroKpiMetricCardProps> = ({
           <span
             style={{
               fontSize: valueFontSize,
-              fontWeight: 950,
+              fontWeight: 700,
               letterSpacing: '-0.04em',
               color: palette.text,
               lineHeight: 1.12,
@@ -132,7 +132,7 @@ const ZaptroKpiMetricCard: React.FC<ZaptroKpiMetricCardProps> = ({
             {value}
           </span>
           {delta ? (
-            <span style={{ fontSize: 13, fontWeight: 800, color: deltaColor }}>{delta}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: deltaColor }}>{delta}</span>
           ) : null}
         </div>
         {subtitle ? (

@@ -118,7 +118,7 @@ const ZaptroCookieBanner: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-              <h2 id="zaptro-cookie-prefs-title" style={{ margin: 0, fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>
+              <h2 id="zaptro-cookie-prefs-title" style={{ margin: 0, fontSize: 18, fontWeight: 600, letterSpacing: '-0.02em' }}>
                 Definições de cookies
               </h2>
               <button
@@ -197,7 +197,7 @@ const ZaptroCookieBanner: React.FC = () => {
                   border: 'none',
                   background: '#fff',
                   color: '#0a0a0a',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: 14,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -298,7 +298,7 @@ const ZaptroCookieBanner: React.FC = () => {
                 border: '1px solid rgba(255,255,255,0.35)',
                 background: '#fff',
                 color: '#0a0a0a',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 13,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -316,7 +316,7 @@ const ZaptroCookieBanner: React.FC = () => {
                 border: 'none',
                 background: '#fff',
                 color: '#0a0a0a',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 13,
                 cursor: 'pointer',
                 fontFamily: 'inherit',

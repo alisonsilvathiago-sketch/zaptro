@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Send,
   Search,
   Clock,
   Zap,
+  Plus,
+  Smile,
+  Send,
   MoreVertical,
   Paperclip,
   Phone,
@@ -21,8 +23,43 @@ import {
   AlertTriangle,
   X,
   Copy,
+  Bell,
   BellOff,
   Star,
+  Info,
+  CheckSquare,
+  XCircle,
+  ThumbsDown,
+  Ban,
+  MinusCircle,
+  Trash2,
+  CreditCard,
+  ClipboardList,
+  Navigation,
+  Check,
+  User,
+  Archive,
+  Pin,
+  PinOff,
+  Tag,
+  MessageSquare,
+  MessageSquarePlus,
+  Briefcase,
+  Users,
+  Megaphone,
+  LayoutGrid,
+  CheckCheck,
+  LogOut,
+  UserPlus,
+  Unlock,
+  Camera,
+  Mic,
+  BarChart3,
+  CircleDollarSign,
+  Store,
+  Share,
+  Play,
+  Circle,
 } from 'lucide-react';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
@@ -31,6 +68,7 @@ import { ZAPTRO_FIELD_BG, ZAPTRO_SOFT_NEUTRAL_MUTED } from '../constants/zaptroU
 import { isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
+import LogtaModal from '../components/Modal';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { toastError, toastSuccess } from '../lib/toast';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
@@ -40,12 +78,39 @@ import {
   markConversationCargoSynced,
   type ConversationCargoPhase,
 } from '../constants/zaptroConversationCargoStore';
+import OpenStreetRouteMap from '../components/OpenStreetRouteMap';
+import { Download } from 'lucide-react';
 import { readExternalApiIntegrations } from '../constants/zaptroExternalApisStore';
+import {
+  getWaBrowserNotificationPermission,
+  getWaNotificationBannerKind,
+  playWaIncomingMessageSound,
+  readWaNotifDesktopDesired,
+  readWaNotifSoundEnabled,
+  requestWaBrowserNotificationPermission,
+  setWaNotifDesktopDesired,
+  setWaNotifSoundEnabled,
+  showWaDesktopNotificationIfAllowed,
+} from '../lib/zaptroWaMessageNotifications';
 
 const LIME = '#D9FF00';
 
 /** Telefones na UI — sempre Arial (fallbacks genéricos). */
 const WHATSAPP_PHONE_FONT_FAMILY = 'Arial, Helvetica, sans-serif' as const;
+
+type WaQuickChipLabel = 'Nova carga' | 'Orçamento' | 'Comprovante' | 'Localização';
+
+/** Atalhos por `@` no campo de mensagem (token após o arroba, sem espaço). */
+const WA_AT_SHORTCUTS: { token: string; label: WaQuickChipLabel; hint: string }[] = [
+  { token: 'carga', label: 'Nova carga', hint: 'Nova rota / carga' },
+  { token: 'nova', label: 'Nova carga', hint: 'Nova rota / carga' },
+  { token: 'orc', label: 'Orçamento', hint: 'CRM / orçamento' },
+  { token: 'orcamento', label: 'Orçamento', hint: 'CRM / orçamento' },
+  { token: 'doc', label: 'Comprovante', hint: 'Texto modelo comprovante' },
+  { token: 'comp', label: 'Comprovante', hint: 'Texto modelo comprovante' },
+  { token: 'loc', label: 'Localização', hint: 'Texto modelo link carga' },
+  { token: 'local', label: 'Localização', hint: 'Texto modelo link carga' },
+];
 
 interface Message {
   id: string;
@@ -53,6 +118,9 @@ interface Message {
   direction: 'in' | 'out';
   created_at: string;
   connection_id?: string;
+  type?: 'text' | 'image' | 'file' | 'audio' | 'system';
+  audio_url?: string;
+  duration?: number;
 }
 
 type CargoPhase = ConversationCargoPhase;
@@ -73,10 +141,19 @@ interface Conversation {
   status: string;
   connection_id?: string;
   assigned_to?: string | null;
+  department?: string | null;
+  attendance_status?: 'awaiting' | 'in_service' | 'finished';
+  claimed_at?: string | null;
   /** Conversa de equipa / grupo (quando a API enviar ou em seeds de demo). */
   is_group?: boolean;
   /** Contador de não lidas quando existir na base ou em demo. */
   unread_count?: number;
+  tags?: string[];
+}
+
+function waInboxContactLabel(chat: Pick<Conversation, 'sender_name' | 'sender_number'> | null): string {
+  if (!chat) return 'WhatsApp';
+  return chat.sender_name || chat.sender_number || 'Novo contato';
 }
 
 const WA_INBOX_STARRED_KEY = 'zaptro_wa_inbox_starred_v1';
@@ -107,7 +184,8 @@ function isZaptroDemoConversationId(id: string): boolean {
   return id.startsWith('zaptro-demo-');
 }
 
-function onlyDigits(s: string): string {
+function onlyDigits(s: string | null | undefined): string {
+  if (!s) return '';
   return s.replace(/\D/g, '');
 }
 
@@ -132,7 +210,8 @@ function agoIso(minutesAgo: number): string {
   return new Date(Date.now() - minutesAgo * 60_000).toISOString();
 }
 
-function digitsForTel(phone: string): string {
+function digitsForTel(phone: string | null | undefined): string {
+  if (!phone) return '';
   return phone.replace(/\D/g, '');
 }
 
@@ -265,9 +344,25 @@ const WhatsAppPremiumContent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [waSearchTerm, setWaSearchTerm] = useState('');
   const [waInboxFilter, setWaInboxFilter] = useState<WaInboxFilter>('all');
   const [starredChatIds, setStarredChatIds] = useState<Set<string>>(readInboxStarredIds);
+  const [pinnedChatIds, setPinnedChatIds] = useState<Set<string>>(new Set());
+  const [archivedChatIds, setArchivedChatIds] = useState<Set<string>>(new Set());
+  const [unreadForcedIds, setUnreadForcedIds] = useState<Set<string>>(new Set());
+  const [lockedChatIds, setLockedChatIds] = useState<Set<string>>(new Set());
+  const [newContactModalOpen, setNewContactModalOpen] = useState(false);
+  const [newContactForm, setNewContactForm] = useState({
+    name: '',
+    phone: '',
+    cnpj: '',
+    companyName: '',
+    segmentWa: '',
+    segmentCompany: '',
+    email: '',
+    address: ''
+  });
+  const [readSessionIds, setReadSessionIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   /** Estado logístico da carga por conversa (demo + UI até existir coluna dedicada no backend). */
   const [cargoPhaseByChat, setCargoPhaseByChat] = useState<Record<string, CargoPhase>>({});
@@ -278,8 +373,54 @@ const WhatsAppPremiumContent: React.FC = () => {
   const [transferring, setTransferring] = useState(false);
   /** Popup informativo: voz e vídeo não passam pelo Zaptro; só texto fica no sistema. */
   const [callActionModal, setCallActionModal] = useState<null | 'voice' | 'video'>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [sidebarMenuOpen, setSidebarMenuOpen] = useState(false);
+  const [newChatPanelOpen, setNewChatPanelOpen] = useState(false);
+  const [newChatSearch, setNewChatSearch] = useState('');
+  const [showRightPanel, setShowRightPanel] = useState(false);
+  const [claiming, setClaiming] = useState(false);
+  const [interrupting, setInterrupting] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const quickShortcutsRef = useRef<HTMLDivElement>(null);
+  const composerTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const waAttachmentInputRef = useRef<HTMLInputElement>(null);
+  const selectedChatRef = useRef<Conversation | null>(null);
+  const conversationsRef = useRef<Conversation[]>([]);
+  const [atMenu, setAtMenu] = useState<{ start: number; filter: string } | null>(null);
+  /** Menu compacto de atalhos (@) — evita fila de pills no compositor. */
+  const [quickShortcutsOpen, setQuickShortcutsOpen] = useState(false);
+  const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const docInputRef = useRef<HTMLInputElement>(null);
+  const mediaInputRef = useRef<HTMLInputElement>(null);
+  /** Força re-render ao mudar prefs de notificação / permissão. */
+  const [notifPrefsTick, setNotifPrefsTick] = useState(0);
+  const headerMenuRef = useRef<HTMLDivElement>(null);
+  const sidebarMenuRef = useRef<HTMLDivElement>(null);
+  const contextMenuRef = useRef<HTMLDivElement>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; chat: Conversation } | null>(null);
+  const [searchInsideOpen, setSearchInsideOpen] = useState(false);
+  const [searchInsideTerm, setSearchInsideTerm] = useState('');
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
+  const [tempMessagesEnabled, setTempMessagesEnabled] = useState(false);
+  const [massSelectionMode, setMassSelectionMode] = useState(false);
+  const [massSelectedChatIds, setMassSelectedChatIds] = useState<Set<string>>(new Set());
+  const [billingModalOpen, setBillingModalOpen] = useState(false);
+  const [billingAmount, setBillingAmount] = useState('');
+  const [billingDescription, setBillingDescription] = useState('');
+  const [quickResponsesOpen, setQuickResponsesOpen] = useState(false);
+  const [contactsModalOpen, setContactsModalOpen] = useState(false);
+  const [quotesModalOpen, setQuotesModalOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<{ file: File; previewUrl: string | null } | null>(null);
+  const [sendingFile, setSendingFile] = useState(false);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const audioRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const nfeIntegrations = useMemo(
     () => readExternalApiIntegrations(profile?.company_id).filter((i) => i.category === 'nfe' && i.enabled),
@@ -320,11 +461,10 @@ const WhatsAppPremiumContent: React.FC = () => {
       {
         id: 'zaptro-demo-3',
         sender_number: '+55 21 97000-8899',
-        sender_name: 'Equipe CD Rio',
+        sender_name: 'Equipe CD Rio - Logística',
         last_message: 'Cliente pediu status da carga — SLA 20 min.',
         last_customer_message_at: agoIso(90),
         status: 'open',
-        is_group: true,
         unread_count: 1,
       },
     ];
@@ -373,8 +513,16 @@ const WhatsAppPremiumContent: React.FC = () => {
     [crmDemoInboxSeeds, demoConversationSeeds]
   );
 
-  const displayConversations =
-    conversations.length > 0 ? conversations : mergedDemoConversations;
+  const displayConversations = useMemo(() => {
+    const raw = conversations.length > 0 ? conversations : mergedDemoConversations;
+    return [...raw].sort((a, b) => {
+      const aPinned = pinnedChatIds.has(a.id);
+      const bPinned = pinnedChatIds.has(b.id);
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+      return new Date(b.last_customer_message_at || 0).getTime() - new Date(a.last_customer_message_at || 0).getTime();
+    });
+  }, [conversations, mergedDemoConversations, pinnedChatIds]);
   /**
    * Badge «Demo» + aviso de pré-visualização: só enquanto não há conversas reais em `whatsapp_conversations`
    * para esta empresa. Some assim que a API (ou realtime) preencher `conversations`.
@@ -384,9 +532,53 @@ const WhatsAppPremiumContent: React.FC = () => {
     [loading, conversations.length]
   );
 
+  const inboxUnreadTotal = useMemo(
+    () => displayConversations.reduce((acc, c) => acc + (c.unread_count ?? 0), 0),
+    [displayConversations]
+  );
+
+  const waNotifBannerKind = useMemo(() => getWaNotificationBannerKind(), [notifPrefsTick]);
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+  }, [selectedChat]);
+
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible') setNotifPrefsTick((t) => t + 1);
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    const el = composerTextareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(Math.max(el.scrollHeight, 48), 168)}px`;
+  }, [newMessage]);
+
+  useEffect(() => {
+    if (!quickShortcutsOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      const el = quickShortcutsRef.current;
+      if (el && !el.contains(e.target as Node)) setQuickShortcutsOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [quickShortcutsOpen]);
+
+  useEffect(() => {
+    setQuickShortcutsOpen(false);
+  }, [selectedChat?.id]);
 
   useEffect(() => {
     if (!callActionModal) return;
@@ -396,6 +588,37 @@ const WhatsAppPremiumContent: React.FC = () => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [callActionModal]);
+
+  useEffect(() => {
+    if (!headerMenuOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (headerMenuRef.current && !headerMenuRef.current.contains(e.target as Node)) {
+        setHeaderMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, [headerMenuOpen]);
+
+  useEffect(() => {
+    if (!contextMenu && !sidebarMenuOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      // Se clicou no context menu, deixa o evento seguir para os botões internos
+      if (contextMenuRef.current && contextMenuRef.current.contains(e.target as Node)) return;
+      // Se clicou no sidebar menu, deixa o evento seguir
+      if (sidebarMenuRef.current && sidebarMenuRef.current.contains(e.target as Node)) return;
+      
+      setContextMenu(null);
+      setSidebarMenuOpen(false);
+    };
+    // Usamos mousedown para evitar conflitos de ordem com o onClick dos itens do menu
+    document.addEventListener('mousedown', onDocClick);
+    document.addEventListener('contextmenu', onDocClick);
+    return () => {
+      document.removeEventListener('mousedown', onDocClick);
+      document.removeEventListener('contextmenu', onDocClick);
+    };
+  }, [contextMenu, sidebarMenuOpen]);
 
   useEffect(() => {
     if (!profile?.company_id) setLoading(false);
@@ -501,18 +724,15 @@ const WhatsAppPremiumContent: React.FC = () => {
     };
   }, [profile?.company_id]);
 
-  // 2. Carregar Conversas
-  useEffect(() => {
-    if (!profile?.company_id) return;
-
-    const fetchConversations = async () => {
+  const fetchConversationsFromDb = useCallback(
+    async (opts?: { manageLoading?: boolean }) => {
+      if (!profile?.company_id) return;
       try {
         let query = supabaseZaptro
           .from('whatsapp_conversations')
           .select('*')
           .eq('company_id', profile.company_id);
 
-        // Multi-atendente: agente vê conversas atribuídas a si **e** fila sem dono (para «Atribuir responsável»).
         const role = (profile.role || '').toLowerCase();
         if (role === 'agent' && profile.id) {
           query = query.or(`assigned_to.eq.${profile.id},assigned_to.is.null`);
@@ -524,22 +744,78 @@ const WhatsAppPremiumContent: React.FC = () => {
       } catch (err) {
         console.error('Erro ao carregar conversas:', err);
       } finally {
-        setLoading(false);
+        if (opts?.manageLoading) setLoading(false);
       }
-    };
+    },
+    [profile?.company_id, profile?.id, profile?.role],
+  );
 
-    fetchConversations();
-    
-    // Realtime para conversas
+  // 2. Carregar conversas + realtime da lista
+  useEffect(() => {
+    if (!profile?.company_id) return;
+
+    void fetchConversationsFromDb({ manageLoading: true });
+
     const channel = supabaseZaptro
       .channel('whatsapp_realtime_v3')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_conversations' }, () => {
-        fetchConversations();
+        void fetchConversationsFromDb({ manageLoading: false });
       })
       .subscribe();
 
-    return () => { supabaseZaptro.removeChannel(channel); };
-  }, [profile?.company_id, profile?.id, profile?.role]);
+    return () => {
+      supabaseZaptro.removeChannel(channel);
+    };
+  }, [profile?.company_id, profile?.id, profile?.role, fetchConversationsFromDb]);
+
+  const refetchMessagesIfSelected = useCallback(async (conversationId: string) => {
+    const sel = selectedChatRef.current;
+    if (!sel || sel.id !== conversationId) return;
+    if (isZaptroDemoConversationId(sel.id)) return;
+    const { data } = await supabaseZaptro
+      .from('whatsapp_messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+    if (data) setMessages(data);
+  }, []);
+
+  // Novas mensagens (entrada): som, notificação do sistema, lista e thread aberta
+  useEffect(() => {
+    if (!profile?.company_id) return;
+
+    const channel = supabaseZaptro
+      .channel(`whatsapp_messages_notify_${profile.company_id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'whatsapp_messages' },
+        (payload) => {
+          const row = payload.new as Record<string, unknown>;
+          const dir = String(row.direction ?? '').toLowerCase();
+          if (dir !== 'in') return;
+          const convId = String(row.conversation_id ?? '');
+          if (!convId) return;
+          const preview = String(row.content ?? 'Nova mensagem').slice(0, 140);
+          const hit = conversationsRef.current.find((c) => c.id === convId);
+          const senderLabel = waInboxContactLabel(hit ?? null);
+
+          playWaIncomingMessageSound();
+          showWaDesktopNotificationIfAllowed({
+            title: `Nova mensagem — ${senderLabel}`,
+            body: preview,
+            tag: `zaptro-wa-${String(row.id ?? convId)}`,
+          });
+
+          void fetchConversationsFromDb({ manageLoading: false });
+          void refetchMessagesIfSelected(convId);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabaseZaptro.removeChannel(channel);
+    };
+  }, [profile?.company_id, fetchConversationsFromDb, refetchMessagesIfSelected]);
 
   // 3. Carregar Mensagens (ou thread de demonstração)
   useEffect(() => {
@@ -572,11 +848,12 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const sendBlocked = useMemo(() => {
     if (!selectedChat || !profile?.id) return false;
+    if (lockedChatIds.has(selectedChat.id)) return true; // Forced lock by Admin
     if (isMaster) return false;
     if (isZaptroDemoConversationId(selectedChat.id)) return false;
     const who = selectedChat.assigned_to;
     return !!(who && who !== profile.id);
-  }, [selectedChat, profile?.id, isMaster]);
+  }, [selectedChat, profile?.id, isMaster, lockedChatIds]);
 
   const customerIdleMinutes = useMemo(() => {
     if (!selectedChat) return null;
@@ -639,11 +916,93 @@ const WhatsAppPremiumContent: React.FC = () => {
     }
   };
 
+  const handleTransferToDept = async (dept: string) => {
+    if (!selectedChat || !profile?.company_id) return;
+    setTransferring(true);
+    try {
+      const { error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .update({ department: dept, assigned_to: null, attendance_status: 'awaiting' })
+        .eq('id', selectedChat.id)
+        .eq('company_id', profile.company_id);
+      if (error) throw error;
+      toastSuccess(`Conversa enviada para departamento ${dept}.`);
+      setTransferOpen(false);
+    } catch (e: any) {
+      toastError(e.message || 'Erro ao transferir por departamento.');
+    } finally {
+      setTransferring(false);
+    }
+  };
+
+  const handleClaimConversation = async () => {
+    if (!selectedChat || !profile?.id || !profile?.company_id) return;
+    if (isZaptroDemoConversationId(selectedChat.id)) {
+      toastSuccess('Demonstração: Conversa assumida (simulado).');
+      setSelectedChat(prev => prev ? { ...prev, assigned_to: profile.id, attendance_status: 'in_service' } : null);
+      return;
+    }
+    setClaiming(true);
+    try {
+      const { error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .update({ 
+          assigned_to: profile.id, 
+          attendance_status: 'in_service',
+          department: profile.department || null,
+          claimed_at: new Date().toISOString()
+        })
+        .eq('id', selectedChat.id)
+        .eq('company_id', profile.company_id);
+
+      if (error) throw error;
+      
+      notifyZaptro('success', 'Atendimento', `Você assumiu esta conversa.`);
+    } catch (e: any) {
+      toastError(e.message || 'Falha ao assumir conversa.');
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const handleInterruptConversation = async () => {
+    if (!selectedChat || !profile?.id || !profile?.company_id || !isMaster) return;
+    setInterrupting(true);
+    try {
+      const { error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .update({ 
+          assigned_to: profile.id, 
+          attendance_status: 'in_service',
+          claimed_at: new Date().toISOString()
+        })
+        .eq('id', selectedChat.id)
+        .eq('company_id', profile.company_id);
+
+      if (error) throw error;
+      notifyZaptro('warning', 'Interrupção', 'Você assumiu o controle deste atendimento.');
+    } catch (e: any) {
+      toastError(e.message || 'Falha ao interromper.');
+    } finally {
+      setInterrupting(false);
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedChat || sending) return;
 
-    const text = newMessage.trim();
+    let text = newMessage.trim();
+
+    // Auto-identificação se for a primeira mensagem do atendente ou se não houver mensagens recentes da equipe
+    const isFirstAgentMessage = messages.filter(m => m.direction === 'out').length === 0;
+    if (isFirstAgentMessage) {
+      const deptLabel = profile?.department ? ` — ${profile.department}` : '';
+      const intro = `Atendente ${profile?.full_name || 'Zaptro'}${deptLabel}:\n\n`;
+      text = intro + text;
+    }
+
+    setSending(true);
 
     if (!isZaptroDemoConversationId(selectedChat.id) && !isMaster) {
       const who = selectedChat.assigned_to;
@@ -693,6 +1052,215 @@ const WhatsAppPremiumContent: React.FC = () => {
     }
   };
 
+  const handleSelectChat = useCallback(async (chat: Conversation) => {
+    setSelectedChat(chat);
+    setNewMessage('');
+    setReadSessionIds(prev => {
+      const next = new Set(prev);
+      next.add(chat.id);
+      return next;
+    });
+    setUnreadForcedIds(prev => {
+      const next = new Set(prev);
+      next.delete(chat.id);
+      return next;
+    });
+
+    setSearchInsideOpen(false);
+    setSearchInsideTerm('');
+    setSelectionMode(false);
+    setSelectedMessageIds(new Set());
+
+    // Mark as read in local state list
+    setConversations(prev => prev.map(c => c.id === chat.id ? { ...c, unread_count: 0 } : c));
+
+    // Mark as read in database
+    if (!isZaptroDemoConversationId(chat.id) && profile?.company_id) {
+      void supabaseZaptro
+        .from('whatsapp_conversations')
+        .update({ unread_count: 0 })
+        .eq('id', chat.id)
+        .eq('company_id', profile.company_id);
+    }
+
+    if (chat.sender_number) {
+      navigate(`${ZAPTRO_ROUTES.CHAT}/${onlyDigits(chat.sender_number) || chat.id}`);
+    }
+  }, [navigate, profile?.company_id]);
+
+  const startRecording = async () => {
+    // 1. Check permission status before requesting
+    try {
+      const permResult = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+
+      if (permResult.state === 'denied') {
+        notifyZaptro('error', '🎤 Microfone bloqueado', 'O acesso ao microfone foi negado. Clique no cadeado 🔒 na barra do navegador e permita o microfone.');
+        return;
+      }
+
+      if (permResult.state === 'prompt') {
+        notifyZaptro('info', '🎤 Permissão necessária', 'O navegador vai pedir acesso ao microfone. Clique em "Permitir" para continuar.');
+      }
+    } catch {
+      // Alguns browsers não suportam permissions.query — continuar normalmente
+    }
+
+    // 2. Request actual stream
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      audioRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        handleSendAudioMessage(audioUrl, recordingDuration);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      recorder.start();
+      setIsRecording(true);
+      setRecordingDuration(0);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingDuration(prev => prev + 1);
+      }, 1000);
+
+    } catch (err: unknown) {
+      const name = (err as { name?: string })?.name;
+      if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+        notifyZaptro('error', '🎤 Permissão negada', 'Acesso ao microfone bloqueado. Clique no cadeado 🔒 na barra de endereço e selecione "Permitir".');
+      } else if (name === 'NotFoundError') {
+        notifyZaptro('error', '🎤 Microfone não encontrado', 'Nenhum microfone detectado. Conecte um e tente novamente.');
+      } else {
+        notifyZaptro('error', '🎤 Microfone', 'Não foi possível iniciar a gravação. Tente novamente.');
+      }
+      console.error('Falha ao acessar microfone:', err);
+    }
+  };
+
+
+  const stopRecording = () => {
+    if (audioRecorderRef.current && audioRecorderRef.current.state !== 'inactive') {
+      audioRecorderRef.current.stop();
+    }
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    setIsRecording(false);
+  };
+
+  const cancelRecording = () => {
+    if (audioRecorderRef.current && audioRecorderRef.current.state !== 'inactive') {
+      audioRecorderRef.current.stop();
+      // Limpa os chunks para não enviar
+      audioChunksRef.current = [];
+    }
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    setIsRecording(false);
+    setRecordingDuration(0);
+  };
+
+  const handleSendAudioMessage = (url: string, duration: number) => {
+    if (!selectedChat) return;
+
+    const newMsg: Message = {
+      id: `audio-${Date.now()}`,
+      content: 'Áudio',
+      type: 'audio',
+      audio_url: url,
+      duration: duration,
+      direction: 'out',
+      created_at: new Date().toISOString()
+    };
+
+    setMessages(prev => [...prev, newMsg]);
+    notifyZaptro('success', 'WhatsApp', 'Mensagem de voz enviada.');
+  };
+
+  const formatAudioTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const toggleMessageSelection = useCallback((id: string) => {
+    setSelectedMessageIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const filteredMessages = useMemo(() => {
+    return messages.filter(m => {
+      if (!searchInsideTerm) return true;
+      return m.content.toLowerCase().includes(searchInsideTerm.toLowerCase());
+    });
+  }, [messages, searchInsideTerm]);
+
+  const handleSaveNewContact = async () => {
+    if (!profile?.company_id) return;
+    if (!newContactForm.name || !newContactForm.phone) {
+      notifyZaptro('warning', 'Dados incompletos', 'Nome e WhatsApp são obrigatórios para o cadastro.');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .insert({
+          company_id: profile.company_id,
+          sender_name: newContactForm.name,
+          sender_number: newContactForm.phone,
+          status: 'open',
+          metadata: {
+            cnpj: newContactForm.cnpj,
+            company_name: newContactForm.companyName,
+            segment_wa: newContactForm.segmentWa,
+            segment_company: newContactForm.segmentCompany,
+            email: newContactForm.email,
+            address: newContactForm.address,
+            created_manually: true,
+            source: 'whatsapp_premium_popup'
+          }
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      notifyZaptro('success', 'CRM Zaptro', 'Contato cadastrado com sucesso e sincronizado com o CRM.');
+      setNewContactModalOpen(false);
+      setNewContactForm({
+        name: '',
+        phone: '',
+        cnpj: '',
+        companyName: '',
+        segmentWa: '',
+        segmentCompany: '',
+        email: '',
+        address: ''
+      });
+      
+      if (data) {
+        handleSelectChat(data as any);
+      }
+    } catch (err: any) {
+      console.error('Erro ao salvar contato:', err);
+      notifyZaptro('error', 'Falha no cadastro', err.message || 'Não foi possível salvar o contato no CRM.');
+    }
+  };
+
   const getDisplayName = (chat: Conversation | null) => {
     if (!chat) return 'Contato';
     return chat.sender_name || chat.sender_number || 'Novo Contato';
@@ -700,21 +1268,31 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const filteredInboxList = useMemo(() => {
     let list = displayConversations;
+    // Exclude archived
+    list = list.filter(c => !archivedChatIds.has(c.id));
+
     if (waInboxFilter === 'unread') {
-      list = list.filter((c) => (c.unread_count ?? 0) > 0);
+      list = list.filter((c) => ((c.unread_count ?? 0) > 0 || unreadForcedIds.has(c.id)) && !readSessionIds.has(c.id));
     } else if (waInboxFilter === 'starred') {
       list = list.filter((c) => starredChatIds.has(c.id));
     } else if (waInboxFilter === 'groups') {
       list = list.filter((c) => c.is_group === true);
+    } else if (waInboxFilter === 'billing') {
+      list = list.filter((c) => 
+        (c.last_message || '').toLowerCase().includes('boleto') ||
+        (c.last_message || '').toLowerCase().includes('pagamento') ||
+        (c.last_message || '').toLowerCase().includes('cobrança') ||
+        (c.tags || []).some(t => t.toLowerCase() === 'financeiro')
+      );
     }
-    const q = search.trim().toLowerCase();
+    const q = waSearchTerm.trim().toLowerCase();
     if (q) {
       list = list.filter((c) =>
         (c.sender_name || c.sender_number || 'Novo Contato').toLowerCase().includes(q)
       );
     }
     return list;
-  }, [displayConversations, waInboxFilter, starredChatIds, search]);
+  }, [displayConversations, waInboxFilter, starredChatIds, waSearchTerm, archivedChatIds, unreadForcedIds, readSessionIds]);
 
   const toggleInboxStar = useCallback((id: string) => {
     setStarredChatIds((prev) => {
@@ -722,6 +1300,48 @@ const WhatsAppPremiumContent: React.FC = () => {
       if (next.has(id)) next.delete(id);
       else next.add(id);
       persistInboxStarred(next);
+      return next;
+    });
+  }, []);
+
+  const togglePin = useCallback((id: string) => {
+    setPinnedChatIds((prev) => {
+      const next = new Set(prev);
+      const isPinned = next.has(id);
+      if (isPinned) next.delete(id);
+      else next.add(id);
+      notifyZaptro('success', 'WhatsApp', isPinned ? 'Conversa desafixada.' : 'Conversa fixada no topo.');
+      return next;
+    });
+  }, []);
+
+  const archiveChat = useCallback((id: string) => {
+    setArchivedChatIds(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    notifyZaptro('success', 'WhatsApp', 'Conversa arquivada.');
+  }, []);
+
+  const toggleUnread = useCallback((id: string) => {
+    setUnreadForcedIds(prev => {
+      const next = new Set(prev);
+      const isUnread = next.has(id);
+      if (isUnread) next.delete(id);
+      else next.add(id);
+      notifyZaptro('success', 'WhatsApp', isUnread ? 'Marcada como lida.' : 'Marcada como não lida.');
+      return next;
+    });
+  }, []);
+
+  const toggleLock = useCallback((id: string) => {
+    setLockedChatIds(prev => {
+      const next = new Set(prev);
+      const isLocked = next.has(id);
+      if (isLocked) next.delete(id);
+      else next.add(id);
+      notifyZaptro('success', 'WhatsApp', isLocked ? 'Conversa desbloqueada.' : 'Conversa bloqueada.');
       return next;
     });
   }, []);
@@ -759,7 +1379,7 @@ const WhatsAppPremiumContent: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontWeight: 950,
+          fontWeight: 700,
           fontSize,
           border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.2)' : 'transparent'}`,
           boxSizing: 'border-box',
@@ -816,7 +1436,22 @@ const WhatsAppPremiumContent: React.FC = () => {
     toastSuccess(`${api.name}: portal aberto com referência a esta conversa (parâmetros na URL).`);
   };
 
-  const handleQuickChip = (label: 'Nova carga' | 'Orçamento' | 'Comprovante' | 'Localização') => {
+  const updateAtMenuFromCaret = useCallback((value: string, caret: number) => {
+    const slice = value.slice(0, caret);
+    const at = slice.lastIndexOf('@');
+    if (at === -1) {
+      setAtMenu(null);
+      return;
+    }
+    const after = slice.slice(at + 1);
+    if (/\s/.test(after)) {
+      setAtMenu(null);
+      return;
+    }
+    setAtMenu({ start: at, filter: after.toLowerCase() });
+  }, []);
+
+  const handleQuickChip = (label: WaQuickChipLabel) => {
     if (!selectedChat) return;
     if (label === 'Nova carga') {
       notifyZaptro('success', 'Nova carga', 'A abrir Rotas — cria a rota e associa o contacto ao cliente desta conversa.');
@@ -848,6 +1483,39 @@ const WhatsAppPremiumContent: React.FC = () => {
       notifyZaptro('success', 'Localização', 'Texto modelo inserido — completa com o link público da rota quando existir.');
     }
   };
+
+  const consumeAtTokenThenChip = (label: WaQuickChipLabel) => {
+    setNewMessage((prev) => {
+      const ta = composerTextareaRef.current;
+      const caret = ta?.selectionStart ?? prev.length;
+      const slice = prev.slice(0, caret);
+      const at = slice.lastIndexOf('@');
+      if (at < 0) return prev;
+      return prev.slice(0, at) + prev.slice(caret);
+    });
+    setAtMenu(null);
+    queueMicrotask(() => {
+      handleQuickChip(label);
+      composerTextareaRef.current?.focus();
+    });
+  };
+
+  const waAtFiltered = useMemo(() => {
+    if (!atMenu) return [] as typeof WA_AT_SHORTCUTS;
+    const f = atMenu.filter;
+    const rows = WA_AT_SHORTCUTS.filter(
+      (x) =>
+        !f ||
+        x.token.startsWith(f) ||
+        x.hint.toLowerCase().includes(f) ||
+        x.label.toLowerCase().includes(f),
+    );
+    const byLabel = new Map<WaQuickChipLabel, (typeof WA_AT_SHORTCUTS)[number]>();
+    for (const r of rows) {
+      if (!byLabel.has(r.label)) byLabel.set(r.label, r);
+    }
+    return Array.from(byLabel.values());
+  }, [atMenu]);
 
   const handleAssignResponsible = async () => {
     if (!selectedChat) return;
@@ -900,8 +1568,11 @@ const WhatsAppPremiumContent: React.FC = () => {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const isDark = palette.mode === 'dark';
   const border = palette.sidebarBorder;
-  const softBg = palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : ZAPTRO_FIELD_BG;
+  const softBg = isDark ? 'rgba(255,255,255,0.04)' : ZAPTRO_FIELD_BG;
+  const text = palette.text;
+  const sub = palette.textMuted;
   const activeCargo = selectedChat ? cargoPhaseFor(selectedChat.id) : 'transito';
   const pillOn = (key: CargoPhase) =>
     activeCargo === key
@@ -910,47 +1581,28 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const shellStyle: React.CSSProperties = {
     flex: 1,
-    borderRadius: 24,
+    minHeight: 0,
+    borderRadius: 20,
     border: `1px solid ${border}`,
     overflow: 'hidden',
-    minHeight: 'min(820px, calc(100dvh - 148px))',
     width: '100%',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
     boxShadow:
       palette.mode === 'dark'
-        ? '0 0 0 1px rgba(255,255,255,0.04), 0 24px 48px rgba(0,0,0,0.32)'
-        : '0 1px 2px rgba(15,23,42,0.06), 0 20px 44px rgba(15,23,42,0.07)',
-    backgroundColor: 'rgba(217, 255, 0, 0.16)',
+        ? '0 0 0 1px rgba(255,255,255,0.06), 0 18px 40px rgba(0,0,0,0.45)'
+        : '0 1px 2px rgba(15,23,42,0.05), 0 12px 32px rgba(15,23,42,0.06)',
+    backgroundColor: isDark ? 'rgba(13, 13, 13, 0.98)' : '#ffffff',
   };
 
   const callModalName = selectedChat ? getDisplayName(selectedChat) : '';
   const callModalPhone = selectedChat?.sender_number?.trim() || '—';
-  const callModalDigits = selectedChat ? digitsForTel(selectedChat.sender_number) : '';
+  const callModalDigits = (selectedChat && selectedChat.sender_number) ? digitsForTel(selectedChat.sender_number) : '';
 
   return (
     <ZaptroLayout
       contentFullWidth
-      scrollAreaTop={
-        selectedChat ? (
-          <p
-            style={{
-              margin: '0 0 12px',
-              fontSize: 12,
-              color: 'rgba(88, 89, 90, 1)',
-              lineHeight: 1.45,
-              fontWeight: 600,
-              paddingLeft: 'clamp(16px, 3vw, 48px)',
-              paddingRight: 'clamp(16px, 3vw, 48px)',
-              boxSizing: 'border-box',
-            }}
-          >
-            Agrupado como no WhatsApp: o que enviaste ou recebeste nesta conversa (NF, fotos, PDFs) aparece aqui para
-            consulta rápida.
-          </p>
-        ) : null
-      }
     >
       <>
       <style>{`
@@ -964,202 +1616,433 @@ const WhatsAppPremiumContent: React.FC = () => {
         }
       `}</style>
     <div style={shellStyle}>
-    <div style={{ ...styles.container, flex: 1, minHeight: 0 }}>
-      <div style={{ ...styles.sidebar, borderRight: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
-        <div style={styles.sidebarHeader}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-            <h2 style={{ ...styles.sidebarTitle, color: palette.text, marginBottom: 0 }}>Mensagens</h2>
-            {showDemoInboxNotice && (
-              <span
-                style={{
-                  flexShrink: 0,
-                  fontSize: 10,
-                  fontWeight: 950,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  padding: '5px 10px',
-                  borderRadius: 999,
-                  backgroundColor: 'rgba(217, 255, 0, 0.22)',
-                  color: palette.mode === 'dark' ? '#ecfccb' : '#14532d',
-                  border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.35)' : 'rgba(0,0,0,0.08)'}`,
-                }}
-              >
-                Demo
-              </span>
-            )}
+      {/* NOVA CONVERSA PANEL (DRAWER) - FULL SIDEBAR COVER (TOP TO BOTTOM) */}
+      {newChatPanelOpen && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: 400, // Exactly the sidebar width
+          backgroundColor: palette.sidebarBg,
+          zIndex: 400,
+          display: 'flex',
+          flexDirection: 'column',
+          animation: 'zaptroSlideInLeft 0.25s ease-out',
+          borderRight: `1px solid ${border}`
+        }}>
+          <div style={{ padding: '24px 30px', display: 'flex', alignItems: 'center', gap: 20 }}>
+            <button
+              onClick={() => setNewChatPanelOpen(false)}
+              style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer', padding: 0 }}
+            >
+              <Navigation size={22} style={{ transform: 'rotate(-90deg)' }} />
+            </button>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: palette.text, flex: 1 }}>Nova conversa</h2>
+            <button
+              onClick={() => setNewChatPanelOpen(false)}
+              style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer', padding: 4 }}
+            >
+              <X size={22} />
+            </button>
           </div>
-          <div style={{ ...styles.liveIndicator, marginTop: 10 }}>
-            <div style={styles.liveDot} /> Zaptro Pro Intelligence ativa
-          </div>
-          {showDemoInboxNotice && (
+          
+          <div style={{ padding: '0 30px 20px' }}>
             <div
-              role="status"
-              aria-live="polite"
               style={{
-                marginTop: 12,
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 12,
-                padding: '12px 14px',
-                borderRadius: 10,
-                boxSizing: 'border-box',
-                backgroundColor: palette.mode === 'dark' ? '#182229' : '#f0f2f5',
-                border:
-                  palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(0,0,0,0.06)',
+                ...styles.searchBox,
+                backgroundColor: palette.mode === 'dark' ? '#202124' : '#f1f5f9',
+                border: `1px solid ${border}`,
+                padding: '2px 14px',
+                borderRadius: 14,
               }}
             >
-              <BellOff
-                size={20}
-                strokeWidth={2}
-                color={palette.mode === 'dark' ? '#8696a0' : '#54656f'}
-                style={{ flexShrink: 0, marginTop: 1 }}
-                aria-hidden
+              <Search size={18} color={palette.textMuted} />
+              <input
+                type="text"
+                placeholder="Pesquisar nome ou número..."
+                value={newChatSearch}
+                onChange={(e) => setNewChatSearch(e.target.value)}
+                autoFocus
+                style={{ ...styles.searchInput, color: palette.text }}
               />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 13,
-                    lineHeight: 1.45,
-                    fontWeight: 400,
-                    color: palette.mode === 'dark' ? '#e9edef' : '#111b21',
-                  }}
+            </div>
+          </div>
+
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div style={{ padding: '8px 0' }}>
+              <button 
+                style={{
+                  ...styles.newChatOption,
+                  backgroundColor: LIME,
+                  margin: '0 30px',
+                  width: 'calc(100% - 60px)',
+                  borderRadius: 16,
+                  padding: '16px 24px',
+                  boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)'
+                }}
+                onClick={() => {
+                  setNewContactModalOpen(true);
+                  setNewChatPanelOpen(false);
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.95)')}
+                onMouseLeave={(e) => (e.currentTarget.style.filter = 'none')}
+              >
+                <div style={{ ...styles.newChatIconWrap, backgroundColor: '#000', border: 'none' }}><UserPlus size={22} color={LIME} /></div>
+                <span style={{ fontWeight: 800, color: '#000', fontSize: 16 }}>Novo contato</span>
+              </button>
+            </div>
+
+            <div style={{ padding: '20px 30px 10px', fontSize: 11, fontWeight: 700, color: palette.lime, textTransform: 'uppercase' }}>
+              Contatos frequentes
+            </div>
+
+            {mergedDemoConversations.filter(c => 
+              !newChatSearch || getDisplayName(c).toLowerCase().includes(newChatSearch.toLowerCase())
+            ).map(chat => (
+              <div
+                key={chat.id}
+                onClick={() => {
+                  handleSelectChat(chat);
+                  setNewChatPanelOpen(false);
+                }}
+                style={{ ...styles.chatItem, borderBottom: 'none' }}
+              >
+                <div style={styles.avatarWrap}>
+                  <img src={chat.customer_avatar || `https://picsum.photos/seed/${chat.id}/64/64`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                </div>
+                <div style={styles.itemMain}>
+                  <span style={{ fontWeight: 700, fontSize: 15, color: palette.text }}>{getDisplayName(chat)}</span>
+                  <p style={{ ...styles.itemPreview, marginTop: 2 }}>{chat.sender_number || 'Contacto frequente'}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ ...styles.container, flex: 1, minHeight: 0 }}>
+        {/* 1. SIDEBAR (Lista de Conversas) */}
+        <div style={{ ...styles.sidebar, borderRight: `1px solid ${border}`, backgroundColor: palette.sidebarBg, position: 'relative' }}>
+
+        <div style={styles.sidebarHeader}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: '-0.03em', color: palette.text }}>Mensagens</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={styles.liveIndicator}>
+                <div style={styles.liveDot} />
+                LIVE
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <button
+                  type="button"
+                  title="Nova conversa"
+                  onClick={() => setNewChatPanelOpen(true)}
+                  style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
                 >
-                  Pré-visualização: conversas fictícias para testar o layout.
-                </p>
-                <p
-                  style={{
-                    margin: '6px 0 0',
-                    fontSize: 12.5,
-                    lineHeight: 1.4,
-                    fontWeight: 400,
-                    color: palette.mode === 'dark' ? '#8696a0' : '#667781',
-                  }}
-                >
-                  Quando existirem dados reais, esta lista é substituída automaticamente.{' '}
-                  <span style={{ color: '#00a884', fontWeight: 500 }}>Modo demonstração</span>
-                </p>
+                  <MessageSquarePlus size={22} strokeWidth={2} />
+                </button>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    title="Mais opções"
+                    onClick={(e) => { e.stopPropagation(); setSidebarMenuOpen(!sidebarMenuOpen); }}
+                    style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
+                  >
+                    <MoreVertical size={22} strokeWidth={2} />
+                  </button>
+                  {sidebarMenuOpen && (
+                    <div 
+                      ref={sidebarMenuRef}
+                      style={{
+                        position: 'absolute',
+                      top: '100%',
+                      right: 0,
+                      width: 260,
+                      backgroundColor: isDark ? '#1E1E1E' : '#fff',
+                      borderRadius: 14,
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+                      padding: '8px 0',
+                      zIndex: 200,
+                      border: `1px solid ${border}`,
+                      marginTop: 8
+                    }}>
+                      {[
+                        { 
+                          icon: FileText, 
+                          label: 'Cobranças', 
+                          onClick: () => { setWaInboxFilter('billing'); setSidebarMenuOpen(false); } 
+                        },
+                        { 
+                          icon: Zap, 
+                          label: 'Respostas rápidas', 
+                          onClick: () => { navigate('/configuracao?tab=automation'); setSidebarMenuOpen(false); } 
+                        },
+                        { 
+                          icon: Star, 
+                          label: 'Mensagens favoritas', 
+                          onClick: () => { setWaInboxFilter('starred'); setSidebarMenuOpen(false); } 
+                        },
+                        { 
+                          icon: CheckSquare, 
+                          label: 'Selecionar conversas',
+                          onClick: () => { setMassSelectionMode(true); setMassSelectedChatIds(new Set()); setSidebarMenuOpen(false); }
+                        },
+                        { 
+                          icon: Tag, 
+                          label: 'Etiquetas',
+                          onClick: () => { notifyZaptro('info', 'Etiquetas', 'Selecione as conversas para aplicar etiquetas.'); setSidebarMenuOpen(false); }
+                        },
+                        { 
+                          icon: CheckCheck, 
+                          label: 'Marcar todas como lidas',
+                          onClick: () => {
+                            setConversations(prev => prev.map(c => ({ ...c, unread_count: 0 })));
+                            setReadSessionIds(new Set(conversations.map(c => c.id)));
+                            if (profile?.company_id) {
+                              void supabaseZaptro
+                                .from('whatsapp_conversations')
+                                .update({ unread_count: 0 })
+                                .eq('company_id', profile.company_id);
+                            }
+                            notifyZaptro('success', 'WhatsApp', 'Todas as conversas marcadas como lidas.');
+                            setSidebarMenuOpen(false);
+                          }
+                        },
+                        { 
+                          icon: selectedChat && lockedChatIds.has(selectedChat.id) ? Unlock : Lock, 
+                          label: selectedChat && lockedChatIds.has(selectedChat.id) ? 'Desbloquear conversa' : 'Bloqueio do app',
+                          onClick: () => {
+                            if (selectedChat) {
+                              toggleLock(selectedChat.id);
+                              const isLocked = lockedChatIds.has(selectedChat.id);
+                              notifyZaptro(isLocked ? 'info' : 'warning', 'Bloqueio', `${isLocked ? 'Desbloqueado' : 'Bloqueado'}: ${getDisplayName(selectedChat)}`);
+                            } else {
+                              notifyZaptro('info', 'Bloqueio', 'Selecione uma conversa para bloquear.');
+                            }
+                            setSidebarMenuOpen(false);
+                          }
+                        },
+                        { 
+                          icon: LogOut, 
+                          label: 'Desconectar', 
+                          color: '#ff4d4f', 
+                          onClick: () => {
+                            if (!isMaster && !isZaptroTenantAdminRole(profile?.role)) {
+                              notifyZaptro('error', 'Acesso Negado', 'Apenas administradores podem desconectar o WhatsApp.');
+                            } else {
+                              if (confirm('Deseja desconectar este WhatsApp para conectar outro?')) {
+                                notifyZaptro('warning', 'WhatsApp', 'Desconectando instância...');
+                              }
+                            }
+                            setSidebarMenuOpen(false);
+                          }
+                        },
+                      ].map((item, idx) => (
+                        (!item.adminOnly || isMaster) && (
+                          <button
+                            key={idx}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              item.onClick?.();
+                              setSidebarMenuOpen(false);
+                              if (!item.onClick) notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" em desenvolvimento.`);
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '10px 18px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 12,
+                              border: 'none',
+                              background: 'transparent',
+                              color: item.color || palette.text,
+                              fontSize: 14,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = isDark ? 'rgba(255,255,255,0.05)' : '#f8fafc')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                          >
+                            {item.icon && <item.icon size={18} color={item.color || palette.textMuted} />}
+                            {item.label}
+                          </button>
+                        )
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          )}
-          <div
-            role="tablist"
-            aria-label="Filtro da lista de conversas"
-            style={{
-              marginTop: 14,
-              paddingTop: 13,
-              paddingBottom: 13,
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 8,
-              maxWidth: 358,
-              width: '100%',
-            }}
-          >
-            {(
-              [
-                { id: 'all' as const, label: 'Tudo' },
-                { id: 'unread' as const, label: 'Não lidas' },
-                { id: 'starred' as const, label: 'Favoritas' },
-                { id: 'groups' as const, label: 'Grupos' },
-              ] as const
-            ).map(({ id, label }) => {
-              const on = waInboxFilter === id;
-              const dark = palette.mode === 'dark';
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  onClick={() => setWaInboxFilter(id)}
-                  title={
-                    id === 'groups'
-                      ? 'Mostrar só conversas de grupo / equipa já registadas'
-                      : id === 'starred'
-                        ? 'Conversas que marcou com a estrela'
-                        : id === 'unread'
-                          ? 'Conversas com mensagens por ler'
-                          : undefined
-                  }
-                  style={{
-                    borderRadius: 999,
-                    padding: '6px 14px',
-                    fontSize: 10,
-                    fontWeight: on ? 700 : 500,
-                    cursor: 'pointer',
-                    border: on
-                      ? '1px solid transparent'
-                      : dark
-                        ? '1px solid rgba(134,150,160,0.28)'
-                        : '1px solid rgba(15,23,42,0.12)',
-                    backgroundColor: on
-                      ? dark
-                        ? 'rgba(255,255,255,0.14)'
-                        : ZAPTRO_SOFT_NEUTRAL_MUTED
-                      : 'transparent',
-                    color: on ? (dark ? '#e9edef' : 'rgba(74, 74, 74, 1)') : dark ? 'rgba(233,237,239,0.55)' : '#64748b',
-                  }}
-                >
-                  {label}
-                </button>
-              );
-            })}
           </div>
+
           <div
             style={{
               ...styles.searchBox,
-              width: '100%',
-              maxWidth: 358,
-              boxSizing: 'border-box',
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f4f4f4',
-              marginTop: 12,
+              backgroundColor: palette.mode === 'dark' ? '#202124' : '#f1f5f9',
+              border: `1px solid ${border}`,
+              padding: '2px 14px',
+              borderRadius: 14,
             }}
           >
-            <Search size={16} color="#737373" />
+            <Search size={18} color={palette.textMuted} />
             <input
-              placeholder="Buscar conversas…"
+              type="text"
+              placeholder="Pesquisar conversas..."
+              value={waSearchTerm}
+              onChange={(e) => setWaSearchTerm(e.target.value)}
               style={{ ...styles.searchInput, color: palette.text }}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
 
-        <div style={styles.chatList}>
-          {loading ? (
-            <div style={styles.loadingArea}>
-              <Clock className="spin" size={24} color="#D9FF00" />
-            </div>
-          ) : filteredInboxList.length === 0 ? (
-            <div
-              style={{
-                padding: '28px 24px',
-                fontSize: 13,
-                color: palette.textMuted,
-                fontWeight: 600,
-                textAlign: 'center',
-                lineHeight: 1.5,
-              }}
-            >
-              Nenhuma conversa corresponde a este filtro ou à pesquisa.
-            </div>
-          ) : (
-            filteredInboxList.map((chat) => (
-              <div
-                key={chat.id}
-                onClick={() => setSelectedChat(chat)}
+        {/* FILTROS (STICKY) */}
+        <div
+          role="tablist"
+          aria-label="Filtro da lista de conversas"
+          style={{
+            padding: '12px 30px',
+            display: massSelectionMode ? 'none' : 'flex',
+            flexWrap: 'wrap',
+            gap: 8,
+            position: 'sticky',
+            top: 0,
+            backgroundColor: palette.sidebarBg,
+            zIndex: 10,
+            boxSizing: 'border-box',
+            borderBottom: `1px solid ${border}`
+          }}
+        >
+          {(
+            [
+              { id: 'all' as const, label: 'Tudo' },
+              { id: 'unread' as const, label: 'Não lidas' },
+              { id: 'starred' as const, label: 'Favoritas' },
+              { id: 'groups' as const, label: 'Grupos' },
+              { id: 'billing' as const, label: 'Cobranças' },
+            ] as const
+          ).map(({ id, label }) => {
+            const on = waInboxFilter === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => setWaInboxFilter(id)}
                 style={{
-                  ...styles.chatItem,
-                  backgroundColor: selectedChat?.id === chat.id ? 'rgba(217, 255, 0, 0.09)' : 'transparent',
-                  borderLeft: selectedChat?.id === chat.id ? '4px solid #D9FF00' : '4px solid transparent',
+                  padding: '10px 24px',
+                  borderRadius: 16,
+                  border: on ? 'none' : `1px solid ${border}`,
+                  backgroundColor: on ? '#000' : 'transparent',
+                  color: on ? LIME : palette.text,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  fontFamily: 'inherit',
                 }}
               >
-                <div style={styles.avatarWrap}>{renderAvatar(chat, 'list')}</div>
-                <div style={styles.itemMain}>
-                  <div style={styles.itemHeader}>
-                    <span style={{ ...styles.itemName, color: palette.text }}>{getDisplayName(chat)}</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {massSelectionMode && (
+          <div style={{ 
+            backgroundColor: palette.mode === 'dark' ? '#202c33' : '#f0f2f5',
+            padding: '12px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: `1px solid ${border}`
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button 
+                onClick={() => setMassSelectionMode(false)}
+                style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+              <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>{massSelectedChatIds.size} selecionadas</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <button title="Arquivar" onClick={() => notifyZaptro('info', 'WhatsApp', 'Conversas arquivadas.')} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Archive size={18} /></button>
+              <button title="Favoritar" onClick={() => notifyZaptro('info', 'WhatsApp', 'Conversas favoritadas.')} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Star size={18} /></button>
+              <button title="Apagar" onClick={() => notifyZaptro('danger', 'WhatsApp', 'Conversas apagadas.')} style={{ border: 'none', background: 'transparent', color: '#EF4444', cursor: 'pointer' }}><Trash2 size={18} /></button>
+            </div>
+          </div>
+        )}
+
+        {/* LISTA DE CONVERSAS */}
+        <div style={{ ...styles.chatList }}>
+          {loading ? (
+            <div style={{ padding: '40px 30px', textAlign: 'center' }}>
+              <Clock className="spin" size={24} color={LIME} />
+            </div>
+          ) : filteredInboxList.length === 0 ? (
+            <div style={{ padding: '40px 30px', textAlign: 'center' }}>
+              <p style={{ fontSize: 14, color: palette.textMuted, fontWeight: 700 }}>Nenhuma conversa encontrada.</p>
+            </div>
+          ) : (
+            filteredInboxList.map((chat) => {
+              const isUnread = ((chat.unread_count ?? 0) > 0 || unreadForcedIds.has(chat.id)) && !readSessionIds.has(chat.id);
+              return (
+                <div
+                  key={chat.id}
+                  onClick={() => {
+                    if (massSelectionMode) {
+                      const next = new Set(massSelectedChatIds);
+                      if (next.has(chat.id)) next.delete(chat.id);
+                      else next.add(chat.id);
+                      setMassSelectedChatIds(next);
+                    } else {
+                      handleSelectChat(chat);
+                    }
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setContextMenu({ x: e.clientX, y: e.clientY, chat });
+                  }}
+                  style={{
+                    ...styles.chatItem,
+                    backgroundColor: massSelectedChatIds.has(chat.id) ? (palette.mode === 'dark' ? '#2b3941' : '#e2e8f0') : (selectedChat?.id === chat.id ? softBg : 'transparent'),
+                    borderBottom: `1px solid ${border}`,
+                    transition: 'background 0.2s ease',
+                    position: 'relative'
+                  }}
+                >
+                  {massSelectionMode && (
+                    <div style={{ marginRight: 12 }}>
+                      <input 
+                        type="checkbox" 
+                        checked={massSelectedChatIds.has(chat.id)} 
+                        onChange={() => {}} 
+                        style={{ cursor: 'pointer', accentColor: LIME }} 
+                      />
+                    </div>
+                  )}
+                  <div style={styles.avatarWrap}>
+                    <img
+                      alt=""
+                      src={chat.customer_avatar || `https://picsum.photos/seed/${chat.id}/64/64`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                  <div style={styles.itemMain}>
+                    <div style={styles.itemHeader}>
+                      <span style={{ 
+                        ...styles.itemName, 
+                        color: palette.text,
+                        fontWeight: isUnread ? 800 : 700,
+                        fontSize: 15
+                      }}>
+                        {getDisplayName(chat)}
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <button
                         type="button"
                         title={starredChatIds.has(chat.id) ? 'Remover dos favoritos' : 'Favoritar conversa'}
@@ -1184,53 +2067,161 @@ const WhatsAppPremiumContent: React.FC = () => {
                         <Star size={15} strokeWidth={2} fill={starredChatIds.has(chat.id) ? 'currentColor' : 'none'} />
                       </button>
                       <span style={styles.itemTime}>{formatTime(chat.last_customer_message_at)}</span>
-                    </span>
+                    </div>
                   </div>
-                  <p style={styles.itemPreview}>{chat.last_message || 'Nenhuma mensagem'}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                    <p style={{ ...styles.itemPreview, flex: 1 }}>{chat.last_message || 'Nenhuma mensagem'}</p>
+                    {isUnread && (
+                      <div style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                        backgroundColor: LIME,
+                        color: '#000',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 11,
+                        fontWeight: 900,
+                        flexShrink: 0,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      }}>
+                        {chat.unread_count || 1}
+                      </div>
+                    )}
+                    {chat.assigned_to && (
+                      <span style={{ 
+                        fontSize: 9, 
+                        fontWeight: 700, 
+                        textTransform: 'uppercase', 
+                        color: palette.lime, 
+                        backgroundColor: '#000', 
+                        padding: '2px 6px', 
+                        borderRadius: 4,
+                        whiteSpace: 'nowrap'
+                      }}>
+                        Em Atendimento
+                      </span>
+                    )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
 
-      <div style={styles.centerColumn}>
+              <div style={styles.centerColumn}>
         {selectedChat ? (
-          <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+              minHeight: 0,
+              overflow: 'hidden',
+              width: '100%',
+              backgroundColor: palette.mode === 'dark' ? '#0b141a' : '#efeae2',
+              position: 'relative'
+            }}
+          >
+            {/* CHAT HEADER */}
             <div style={{ ...styles.chatHeader, borderBottom: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
-              <div style={styles.headerProfile}>
+              <div 
+                style={{ ...styles.headerProfile, cursor: 'pointer' }}
+                onClick={() => setShowRightPanel(true)}
+              >
                 {renderAvatar(selectedChat, 'header')}
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                    <h3 style={{ ...styles.activeName, color: palette.text }}>{getDisplayName(selectedChat)}</h3>
-                    {isZaptroDemoConversationId(selectedChat.id) && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 950,
-                          letterSpacing: '0.08em',
-                          textTransform: 'uppercase',
-                          padding: '4px 8px',
-                          borderRadius: 8,
-                          backgroundColor: 'rgba(217, 255, 0, 0.2)',
-                          color: palette.text,
-                          border: `1px solid ${border}`,
-                        }}
-                      >
-                        Demonstração
-                      </span>
-                    )}
+                    <h3 style={{ ...styles.activeName, color: palette.text, fontSize: 18, marginBottom: 2 }}>{getDisplayName(selectedChat)}</h3>
                   </div>
-                  <div style={styles.statusRow}>
-                    <span style={styles.onlinePill}>● online</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' }} />
+                    <span style={styles.onlinePill}>online agora</span>
                   </div>
                 </div>
               </div>
-              <div style={styles.headerActions}>
+
+              {searchInsideOpen ? (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '0 20px' }}>
+                  <div style={{ position: 'relative', flex: 1 }}>
+                    <Search 
+                      size={16} 
+                      color={palette.textMuted} 
+                      style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} 
+                    />
+                    <input
+                      autoFocus
+                      placeholder="Pesquisar na conversa..."
+                      value={searchInsideTerm}
+                      onChange={(e) => setSearchInsideTerm(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 16px 10px 42px',
+                        borderRadius: 12,
+                        border: 'none',
+                        backgroundColor: palette.mode === 'dark' ? '#202c33' : '#f0f2f5',
+                        color: palette.text,
+                        fontSize: 14,
+                        outline: 'none'
+                      }}
+                    />
+                  </div>
+                  <button 
+                    onClick={() => { setSearchInsideOpen(false); setSearchInsideTerm(''); }}
+                    style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+                  >
+                    Fechar
+                  </button>
+                </div>
+              ) : selectionMode ? (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <button 
+                      onClick={() => setSelectionMode(false)}
+                      style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}
+                    >
+                      <X size={20} />
+                    </button>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: palette.text }}>{selectedMessageIds.size} selecionadas</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <button 
+                      title="Favoritar"
+                      onClick={() => notifyZaptro('info', 'WhatsApp', 'Mensagens favoritadas.')}
+                      style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}
+                    >
+                      <Star size={20} />
+                    </button>
+                    <button 
+                      title="Compartilhar"
+                      onClick={() => notifyZaptro('info', 'WhatsApp', 'Link de compartilhamento gerado.')}
+                      style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}
+                    >
+                      <Share size={20} />
+                    </button>
+                    <button 
+                      title="Apagar"
+                      onClick={() => {
+                        setMessages(prev => prev.filter(m => !selectedMessageIds.has(m.id)));
+                        setSelectedMessageIds(new Set());
+                        setSelectionMode(false);
+                        notifyZaptro('success', 'WhatsApp', 'Mensagens apagadas.');
+                      }}
+                      style={{ border: 'none', background: 'transparent', color: '#EF4444', cursor: 'pointer' }}
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <button
                   type="button"
                   style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
-                  title="Ligar — ver número e aviso"
                   onClick={() => setCallActionModal('voice')}
                 >
                   <Phone size={18} />
@@ -1238,585 +2229,762 @@ const WhatsAppPremiumContent: React.FC = () => {
                 <button
                   type="button"
                   style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
-                  title="Vídeo — informação"
                   onClick={() => setCallActionModal('video')}
                 >
                   <Video size={18} />
                 </button>
-                <button type="button" style={{ ...styles.iconRound, borderColor: border, color: palette.text }} title="Mais">
-                  <MoreVertical size={18} />
-                </button>
-                <button
-                  type="button"
-                  style={{
-                    ...styles.assignBtn,
-                    opacity: assigning ? 0.65 : 1,
-                    cursor: assigning ? 'wait' : 'pointer',
-                  }}
-                  disabled={assigning}
-                  onClick={() => void handleAssignResponsible()}
-                >
-                  {assigning ? 'A atribuir…' : 'Atribuir responsável'}
-                </button>
-              </div>
-            </div>
-
-            <div style={{ ...styles.cargoStrip, borderBottom: `1px solid ${border}`, backgroundColor: softBg }}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 16,
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: palette.mode === 'dark' ? '4px 0 2px' : '16px 18px',
-                  borderRadius: palette.mode === 'dark' ? 0 : 16,
-                  backgroundColor: palette.mode === 'dark' ? 'transparent' : ZAPTRO_SOFT_NEUTRAL_MUTED,
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 14,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  <div
-                    role="group"
-                    aria-label="Estado da carga"
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      alignItems: 'center',
-                      gap: 10,
-                      minWidth: 0,
-                      flex: '1 1 220px',
-                    }}
-                  >
-                    {(
-                      [
-                        { id: 'coletado' as const, label: 'Coletado' },
-                        { id: 'transito' as const, label: 'Em trânsito' },
-                        { id: 'entregue' as const, label: 'Entregue' },
-                      ] as const
-                    ).map(({ id, label }) => (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => selectedChat && setCargoPhaseForChat(selectedChat.id, id)}
-                        style={{
-                          ...styles.cargoPill,
-                          border: `1px solid ${border}`,
-                          ...pillOn(id),
-                        }}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        marginLeft: 4,
-                        paddingLeft: 6,
-                        borderLeft: `1px solid ${border}`,
-                        minHeight: 28,
-                        boxSizing: 'border-box',
-                      }}
-                      aria-hidden={true}
-                    >
-                      <Truck size={18} color={palette.lime} aria-hidden />
-                    </span>
-                  </div>
+                <div style={{ position: 'relative' }} ref={headerMenuRef}>
                   <button
                     type="button"
-                    onClick={handleUpdateCargoStatus}
-                    style={{
-                      ...styles.updateCargoBtn,
-                      backgroundColor: palette.mode === 'dark' ? '#1e293b' : '#ffffff',
-                      color: palette.text,
-                      borderColor: border,
-                    }}
+                    style={{ ...styles.iconRound, borderColor: border, color: palette.text }}
+                    onClick={() => setHeaderMenuOpen((v) => !v)}
                   >
-                    Atualizar status
+                    <MoreVertical size={18} />
                   </button>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    columnGap: 20,
-                    rowGap: 12,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    paddingTop: 4,
-                    borderTop: palette.mode === 'dark' ? `1px solid rgba(255,255,255,0.08)` : `1px solid rgba(0,0,0,0.07)`,
-                  }}
-                >
-                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
-                    <MapPin size={15} strokeWidth={2.2} /> Origem → Destino
-                  </span>
-                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
-                    <Calendar size={15} strokeWidth={2.2} /> Prazo: —
-                  </span>
-                  <span style={{ ...styles.metaItem, color: palette.textMuted }}>
-                    <DollarSign size={15} strokeWidth={2.2} /> Frete: —
-                  </span>
+                  {headerMenuOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      right: 0,
+                      marginTop: 8,
+                      width: 220,
+                      backgroundColor: palette.mode === 'dark' ? '#233138' : '#fff',
+                      borderRadius: 12,
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      padding: '8px 0',
+                      zIndex: 1000,
+                      border: `1px solid ${border}`
+                    }}>
+                      {[
+                        { icon: Info, label: 'Dados do contato', onClick: () => { setShowRightPanel(true); setHeaderMenuOpen(false); } },
+                        { icon: Search, label: 'Pesquisar', onClick: () => { setSearchInsideOpen(true); setHeaderMenuOpen(false); } },
+                        { icon: CheckSquare, label: 'Selecionar mensagens', onClick: () => { setSelectionMode(true); setSelectedMessageIds(new Set()); setHeaderMenuOpen(false); } },
+                        { 
+                          icon: Clock, 
+                          label: tempMessagesEnabled ? 'Desativar mensagens temporárias' : 'Mensagens temporárias', 
+                          onClick: () => { setTempMessagesEnabled(!tempMessagesEnabled); setHeaderMenuOpen(false); notifyZaptro('info', 'WhatsApp', tempMessagesEnabled ? 'Mensagens temporárias desativadas.' : 'Mensagens temporárias ativadas (24h).'); } 
+                        },
+                        { icon: XCircle, label: 'Fechar conversa', onClick: () => { setSelectedChat(null); setHeaderMenuOpen(false); } },
+                        { divider: true },
+                        { 
+                          icon: MinusCircle, 
+                          label: 'Limpar conversa', 
+                          onClick: () => { 
+                            if (confirm('Deseja limpar todas as mensagens desta conversa?')) {
+                              setMessages([]);
+                              setHeaderMenuOpen(false);
+                              notifyZaptro('success', 'WhatsApp', 'Conversa limpa.');
+                            }
+                          } 
+                        },
+                        { 
+                          icon: Trash2, 
+                          label: 'Apagar conversa', 
+                          onClick: () => { 
+                            if (confirm('Deseja apagar esta conversa permanentemente?')) {
+                              setConversations(prev => prev.filter(c => c.id !== selectedChat.id));
+                              setSelectedChat(null);
+                              setHeaderMenuOpen(false);
+                              notifyZaptro('success', 'WhatsApp', 'Conversa apagada.');
+                            }
+                          } 
+                        },
+                      ].map((item, idx) => (
+                        item.divider ? (
+                          <div key={idx} style={{ height: 1, backgroundColor: border, margin: '8px 0' }} />
+                        ) : (
+                          <button
+                            key={idx}
+                            onClick={item.onClick}
+                            style={{
+                              width: '100%',
+                              padding: '10px 16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 12,
+                              border: 'none',
+                              background: 'transparent',
+                              color: palette.text,
+                              fontSize: 14,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              transition: 'background 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = palette.mode === 'dark' ? '#111b21' : '#f8fafc')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                          >
+                            {item.icon && <item.icon size={18} color={palette.textMuted} />}
+                            {item.label}
+                          </button>
+                        )
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
+            {/* AI HINT / SUMMARY */}
             <div
               style={{
                 ...styles.aiHint,
                 borderBottom: `1px solid ${border}`,
-                backgroundColor: palette.mode === 'dark' ? palette.sidebarBg : '#f4f4f4',
+                backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.05)' : '#f8fafc',
+                padding: '10px 24px'
               }}
             >
               <Sparkles size={16} color={palette.lime} style={{ flexShrink: 0 }} />
-              <span style={{ color: palette.textMuted, fontSize: 13, fontWeight: 600, flex: 1, minWidth: 0 }}>
+              <span style={{ color: palette.textMuted, fontSize: 13, fontWeight: 700 }}>
                 {assistantHint}
               </span>
             </div>
-
-            {slaBreached ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: '10px 14px',
-                  borderBottom: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(251,191,36,0.12)' : '#FFFBEB',
-                  color: palette.mode === 'dark' ? '#FDE68A' : '#92400E',
-                }}
-              >
-                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: 12, fontWeight: 800, lineHeight: 1.45 }}>
-                  Cliente há mais de {SLA_CUSTOMER_REPLY_MIN} min na fila (última entrada). Prioriza resposta ou
-                  reatribui a conversa.
-                </span>
-              </div>
-            ) : null}
-
+            {/* MESSAGES AREA */}
             <div
               style={{
                 ...styles.messagesArea,
-                backgroundColor: palette.mode === 'dark' ? palette.searchBg : ZAPTRO_FIELD_BG,
+                flex: 1,
+                overflowY: 'auto',
+                padding: '20px 40px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+                backgroundImage: palette.mode === 'dark' 
+                  ? 'linear-gradient(rgba(11,20,26,0.92), rgba(11,20,26,0.92)), url("https://static.whatsapp.net/rsrc.php/v3/y6/r/wa669ae5z23.png")'
+                  : 'linear-gradient(rgba(244, 244, 244, 0.96), rgba(244, 244, 244, 0.96)), url("https://static.whatsapp.net/rsrc.php/v3/y6/r/wa669ae5z23.png")',
+                backgroundSize: '400px',
+                position: 'relative'
               }}
             >
-              {messages.map((msg) => {
+              {filteredMessages.map((msg) => {
                 const isOut = msg.direction === 'out';
-                return (
-                  <div key={msg.id} style={{...styles.msgRow, justifyContent: isOut ? 'flex-end' : 'flex-start'}}>
-                    <div
-                      style={{
-                        ...styles.bubble,
-                        backgroundColor: isOut ? '#D9FF00' : palette.mode === 'dark' ? '#1E293B' : '#FFFFFF',
-                        color: isOut ? '#000000' : palette.text,
-                        borderRadius: isOut ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                        border: isOut ? 'none' : `1px solid ${palette.mode === 'dark' ? 'rgba(148,163,184,0.2)' : border}`,
-                      }}
-                    >
-                      <p style={styles.msgText}>{msg.content}</p>
-                      <span
-                        style={{
-                          display: 'block',
-                          marginTop: 6,
-                          fontSize: 10,
-                          fontWeight: 700,
-                          opacity: 0.55,
-                          textAlign: isOut ? 'right' : 'left',
-                        }}
-                      >
-                        {formatTime(msg.created_at)}
+                const isSystem = msg.type === 'system';
+                
+                if (isSystem) {
+                  return (
+                    <div key={msg.id} style={{ alignSelf: 'center', margin: '12px 0' }}>
+                      <span style={{ padding: '6px 16px', borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.05)', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase' }}>
+                        {msg.content}
                       </span>
+                    </div>
+                  );
+                }
+
+                const isSelected = selectedMessageIds.has(msg.id);
+
+                if (msg.type === 'audio' && msg.audio_url) {
+                  return (
+                    <div key={msg.id} style={{ 
+                      display: 'flex', 
+                      justifyContent: isOut ? 'flex-end' : 'flex-start',
+                      marginBottom: 4
+                    }}>
+                      <div style={{
+                        ...styles.bubble,
+                        backgroundColor: isOut ? LIME : (palette.mode === 'dark' ? '#202c33' : '#fff'),
+                        borderRadius: isOut ? '12px 0 12px 12px' : '0 12px 12px 12px',
+                        padding: '8px 12px',
+                        minWidth: 260,
+                        boxShadow: '0 1px 0.5px rgba(0,0,0,0.13)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12
+                      }}>
+                        <div style={{ position: 'relative' }}>
+                          <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${isOut ? '#000' : LIME}` }}>
+                            <img src={isOut ? (profile?.avatar_url || 'https://i.pravatar.cc/150?u=me') : (selectedChat?.customer_avatar || 'https://i.pravatar.cc/150?u=cust')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                          </div>
+                          <Mic size={14} color={LIME} style={{ position: 'absolute', bottom: -2, right: -2, backgroundColor: '#000', borderRadius: '50%', padding: 2 }} />
+                        </div>
+                        
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const audio = new Audio(msg.audio_url);
+                            audio.play();
+                          }}
+                          style={{ border: 'none', background: isOut ? '#000' : LIME, color: isOut ? LIME : '#000', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifySelf: 'center' }}
+                        >
+                          <Play size={16} fill="currentColor" style={{ marginLeft: 2 }} />
+                        </button>
+
+                        <div style={{ flex: 1 }}>
+                          <div style={{ height: 4, width: '100%', backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 2, position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '30%', backgroundColor: isOut ? '#000' : LIME }} />
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: isOut ? '#000' : palette.textMuted }}>{formatAudioTime(msg.duration || 0)}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 2, opacity: 0.5 }}>
+                              <span style={{ fontSize: 10, fontWeight: 600, color: isOut ? '#000' : palette.text }}>{formatTime(msg.created_at)}</span>
+                              {isOut && <CheckCheck size={14} color={isOut ? '#000' : LIME} />}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={msg.id} 
+                    onClick={() => selectionMode && toggleMessageSelection(msg.id)}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: 12,
+                      justifyContent: isOut ? 'flex-end' : 'flex-start',
+                      filter: (sendBlocked && !isMaster) ? 'blur(8px)' : 'none',
+                      pointerEvents: (sendBlocked && !isMaster) ? 'none' : 'auto',
+                      cursor: selectionMode ? 'pointer' : 'default',
+                    }}
+                  >
+                    {selectionMode && (
+                      <div style={{ 
+                        width: 20, 
+                        height: 20, 
+                        borderRadius: 4, 
+                        border: `2px solid ${isSelected ? LIME : palette.textMuted}`,
+                        backgroundColor: isSelected ? LIME : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        order: isOut ? 2 : -1
+                      }}>
+                        {isSelected && <Check size={14} color="#000" strokeWidth={4} />}
+                      </div>
+                    )}
+                    <div style={{
+                      ...styles.bubble,
+                      backgroundColor: isOut ? LIME : (palette.mode === 'dark' ? '#202c33' : '#fff'),
+                      color: isOut ? '#000' : palette.text,
+                      borderRadius: isOut ? '12px 0 12px 12px' : '0 12px 12px 12px',
+                      padding: '10px 14px',
+                      maxWidth: '75%',
+                      boxShadow: '0 1px 0.5px rgba(0,0,0,0.13)',
+                      position: 'relative',
+                      border: isSelected ? `1px solid ${palette.textMuted}` : 'none'
+                    }}>
+                      <p style={{ margin: 0, fontSize: 14.5, fontWeight: 600, lineHeight: 1.45 }}>{msg.content}</p>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 4, opacity: 0.5 }}>
+                        <span style={{ fontSize: 10, fontWeight: 600 }}>{formatTime(msg.created_at)}</span>
+                        {isOut && <Check size={12} strokeWidth={3} />}
+                      </div>
                     </div>
                   </div>
                 );
               })}
               <div ref={messagesEndRef} />
-            </div>
 
-            <div style={{ ...styles.quickBar, borderTop: `1px solid ${border}`, backgroundColor: palette.sidebarBg }}>
-              {(['Nova carga', 'Orçamento', 'Comprovante', 'Localização'] as const).map((label) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => handleQuickChip(label)}
-                  style={{ ...styles.quickChip, borderColor: border, color: palette.text }}
-                >
-                  {label}
-                </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => {
-                  if (!canUseTransfer) {
-                    notifyZaptro(
-                      'info',
-                      'Transferir',
-                      'Só o responsável atual, um administrador da empresa ou conversa sem dono pode reatribuir.',
-                    );
-                    return;
-                  }
-                  setTransferOpen((v) => !v);
-                }}
-                style={{
-                  ...styles.quickChip,
-                  borderColor: transferOpen ? palette.lime : border,
-                  color: palette.text,
-                  fontWeight: 950,
-                  backgroundColor: transferOpen
-                    ? palette.mode === 'dark'
-                      ? 'rgba(217,255,0,0.12)'
-                      : 'rgba(217,255,0,0.35)'
-                    : 'transparent',
-                }}
-              >
-                Transferir
-              </button>
-            </div>
-
-            {transferOpen && selectedChat ? (
-              <div
-                style={{
-                  padding: '12px 14px',
-                  borderTop: `1px solid ${border}`,
-                  backgroundColor: softBg,
+              {/* BLUR OVERLAY FOR BLOCKED CHATS */}
+              {sendBlocked && !isMaster && (
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  zIndex: 100,
                   display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 10,
                   alignItems: 'center',
-                }}
-              >
-                <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, display: 'flex', flexDirection: 'column', gap: 6, flex: '1 1 200px' }}>
-                  Passar conversa para
-                  <select
-                    value={transferTargetId}
-                    onChange={(e) => setTransferTargetId(e.target.value)}
-                    style={{
-                      padding: '10px 12px',
-                      borderRadius: 12,
-                      border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#111' : '#fff',
-                      color: palette.text,
-                      fontWeight: 700,
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    <option value="">— Escolher colega —</option>
-                    {teamMembers
-                      .filter((m) => m.id !== profile?.id)
-                      .map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.full_name?.trim() || m.id}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                <button
-                  type="button"
-                  disabled={!transferTargetId || transferring}
-                  onClick={() => void handleTransferToUser()}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: 12,
-                    border: 'none',
-                    background: '#000',
-                    color: LIME,
-                    fontWeight: 950,
-                    fontSize: 13,
-                    cursor: transferring || !transferTargetId ? 'not-allowed' : 'pointer',
-                    opacity: transferring || !transferTargetId ? 0.55 : 1,
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  {transferring ? 'A transferir…' : 'Confirmar transferência'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTransferOpen(false)}
-                  style={{
-                    padding: '10px 14px',
-                    borderRadius: 12,
-                    border: `1px solid ${border}`,
-                    background: 'transparent',
-                    fontWeight: 900,
-                    fontSize: 13,
-                    cursor: 'pointer',
-                    color: palette.textMuted,
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  Fechar
-                </button>
-              </div>
-            ) : null}
-
-            {sendBlocked ? (
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '12px 14px',
-                  borderTop: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? 'rgba(248,113,113,0.1)' : '#FEF2F2',
-                  color: palette.text,
-                }}
-              >
-                <Lock size={18} style={{ flexShrink: 0, color: '#f87171' }} />
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 800, flex: '1 1 200px', lineHeight: 1.45 }}>
-                  Envio bloqueado: conversa atribuída a outro agente. Atribui a ti para responder por aqui.
-                </p>
-                <button
-                  type="button"
-                  disabled={assigning}
-                  onClick={() => void handleAssignResponsible()}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: 12,
-                    border: 'none',
-                    background: '#000',
-                    color: LIME,
-                    fontWeight: 950,
-                    fontSize: 13,
-                    cursor: assigning ? 'wait' : 'pointer',
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  {assigning ? '…' : 'Atribuir a mim'}
-                </button>
-              </div>
-            ) : null}
-
-            <div style={{ ...styles.inputFooter, backgroundColor: palette.sidebarBg }}>
-              <form
-                onSubmit={handleSendMessage}
-                style={{
-                  ...styles.inputContainer,
-                  backgroundColor: palette.mode === 'dark' ? '#111' : '#f4f4f4',
-                  border: `1px solid ${border}`,
-                }}
-              >
-                <button type="button" style={styles.inputSideBtn} title="Anexo" disabled={sendBlocked}>
-                  <Paperclip size={18} color={palette.textMuted} />
-                </button>
-                <button type="button" style={styles.inputSideBtn} title="Imagem" disabled={sendBlocked}>
-                  <ImageIcon size={18} color={palette.textMuted} />
-                </button>
-                <input
-                  placeholder={sendBlocked ? 'Atribui a conversa a ti para escrever…' : 'Escreva uma mensagem…'}
-                  style={{ ...styles.inputField, color: palette.text, opacity: sendBlocked ? 0.55 : 1 }}
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  disabled={sending || sendBlocked}
-                />
-                <button type="submit" disabled={!newMessage.trim() || sending || sendBlocked} style={styles.sendBtn}>
-                  <Send size={18} color="#000" />
-                </button>
-              </form>
-            </div>
-          </>
-        ) : (
-          <div style={{ ...styles.emptyView, background: softBg }}>
-            <div
-              style={{
-                width: 88,
-                height: 88,
-                borderRadius: 28,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.1)' : 'rgba(217,255,0,0.35)',
-                border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.25)' : 'rgba(0,0,0,0.06)'}`,
-              }}
-            >
-              <Zap size={40} color="#D9FF00" fill="#0a0a0a" />
-            </div>
-            <h2 style={{ color: palette.text, fontWeight: 950, fontSize: 22, letterSpacing: '-0.03em', margin: 0 }}>
-              Zaptro Pro Messenger
-            </h2>
-            <p style={{ color: palette.textMuted, maxWidth: 400, fontWeight: 600, fontSize: 14, lineHeight: 1.55, margin: 0 }}>
-              {showDemoInboxNotice
-                ? 'As conversas à esquerda são de demonstração — escolha uma para ver o painel completo (carga, chat e lateral).'
-                : 'Selecione uma conversa à esquerda. O painel central reúne chat, status da carga e ações rápidas.'}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div
-        style={{
-          ...styles.rightPanel,
-          borderLeft: `1px solid ${border}`,
-          backgroundColor: palette.sidebarBg,
-          color: palette.text,
-        }}
-      >
-        {selectedChat ? (
-          <>
-            <div style={{ ...styles.rightHead, width: '100%', boxSizing: 'border-box' }}>
-              {renderAvatar(selectedChat, 'panel')}
-              <h3 style={{ margin: '12px 0 6px', fontSize: 15, fontWeight: 950, color: palette.text }}>{getDisplayName(selectedChat)}</h3>
-              <p
-                style={{
-                  margin: '0 0 6px',
-                  fontSize: 22,
-                  fontWeight: 600,
-                  color: 'rgba(102, 237, 83, 1)',
-                  letterSpacing: '0.01em',
-                  fontVariantNumeric: 'tabular-nums',
-                  lineHeight: 1.25,
-                  fontFamily: WHATSAPP_PHONE_FONT_FAMILY,
-                }}
-              >
-                {selectedChat.sender_number}
-              </p>
-              <p style={{ margin: '0 0 10px', fontSize: 12, color: palette.textMuted, fontWeight: 700 }}>
-                {company?.name?.trim() || 'A tua empresa'} · contacto WhatsApp
-              </p>
-              {waGatewayStatus === 'checking' && (
-                <div
-                  role="status"
-                  aria-live="polite"
-                  aria-busy="true"
-                  style={{
-                    margin: '0 0 12px',
-                    padding: '9px 7px',
-                    borderRadius: 8,
-                    backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.08)' : 'rgba(217, 255, 0, 0.33)',
-                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(217,255,0,0.2)' : 'rgba(0,0,0,0.06)'}`,
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  <div
-                    style={{
-                      height: 3,
-                      borderRadius: 999,
-                      overflow: 'hidden',
-                      marginBottom: 8,
-                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)',
-                    }}
-                  >
-                    <div
+                  justifyContent: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.2)',
+                  backdropFilter: 'blur(4px)',
+                  padding: 24
+                }}>
+                  <div style={{ backgroundColor: palette.mode === 'dark' ? '#1f2937' : '#fff', padding: '32px', borderRadius: 24, boxShadow: '0 20px 50px rgba(0,0,0,0.3)', maxWidth: 360, textAlign: 'center' }}>
+                    <Lock size={48} color={LIME} style={{ marginBottom: 16 }} />
+                    <h4 style={{ color: palette.text, fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Conversa Protegida</h4>
+                    <p style={{ color: palette.textMuted, fontSize: 14, fontWeight: 700, marginBottom: 24, lineHeight: 1.5 }}>
+                      Este cliente está a ser atendido por outro colega. Para intervir, precisa de assumir o atendimento.
+                    </p>
+                    <button
+                      onClick={() => void handleClaimConversation()}
                       style={{
-                        height: '100%',
-                        width: '42%',
-                        borderRadius: 999,
-                        background: `linear-gradient(90deg, transparent, ${palette.lime}, transparent)`,
-                        animation: 'zaptroWaConnectBar 1.35s ease-in-out infinite',
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} aria-hidden>
-                      {[0, 1, 2].map((i) => (
-                        <span
-                          key={i}
-                          style={{
-                            width: 7,
-                            height: 7,
-                            borderRadius: '50%',
-                            backgroundColor: palette.lime,
-                            animation: `zaptroWaConnectDot 1s ease-in-out ${i * 0.15}s infinite`,
-                          }}
-                        />
-                      ))}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 600,
-                        lineHeight: 1.3,
-                        color: palette.mode === 'dark' ? 'rgba(233,237,239,0.85)' : 'rgba(74, 74, 74, 1)',
-                        letterSpacing: 0,
+                        width: '100%',
+                        padding: '14px',
+                        borderRadius: 14,
+                        backgroundColor: '#000',
+                        color: LIME,
+                        border: 'none',
+                        fontWeight: 700,
+                        cursor: 'pointer'
                       }}
                     >
-                      A conectar ao gateway WhatsApp…
-                    </span>
+                      {claiming ? 'A processar...' : 'Assumir Atendimento'}
+                    </button>
                   </div>
                 </div>
               )}
-              <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>
-                PERFIL · TUDO O QUE PARTILHAS COM O CLIENTE
-              </p>
             </div>
-            <div style={styles.rightSection}>
-              <h4 style={styles.rightH4}>Documentos, mídia e envios</h4>
-              <button type="button" style={{ ...styles.docRow, borderColor: border }} onClick={() => openNotaFiscalFromChat()}>
-                <FileText size={18} color={palette.lime} />
-                <span style={{ flex: 1, minWidth: 0, color: palette.text }}>Nota fiscal</span>
-                {nfeIntegrations.length > 0 ? (
-                  <span style={{ fontSize: 10, fontWeight: 800, color: palette.textMuted, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {nfeIntegrations[0].name}
-                  </span>
+
+            {/* COMPOSER AREA */}
+            <div style={{ padding: '12px 24px', backgroundColor: palette.sidebarBg, borderTop: `1px solid ${border}` }}>
+              {sendBlocked && isMaster ? (
+                 <div style={{ padding: '10px 16px', borderRadius: 12, backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                    <Lock size={16} color="#ef4444" />
+                    <span style={{ fontSize: 12, fontWeight: 600, color: palette.text, flex: 1 }}>Conversa atribuída a outro agente. Como Admin, pode assumir agora.</span>
+                    <button onClick={handleInterruptConversation} style={{ padding: '6px 12px', borderRadius: 8, backgroundColor: '#ef4444', color: '#fff', border: 'none', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                      {interrupting ? '...' : 'Interromper'}
+                    </button>
+                 </div>
+              ) : null}
+
+              <form
+                onSubmit={handleSendMessage}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  gap: 12,
+                  backgroundColor: palette.mode === 'dark' ? '#2a3942' : '#fff',
+                  padding: '8px 12px',
+                  borderRadius: 24,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                }}
+              >
+                <div style={{ position: 'relative' }}>
+                  {attachmentMenuOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 'calc(100% + 14px)',
+                      left: 0,
+                      width: 220,
+                      backgroundColor: '#fff',
+                      borderRadius: 14,
+                      padding: '6px 0',
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                      zIndex: 1000,
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      animation: 'zaptroSlideUp 0.15s ease-out'
+                    }}>
+                      {[
+                        { icon: FileText, label: 'Documento', color: '#7f66ff' },
+                        { icon: ImageIcon, label: 'Fotos e vídeos', color: '#007aff' },
+                        { icon: Mic, label: 'Áudio', color: '#ff9500' },
+                        { icon: User, label: 'Contato', color: '#007aff' },
+                        { divider: true },
+                        { icon: CircleDollarSign, label: 'Pix', color: '#34c759' },
+                        { icon: FileText, label: 'Orçamento', color: '#ff9500' },
+                        { icon: Zap, label: 'Resposta rápida', color: '#ffcc00' },
+                        { icon: CreditCard, label: 'Cobrar', color: '#007aff' },
+                      ].map((item, idx) => (
+                        item.divider ? (
+                          <div key={idx} style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.04)', margin: '4px 0' }} />
+                        ) : (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setAttachmentMenuOpen(false);
+                              if (item.label === 'Documento') {
+                                docInputRef.current?.click();
+                                return;
+                              }
+                              if (item.label === 'Fotos e vídeos') {
+                                mediaInputRef.current?.click();
+                                return;
+                              }
+                              if (item.label === 'Áudio') {
+                                startRecording();
+                                return;
+                              }
+                              if (item.label === 'Contato') {
+                                setContactsModalOpen(true);
+                                return;
+                              }
+                              if (item.label === 'Pix') {
+                                const s = company?.settings as any;
+                                const pix = s?.pix_key;
+                                if (pix) {
+                                  const text = `Seguem os dados para pagamento via Pix:\n\n🔑 Chave Pix: ${pix}\n🏦 Banco: ${s?.bank_name || '—'}\n👤 Titular: ${s?.bank_holder || company?.name || '—'}`;
+                                  setNewMessage(text);
+                                  notifyZaptro('success', 'Pix', 'Dados inseridos. Pressione enviar.');
+                                } else {
+                                   notifyZaptro('warning', 'Pix não configurado', 'Cadastre sua chave em Conta > Minha Empresa.');
+                                }
+                                return;
+                              }
+                              if (item.label === 'Orçamento') {
+                                setQuotesModalOpen(true);
+                                return;
+                              }
+                              if (item.label === 'Cobrar') {
+                                setBillingModalOpen(true);
+                                return;
+                              }
+                              if (item.label === 'Resposta rápida') {
+                                setQuickResponsesOpen(true);
+                                return;
+                              }
+                              notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" em desenvolvimento.`);
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '8px 16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 12,
+                              border: 'none',
+                              background: 'transparent',
+                              color: '#000',
+                              fontSize: 13,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              transition: 'background 0.2s'
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                          >
+                            <div style={{ 
+                              width: 28, 
+                              height: 28, 
+                              borderRadius: 8, 
+                              backgroundColor: `${item.color}15`, 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center',
+                              color: item.color
+                            }}>
+                              <item.icon size={16} strokeWidth={2.5} />
+                            </div>
+                            <span>{item.label}</span>
+                          </button>
+                        )
+                      ))}
+                    </div>
+                  )}
+                  <button 
+                    type="button" 
+                    style={{ ...styles.inputSideBtn, color: palette.textMuted }} 
+                    onClick={() => setAttachmentMenuOpen(!attachmentMenuOpen)}
+                  >
+                    <Plus size={24} />
+                  </button>
+                </div>
+                <input 
+                  type="file" 
+                  ref={docInputRef} 
+                  style={{ display: 'none' }} 
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setPendingFile({ file, previewUrl: null });
+                    }
+                    e.target.value = '';
+                  }}
+                />
+                <input 
+                  type="file" 
+                  ref={mediaInputRef} 
+                  style={{ display: 'none' }} 
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const isImg = file.type.startsWith('image/');
+                      const url = isImg ? URL.createObjectURL(file) : null;
+                      setPendingFile({ file, previewUrl: url });
+                    }
+                    e.target.value = '';
+                  }}
+                />
+                <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {/* ── FILE PREVIEW INLINE ── */}
+                  {pendingFile && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '10px 14px',
+                      borderRadius: 14,
+                      background: palette.mode === 'dark' ? '#1a2530' : '#f0f7ff',
+                      border: `1.5px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,120,255,0.15)'}`,
+                      animation: 'zaptroSlideUp 0.2s ease-out',
+                      marginBottom: 2,
+                    }}>
+                      {/* Thumbnail or file icon */}
+                      {pendingFile.previewUrl ? (
+                        <img
+                          src={pendingFile.previewUrl}
+                          alt="preview"
+                          style={{ width: 52, height: 52, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: 52, height: 52, borderRadius: 10,
+                          background: palette.mode === 'dark' ? '#2a3942' : '#e8f0fe',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                        }}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
+                            <polyline points="14 2 14 8 20 8" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                      )}
+                      {/* Info */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: palette.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {pendingFile.file.name}
+                        </div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted, marginTop: 2 }}>
+                          {(pendingFile.file.size / 1024).toFixed(0)} KB · {pendingFile.file.type.split('/')[1]?.toUpperCase() || 'ARQUIVO'}
+                        </div>
+                      </div>
+                      {/* Actions */}
+                      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
+                            setPendingFile(null);
+                          }}
+                          style={{
+                            padding: '6px 12px', borderRadius: 10, border: '1.5px solid rgba(0,0,0,0.12)',
+                            background: 'transparent', fontSize: 12, fontWeight: 700,
+                            color: palette.textMuted, cursor: 'pointer'
+                          }}
+                        >Cancelar</button>
+                        <button
+                          type="button"
+                          disabled={sendingFile}
+                          onClick={async () => {
+                            setSendingFile(true);
+                            // Simulate upload + send
+                            await new Promise(r => setTimeout(r, 900));
+                            notifyZaptro('success', 'Arquivo enviado!', `"${pendingFile.file.name}" foi enviado para ${selectedChat?.sender_name || 'o cliente'}.`);
+                            if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
+                            setPendingFile(null);
+                            setSendingFile(false);
+                          }}
+                          style={{
+                            padding: '6px 14px', borderRadius: 10, border: 'none',
+                            background: LIME, fontSize: 12, fontWeight: 800,
+                            color: '#000', cursor: sendingFile ? 'wait' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: 6
+                          }}
+                        >
+                          {sendingFile ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" style={{ animation: 'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" stroke="#000" strokeWidth="3" fill="none" strokeDasharray="60" strokeDashoffset="20"/></svg>
+                          ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#000" strokeWidth="2.5" strokeLinecap="round"/><path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="#000" strokeWidth="2.5" strokeLinejoin="round"/></svg>
+                          )}
+                          Enviar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {isRecording ? (
+                    <div style={{ 
+                      height: 40, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: '0 12px',
+                      animation: 'zaptroSlideUp 0.2s ease-out' 
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <button type="button" onClick={cancelRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
+                          <Trash2 size={20} />
+                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff4d4f', animation: 'pulse 1s infinite' }} />
+                          <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>{formatAudioTime(recordingDuration)}</span>
+                        </div>
+                      </div>
+                      
+                      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4, padding: '0 20px', opacity: 0.3 }}>
+                        {[...Array(20)].map((_, i) => (
+                          <div key={i} style={{ width: 3, height: 6 + Math.random() * 24, backgroundColor: palette.text, borderRadius: 2 }} />
+                        ))}
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                         <button type="button" onClick={stopRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
+                           <Circle size={20} fill="#ff4d4f" />
+                         </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <textarea
+                      rows={1}
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={selectedChat && lockedChatIds.has(selectedChat.id) ? "Esta conversa foi bloqueada pelo administrador" : "Escreva uma mensagem..."}
+                      disabled={sendBlocked || sending}
+                      style={{
+                        width: '100%',
+                        border: 'none',
+                        background: 'transparent',
+                        outline: 'none',
+                        padding: '8px 0',
+                        fontSize: 15,
+                        fontWeight: 600,
+                        resize: 'none',
+                        maxHeight: 120,
+                        color: palette.text
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage(e as any);
+                        }
+                      }}
+                    />
+                  )}
+                </div>
+
+                {!newMessage.trim() && !isRecording && !sendBlocked ? (
+                  <button
+                    type="button"
+                    onClick={startRecording}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: '50%',
+                      backgroundColor: 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: palette.textMuted,
+                      transition: 'transform 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  >
+                    <Mic size={22} strokeWidth={2.5} />
+                  </button>
                 ) : (
-                  <span style={{ fontSize: 10, fontWeight: 800, color: palette.textMuted }}>API</span>
+                  <button
+                    type="submit"
+                    disabled={(sending || sendBlocked) && !isRecording}
+                    onClick={isRecording ? (e) => { e.preventDefault(); stopRecording(); } : undefined}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: '50%',
+                      backgroundColor: (isRecording || newMessage.trim()) ? LIME : 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#000',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {isRecording ? <Send size={20} fill="#000" /> : <Send size={20} fill={newMessage.trim() ? '#000' : 'none'} />}
+                  </button>
                 )}
-              </button>
-              <button type="button" style={{ ...styles.docRow, borderColor: border }}>
-                <ImageIcon size={18} color={palette.lime} /> Imagens e vídeos do chat
-              </button>
-              <button type="button" style={{ ...styles.docRow, borderColor: border }}>
-                <Package size={18} color={palette.lime} /> Fotos da carga / POD
-              </button>
-              <button type="button" style={{ ...styles.docRow, borderColor: border }}>
-                <Paperclip size={18} color={palette.lime} /> Outros anexos
-              </button>
+              </form>
             </div>
-            <div style={styles.rightSection}>
-              <h4 style={styles.rightH4}>Resumo logístico</h4>
-              <p style={{ margin: 0, fontSize: 13, color: palette.textMuted, lineHeight: 1.55, fontWeight: 600 }}>
-                Estado da carga nesta conversa: <strong style={{ color: palette.text }}>{CARGO_PHASE_LABEL[activeCargo]}</strong>.
-                Origem, destino e frete estão na barra compacta acima das mensagens.
-              </p>
-            </div>
-            <div style={styles.rightSection}>
-              <h4 style={styles.rightH4}>Alertas</h4>
-              <div style={{ ...styles.alertBox, borderColor: border }}>
-                Nenhum alerta ativo nesta conversa (protótipo de UI).
-              </div>
-            </div>
-          </>
+          </div>
         ) : (
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              padding: 32,
-              gap: 12,
-              color: palette.textMuted,
-              fontWeight: 600,
-              fontSize: 14,
-              lineHeight: 1.55,
-            }}
-          >
-            <Package size={36} strokeWidth={1.8} color={palette.lime} style={{ opacity: 0.85 }} />
-            <p style={{ margin: 0, maxWidth: 220 }}>
-              Documentos, resumo logístico e alertas aparecem aqui quando uma conversa estiver ativa.
-            </p>
+          <div style={{ ...styles.emptyView, backgroundColor: palette.mode === 'dark' ? '#222e35' : '#f4f4f4' }}>
+             <div style={{ width: 120, height: 120, borderRadius: '50%', backgroundColor: 'rgba(217, 255, 0, 0.1)', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+                <Zap size={64} color={LIME} />
+             </div>
+             <h2 style={{ fontSize: 28, fontWeight: 700, color: palette.text, letterSpacing: '-0.04em', margin: '0 0 12px 0' }}>Zaptro Premium Chat</h2>
+             <p style={{ fontSize: 16, color: palette.textMuted, fontWeight: 700, maxWidth: 400, lineHeight: 1.5 }}>
+               Selecione uma conversa para começar a gerir os atendimentos e a logística em tempo real.
+             </p>
           </div>
         )}
       </div>
+
+      {/* 3. RIGHT PANEL (Contact Info & Logistics) */}
+      {showRightPanel && selectedChat && (
+        <div style={{ 
+          ...styles.rightPanel, 
+          borderLeft: `1px solid ${border}`, 
+          backgroundColor: palette.sidebarBg,
+          animation: 'zaptroSlideInRight 0.3s ease-out'
+        }}>
+          {/* RIGHT HEADER */}
+          <div style={{ ...styles.rightHead, borderBottom: `1px solid ${border}`, position: 'relative' }}>
+             <button 
+              onClick={() => setShowRightPanel(false)}
+              style={{ position: 'absolute', top: 16, right: 16, border: 'none', background: 'transparent', cursor: 'pointer', color: palette.textMuted }}
+             >
+               <X size={20} />
+             </button>
+             <div style={{ width: 120, height: 120, borderRadius: 24, margin: '0 auto 16px', overflow: 'hidden' }}>
+                <img src={selectedChat.customer_avatar || `https://picsum.photos/seed/${selectedChat.id}/120/120`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+             </div>
+             <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: palette.text }}>{getDisplayName(selectedChat)}</h3>
+             <p style={{ margin: '4px 0 0', fontSize: 14, color: palette.textMuted, fontWeight: 600 }}>{selectedChat.customer_phone}</p>
+          </div>
+
+          {/* LOGISTICS SECTION */}
+          <div style={{ ...styles.rightSection, borderBottom: `1px solid ${border}` }}>
+             <h4 style={styles.rightH4}>LOGÍSTICA EM TEMPO REAL</h4>
+             <div style={{ marginTop: 16 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                   <span style={{ fontSize: 12, fontWeight: 700, color: palette.text }}>Progresso da Entrega</span>
+                   <span style={{ fontSize: 12, fontWeight: 700, color: LIME }}>65%</span>
+                </div>
+                <div style={{ height: 6, width: '100%', backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 3, overflow: 'hidden' }}>
+                   <div style={{ height: '100%', width: '65%', backgroundColor: LIME, borderRadius: 3 }} />
+                </div>
+             </div>
+             
+             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24 }}>
+                {[
+                  { label: 'Status da Carga', val: 'Em Trânsito', icon: Truck, color: LIME },
+                  { label: 'Localização', val: 'Curitiba, PR', icon: MapPin, color: '#3b82f6' },
+                  { label: 'Motorista', val: 'Carlos Santos', icon: User, color: '#a855f7' }
+                ].map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: 'rgba(0,0,0,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <item.icon size={16} color={item.color} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: palette.textMuted, textTransform: 'uppercase' }}>{item.label}</p>
+                      <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: palette.text }}>{item.val}</p>
+                    </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+
+          <div style={{ ...styles.rightSection, borderBottom: `1px solid ${border}`, padding: "16px 20px" }}>
+             <h4 style={styles.rightH4}>RASTREAMENTO OPERACIONAL</h4>
+             <div style={{ borderRadius: 16, overflow: "hidden", border: `1px solid ${border}`, marginTop: 12 }}>
+                <OpenStreetRouteMap 
+                  height="240px" 
+                  mode="tracking"
+                  initialOrigin={{ lat: -25.4297, lng: -49.2719 }}
+                  initialDest={{ lat: -25.4497, lng: -49.2919 }}
+                  driverPos={{ lat: -25.4397, lng: -49.2819 }}
+                />
+             </div>
+          </div>
+          {/* DOCUMENTS */}
+          <div style={styles.rightSection}>
+             <h4 style={styles.rightH4}>DOCUMENTOS OPERACIONAIS</h4>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[
+                  { name: 'NFE_7822.pdf', size: '2.4 MB' },
+                  { name: 'Comprovante_Entrega.jpg', size: '1.1 MB' }
+                ].map((doc, i) => (
+                  <div key={i} style={{ ...styles.docRow, borderColor: border, justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <FileText size={18} color={palette.textMuted} />
+                      <div>
+                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: palette.text }}>{doc.name}</p>
+                        <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: palette.textMuted }}>{doc.size}</p>
+                      </div>
+                    </div>
+                    <Download size={16} color={palette.textMuted} />
+                  </div>
+                ))}
+             </div>
+          </div>
+        </div>
+      )}
     </div>
     </div>
 
+    {/* MODALS */}
     {callActionModal && selectedChat ? (
       <div
         role="presentation"
@@ -1830,114 +2998,40 @@ const WhatsAppPremiumContent: React.FC = () => {
           justifyContent: 'center',
           padding: 20,
           boxSizing: 'border-box',
+          backdropFilter: 'blur(8px)'
         }}
         onClick={() => setCallActionModal(null)}
       >
         <div
           role="dialog"
           aria-modal="true"
-          aria-labelledby="zaptro-call-modal-title"
           onClick={(e) => e.stopPropagation()}
           style={{
             width: '100%',
             maxWidth: 420,
             borderRadius: 22,
-            border: `1px solid ${border}`,
             backgroundColor: palette.mode === 'dark' ? '#111' : '#fff',
             color: palette.text,
             boxShadow: '0 24px 48px rgba(0,0,0,0.25)',
-            padding: '22px 22px 18px',
+            padding: '24px',
             boxSizing: 'border-box',
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-            <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>
-                {callActionModal === 'voice' ? 'CHAMADA DE VOZ' : 'CHAMADA DE VÍDEO'}
-              </p>
-              <h2 id="zaptro-call-modal-title" style={{ margin: '8px 0 0', fontSize: 20, fontWeight: 950, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
-                {callActionModal === 'voice'
-                  ? `Ligue agora para ${callModalName}`
-                  : `Vídeo com ${callModalName}`}
-              </h2>
-            </div>
-            <button
-              type="button"
-              aria-label="Fechar"
-              onClick={() => setCallActionModal(null)}
-              style={{
-                flexShrink: 0,
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                border: `1px solid ${border}`,
-                background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f5',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: palette.text,
-              }}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          {callActionModal === 'voice' ? (
-            <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: palette.textMuted, lineHeight: 1.5 }}>
-              Utilize o número abaixo no <strong style={{ color: palette.text }}>telefone do seu dispositivo</strong>. O Zaptro mostra aqui o contacto apenas como referência.
-            </p>
-          ) : (
-            <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: palette.textMuted, lineHeight: 1.5 }}>
-              <strong style={{ color: palette.text }}>Não fazemos</strong> chamadas de vídeo pela aplicação Zaptro. O contacto com o cliente continua por <strong style={{ color: palette.text }}>mensagens escritas</strong> neste painel.
-            </p>
-          )}
-
-          <div
-            style={{
-              padding: '14px 16px',
-              borderRadius: 16,
-              border: `1px solid ${border}`,
-              backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : ZAPTRO_FIELD_BG,
-              marginBottom: 14,
-            }}
-          >
-            <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>TELEFONE</p>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 22,
-                fontWeight: 950,
-                letterSpacing: '-0.02em',
-                fontVariantNumeric: 'tabular-nums',
-                fontFamily: WHATSAPP_PHONE_FONT_FAMILY,
-              }}
-            >
-              {callModalPhone}
-            </p>
-          </div>
-
-          <p
-            style={{
-              margin: '0 0 16px',
-              fontSize: 12,
-              fontWeight: 700,
-              color: palette.textMuted,
-              lineHeight: 1.55,
-              paddingTop: 4,
-              borderTop: `1px dashed ${border}`,
-            }}
-          >
-            O Zaptro <strong style={{ color: palette.text }}>não grava nem transmite</strong> chamadas de voz ou vídeo. Apenas as{' '}
-            <strong style={{ color: palette.text }}>mensagens escritas</strong> desta conversa ficam registadas no sistema para a sua equipa trabalhar em conjunto.
+          <h2 style={{ margin: '0 0 16px', fontSize: 20, fontWeight: 700 }}>{callActionModal === 'voice' ? 'Chamada de Voz' : 'Chamada de Vídeo'}</h2>
+          <p style={{ fontSize: 14, fontWeight: 700, color: palette.textMuted, lineHeight: 1.5, marginBottom: 20 }}>
+            {callActionModal === 'voice' 
+              ? 'As chamadas de voz via browser estão em manutenção. Por favor, utilize o telemóvel para contactar o cliente.' 
+              : 'O Zaptro não suporta chamadas de vídeo nativas. O contacto deve ser mantido por mensagem.'}
           </p>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ padding: '16px', borderRadius: 16, backgroundColor: 'rgba(0,0,0,0.03)', marginBottom: 20 }}>
+             <p style={{ margin: '0 0 4px', fontSize: 10, fontWeight: 700, color: palette.textMuted }}>NÚMERO DO CLIENTE</p>
+             <p style={{ margin: 0, fontSize: 22, fontWeight: 700, fontFamily: WHATSAPP_PHONE_FONT_FAMILY }}>{selectedChat.customer_phone}</p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
             <button
               type="button"
               onClick={() => {
-                void navigator.clipboard?.writeText(callModalDigits || callModalPhone).catch(() => {});
-                toastSuccess('Número copiado.');
+                void navigator.clipboard.writeText(selectedChat.customer_phone);
               }}
               style={{
                 flex: '1 1 140px',
@@ -1949,15 +3043,16 @@ const WhatsAppPremiumContent: React.FC = () => {
                 borderRadius: 14,
                 border: `1px solid ${border}`,
                 background: 'transparent',
-                fontWeight: 950,
+                color: palette.text,
+                fontWeight: 700,
                 fontSize: 13,
                 cursor: 'pointer',
-                color: palette.text,
                 fontFamily: 'inherit',
               }}
             >
               <Copy size={16} /> Copiar número
             </button>
+
             {callActionModal === 'voice' && callModalDigits.length >= 8 ? (
               <button
                 type="button"
@@ -1975,29 +3070,31 @@ const WhatsAppPremiumContent: React.FC = () => {
                   border: 'none',
                   background: '#000',
                   color: LIME,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
               >
-                <Phone size={16} /> Abrir chamada no telefone
+                <Phone size={16} /> Abrir no telefone
               </button>
             ) : null}
+
             <button
               type="button"
               onClick={() => setCallActionModal(null)}
               style={{
                 flex: '1 1 100%',
-                padding: '10px 14px',
+                padding: '12px 14px',
                 borderRadius: 12,
                 border: 'none',
                 background: 'transparent',
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: 13,
                 cursor: 'pointer',
                 color: palette.textMuted,
                 fontFamily: 'inherit',
+                marginTop: 8
               }}
             >
               Fechar
@@ -2005,8 +3102,429 @@ const WhatsAppPremiumContent: React.FC = () => {
           </div>
         </div>
       </div>
-    ) : null}
+        ) : null}
       </>
+      {/* CONTEXT MENU */}
+       {contextMenu && (
+        <div 
+          ref={contextMenuRef}
+          style={{
+          position: 'fixed',
+          top: contextMenu.y,
+          left: contextMenu.x,
+          width: 240,
+          backgroundColor: '#F4F4F4', // Requested light background
+          borderRadius: 14,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+          padding: '8px 0',
+          zIndex: 100000,
+          border: '1px solid rgba(0,0,0,0.08)',
+        }}>
+          {[
+            { icon: Archive, label: 'Arquivar conversa', action: 'archive' },
+            { 
+              icon: pinnedChatIds.has(contextMenu.chat.id) ? PinOff : Pin, 
+              label: pinnedChatIds.has(contextMenu.chat.id) ? 'Desafixar conversa' : 'Fixar conversa',
+              action: 'pin'
+            },
+            { icon: Tag, label: 'Etiquetar conversa', action: 'label' },
+            { icon: MessageSquare, label: 'Marcar como não lida', action: 'unread' },
+            { divider: true },
+            { icon: MinusCircle, label: 'Limpar conversa', action: 'clear' },
+            { icon: Trash2, label: 'Apagar conversa', action: 'delete' },
+          ].map((item, idx) => (
+            item.divider ? (
+              <div key={idx} style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)', margin: '8px 0' }} />
+            ) : (
+              <button
+                key={idx}
+                style={{
+                  width: '100%',
+                  padding: '10px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#000',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.04)')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (item.action === 'pin') {
+                    togglePin(contextMenu.chat.id);
+                  } else if (item.action === 'archive') {
+                    archiveChat(contextMenu.chat.id);
+                  } else if (item.action === 'unread') {
+                    toggleUnread(contextMenu.chat.id);
+                  } else {
+                    notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" executada.`);
+                  }
+                  setContextMenu(null);
+                }}
+              >
+                {item.icon && <item.icon size={18} color="rgba(0,0,0,0.5)" />}
+                <span>{item.label}</span>
+              </button>
+            )
+          ))}
+        </div>
+      )}
+
+      {/* MODAL NOVO CONTATO */}
+      {newContactModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 20
+        }}>
+          <div style={{
+            width: '100%',
+            maxWidth: 500,
+            backgroundColor: isDark ? '#1a1a1a' : '#fff',
+            borderRadius: 24,
+            padding: 30,
+            boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            position: 'relative'
+          }}>
+            <button
+              onClick={() => setNewContactModalOpen(false)}
+              style={{ position: 'absolute', top: 20, right: 20, border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}
+            >
+              <X size={24} />
+            </button>
+
+            <h2 style={{ margin: '0 0 24px', fontSize: 22, fontWeight: 700, color: palette.text }}>Adicionar Novo Contato</h2>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {[
+                { label: 'Nome Completo', key: 'name', placeholder: 'Ex: João Silva' },
+                { label: 'WhatsApp', key: 'phone', placeholder: '55 11 99999-9999' },
+                { label: 'CNPJ / CPF', key: 'cnpj', placeholder: '00.000.000/0000-00' },
+                { label: 'Nome da Empresa', key: 'companyName', placeholder: 'Ex: Logística S.A.' },
+                { label: 'Segmento WhatsApp', key: 'segmentWa', placeholder: 'Ex: Comercial, Suporte' },
+                { label: 'Segmento da Empresa', key: 'segmentCompany', placeholder: 'Ex: Transportadora' },
+                { label: 'E-mail', key: 'email', placeholder: 'email@exemplo.com' },
+                { label: 'Endereço', key: 'address', placeholder: 'Rua, Número, Bairro, Cidade' }
+              ].map((f, i) => (
+                <div key={i}>
+                  <label style={{ display: 'block', marginBottom: 6, fontSize: 13, fontWeight: 700, color: palette.textMuted }}>{f.label}</label>
+                  <input
+                    type="text"
+                    value={(newContactForm as any)[f.key]}
+                    onChange={(e) => setNewContactForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                    placeholder={f.placeholder}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: 12,
+                      border: `1px solid ${border}`,
+                      backgroundColor: softBg,
+                      color: palette.text,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+              ))}
+              
+              <button
+                onClick={handleSaveNewContact}
+                style={{
+                  marginTop: 10,
+                  padding: '16px',
+                  borderRadius: 14,
+                  border: 'none',
+                  background: LIME,
+                  color: '#000',
+                  fontWeight: 700,
+                  fontSize: 15,
+                  cursor: 'pointer'
+                }}
+              >
+                Salvar Contato
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* BILLING MODAL */}
+      <LogtaModal
+        isOpen={billingModalOpen}
+        onClose={() => setBillingModalOpen(false)}
+        title="Gerar Cobrança (Pix)"
+        width="440px"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <p style={{ margin: 0, fontSize: 13, color: palette.textMuted, fontWeight: 600 }}>
+            Insira o valor e uma descrição opcional. Geraremos uma mensagem formatada com seus dados de Pix.
+          </p>
+          
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: palette.text, marginBottom: 8, textTransform: 'uppercase' }}>Valor da Cobrança</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: LIME }}>R$</span>
+              <input 
+                type="text" 
+                placeholder="0,00"
+                value={billingAmount}
+                onChange={(e) => setBillingAmount(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '14px 16px 14px 44px',
+                  borderRadius: 14,
+                  backgroundColor: palette.mode === 'dark' ? '#1c1c1e' : '#f4f4f5',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  color: palette.text,
+                  fontSize: 18,
+                  fontWeight: 800,
+                  outline: 'none'
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: palette.text, marginBottom: 8, textTransform: 'uppercase' }}>Referência / Descrição</label>
+            <input 
+              type="text" 
+              placeholder="Ex: Frete Matriz -> Filial"
+              value={billingDescription}
+              onChange={(e) => setBillingDescription(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                borderRadius: 14,
+                backgroundColor: palette.mode === 'dark' ? '#1c1c1e' : '#f4f4f5',
+                border: '1px solid rgba(0,0,0,0.1)',
+                color: palette.text,
+                fontSize: 14,
+                fontWeight: 600,
+                outline: 'none'
+              }}
+            />
+          </div>
+
+          <button
+            onClick={() => {
+              const s = company?.settings as any;
+              const pix = s?.pix_key;
+              if (!pix) {
+                notifyZaptro('warning', 'Pix não configurado', 'Cadastre sua chave em Conta > Minha Empresa.');
+                return;
+              }
+              const text = `Solicitação de Pagamento\n\n💰 Valor: R$ ${billingAmount}\n📝 Ref: ${billingDescription || 'Prestação de serviços'}\n\n🔑 Chave Pix: ${pix}\n🏦 Banco: ${s?.bank_name || '—'}\n👤 Titular: ${s?.bank_holder || company?.name || '—'}\n\nPor favor, envie o comprovante após o pagamento.`;
+              setNewMessage(text);
+              setBillingModalOpen(false);
+              setBillingAmount('');
+              setBillingDescription('');
+              notifyZaptro('success', 'Cobrança', 'Mensagem de cobrança gerada.');
+            }}
+            style={{
+              width: '100%',
+              padding: '16px',
+              borderRadius: 14,
+              backgroundColor: '#000',
+              color: LIME,
+              border: 'none',
+              fontWeight: 800,
+              cursor: 'pointer',
+              marginTop: 10
+            }}
+          >
+            Gerar e Inserir no Chat
+          </button>
+        </div>
+      </LogtaModal>
+
+      {/* QUICK RESPONSES MODAL */}
+      <LogtaModal
+        isOpen={quickResponsesOpen}
+        onClose={() => setQuickResponsesOpen(false)}
+        title="Respostas Rápidas"
+        width="500px"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[
+            { title: 'Saudação Inicial', text: 'Olá! Seja bem-vindo à nossa central transportadora. Como podemos ajudar no seu embarque hoje?' },
+            { title: 'Solicitar NF-e', text: 'Poderia nos enviar a NF-e e o arquivo XML da carga para iniciarmos o processo de emissão do CT-e?' },
+            { title: 'Status de Entrega', text: 'Sua carga já saiu para entrega e o motorista está em rota. Previsão de chegada no destino nas próximas 2 horas.' },
+            { title: 'Agradecimento', text: 'Agradecemos a preferência! Ficamos à disposição para novos serviços. Tenha um excelente dia.' },
+            { title: 'Aguardar Atendimento', text: 'Nossos consultores estão em atendimento no momento. Por favor, aguarde alguns instantes que já falaremos com você.' },
+          ].map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setNewMessage(item.text);
+                setQuickResponsesOpen(false);
+                notifyZaptro('success', 'Resposta Rápida', 'Template inserido no chat.');
+              }}
+              style={{
+                width: '100%',
+                padding: '16px 20px',
+                borderRadius: 16,
+                backgroundColor: palette.mode === 'dark' ? '#1c1c1e' : '#f8fafc',
+                border: `1px solid ${border}`,
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = LIME)}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = border)}
+            >
+              <div style={{ fontWeight: 800, fontSize: 14, color: palette.text, marginBottom: 4 }}>{item.title}</div>
+              <div style={{ fontSize: 13, color: palette.textMuted, fontWeight: 600, lineHeight: 1.4 }}>{item.text}</div>
+            </button>
+          ))}
+          <button
+            onClick={() => {
+              setQuickResponsesOpen(false);
+              navigate('/configuracao?tab=automation');
+            }}
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: 14,
+              backgroundColor: 'transparent',
+              color: palette.text,
+              border: `1px solid ${border}`,
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer',
+              marginTop: 8
+            }}
+          >
+            Gerenciar Modelos Completos
+          </button>
+        </div>
+      </LogtaModal>
+
+      {/* CONTACTS MODAL */}
+      <LogtaModal
+        isOpen={contactsModalOpen}
+        onClose={() => setContactsModalOpen(false)}
+        title="Enviar Contato"
+        width="460px"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ position: 'relative', marginBottom: 8 }}>
+            <Search size={16} color="#94a3b8" style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)' }} />
+            <input 
+              type="text" 
+              placeholder="Pesquisar por nome ou telefone..."
+              style={{
+                width: '100%',
+                padding: '12px 16px 12px 44px',
+                borderRadius: 12,
+                border: '1px solid rgba(0,0,0,0.08)',
+                backgroundColor: '#f8fafc',
+                fontSize: 14,
+                fontWeight: 600,
+                outline: 'none'
+              }}
+            />
+          </div>
+          {[
+            { name: 'Alison Silva (Admin)', phone: '+55 11 99999-1111', role: 'Proprietário' },
+            { name: 'Suporte Zaptro', phone: '+55 11 98888-2222', role: 'Comercial' },
+            { name: 'Logística Filial SP', phone: '+55 11 97777-3333', role: 'Operacional' },
+          ].map((contact, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setNewMessage(`Aqui está o contato de *${contact.name}*:\n📞 Telefone: ${contact.phone}\n🏢 Setor: ${contact.role}`);
+                setContactsModalOpen(false);
+                notifyZaptro('success', 'Contato', 'Informações de contato inseridas.');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                padding: '14px 16px',
+                borderRadius: 14,
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0,0,0,0.04)',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
+            >
+              <div style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: '#007aff15', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', color: '#007aff' }}>
+                <User size={20} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#000' }}>{contact.name}</div>
+                <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>{contact.phone} • {contact.role}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </LogtaModal>
+
+      {/* QUOTES MODAL */}
+      <LogtaModal
+        isOpen={quotesModalOpen}
+        onClose={() => setQuotesModalOpen(false)}
+        title="Enviar Orçamento"
+        width="500px"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <p style={{ margin: 0, fontSize: 13, color: '#64748b', fontWeight: 600 }}>
+            Selecione um orçamento ativo para enviar ao cliente.
+          </p>
+          {[
+            { id: 'ORC-2931', destiny: 'São Paulo -> Rio de Janeiro', value: 'R$ 2.450,00', status: 'Aprovado' },
+            { id: 'ORC-3012', destiny: 'Curitiba -> Porto Alegre', value: 'R$ 1.890,00', status: 'Pendente' },
+            { id: 'ORC-3055', destiny: 'Belo Horizonte -> Vitória', value: 'R$ 3.200,00', status: 'Aguardando' },
+          ].map((quote, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setNewMessage(`Olá! Segue o link do orçamento *${quote.id}* para o trecho *${quote.destiny}*:\n\n💰 Valor Total: ${quote.value}\n🔗 Visualizar: https://zaptro.com/budget/${quote.id}\n\nFicamos no aguardo da sua confirmação.`);
+                setQuotesModalOpen(false);
+                notifyZaptro('success', 'Orçamento', 'Link do orçamento inserido.');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                padding: '16px',
+                borderRadius: 16,
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0,0,0,0.04)',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
+            >
+              <div style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: '#ff950015', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff9500' }}>
+                <FileText size={22} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#000' }}>{quote.id} • {quote.destiny}</div>
+                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>{quote.value} • <span style={{ color: quote.status === 'Aprovado' ? '#10b981' : '#f59e0b' }}>{quote.status}</span></div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </LogtaModal>
     </ZaptroLayout>
   );
 };
@@ -2016,8 +3534,20 @@ const WhatsAppPremium: React.FC = () => {
     <>
       <WhatsAppPremiumContent />
       <style>{`
+        @keyframes zaptroSlideUp {
+          from { transform: translateY(10px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes zaptroSlideInLeft {
+          from { transform: translateX(-100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
         .spin { animation: rotate 2s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes zaptroSlideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
       `}</style>
     </>
   );
@@ -2025,16 +3555,16 @@ const WhatsAppPremium: React.FC = () => {
 
 const styles: Record<string, React.CSSProperties> = {
   container: { display: 'flex', height: '100%', overflow: 'hidden', width: '100%', minHeight: 0 },
-  sidebar: { width: '358px', minWidth: 280, display: 'flex', flexDirection: 'column' },
+  sidebar: { width: '400px', minWidth: 320, display: 'flex', flexDirection: 'column' },
   sidebarHeader: { padding: '24px 30px' },
-  sidebarTitle: { margin: '0 0 8px 0', fontSize: '26px', fontWeight: 600, letterSpacing: '0.1px' },
+  sidebarTitle: { margin: '0', fontSize: '26px', fontWeight: 700, letterSpacing: '-0.03em', color: '#000' },
   liveIndicator: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     fontSize: '10px',
     color: 'rgba(75, 231, 8, 1)',
-    fontWeight: 800,
+    fontWeight: 600,
     textTransform: 'uppercase',
   },
   liveDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' },
@@ -2067,11 +3597,17 @@ const styles: Record<string, React.CSSProperties> = {
   },
   itemMain: { flex: 1, minWidth: 0 },
   itemHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '4px' },
-  itemName: { fontWeight: 900, fontSize: '15px' },
+  itemName: { fontWeight: 700, fontSize: '15px' },
   itemTime: { fontSize: '10px', color: '#737373', fontWeight: 700, lineHeight: 1.3 },
   itemPreview: { fontSize: '13px', color: '#737373', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', margin: 0 },
-  /** Base 224px — evita coluna central colapsar (~96px) quando o flex reparte espaço. */
-  centerColumn: { flex: '1 1 224px', minWidth: 224, display: 'flex', flexDirection: 'column' },
+  centerColumn: {
+    flex: '1 1 224px',
+    minWidth: 224,
+    minHeight: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
   chatHeader: { padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' },
   headerProfile: { display: 'flex', alignItems: 'center', gap: '15px', minWidth: 0 },
   headerActions: {
@@ -2102,7 +3638,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     background: 'rgba(41, 41, 41, 1)',
     color: '#fff',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 12,
     cursor: 'pointer',
   },
@@ -2115,15 +3651,15 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: 'border-box',
     fontSize: 14,
   },
-  onlinePill: { fontSize: 10, fontWeight: 800, color: 'rgba(75, 231, 8, 1)', lineHeight: 1.3 },
-  statusPill: { fontSize: 10, fontWeight: 800, lineHeight: 1.3 },
+  onlinePill: { fontSize: 11, fontWeight: 700, color: 'rgba(75, 231, 8, 1)', lineHeight: 1.3 },
+  statusPill: { fontSize: 10, fontWeight: 600, lineHeight: 1.3 },
   cargoStrip: { padding: '14px 22px 16px' },
   cargoPills: { display: 'flex', flexWrap: 'wrap', gap: 8 },
   cargoPill: {
     padding: '10px 16px',
     borderRadius: 999,
     fontSize: 13,
-    fontWeight: 900,
+    fontWeight: 700,
     cursor: 'pointer',
     border: '1px solid',
   },
@@ -2133,32 +3669,46 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     border: '1px solid #CBD5E1',
     background: '#fff',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 13,
     cursor: 'pointer',
     flexShrink: 0,
   },
   aiHint: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 24px' },
-  activeName: { margin: 0, fontSize: '17px', fontWeight: 950 },
-  messagesArea: { flex: 1, padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', minHeight: 0 },
+  activeName: { margin: 0, fontSize: '24px', fontWeight: 700, letterSpacing: '-0.02em' },
+  messagesArea: { padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' },
   msgRow: { display: 'flex' },
   bubble: { maxWidth: '70%', padding: '14px 20px' },
   msgText: { margin: 0, fontSize: '14px', lineHeight: 1.6 },
-  quickBar: { display: 'flex', flexWrap: 'wrap', gap: 10, padding: '16px 28px', alignItems: 'center', boxSizing: 'border-box' },
-  quickChip: {
-    padding: '8px 12px',
-    borderRadius: 12,
-    border: '1px solid',
-    background: 'transparent',
-    fontSize: 11,
-    fontWeight: 900,
-    cursor: 'pointer',
+  composerDock: {
+    flexShrink: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+    /** Mantém compositor ancorado à base da coluna (lista de mensagens rola por cima). */
+    marginTop: 'auto',
+    zIndex: 4,
   },
-  inputFooter: { padding: '18px 28px 26px', boxSizing: 'border-box' },
-  inputContainer: { display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 14px', borderRadius: '20px' },
+  inputFooter: {
+    padding: '12px 20px 16px',
+    boxSizing: 'border-box',
+    flexShrink: 0,
+  },
+  inputContainer: { display: 'flex', alignItems: 'flex-end', gap: '10px', padding: '10px 14px', borderRadius: '20px' },
   inputSideBtn: { border: 'none', background: 'transparent', cursor: 'pointer', padding: 6, display: 'flex', alignItems: 'center' },
-  inputField: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '15px', fontWeight: 600, minWidth: 0 },
-  sendBtn: { border: 'none', backgroundColor: '#D9FF00', width: '45px', height: '45px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
+  inputField: {
+    flex: 1,
+    border: 'none',
+    background: 'transparent',
+    outline: 'none',
+    fontSize: '15px',
+    fontWeight: 600,
+    minWidth: 0,
+    width: '100%',
+    resize: 'none' as const,
+    lineHeight: 1.45,
+    fontFamily: 'inherit',
+  },
   emptyView: {
     flex: 1,
     display: 'flex',
@@ -2183,11 +3733,23 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 14,
     border: '1px solid',
     background: 'transparent',
-    fontWeight: 800,
+    fontWeight: 700,
     fontSize: 13,
     cursor: 'pointer',
     marginBottom: 8,
     textAlign: 'left',
+  },
+  docIconBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    border: '1px solid',
+    background: 'transparent',
+    cursor: 'pointer',
+    flexShrink: 0,
   },
   alertBox: {
     padding: 12,
@@ -2196,6 +3758,31 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 12,
     fontWeight: 700,
     color: '#64748B',
+  },
+  newChatOption: {
+    width: '100%',
+    padding: '12px 30px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '18px',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    transition: 'background 0.2s',
+    textAlign: 'left',
+  },
+  newChatIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    border: '1px solid rgba(0,0,0,0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#000',
+    flexShrink: 0,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
   },
 };
 

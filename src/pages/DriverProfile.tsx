@@ -113,7 +113,7 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ context = 'CORPORATE' }) 
                <div style={styles.healthCard}>
                   <div style={styles.hRow}><span>Batimentos</span> <strong>78 bpm</strong></div>
                   <div style={styles.hRow}><span>Sono (Média)</span> <strong>7.2h</strong></div>
-                  <div style={styles.hRow}><span>Status</span> <span style={{color: '#10b981', fontWeight: '800'}}>Apto</span></div>
+                  <div style={styles.hRow}><span>Status</span> <span style={{color: '#10b981', fontWeight: '600'}}>Apto</span></div>
                </div>
                <p style={styles.sideNote}>Monitoramento via Telemetria Biológica ativa.</p>
             </div>
@@ -216,28 +216,28 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ context = 'CORPORATE' }) 
 };
 
 const styles: Record<string, any> = {
-  loading: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: '800' },
+  loading: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: '600' },
   container: { padding: '40px', backgroundColor: '#f4f4f4', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
   backBtn: { background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontWeight: '700', cursor: 'pointer', fontSize: '15px' },
   headerActions: { display: 'flex', gap: '12px' },
-  primaryBtn: { padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
-  secondaryBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
+  primaryBtn: { padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' },
+  secondaryBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' },
 
   profileHero: { backgroundColor: 'white', padding: '40px', borderRadius: '32px', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '40px', marginBottom: '40px' },
-  avatarLarge: { width: '120px', height: '120px', borderRadius: '30px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '48px', fontWeight: '900', overflow: 'hidden' },
+  avatarLarge: { width: '120px', height: '120px', borderRadius: '30px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '48px', fontWeight: '700', overflow: 'hidden' },
   avatarImg: { width: '100%', height: '100%', objectFit: 'cover' },
   heroInfo: { flex: 1 },
   nameRow: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' },
-  driverName: { fontSize: '32px', fontWeight: '950', color: '#0F172A', margin: 0, letterSpacing: '-1px' },
-  statusBadge: { padding: '6px 16px', borderRadius: '30px', fontSize: '12px', fontWeight: '800' },
-  typeTag: { padding: '6px 16px', backgroundColor: '#ebebeb', color: '#475569', borderRadius: '30px', fontSize: '12px', fontWeight: '800' },
+  driverName: { fontSize: '32px', fontWeight: '700', color: '#0F172A', margin: 0, letterSpacing: '-1px' },
+  statusBadge: { padding: '6px 16px', borderRadius: '30px', fontSize: '12px', fontWeight: '600' },
+  typeTag: { padding: '6px 16px', backgroundColor: '#ebebeb', color: '#475569', borderRadius: '30px', fontSize: '12px', fontWeight: '600' },
   metaRow: { display: 'flex', gap: '24px' },
   metaItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#64748B', fontWeight: '600' },
   heroStats: { display: 'flex', gap: '40px', borderLeft: '1px solid #e8e8e8', paddingLeft: '40px' },
   statBox: { textAlign: 'right' as const },
-  statLabel: { fontSize: '11px', color: '#94A3B8', fontWeight: '800', letterSpacing: '0.5px' },
-  statValue: { fontSize: '24px', fontWeight: '900', color: '#0F172A', margin: '4px 0 0 0' },
+  statLabel: { fontSize: '11px', color: '#94A3B8', fontWeight: '600', letterSpacing: '0.5px' },
+  statValue: { fontSize: '24px', fontWeight: '700', color: '#0F172A', margin: '4px 0 0 0' },
   statUnit: { fontSize: '14px', color: '#94A3B8', fontWeight: '600' },
 
   contentLayout: { display: 'grid', gridTemplateColumns: '300px 1fr', gap: '32px' },
@@ -247,7 +247,7 @@ const styles: Record<string, any> = {
   tabActive: { backgroundColor: 'white', border: '1px solid #E2E8F0', color: 'var(--primary)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
 
   healthSummary: { backgroundColor: '#f4f4f4', padding: '24px', borderRadius: '24px', border: '1px dashed #CBD5E1' },
-  sideTitle: { fontSize: '14px', fontWeight: '900', color: '#0F172A', marginBottom: '16px', textTransform: 'uppercase' as const },
+  sideTitle: { fontSize: '14px', fontWeight: '700', color: '#0F172A', marginBottom: '16px', textTransform: 'uppercase' as const },
   healthCard: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
   hRow: { display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#64748B' },
   sideNote: { fontSize: '10px', color: '#94A3B8', marginTop: '16px' },
@@ -256,12 +256,12 @@ const styles: Record<string, any> = {
   tabGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' },
   card: { backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #E2E8F0' },
   wideCard: { backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #E2E8F0', gridColumn: 'span 2' },
-  sectionTitle: { fontSize: '18px', fontWeight: '900', color: '#0F172A', marginBottom: '24px' },
+  sectionTitle: { fontSize: '18px', fontWeight: '700', color: '#0F172A', marginBottom: '24px' },
   performanceRow: { display: 'flex', justifyContent: 'space-between' },
   perfItem: { textAlign: 'center' as const },
   perfIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px auto' },
-  perfLabel: { fontSize: '11px', fontWeight: '800', color: '#94A3B8', marginBottom: '4px' },
-  perfVal: { fontSize: '16px', fontWeight: '900', color: '#0F172A' },
+  perfLabel: { fontSize: '11px', fontWeight: '600', color: '#94A3B8', marginBottom: '4px' },
+  perfVal: { fontSize: '16px', fontWeight: '700', color: '#0F172A' },
 
   routePreview: { display: 'flex', gap: '20px' },
   routeLine: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
@@ -270,14 +270,14 @@ const styles: Record<string, any> = {
   routeInfo: { fontSize: '14px', color: '#475569' },
 
   vehicleInfo: { display: 'flex', alignItems: 'center', gap: '20px' },
-  vLabel: { fontSize: '15px', fontWeight: '800', color: '#0F172A', margin: 0 },
+  vLabel: { fontSize: '15px', fontWeight: '600', color: '#0F172A', margin: 0 },
   vPlate: { fontSize: '13px', color: '#64748B', margin: 0 },
 
   tableCard: { backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid #E2E8F0' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  manifestLink: { color: 'var(--primary)', fontWeight: '800', textDecoration: 'underline', cursor: 'pointer' },
-  tableBadge: { padding: '4px 10px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '8px', fontSize: '11px', fontWeight: '800' },
-  outlineBtn: { width: '100%', marginTop: '20px', padding: '12px', backgroundColor: 'transparent', border: '1px solid #E2E8F0', borderRadius: '12px', color: '#64748b', fontWeight: '800', cursor: 'pointer' },
+  manifestLink: { color: 'var(--primary)', fontWeight: '600', textDecoration: 'underline', cursor: 'pointer' },
+  tableBadge: { padding: '4px 10px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '8px', fontSize: '11px', fontWeight: '600' },
+  outlineBtn: { width: '100%', marginTop: '20px', padding: '12px', backgroundColor: 'transparent', border: '1px solid #E2E8F0', borderRadius: '12px', color: '#64748b', fontWeight: '600', cursor: 'pointer' },
   gaugeContainer: { marginTop: '20px' },
   gauge: { height: '10px', backgroundColor: '#ebebeb', borderRadius: '10px', overflow: 'hidden' },
   gaugeFill: { height: '100%' }

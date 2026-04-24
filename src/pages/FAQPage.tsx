@@ -124,7 +124,7 @@ const styles: Record<string, any> = {
      padding: '120px 40px', backgroundColor: '#f4f4f4', textAlign: 'center' as const, 
      display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px' 
   },
-  title: { fontSize: '40px', fontWeight: '950', color: '#0F172A', letterSpacing: '-2.0px', margin: 0 },
+  title: { fontSize: '40px', fontWeight: '700', color: '#0F172A', letterSpacing: '-2.0px', margin: 0 },
   subtitle: { fontSize: '16px', color: '#64748B', maxWidth: '600px', lineHeight: '1.6', marginTop: '12px' },
   searchBox: { 
      width: '100%', maxWidth: '700px', backgroundColor: 'white', borderRadius: '24px', 
@@ -140,7 +140,7 @@ const styles: Record<string, any> = {
      width: '100%', padding: '24px 32px', display: 'flex', justifyContent: 'space-between', 
      alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const
   },
-  qText: { display: 'flex', alignItems: 'center', gap: '20px', fontSize: '17px', fontWeight: '800', color: '#1E293B' },
+  qText: { display: 'flex', alignItems: 'center', gap: '20px', fontSize: '17px', fontWeight: '600', color: '#1E293B' },
   iconBox: { width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' },
   answerArea: { padding: '0 32px 32px 96px', borderTop: 'none' },
   answer: { fontSize: '15px', color: '#475569', lineHeight: '1.7', margin: 0 },
@@ -149,11 +149,11 @@ const styles: Record<string, any> = {
      marginTop: '60px', backgroundColor: '#0F172A', borderRadius: '32px', padding: '40px', 
      display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' 
   },
-  ctaTitle: { fontSize: '24px', fontWeight: '900', margin: 0 },
+  ctaTitle: { fontSize: '24px', fontWeight: '700', margin: 0 },
   ctaDesc: { fontSize: '15px', color: '#94A3B8', marginTop: '8px', margin: 0 },
   ctaBtn: { 
      padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', 
-     borderRadius: '16px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' 
+     borderRadius: '16px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' 
   },
   footer: { marginTop: '100px', textAlign: 'center' as const, color: '#94A3B8', fontSize: '13px' }
 };

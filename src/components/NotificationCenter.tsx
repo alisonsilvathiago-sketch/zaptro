@@ -131,12 +131,12 @@ const NotificationCenter: React.FC = () => {
 const styles = {
   container: { position: 'relative' as const },
   bellBtn: { background: 'transparent', border: 'none', padding: '8px', borderRadius: '10px', cursor: 'pointer', position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  badge: { position: 'absolute' as const, top: '4px', right: '4px', backgroundColor: '#ef4444', color: 'white', fontSize: '10px', fontWeight: '800', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' },
+  badge: { position: 'absolute' as const, top: '4px', right: '4px', backgroundColor: '#ef4444', color: 'white', fontSize: '10px', fontWeight: '600', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' },
   popover: { position: 'absolute' as const, top: '48px', right: '-10px', width: '340px', backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-premium)', overflow: 'hidden', zIndex: 1000 },
   popHeader: { padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   popTitleRow: { display: 'flex', alignItems: 'center', gap: '8px' },
-  popTitle: { fontSize: '15px', fontWeight: '950', color: 'var(--primary)', margin: 0, letterSpacing: '-0.5px' },
-  unreadTag: { fontSize: '10px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', padding: '2px 8px', borderRadius: '10px', fontWeight: '800' },
+  popTitle: { fontSize: '15px', fontWeight: '700', color: 'var(--primary)', margin: 0, letterSpacing: '-0.5px' },
+  unreadTag: { fontSize: '10px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', padding: '2px 8px', borderRadius: '10px', fontWeight: '600' },
   closeBtn: { background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' },
   notifList: { maxHeight: '420px', overflowY: 'auto' as const, padding: '12px' },
   emptyWrap: { textAlign: 'center' as const, padding: '60px 40px' },
@@ -144,12 +144,12 @@ const styles = {
   notifItem: { display: 'flex', gap: '16px', padding: '16px', borderRadius: '14px', cursor: 'pointer', marginBottom: '8px', backgroundColor: '#fcfcfd', transition: 'all 0.2s' },
   notifContent: { flex: 1 },
   notifHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' },
-  notifType: { fontSize: '10px', fontWeight: '900', letterSpacing: '0.5px' },
-  notifTitle: { fontSize: '13px', fontWeight: '800', color: '#1e293b', marginBottom: '4px' },
+  notifType: { fontSize: '10px', fontWeight: '700', letterSpacing: '0.5px' },
+  notifTitle: { fontSize: '13px', fontWeight: '600', color: '#1e293b', marginBottom: '4px' },
   notifMsg: { fontSize: '12px', color: '#64748b', lineHeight: '1.5' },
   notifTime: { fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
   popFooter: { padding: '12px', borderTop: '1px solid var(--border)', backgroundColor: '#f4f4f4', textAlign: 'center' as const },
-  clearBtn: { background: 'none', border: 'none', color: 'var(--primary)', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }
+  clearBtn: { background: 'none', border: 'none', color: 'var(--primary)', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default NotificationCenter;

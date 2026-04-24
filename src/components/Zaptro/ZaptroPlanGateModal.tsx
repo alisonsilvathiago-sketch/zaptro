@@ -61,7 +61,7 @@ const ZaptroPlanGateModal: React.FC<Props> = ({ open, email, onGoToBilling, onRe
             <Shield size={26} color="#059669" />
           </div>
           <div>
-            <h2 id="zaptro-plan-gate-title" style={{ margin: 0, fontSize: 20, fontWeight: 950, color: '#0f172a' }}>
+            <h2 id="zaptro-plan-gate-title" style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#0f172a' }}>
               Ative seu plano
             </h2>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b', fontWeight: 600 }}>
@@ -90,8 +90,8 @@ const ZaptroPlanGateModal: React.FC<Props> = ({ open, email, onGoToBilling, onRe
         >
           <Mail size={18} color="#64748b" />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>Conta (login)</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#0f172a', wordBreak: 'break-all' }}>{email || '—'}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Conta (login)</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a', wordBreak: 'break-all' }}>{email || '—'}</div>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ const ZaptroPlanGateModal: React.FC<Props> = ({ open, email, onGoToBilling, onRe
               background: '#0f172a',
               color: '#fff',
               fontSize: 15,
-              fontWeight: 950,
+              fontWeight: 700,
               cursor: 'pointer',
             }}
           >
@@ -138,7 +138,7 @@ const ZaptroPlanGateModal: React.FC<Props> = ({ open, email, onGoToBilling, onRe
               background: '#fff',
               color: '#475569',
               fontSize: 13,
-              fontWeight: 850,
+              fontWeight: 700,
               cursor: rechecking ? 'wait' : 'pointer',
             }}
           >

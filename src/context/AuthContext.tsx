@@ -5,13 +5,15 @@ import type { AuthContextType, Profile } from '../types';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 🔥 SELEÇÃO LIMPA: Apenas colunas que realmente existem no seu banco
-const ZAPTRO_PROFILE_SELECTS = 'id,email,full_name,role,company_id,avatar_url';
+const ZAPTRO_PROFILE_SELECTS = 'id,email,full_name,role,company_id,avatar_url,department';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const db = supabaseZaptro;
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const loadProfile = async (userId: string) => {
     try {
@@ -71,6 +73,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signOut = async () => {
+    setIsLoggingOut(true);
+    // Aguarda o tempo das frases de despedida (3 segundos)
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     await db.auth.signOut();
     window.location.href = '/';
   };
@@ -81,6 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         profile,
         isLoading,
+        isLoggingOut,
+        isLoggingIn,
+        setIsLoggingIn,
         signOut,
         isMaster: profile?.role === 'ADMIN' || profile?.role === 'MASTER',
         refreshProfile: async () => loadProfile(user?.id),

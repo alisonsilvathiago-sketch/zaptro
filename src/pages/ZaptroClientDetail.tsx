@@ -223,7 +223,7 @@ const ZaptroClientDetail: React.FC = () => {
     return (
       <ZaptroLayout>
         <div style={{ ...styles.loadingArea, flexDirection: 'column', gap: 16 }}>
-          <p style={{ fontWeight: 800, color: '#64748B' }}>Cliente não encontrado.</p>
+          <p style={{ fontWeight: 600, color: '#64748B' }}>Cliente não encontrado.</p>
           <button type="button" style={styles.backBtn} onClick={() => navigate(ZAPTRO_ROUTES.CLIENTS)}>
             <ArrowLeft size={20} /> Voltar a Clientes
           </button>
@@ -406,11 +406,11 @@ const styles: Record<string, React.CSSProperties> = {
   kicker: {
     margin: 0,
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.14em',
     color: '#64748B',
   },
-  pageTitle: { margin: '6px 0 0', fontSize: 32, fontWeight: 950, letterSpacing: '-1px', color: '#000' },
+  pageTitle: { margin: '6px 0 0', fontSize: 32, fontWeight: 700, letterSpacing: '-1px', color: '#000' },
   pageSub: { margin: '10px 0 0', maxWidth: 640, fontSize: 15, fontWeight: 600, color: '#64748B', lineHeight: 1.5 },
   headerActions: { display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' },
   backBtn: {
@@ -421,7 +421,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     fontSize: 14,
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     padding: '12px 18px',
     borderRadius: 12,
@@ -436,7 +436,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 12,
     fontSize: 13,
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     boxShadow: ZAPTRO_SHADOW.md,
   },
@@ -466,17 +466,17 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 38,
-    fontWeight: 950,
+    fontWeight: 700,
     marginBottom: 20,
     boxShadow: ZAPTRO_SHADOW.lg,
   },
-  clientName: { fontSize: 22, fontWeight: 950, color: '#000', margin: '0 0 8px 0', letterSpacing: '-0.5px', textAlign: 'center' },
+  clientName: { fontSize: 22, fontWeight: 700, color: '#000', margin: '0 0 8px 0', letterSpacing: '-0.5px', textAlign: 'center' },
   clientStatus: {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
     fontSize: 11,
-    fontWeight: 900,
+    fontWeight: 700,
     color: '#94A3B8',
     textTransform: 'uppercase',
     marginBottom: 28,
@@ -485,13 +485,13 @@ const styles: Record<string, React.CSSProperties> = {
   infoList: { width: '100%', display: 'flex', flexDirection: 'column', gap: 20 },
   infoItem: { display: 'flex', alignItems: 'flex-start', gap: 14 },
   infoText: { display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 },
-  infoLabel: { fontSize: 9, fontWeight: 950, color: '#94A3B8', letterSpacing: '0.08em' },
+  infoLabel: { fontSize: 9, fontWeight: 700, color: '#94A3B8', letterSpacing: '0.02em' },
   infoValue: { fontSize: 14, fontWeight: 700, color: '#334155', wordBreak: 'break-word' },
   divider: { width: '100%', height: 1, backgroundColor: '#ebebeb', margin: '24px 0' },
   crmStats: { width: '100%', display: 'flex', justifyContent: 'space-around' },
   crmStatItem: { textAlign: 'center' },
-  crmStatVal: { display: 'block', fontSize: 20, fontWeight: 950, color: '#000' },
-  crmStatLab: { fontSize: 10, fontWeight: 900, color: '#94A3B8', textTransform: 'uppercase' },
+  crmStatVal: { display: 'block', fontSize: 20, fontWeight: 700, color: '#000' },
+  crmStatLab: { fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' },
   secureBadge: {
     display: 'flex',
     alignItems: 'center',
@@ -501,7 +501,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 16,
     color: '#10B981',
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
   },
   feedSection: { display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0 },
   sectionHeader: {
@@ -513,9 +513,9 @@ const styles: Record<string, React.CSSProperties> = {
     borderBottom: '1px solid #E2E8F0',
     paddingBottom: 16,
   },
-  sectionTitle: { fontSize: 20, fontWeight: 950, color: '#000', margin: 0 },
+  sectionTitle: { fontSize: 20, fontWeight: 700, color: '#000', margin: 0 },
   sectionHint: { margin: '6px 0 0', fontSize: 13, fontWeight: 600, color: '#64748B', maxWidth: 720, lineHeight: 1.45 },
-  msgCount: { fontSize: 12, fontWeight: 800, color: '#94A3B8' },
+  msgCount: { fontSize: 12, fontWeight: 600, color: '#94A3B8' },
   feedList: { display: 'flex', flexDirection: 'column', gap: 14 },
   feedRow: {
     display: 'grid',
@@ -538,9 +538,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   feedBody: { minWidth: 0 },
   feedMeta: { display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 8, marginBottom: 6 },
-  feedChannel: { fontSize: 10, fontWeight: 950, letterSpacing: '0.06em', color: '#64748B', textTransform: 'uppercase' },
+  feedChannel: { fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: '#64748B', textTransform: 'uppercase' },
   feedTime: { fontSize: 11, fontWeight: 700, color: '#94A3B8' },
-  feedTitle: { margin: 0, fontSize: 16, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.02em' },
+  feedTitle: { margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' },
   feedText: { margin: '8px 0 0', fontSize: 14, lineHeight: 1.55, color: '#475569', fontWeight: 600, whiteSpace: 'pre-wrap' },
   loadingArea: { height: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' },
 };

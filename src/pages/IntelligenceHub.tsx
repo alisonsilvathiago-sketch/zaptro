@@ -134,7 +134,7 @@ const IntelligenceHub: React.FC = () => {
         </div>
         <div style={styles.statusBox}>
           <Activity size={16} color="var(--primary)" />
-          <span style={{fontSize: '12px', fontWeight: '800'}}>Sistema Adaptativo On</span>
+          <span style={{fontSize: '12px', fontWeight: '600'}}>Sistema Adaptativo On</span>
         </div>
       </header>
 
@@ -198,7 +198,7 @@ const IntelligenceHub: React.FC = () => {
 
       {allowedModules.length > 0 && (
         <section style={styles.recentActivity}>
-           <h3 style={{fontSize: '14px', fontWeight: '900', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+           <h3 style={{fontSize: '14px', fontWeight: '700', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px'}}>
               <Clock size={18} color="var(--primary)" /> Histórico de Acesso Rápido
            </h3>
            <div style={styles.activityList}>
@@ -219,20 +219,20 @@ const IntelligenceHub: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '32px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' },
-  title: { fontSize: '28px', fontWeight: '950', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
   subtitle: { fontSize: '14px', color: 'var(--text-muted)', margin: '4px 0 0 0' },
   statusBox: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px', marginBottom: '40px' },
   card: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', '&:hover': { transform: 'translateY(-4px)', boxShadow: 'var(--shadow-lg)', borderColor: 'var(--primary-light)' } },
   iconBox: { width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   cardContent: { flex: 1 },
-  cardTitle: { fontSize: '15px', fontWeight: '850', color: 'var(--text-main)', margin: 0 },
-  kpi: { fontSize: '20px', fontWeight: '950', margin: '4px 0' },
+  cardTitle: { fontSize: '15px', fontWeight: '700', color: 'var(--text-main)', margin: 0 },
+  kpi: { fontSize: '20px', fontWeight: '700', margin: '4px 0' },
   sub: { fontSize: '11px', color: '#94a3b8', margin: 0, fontWeight: '700' },
   progress: { height: '3px', borderRadius: '4px', width: '100%', marginTop: '8px' },
   progressBar: { height: '100%', borderRadius: '4px' },
   emptyState: { gridColumn: '1 / -1', padding: '80px', textAlign: 'center', backgroundColor: '#f4f4f4', borderRadius: '32px', border: '2px dashed #e2e8f0', color: 'var(--text-muted)' },
-  loading: { padding: '100px', textAlign: 'center', color: 'var(--primary)', fontWeight: '900', fontSize: '18px' },
+  loading: { padding: '100px', textAlign: 'center', color: 'var(--primary)', fontWeight: '700', fontSize: '18px' },
   recentActivity: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
   activityList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   activityItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', borderRadius: '16px', cursor: 'pointer', transition: '0.2s', '&:hover': { backgroundColor: '#f4f4f4' } },
@@ -240,16 +240,16 @@ const styles: Record<string, any> = {
   
   metricsSection: { marginBottom: '40px' },
   metricsHeader: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' },
-  metricsTitle: { fontSize: '20px', fontWeight: '900', color: 'var(--text-main)', margin: 0 },
-  liveBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '900', color: '#ef4444', backgroundColor: '#fef2f2', padding: '4px 10px', borderRadius: '6px' },
+  metricsTitle: { fontSize: '20px', fontWeight: '700', color: 'var(--text-main)', margin: 0 },
+  liveBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: '#ef4444', backgroundColor: '#fef2f2', padding: '4px 10px', borderRadius: '6px' },
   liveDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ef4444', animation: 'pulse 1.5s infinite' },
   metricsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px' },
   metricsCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
-  metricsCardTitle: { fontSize: '14px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '16px' },
+  metricsCardTitle: { fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '16px' },
   statsRow: { display: 'flex', justifyContent: 'space-between', gap: '12px' },
   statItem: { display: 'flex', flexDirection: 'column', gap: '2px' },
   statLabel: { fontSize: '11px', color: '#94a3b8', fontWeight: '700' },
-  statValue: { fontSize: '16px', fontWeight: '900', color: 'var(--text-main)' }
+  statValue: { fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' }
 };
 
 export default IntelligenceHub;

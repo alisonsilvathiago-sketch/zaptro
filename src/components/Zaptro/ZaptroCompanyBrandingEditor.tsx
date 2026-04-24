@@ -48,7 +48,7 @@ const baseTab: React.CSSProperties = {
   border: 'none',
   borderRadius: '10px',
   fontSize: '13px',
-  fontWeight: 900,
+  fontWeight: 700,
   cursor: 'pointer',
   backgroundColor: 'transparent',
 };
@@ -59,7 +59,7 @@ const st = {
   brandFieldLbl: {
     display: 'block',
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.06em',
     color: ZAPTRO_TITLE_COLOR,
     marginBottom: 6,
@@ -117,7 +117,7 @@ const st = {
     border: 'none',
     backgroundColor: '#0F172A',
     color: 'white',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: '15px',
     cursor: 'pointer',
   } as const,
@@ -291,7 +291,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
     <div style={{ width: '100%', maxWidth: 'min(100%, 1180px)', boxSizing: 'border-box' }}>
       {showHeading && (
         <header style={{ marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: '-0.5px', color: palette.text }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px', color: palette.text }}>
             Personalizar empresa
           </h2>
           <p style={{ ...st.brandModalSub, color: palette.textMuted }}>
@@ -336,7 +336,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
               style={{
                 margin: '0 0 6px',
                 fontSize: 18,
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '-0.03em',
                 color: palette.text,
               }}
@@ -385,21 +385,21 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   padding: '4px 10px',
                   borderRadius: 8,
                   fontSize: 10,
-                  fontWeight: 950,
-                  letterSpacing: '0.08em',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
                   backgroundColor: palette.mode === 'dark' ? 'rgba(0,0,0,0.35)' : '#0f172a',
                   color: palette.lime,
                 }}
               >
                 SOMENTE LEITURA
               </div>
-              <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em' }}>
+              <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700, color: palette.text, letterSpacing: '-0.02em' }}>
                 Marca bloqueada neste plano
               </h3>
               <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, fontWeight: 600, color: palette.textMuted }}>
                 O plano desta transportadora <strong style={{ color: palette.text }}>não inclui edição de marca</strong>, ou o
-                Administrador Master definiu <code style={{ fontSize: 12, fontWeight: 800 }}>settings.zaptro_branding = false</code>{' '}
-                em <code style={{ fontSize: 12, fontWeight: 800 }}>whatsapp_companies</code>. O MASTER altera plano / JSON; o ADMIN
+                Administrador Master definiu <code style={{ fontSize: 12, fontWeight: 600 }}>settings.zaptro_branding = false</code>{' '}
+                em <code style={{ fontSize: 12, fontWeight: 600 }}>whatsapp_companies</code>. O MASTER altera plano / JSON; o ADMIN
                 consulta abaixo em pré-visualização mas <strong style={{ color: palette.text }}>não grava</strong> até a marca estar
                 activa.
               </p>
@@ -410,7 +410,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
             style={{
               margin: '22px 0 12px',
               fontSize: 11,
-              fontWeight: 950,
+              fontWeight: 700,
               letterSpacing: '0.1em',
               color: palette.textMuted,
             }}
@@ -442,7 +442,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   padding: '8px 12px',
                   borderBottom: `1px solid ${palette.mode === 'dark' ? '#334155' : '#f1f5f9'}`,
                   fontSize: 11,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   color: palette.textMuted,
                   letterSpacing: '0.04em',
                 }}
@@ -463,7 +463,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   {brandForm.logo_url.trim() ? (
                     <img src={brandForm.logo_url.trim()} alt="" style={{ maxWidth: '100%', maxHeight: 40, objectFit: 'contain' }} />
                   ) : (
-                    <span style={{ color: '#e2e8f0', fontWeight: 950, fontSize: 10 }}>LOGO</span>
+                    <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 10 }}>LOGO</span>
                   )}
                 </div>
                 <div
@@ -487,7 +487,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                       backgroundColor: brandForm.primary_color,
                       marginTop: 4,
                       fontSize: 9,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -520,7 +520,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   padding: '8px 12px',
                   borderBottom: `1px solid ${palette.mode === 'dark' ? '#334155' : '#f1f5f9'}`,
                   fontSize: 11,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   color: palette.textMuted,
                   letterSpacing: '0.04em',
                 }}
@@ -554,7 +554,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   {brandForm.logo_url.trim() ? (
                     <img src={brandForm.logo_url.trim()} alt="" style={{ maxWidth: '100%', maxHeight: 36, objectFit: 'contain' }} />
                   ) : (
-                    <span style={{ color: '#0f172a', fontWeight: 950, fontSize: 11 }}>Marca</span>
+                    <span style={{ color: '#0f172a', fontWeight: 700, fontSize: 11 }}>Marca</span>
                   )}
                   <div style={{ width: '100%', height: 8, borderRadius: 4, background: '#ebebeb' }} />
                   <div style={{ width: '100%', height: 8, borderRadius: 4, background: '#ebebeb' }} />
@@ -565,7 +565,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                       borderRadius: 8,
                       backgroundColor: brandForm.primary_color,
                       fontSize: 9,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -679,7 +679,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                           border: `1px solid ${palette.mode === 'dark' ? '#334155' : ZAPTRO_SECTION_BORDER}`,
                           backgroundColor: brandForm.primary_color,
                           color: pickLabelOnColor(brandForm.primary_color),
-                          fontWeight: 950,
+                          fontWeight: 700,
                           fontSize: 13,
                           cursor: canCustomizeTenant ? 'pointer' : 'not-allowed',
                           opacity: canCustomizeTenant ? 1 : 0.55,
@@ -716,7 +716,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             background: 'transparent',
                             color: palette.textMuted,
                             fontSize: 12,
-                            fontWeight: 800,
+                            fontWeight: 600,
                             cursor: canCustomizeTenant ? 'pointer' : 'not-allowed',
                             textDecoration: 'underline',
                             padding: 0,
@@ -780,7 +780,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                         border: `1px solid ${palette.mode === 'dark' ? '#334155' : ZAPTRO_SECTION_BORDER}`,
                         backgroundColor: brandForm.primary_color,
                         color: pickLabelOnColor(brandForm.primary_color),
-                        fontWeight: 950,
+                        fontWeight: 700,
                         fontSize: 13,
                         cursor: canCustomizeTenant ? 'pointer' : 'not-allowed',
                         opacity: canCustomizeTenant ? 1 : 0.55,
@@ -817,7 +817,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                           background: 'transparent',
                           color: palette.textMuted,
                           fontSize: 12,
-                          fontWeight: 800,
+                          fontWeight: 600,
                           cursor: canCustomizeTenant ? 'pointer' : 'not-allowed',
                           textDecoration: 'underline',
                           padding: 0,
@@ -842,7 +842,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                     style={{
                       cursor: 'pointer',
                       fontSize: 12,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.04em',
                       color: palette.textMuted,
                       listStyle: 'none',
@@ -886,7 +886,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                 <div
                   style={{
                     fontSize: 10,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     letterSpacing: '0.1em',
                     color: palette.textMuted,
                     marginBottom: 6,
@@ -899,7 +899,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'stretch' }}>
                   <div style={{ flex: '1 1 120px', maxWidth: 140 }}>
-                    <div style={{ fontSize: 10, fontWeight: 950, color: palette.textMuted, marginBottom: 8 }}>FECHADO</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: palette.textMuted, marginBottom: 8 }}>FECHADO</div>
                     <div
                       style={{
                         borderRadius: 14,
@@ -935,7 +935,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             style={{ maxWidth: 40, maxHeight: 40, objectFit: 'contain' }}
                           />
                         ) : (
-                          <span style={{ fontSize: 9, fontWeight: 950, color: 'rgba(226,232,240,0.85)' }}>ÍC.</span>
+                          <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(226,232,240,0.85)' }}>ÍC.</span>
                         )}
                       </div>
                       <div style={{ width: '100%', height: 6, borderRadius: 4, background: 'rgba(255,255,255,0.12)' }} />
@@ -944,7 +944,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                     </div>
                   </div>
                   <div style={{ flex: '1 1 200px', minWidth: 180 }}>
-                    <div style={{ fontSize: 10, fontWeight: 950, color: palette.textMuted, marginBottom: 8 }}>ABERTO</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: palette.textMuted, marginBottom: 8 }}>ABERTO</div>
                     <div
                       style={{
                         borderRadius: 14,
@@ -975,7 +975,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             style={{ maxWidth: '100%', maxHeight: 40, objectFit: 'contain' }}
                           />
                         ) : (
-                          <span style={{ fontSize: 10, fontWeight: 950, color: 'rgba(226,232,240,0.9)' }}>LOGO HORIZONTAL</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(226,232,240,0.9)' }}>LOGO HORIZONTAL</span>
                         )}
                       </div>
                       <div style={{ width: '100%', height: 6, borderRadius: 4, background: 'rgba(255,255,255,0.12)' }} />
@@ -1101,7 +1101,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   <div
                     style={{
                       fontSize: 10,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.1em',
                       color: palette.textMuted,
                       marginBottom: 10,
@@ -1148,12 +1148,12 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                         title={row.hex}
                       />
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 950, color: palette.text }}>{row.label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: palette.text }}>{row.label}</div>
                         <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted }}>{row.sub}</div>
                         <code
                           style={{
                             fontSize: 11,
-                            fontWeight: 800,
+                            fontWeight: 600,
                             color: palette.text,
                             letterSpacing: '0.02em',
                           }}
@@ -1176,7 +1176,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                   <div
                     style={{
                       fontSize: 10,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.1em',
                       padding: '8px 12px',
                       borderBottom: `1px solid ${palette.mode === 'dark' ? '#334155' : ZAPTRO_SECTION_BORDER}`,
@@ -1221,7 +1221,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                         minWidth: 0,
                       }}
                     >
-                      <div style={{ fontSize: 11, fontWeight: 950, color: brandForm.secondary_color }}>Área principal</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: brandForm.secondary_color }}>Área principal</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
                         <button
                           type="button"
@@ -1231,7 +1231,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             border: 'none',
                             backgroundColor: brandForm.primary_color,
                             color: pickLabelOnColor(brandForm.primary_color),
-                            fontWeight: 950,
+                            fontWeight: 700,
                             fontSize: 11,
                             cursor: 'default',
                           }}
@@ -1242,7 +1242,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                         <span
                           style={{
                             fontSize: 10,
-                            fontWeight: 800,
+                            fontWeight: 600,
                             color: brandForm.secondary_color,
                             opacity: 0.85,
                           }}
@@ -1272,7 +1272,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                 boxSizing: 'border-box',
               }}
             >
-              <div style={{ fontSize: 13, fontWeight: 950, color: palette.text, marginBottom: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: palette.text, marginBottom: 6 }}>
                 O que a equipa vê ao abrir o link de login
               </div>
               <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, fontWeight: 600, color: palette.textMuted }}>
@@ -1311,7 +1311,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                 }}
               >
                 <div style={{ ...st.brandFieldLbl, marginBottom: 6 }}>Link de login (equipa)</div>
-                <code style={{ fontSize: 12, fontWeight: 800, color: palette.text, wordBreak: 'break-all' }}>
+                <code style={{ fontSize: 12, fontWeight: 600, color: palette.text, wordBreak: 'break-all' }}>
                   {typeof window !== 'undefined'
                     ? `${window.location.origin}${zaptroCompanyLoginPath(brandForm.subdomain)}`
                     : zaptroCompanyLoginPath(brandForm.subdomain)}
@@ -1336,7 +1336,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                     border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
                     background: '#000',
                     color: palette.lime,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 12,
                     cursor: 'pointer',
                   }}
@@ -1393,7 +1393,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                       border: `1px solid ${palette.mode === 'dark' ? '#334155' : ZAPTRO_SECTION_BORDER}`,
                       backgroundColor: loginPreviewLayout === 'split' ? palette.lime : 'transparent',
                       color: loginPreviewLayout === 'split' ? '#000' : palette.text,
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 12,
                       cursor: 'pointer',
                     }}
@@ -1413,7 +1413,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                       border: `1px solid ${palette.mode === 'dark' ? '#334155' : ZAPTRO_SECTION_BORDER}`,
                       backgroundColor: loginPreviewLayout === 'center' ? palette.lime : 'transparent',
                       color: loginPreviewLayout === 'center' ? '#000' : palette.text,
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 12,
                       cursor: 'pointer',
                     }}
@@ -1506,14 +1506,14 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                     <div
                       style={{
                         fontSize: 10,
-                        fontWeight: 950,
+                        fontWeight: 700,
                         letterSpacing: '0.1em',
                         color: palette.textMuted,
                       }}
                     >
                       PRÉ-VISUALIZAÇÃO DO LOGIN
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 850, color: palette.text }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: palette.text }}>
                       {loginPreviewLayout === 'split' ? 'Modelo com painel lateral' : 'Modelo centrado no degradê'}
                     </span>
                   </div>
@@ -1537,7 +1537,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             style={{ maxWidth: '100%', maxHeight: 56, objectFit: 'contain' }}
                           />
                         ) : (
-                          <span style={{ color: '#e2e8f0', fontWeight: 950, fontSize: 11 }}>LOGO</span>
+                          <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 11 }}>LOGO</span>
                         )}
                       </div>
                       <div
@@ -1552,9 +1552,9 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                           justifyContent: 'center',
                         }}
                       >
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8' }}>E-mail ou utilizador</div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8' }}>E-mail ou utilizador</div>
                         <div style={{ height: 10, borderRadius: 5, background: '#ebebeb', width: '100%' }} />
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8', marginTop: 4 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', marginTop: 4 }}>
                           Palavra-passe
                         </div>
                         <div style={{ height: 10, borderRadius: 5, background: '#ebebeb', width: '100%' }} />
@@ -1565,7 +1565,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             backgroundColor: loginButtonColor,
                             marginTop: 6,
                             fontSize: 11,
-                            fontWeight: 950,
+                            fontWeight: 700,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1606,7 +1606,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             style={{ maxWidth: '100%', maxHeight: 48, objectFit: 'contain' }}
                           />
                         ) : (
-                          <span style={{ color: '#0f172a', fontWeight: 950, fontSize: 12 }}>Marca</span>
+                          <span style={{ color: '#0f172a', fontWeight: 700, fontSize: 12 }}>Marca</span>
                         )}
                         <div style={{ width: '100%', height: 10, borderRadius: 5, background: '#ebebeb' }} />
                         <div style={{ width: '100%', height: 10, borderRadius: 5, background: '#ebebeb' }} />
@@ -1617,7 +1617,7 @@ export const ZaptroCompanyBrandingEditor: React.FC<ZaptroCompanyBrandingEditorPr
                             borderRadius: 10,
                             backgroundColor: loginButtonColor,
                             fontSize: 11,
-                            fontWeight: 950,
+                            fontWeight: 700,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',

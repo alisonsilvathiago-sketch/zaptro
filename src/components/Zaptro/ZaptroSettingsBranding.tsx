@@ -105,7 +105,7 @@ const ZaptroSettingsBranding: React.FC = () => {
   return (
     <div style={{ maxWidth: 1040 }}>
       <header style={{ marginBottom: 28 }}>
-        <h2 style={{ margin: 0, fontSize: 28, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.03em' }}>
+        <h2 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.03em' }}>
           Marca & logo
         </h2>
         <p style={{ margin: '10px 0 0', fontSize: 15, fontWeight: 600, color: '#64748b', maxWidth: 720, lineHeight: 1.55 }}>
@@ -263,7 +263,7 @@ const ZaptroSettingsBranding: React.FC = () => {
               border: 'none',
               backgroundColor: '#000',
               color: '#D9FF00',
-              fontWeight: 950,
+              fontWeight: 700,
               fontSize: 14,
               cursor: saving || !canCustomizeTenant ? 'not-allowed' : 'pointer',
               opacity: !canCustomizeTenant ? 0.45 : 1,
@@ -276,7 +276,7 @@ const ZaptroSettingsBranding: React.FC = () => {
         </div>
 
         <aside style={{ position: 'sticky', top: 12 }}>
-          <p style={{ margin: '0 0 12px', fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: '#94a3b8' }}>
+          <p style={{ margin: '0 0 12px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: '#94a3b8' }}>
             PRÉ-VISUALIZAÇÃO
           </p>
           <div
@@ -329,7 +329,7 @@ const ZaptroSettingsBranding: React.FC = () => {
                     gap: 8,
                     color: '#fff',
                     fontSize: 13,
-                    fontWeight: 800,
+                    fontWeight: 600,
                     opacity: 0.85,
                   }}
                 >
@@ -346,7 +346,7 @@ const ZaptroSettingsBranding: React.FC = () => {
                   border: 'none',
                   backgroundColor: primary,
                   color: '#000',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 12,
                   cursor: 'default',
                 }}
@@ -355,7 +355,7 @@ const ZaptroSettingsBranding: React.FC = () => {
               </button>
             </div>
             <div style={{ padding: '20px 18px', backgroundColor: ZAPTRO_FIELD_BG }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: ZAPTRO_TITLE_COLOR, marginBottom: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: ZAPTRO_TITLE_COLOR, marginBottom: 10 }}>
                 Separador do browser
               </div>
               <div
@@ -391,7 +391,7 @@ const ZaptroSettingsBranding: React.FC = () => {
                     }}
                   />
                 )}
-                <span style={{ fontSize: 12, fontWeight: 800, color: '#334155' }}>Zaptro · Painel</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#334155' }}>Zaptro · Painel</span>
               </div>
             </div>
           </div>
@@ -413,7 +413,7 @@ const ZaptroSettingsBranding: React.FC = () => {
 function FieldBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: ZAPTRO_TITLE_COLOR, marginBottom: 8 }}>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: ZAPTRO_TITLE_COLOR, marginBottom: 8 }}>
         {title}
       </label>
       {children}
@@ -442,7 +442,7 @@ const fileLabel: React.CSSProperties = {
   border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
   backgroundColor: '#fff',
   fontSize: 13,
-  fontWeight: 900,
+  fontWeight: 700,
   cursor: 'pointer',
   fontFamily: 'inherit',
 };

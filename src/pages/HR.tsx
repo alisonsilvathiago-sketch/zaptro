@@ -221,7 +221,7 @@ const HR: React.FC = () => {
                    <tr key={emp.id} style={{cursor: 'pointer'}} onClick={() => { setSelectedEmployee(emp); setIsDetailModalOpen(true); }}>
                       <td style={styles.td}><div style={styles.userCell}><div style={styles.avatar}>{emp.full_name[0]}</div><div><p style={styles.uName}>{emp.full_name}</p><p style={styles.uSub}>{emp.email}</p></div></div></td>
                       <td style={styles.td}>{emp.position}</td>
-                      <td style={styles.td}><span style={{padding: '4px 10px', borderRadius: '10px', fontSize: '11px', fontWeight: '800', backgroundColor: '#ecfdf5', color: '#10b981'}}>{emp.status || 'Ativo'}</span></td>
+                      <td style={styles.td}><span style={{padding: '4px 10px', borderRadius: '10px', fontSize: '11px', fontWeight: '600', backgroundColor: '#ecfdf5', color: '#10b981'}}>{emp.status || 'Ativo'}</span></td>
                       <td style={styles.td}>{emp.hiring_date}</td>
                       <td style={styles.td}><button style={styles.iconBtn}><MoreVertical size={18} /></button></td>
                    </tr>
@@ -323,35 +323,35 @@ const styles: Record<string, any> = {
   kpiCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   kpiInfo: { display: 'flex', flexDirection: 'column', gap: '4px' },
   kpiLabel: { fontSize: '12px', fontWeight: '700', color: '#94a3b8', margin: 0 },
-  kpiValue: { fontSize: '28px', fontWeight: '900', color: '#1e293b', margin: 0 },
+  kpiValue: { fontSize: '28px', fontWeight: '700', color: '#1e293b', margin: 0 },
   kpiIconWrapper: { width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   dashboardMainGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' },
   chartCol: { display: 'flex', flexDirection: 'column', gap: '24px' },
   chartCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   cardHeader: { padding: '20px 24px', borderBottom: '1px solid #e8e8e8' },
   noteCard: { backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0' },
-  avatarMini: { width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800' },
+  avatarMini: { width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' },
   filterBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e2e8f0', width: '400px' },
   searchInput: { border: 'none', outline: 'none', backgroundColor: 'transparent', width: '100%', fontSize: '14px' },
   exportGroup: { display: 'flex', gap: '12px' },
   exportBtn: { padding: '10px 16px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', color: '#64748b', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
-  btnPrimary: { padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  btnPrimary: { padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8' },
+  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8' },
   td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
   userCell: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900' },
-  uName: { fontWeight: '800', color: '#1e293b', margin: 0 },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' },
+  uName: { fontWeight: '600', color: '#1e293b', margin: 0 },
   uSub: { fontSize: '12px', color: '#94a3b8', margin: 0 },
   iconBtn: { padding: '8px', borderRadius: '8px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#94a3b8' },
   checkinPopup: { position: 'fixed', bottom: '32px', right: '32px', width: '300px', backgroundColor: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', zIndex: 1000 },
   emojiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' },
   emojiBtn: { padding: '12px', borderRadius: '12px', border: '1px solid #e8e8e8', backgroundColor: '#f4f4f4', cursor: 'pointer', fontSize: '20px' },
   input: { padding: '14px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none' },
-  btnPrimaryLarge: { padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', cursor: 'pointer' },
-  btnPrimaryFull: { width: '100%', padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', cursor: 'pointer' },
+  btnPrimaryLarge: { padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '600', cursor: 'pointer' },
+  btnPrimaryFull: { width: '100%', padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '600', cursor: 'pointer' },
   labelSmall: { fontSize: '11px', fontWeight: '700', color: '#94a3b8', display: 'block', marginBottom: '4px' }
 };
 

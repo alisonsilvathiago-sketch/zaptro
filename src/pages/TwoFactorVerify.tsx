@@ -211,22 +211,22 @@ const styles = {
   header: { marginBottom: '32px' },
   logoRow: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' },
   logoBox: { width: '40px', height: '40px', backgroundColor: '#0F172A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  platformName: { fontSize: '18px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px' },
+  platformName: { fontSize: '18px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.5px' },
   
   welcomeArea: { marginBottom: '24px' },
-  title: { fontSize: '28px', fontWeight: '850', color: '#0F172A', marginBottom: '8px', letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: '#0F172A', marginBottom: '8px', letterSpacing: '-1px' },
   subtitle: { color: '#64748B', fontSize: '15px', lineHeight: '1.6' },
   
   form: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   otpGrid: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px' },
-  otpInput: { width: '100%', height: '64px', border: '2px solid #E2E8F0', borderRadius: '14px', fontSize: '24px', fontWeight: '900', color: '#0F172A', textAlign: 'center' as const, outline: 'none', transition: 'all 0.2s' },
+  otpInput: { width: '100%', height: '64px', border: '2px solid #E2E8F0', borderRadius: '14px', fontSize: '24px', fontWeight: '700', color: '#0F172A', textAlign: 'center' as const, outline: 'none', transition: 'all 0.2s' },
   
-  submitBtn: { width: '100%', padding: '16px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '850', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px var(--primary-glow)' },
+  submitBtn: { width: '100%', padding: '16px', borderRadius: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: '700', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px var(--primary-glow)' },
   
   footer: { marginTop: '32px', display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   resendArea: { minHeight: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   resendText: { fontSize: '14px', color: '#64748b', margin: 0 },
-  resendBtn: { background: 'none', border: 'none', color: 'var(--primary)', fontWeight: '800', fontSize: '14px', cursor: 'pointer' },
+  resendBtn: { background: 'none', border: 'none', color: 'var(--primary)', fontWeight: '600', fontSize: '14px', cursor: 'pointer' },
   backBtn: { background: 'none', border: 'none', color: '#94a3b8', fontSize: '13px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' },
 
   copyright: { position: 'absolute' as const, bottom: '40px', left: '40px', fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
@@ -236,7 +236,7 @@ const styles = {
   visualContent: { flex: 1, padding: '60px', display: 'flex', flexDirection: 'column' as const, justifyContent: 'space-between' },
   visualHeader: { maxWidth: '340px' },
   appIcon: { width: '48px', height: '48px', backgroundColor: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' },
-  visualTitle: { fontSize: '20px', fontWeight: '900', color: '#0F172A', marginBottom: '12px' },
+  visualTitle: { fontSize: '20px', fontWeight: '700', color: '#0F172A', marginBottom: '12px' },
   visualDesc: { fontSize: '15px', color: '#64748B', lineHeight: '1.5' },
   
   illustration: { position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' },
@@ -247,7 +247,7 @@ const styles = {
 
   visualFooter: { display: 'flex', gap: '60px' },
   footerCol: { maxWidth: '200px' },
-  footerTitleText: { fontSize: '13px', fontWeight: '950', color: '#0F172A', marginBottom: '8px' },
+  footerTitleText: { fontSize: '13px', fontWeight: '700', color: '#0F172A', marginBottom: '8px' },
   footerP: { fontSize: '13px', color: '#94A3B8', lineHeight: '1.5' }
 };
 

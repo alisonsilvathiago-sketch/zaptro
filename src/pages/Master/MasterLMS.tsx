@@ -227,7 +227,7 @@ const MasterLMS: React.FC = () => {
 const styles = {
   container: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: '20px', fontWeight: '800', color: 'var(--text-main)' },
+  title: { fontSize: '20px', fontWeight: '600', color: 'var(--text-main)' },
   subtitle: { fontSize: '14px', color: 'var(--text-muted)' },
   addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' },
   tabNav: { display: 'flex', gap: '8px', padding: '6px', backgroundColor: '#ebebeb', borderRadius: '14px', width: 'fit-content' },
@@ -238,13 +238,13 @@ const styles = {
   cardHeader: { position: 'relative' as const, height: '160px', backgroundColor: '#f4f4f4' },
   cover: { width: '100%', height: '100%', objectFit: 'cover' as const },
   placeholderCover: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' },
-  statusBadge: { position: 'absolute' as const, top: '12px', right: '12px', padding: '4px 10px', borderRadius: '12px', fontSize: '10px', fontWeight: '900' },
+  statusBadge: { position: 'absolute' as const, top: '12px', right: '12px', padding: '4px 10px', borderRadius: '12px', fontSize: '10px', fontWeight: '700' },
   cardBody: { padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' as const },
-  cTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '8px' },
+  cTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '8px' },
   cDesc: { fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5', marginBottom: '16px' },
   owner: { fontSize: '11px', color: '#94a3b8', marginTop: 'auto', marginBottom: '12px' },
   footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid #e8e8e8' },
-  price: { fontSize: '16px', fontWeight: '900', color: '#10b981' },
+  price: { fontSize: '16px', fontWeight: '700', color: '#10b981' },
   editBtn: { padding: '8px', borderRadius: '10px', backgroundColor: 'var(--bg-app)', border: 'none', color: 'var(--primary)', cursor: 'pointer' },
   empty: { padding: '80px', textAlign: 'center' as const, color: '#94a3b8', border: '2px dashed var(--border)', borderRadius: '24px', gridColumn: '1 / -1' },
   loading: { padding: '80px', textAlign: 'center' as const, color: 'var(--primary)', gridColumn: '1 / -1', fontWeight: '700' },
@@ -253,10 +253,10 @@ const styles = {
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   fGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   fGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  fLabel: { fontSize: '13px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  fLabel: { fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   input: { padding: '14px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', color: 'var(--text-main)', outline: 'none' },
   textarea: { padding: '14px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', color: 'var(--text-main)', outline: 'none', height: '100px', resize: 'none' as const },
-  submitBtn: { marginTop: '12px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' }
+  submitBtn: { marginTop: '12px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default MasterLMS;

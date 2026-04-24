@@ -40,7 +40,7 @@ const AccessDenied: React.FC = () => {
         <ShieldAlert size={40} color="#ef4444" />
       </div>
       
-      <h1 style={{ fontSize: '32px', fontWeight: '950', color: '#0f172a', margin: '0 0 12px 0' }}>Sessão Inválida</h1>
+      <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#0f172a', margin: '0 0 12px 0' }}>Sessão Inválida</h1>
       <p style={{ color: '#64748b', fontSize: '18px', maxWidth: '450px', lineHeight: '1.6', marginBottom: '32px' }}>
         Identificamos um conflito entre seu login e este domínio. Por segurança, sua sessão foi encerrada para evitar cruzamento de dados entre empresas.
       </p>
@@ -51,7 +51,7 @@ const AccessDenied: React.FC = () => {
           style={{
             display: 'flex', alignItems: 'center', gap: '8px',
             padding: '14px 28px', backgroundColor: '#0f172a', border: 'none',
-            borderRadius: '16px', fontWeight: '800', cursor: 'pointer', color: '#fff'
+            borderRadius: '16px', fontWeight: '600', cursor: 'pointer', color: '#fff'
           }}
         >
           Fazer Login Novamente

@@ -231,7 +231,7 @@ const Settings: React.FC = () => {
                   </div>
                   <div style={styles.pMain}>
                      <div style={{...styles.pHeader, borderBottom: `1px solid var(--border)`}}>
-                        <span style={{fontWeight: '900', color: 'var(--text-main)', fontSize: '14px'}}>{settings.menu_name}</span>
+                        <span style={{fontWeight: '700', color: 'var(--text-main)', fontSize: '14px'}}>{settings.menu_name}</span>
                      </div>
                      <div style={styles.pContent}>
                         <div style={{...styles.pButton, backgroundColor: settings.primary_color, borderRadius: settings.button_radius}}>Botão Primário</div>
@@ -287,7 +287,7 @@ const Settings: React.FC = () => {
               <div style={styles.infoBox}>
                  <ShieldCheck size={20} color="var(--primary)" />
                  <div>
-                    <h4 style={{fontSize: '14px', fontWeight: '800'}}>Segurança de Acesso</h4>
+                    <h4 style={{fontSize: '14px', fontWeight: '600'}}>Segurança de Acesso</h4>
                     <p style={styles.uSub}>Ao ativar um domínio customizado, apenas usuários vinculados ao ID da sua empresa poderão realizar login por estas URLs.</p>
                  </div>
               </div>
@@ -316,8 +316,8 @@ const styles: Record<string, any> = {
   container: { padding: '32px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   headerPremium: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap' as const, gap: '24px' },
   headerTitleArea: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' },
+  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '700', marginBottom: '8px', letterSpacing: '1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-1px' },
   tabNavCompact: { display: 'flex', gap: '8px', backgroundColor: 'rgba(241, 245, 249, 0.5)', padding: '6px', borderRadius: '18px', border: '1px solid var(--border)', overflowX: 'auto' as const, scrollbarWidth: 'none' as const },
   tabBtnCompact: { 
     display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', 
@@ -330,7 +330,7 @@ const styles: Record<string, any> = {
   content: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px' },
   card: { backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
-  cardTitle: { fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
+  cardTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
   formGroup: { marginBottom: '20px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   formRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' },
   label: { fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' },
@@ -358,7 +358,7 @@ const styles: Record<string, any> = {
   pMain: { flex: 1, display: 'flex', flexDirection: 'column' as const },
   pHeader: { height: '56px', backgroundColor: 'white', padding: '0 24px', display: 'flex', alignItems: 'center' },
   pContent: { flex: 1, padding: '32px', display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'center' },
-  pButton: { padding: '12px 24px', color: 'white', fontSize: '12px', fontWeight: '800' },
+  pButton: { padding: '12px 24px', color: 'white', fontSize: '12px', fontWeight: '600' },
 
   urlBox: { display: 'flex', alignItems: 'center', backgroundColor: 'var(--bg-app)', borderRadius: '14px', border: '2px solid var(--border)', overflow: 'hidden', transition: 'border 0.2s' },
   urlInput: { border: 'none', outline: 'none', padding: '16px', backgroundColor: 'transparent', flex: 1, fontSize: '16px', fontWeight: '700', textAlign: 'right' as const, color: 'var(--primary)' },
@@ -367,7 +367,7 @@ const styles: Record<string, any> = {
   infoBox: { marginTop: '40px', padding: '24px', backgroundColor: 'var(--primary-light)', borderRadius: '24px', border: '1px solid var(--primary)', display: 'flex', gap: '20px', alignItems: 'flex-start' },
 
   saveSection: { marginTop: '12px', display: 'flex', justifyContent: 'flex-end' },
-  saveBtn: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 48px', backgroundColor: 'var(--text-main)', color: 'white', borderRadius: '16px', fontWeight: '800', cursor: 'pointer', border: 'none', fontSize: '16px', transition: 'transform 0.2s' }
+  saveBtn: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 48px', backgroundColor: 'var(--text-main)', color: 'white', borderRadius: '16px', fontWeight: '600', cursor: 'pointer', border: 'none', fontSize: '16px', transition: 'transform 0.2s' }
 };
 
 export default Settings;

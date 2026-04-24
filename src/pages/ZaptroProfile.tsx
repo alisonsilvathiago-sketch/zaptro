@@ -68,15 +68,15 @@ function openPaymentReceiptPrint(args: {
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; padding: 48px; color: #111; max-width: 720px; margin: 0 auto; }
     .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; }
-    .zaptro { font-size: 26px; font-weight: 950; letter-spacing: -0.04em; }
-    .zaptro-sub { font-size: 11px; color: #64748b; margin-top: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .zaptro { font-size: 26px; font-weight: 700; letter-spacing: -0.04em; }
+    .zaptro-sub { font-size: 11px; color: #64748b; margin-top: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
     .co-logo { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; border: 1px solid #e5e7eb; }
     .co-ph { width: 72px; height: 72px; border-radius: 14px; background: #f4f4f5; display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;color:#18181b;border:1px solid #e5e7eb;}
-    h1 { font-size: 18px; margin: 28px 0 12px; font-weight: 950; }
+    h1 { font-size: 18px; margin: 28px 0 12px; font-weight: 700; }
     table { width: 100%; border-collapse: collapse; }
     th, td { text-align: left; padding: 12px 0; border-bottom: 1px solid #ebebec; font-size: 14px; }
     th { width: 34%; color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .val { font-weight: 800; font-size: 16px; }
+    .val { font-weight: 600; font-size: 16px; }
     .muted { color: #64748b; font-size: 13px; line-height: 1.55; margin-top: 28px; }
   </style></head><body>
   <div class="top">
@@ -176,6 +176,11 @@ const ZaptroProfile: React.FC = () => {
     logo: null as string | null,
     /** Escopo de orçamento: frete, armazenagem ou ambos (persistido em `settings`). */
     serviceScope: DEFAULT_ZAPTRO_SERVICE_SCOPE as ZaptroServiceScope,
+    pixKey: '',
+    bankName: '',
+    bankAgency: '',
+    bankAccount: '',
+    bankHolder: '',
   });
 
   useEffect(() => {
@@ -194,6 +199,11 @@ const ZaptroProfile: React.FC = () => {
         'Especialistas em transporte de carga fracionada e logística inteligente.',
       hours: company.opening_hours || prev.hours,
       serviceScope: readZaptroServiceScope(company),
+      pixKey: company.settings?.pix_key || '',
+      bankName: company.settings?.bank_name || '',
+      bankAgency: company.settings?.bank_agency || '',
+      bankAccount: company.settings?.bank_account || '',
+      bankHolder: company.settings?.bank_holder || '',
     }));
   }, [company]);
 
@@ -297,7 +307,15 @@ const ZaptroProfile: React.FC = () => {
         category: vitrineData.segment.trim(),
         description: vitrineData.description.trim() || vitrineData.name.trim(),
         opening_hours: vitrineData.hours.trim(),
-        settings: { ...prevSettings, zaptro_service_scope: vitrineData.serviceScope },
+        settings: { 
+          ...prevSettings, 
+          zaptro_service_scope: vitrineData.serviceScope,
+          pix_key: vitrineData.pixKey.trim(),
+          bank_name: vitrineData.bankName.trim(),
+          bank_agency: vitrineData.bankAgency.trim(),
+          bank_account: vitrineData.bankAccount.trim(),
+          bank_holder: vitrineData.bankHolder.trim(),
+        },
       };
       if (vitrineData.logo && vitrineData.logo.length <= 400_000) {
         payload.logo_url = vitrineData.logo;
@@ -629,7 +647,7 @@ const ZaptroProfile: React.FC = () => {
                            border: '1px solid #fecaca',
                            background: '#fff',
                            color: '#991b1b',
-                           fontWeight: 800,
+                           fontWeight: 600,
                            fontSize: 12,
                            padding: '8px 14px',
                            borderRadius: 10,
@@ -678,7 +696,7 @@ const ZaptroProfile: React.FC = () => {
                            <strong>Salvar Vitrine</strong>.
                          </p>
                          <p style={styles.vitrineAlertMissing}>
-                           <span style={{ fontWeight: 950 }}>Falta:</span> {vitrineMissing.join(' · ')}
+                           <span style={{ fontWeight: 700 }}>Falta:</span> {vitrineMissing.join(' · ')}
                          </p>
                        </div>
                      </div>
@@ -888,6 +906,88 @@ const ZaptroProfile: React.FC = () => {
                       </div>
                    </div>
 
+                    <div style={styles.divider} />
+
+                    {/* DADOS DE PAGAMENTO (PIX & BANCÁRIO) */}
+                    <div style={{ marginTop: 24 }}>
+                       <h3 style={{ ...styles.sectionTitle, fontSize: 18, marginBottom: 16, color: '#000' }}>Dados para Pagamento (Pix & Bancário)</h3>
+                       <p style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 20 }}>
+                          Estas informações serão usadas para gerar cobranças e compartilhar dados de pagamento com seus clientes via WhatsApp.
+                       </p>
+                       
+                       <div style={styles.infoGrid}>
+                          <div style={styles.infoFull}>
+                             <label style={styles.label}>Chave Pix Principal</label>
+                             <div style={styles.inputStack}>
+                                <Zap size={16} color="#34C759" />
+                                <input
+                                  disabled={vitrineFormDisabled}
+                                  style={styles.input}
+                                  value={vitrineData.pixKey}
+                                  onChange={(e) => setVitrineData({ ...vitrineData, pixKey: e.target.value })}
+                                  placeholder="E-mail, CPF/CNPJ, Telefone ou Chave Aleatória"
+                                />
+                             </div>
+                          </div>
+                          
+                          <div style={styles.infoField}>
+                             <label style={styles.label}>Banco</label>
+                             <div style={styles.inputStack}>
+                                <Building2 size={16} color="#64748B" />
+                                <input
+                                  disabled={vitrineFormDisabled}
+                                  style={styles.input}
+                                  value={vitrineData.bankName}
+                                  onChange={(e) => setVitrineData({ ...vitrineData, bankName: e.target.value })}
+                                  placeholder="Ex: Itaú, Bradesco, Nubank..."
+                                />
+                             </div>
+                          </div>
+                          
+                          <div style={styles.infoField}>
+                             <label style={styles.label}>Titular (Nome ou Razão Social)</label>
+                             <div style={styles.inputStack}>
+                                <User size={16} color="#64748B" />
+                                <input
+                                  disabled={vitrineFormDisabled}
+                                  style={styles.input}
+                                  value={vitrineData.bankHolder}
+                                  onChange={(e) => setVitrineData({ ...vitrineData, bankHolder: e.target.value })}
+                                  placeholder="Nome completo do titular da conta"
+                                />
+                             </div>
+                          </div>
+                          
+                          <div style={styles.infoField}>
+                             <label style={styles.label}>Agência</label>
+                             <div style={styles.inputStack}>
+                                <CreditCard size={16} color="#64748B" />
+                                <input
+                                  disabled={vitrineFormDisabled}
+                                  style={styles.input}
+                                  value={vitrineData.bankAgency}
+                                  onChange={(e) => setVitrineData({ ...vitrineData, bankAgency: e.target.value })}
+                                  placeholder="0001"
+                                />
+                             </div>
+                          </div>
+                          
+                          <div style={styles.infoField}>
+                             <label style={styles.label}>Conta Corrente</label>
+                             <div style={styles.inputStack}>
+                                <CreditCard size={16} color="#64748B" />
+                                <input
+                                  disabled={vitrineFormDisabled}
+                                  style={styles.input}
+                                  value={vitrineData.bankAccount}
+                                  onChange={(e) => setVitrineData({ ...vitrineData, bankAccount: e.target.value })}
+                                  placeholder="00000-0"
+                                />
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+
                    <div style={styles.vitrinePreview}>
                       <Info size={16} />
                       <span>
@@ -1020,7 +1120,7 @@ const ZaptroProfile: React.FC = () => {
               {billingHistory[billingDetailIdx].status}.
             </p>
             <div>
-              <h4 style={{ margin: '0 0 12px', fontSize: '12px', fontWeight: 950, color: '#94a3b8', letterSpacing: '0.08em' }}>
+              <h4 style={{ margin: '0 0 12px', fontSize: '12px', fontWeight: 700, color: '#94a3b8', letterSpacing: '0.02em' }}>
                 TODAS AS COBRANÇAS
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '220px', overflowY: 'auto' }}>
@@ -1036,7 +1136,7 @@ const ZaptroProfile: React.FC = () => {
                       border: i === billingDetailIdx ? `1px solid ${ZAPTRO_SECTION_BORDER}` : `1px solid ${ZAPTRO_SECTION_BORDER}`,
                       backgroundColor: i === billingDetailIdx ? '#fafafa' : '#fff',
                       fontSize: '13px',
-                      fontWeight: 800,
+                      fontWeight: 600,
                     }}
                   >
                     <span>{row.date}</span>
@@ -1058,7 +1158,7 @@ const ZaptroProfile: React.FC = () => {
                 border: '1px solid #27272a',
                 background: '#18181b',
                 color: '#fff',
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: '14px',
                 cursor: 'pointer',
                 width: '100%',
@@ -1089,7 +1189,7 @@ const ZaptroProfile: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0 0 40px 0', maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box' },
   header: { marginBottom: '40px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: '0 0 8px 0', letterSpacing: '-1.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000', margin: '0 0 8px 0', letterSpacing: '-1.5px' },
   subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '600', lineHeight: 1.5, margin: 0 },
   layout: { display: 'grid', gap: '40px' },
   profileNav: { display: 'flex', flexDirection: 'column', gap: '32px' },
@@ -1099,7 +1199,7 @@ const styles: Record<string, any> = {
   navBtn: { 
     display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', 
     borderRadius: '16px', border: '1px solid transparent', backgroundColor: ZAPTRO_FIELD_BG,
-    color: ZAPTRO_TITLE_COLOR, fontWeight: '900', fontSize: '14px', cursor: 'pointer', transition: '0.2s',
+    color: ZAPTRO_TITLE_COLOR, fontWeight: '700', fontSize: '14px', cursor: 'pointer', transition: '0.2s',
     textAlign: 'left'
   },
   navBtnActive: {
@@ -1108,7 +1208,7 @@ const styles: Record<string, any> = {
     border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
     boxShadow: ZAPTRO_SHADOW.sm,
   },
-  securitySeal: { display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 20px', backgroundColor: '#EEFCEF', color: '#10B981', borderRadius: '14px', fontSize: '11px', fontWeight: '950' },
+  securitySeal: { display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 20px', backgroundColor: '#EEFCEF', color: '#10B981', borderRadius: '14px', fontSize: '11px', fontWeight: '700' },
   
   content: { display: 'flex', flexDirection: 'column', gap: '24px' },
   card: { backgroundColor: 'white', padding: '48px', borderRadius: '40px', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, boxShadow: ZAPTRO_SHADOW.sm },
@@ -1130,7 +1230,7 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '40px',
-    fontWeight: '950',
+    fontWeight: '700',
     position: 'relative',
     border: '2px solid #e4e4e7',
     boxSizing: 'border-box',
@@ -1163,8 +1263,8 @@ const styles: Record<string, any> = {
     pointerEvents: 'none',
   },
   heroText: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  userName: { margin: 0, fontSize: '28px', fontWeight: '950', color: '#000', letterSpacing: '-1px' },
-  userRoleBadge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '10px', fontSize: '12px', fontWeight: '900', color: '#000', width: 'fit-content' },
+  userName: { margin: 0, fontSize: '28px', fontWeight: '700', color: '#000', letterSpacing: '-1px' },
+  userRoleBadge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '10px', fontSize: '12px', fontWeight: '700', color: '#000', width: 'fit-content' },
   
   vitrineHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
   vitrineLogoArea: { display: 'flex', alignItems: 'center', gap: '24px' },
@@ -1178,7 +1278,7 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '32px',
-    fontWeight: '950',
+    fontWeight: '700',
     position: 'relative',
     cursor: 'pointer',
     overflow: 'hidden',
@@ -1188,7 +1288,7 @@ const styles: Record<string, any> = {
     fontFamily: 'inherit',
   },
   companyLogoLargeImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-  obsBadge: { display: 'inline-flex', padding: '4px 10px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '8px', fontSize: '11px', fontWeight: '900', color: '#000', marginTop: '6px' },
+  obsBadge: { display: 'inline-flex', padding: '4px 10px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '8px', fontSize: '11px', fontWeight: '700', color: '#000', marginTop: '6px' },
   saveBtnPill: {
     display: 'flex',
     alignItems: 'center',
@@ -1198,7 +1298,7 @@ const styles: Record<string, any> = {
     color: '#000000',
     border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
     borderRadius: '14px',
-    fontWeight: '950',
+    fontWeight: '700',
     cursor: 'pointer',
     boxShadow: 'none',
   },
@@ -1208,7 +1308,7 @@ const styles: Record<string, any> = {
   infoGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' },
   infoFull: { gridColumn: '1 / -1' },
   infoField: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '11px', fontWeight: '950', color: ZAPTRO_TITLE_COLOR, textTransform: 'uppercase', letterSpacing: '1px' },
+  label: { fontSize: '11px', fontWeight: '700', color: ZAPTRO_TITLE_COLOR, textTransform: 'uppercase', letterSpacing: '1px' },
   inputStack: {
     display: 'flex',
     alignItems: 'center',
@@ -1231,7 +1331,7 @@ const styles: Record<string, any> = {
     boxSizing: 'border-box',
   },
   input: { border: 'none', background: 'transparent', width: '100%', fontSize: '14px', fontWeight: '700', outline: 'none' },
-  select: { border: 'none', background: 'transparent', width: '100%', fontSize: '14px', fontWeight: '800', outline: 'none' },
+  select: { border: 'none', background: 'transparent', width: '100%', fontSize: '14px', fontWeight: '600', outline: 'none' },
   textarea: { border: 'none', background: 'transparent', width: '100%', height: '120px', fontSize: '14px', fontWeight: '600', outline: 'none', resize: 'none' },
   valBox: {
     padding: '0 20px',
@@ -1239,7 +1339,7 @@ const styles: Record<string, any> = {
     backgroundColor: ZAPTRO_FIELD_BG,
     borderRadius: '16px',
     fontSize: '14px',
-    fontWeight: '800',
+    fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
@@ -1247,8 +1347,8 @@ const styles: Record<string, any> = {
     boxSizing: 'border-box',
   },
   profileActions: { display: 'flex', gap: '16px', marginTop: '40px' },
-  submitBtn: { padding: '18px 48px', backgroundColor: '#000', color: 'white', border: 'none', borderRadius: '18px', fontWeight: '950', fontSize: '14px', cursor: 'pointer' },
-  cancelBtn: { padding: '18px 32px', backgroundColor: ZAPTRO_FIELD_BG, color: ZAPTRO_TITLE_COLOR, border: '1px solid #e4e4e7', borderRadius: '18px', fontWeight: '950', fontSize: '14px', cursor: 'pointer' },
+  submitBtn: { padding: '18px 48px', backgroundColor: '#000', color: 'white', border: 'none', borderRadius: '18px', fontWeight: '700', fontSize: '14px', cursor: 'pointer' },
+  cancelBtn: { padding: '18px 32px', backgroundColor: ZAPTRO_FIELD_BG, color: ZAPTRO_TITLE_COLOR, border: '1px solid #e4e4e7', borderRadius: '18px', fontWeight: '700', fontSize: '14px', cursor: 'pointer' },
   
   vitrineAlert: {
     display: 'flex',
@@ -1260,7 +1360,7 @@ const styles: Record<string, any> = {
     border: '1px solid #FDE68A',
     alignItems: 'flex-start',
   },
-  vitrineAlertTitle: { display: 'block', fontSize: '15px', fontWeight: 950, color: '#92400E', marginBottom: '8px' },
+  vitrineAlertTitle: { display: 'block', fontSize: '15px', fontWeight: 700, color: '#92400E', marginBottom: '8px' },
   vitrineAlertText: { margin: 0, fontSize: '13px', fontWeight: 600, color: '#A16207', lineHeight: 1.55 },
   vitrineAlertMissing: { margin: '12px 0 0', fontSize: '12px', fontWeight: 700, color: '#78350F', lineHeight: 1.45 },
   identityStrip: {
@@ -1290,10 +1390,10 @@ const styles: Record<string, any> = {
     border: '1px solid #1E293B'
   },
   planContent: { position: 'relative', zIndex: 10 },
-  planBadge: { display: 'inline-block', padding: '6px 12px', backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#D9FF00', borderRadius: '8px', fontSize: '10px', fontWeight: '950', marginBottom: '16px', letterSpacing: '1px' },
-  planTitle: { margin: '0 0 8px 0', fontSize: '28px', fontWeight: '950', letterSpacing: '-1px' },
+  planBadge: { display: 'inline-block', padding: '6px 12px', backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#D9FF00', borderRadius: '8px', fontSize: '10px', fontWeight: '700', marginBottom: '16px', letterSpacing: '1px' },
+  planTitle: { margin: '0 0 8px 0', fontSize: '28px', fontWeight: '700', letterSpacing: '-1px' },
   planSub: { margin: 0, fontSize: '14px', color: '#94A3B8', fontWeight: '600' },
-  priceTag: { fontSize: '32px', fontWeight: '950', marginTop: '24px', color: '#D9FF00' },
+  priceTag: { fontSize: '32px', fontWeight: '700', marginTop: '24px', color: '#D9FF00' },
   planVisual: { position: 'absolute', right: '-100px', top: '-100px', width: '400px', height: '400px', opacity: 0.6 },
   aiWaveContainer: { position: 'relative', width: '100%', height: '100%' },
   aiWave: {
@@ -1304,8 +1404,8 @@ const styles: Record<string, any> = {
 
   billingSection: { display: 'flex', flexDirection: 'column', gap: '32px' },
   sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  sectionTitle: { fontSize: '15px', fontWeight: '950', color: '#0F172A', margin: 0 },
-  masterSyncBadge: { fontSize: '10px', fontWeight: '950', color: '#10B981', display: 'flex', alignItems: 'center', gap: '6px', textTransform: 'uppercase' },
+  sectionTitle: { fontSize: '15px', fontWeight: '700', color: '#0F172A', margin: 0 },
+  masterSyncBadge: { fontSize: '10px', fontWeight: '700', color: '#10B981', display: 'flex', alignItems: 'center', gap: '6px', textTransform: 'uppercase' },
   
   cardInfoBox: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '32px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '28px', border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
   cardVisual: { display: 'flex', alignItems: 'center', gap: '24px' },
@@ -1320,20 +1420,20 @@ const styles: Record<string, any> = {
     justifyContent: 'center',
   },
   cardDetails: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  cardNum: { fontSize: '16px', fontWeight: '900', color: '#0F172A' },
+  cardNum: { fontSize: '16px', fontWeight: '700', color: '#0F172A' },
   cardExp: { fontSize: '12px', fontWeight: '700', color: '#64748B' },
-  editBtn: { padding: '14px 24px', backgroundColor: 'white', border: '1px solid #e4e4e7', borderRadius: '14px', fontSize: '13px', fontWeight: '950', cursor: 'pointer', transition: '0.2s' },
+  editBtn: { padding: '14px 24px', backgroundColor: 'white', border: '1px solid #e4e4e7', borderRadius: '14px', fontSize: '13px', fontWeight: '700', cursor: 'pointer', transition: '0.2s' },
 
   // PAYMENT SELECTOR
   paymentSelector: { padding: '32px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '28px', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, animation: 'fadeIn 0.3s ease' },
-  selectorTitle: { fontSize: '14px', fontWeight: '900', color: '#0F172A', marginBottom: '24px', margin: 0 },
+  selectorTitle: { fontSize: '14px', fontWeight: '700', color: '#0F172A', marginBottom: '24px', margin: 0 },
   paymentGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' },
   paymentOption: { 
      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '24px',
      backgroundColor: 'white', border: '1px solid #e4e4e7', borderRadius: '20px',
-     cursor: 'pointer', transition: '0.2s', fontWeight: '950', fontSize: '11px', textTransform: 'uppercase'
+     cursor: 'pointer', transition: '0.2s', fontWeight: '700', fontSize: '11px', textTransform: 'uppercase'
   },
-  cancelLink: { border: 'none', background: 'transparent', color: '#64748B', fontSize: '12px', fontWeight: '800', marginTop: '20px', cursor: 'pointer', textDecoration: 'underline' },
+  cancelLink: { border: 'none', background: 'transparent', color: '#64748B', fontSize: '12px', fontWeight: '600', marginTop: '20px', cursor: 'pointer', textDecoration: 'underline' },
 
   historyBox: { display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '12px' },
   historyList: { display: 'flex', flexDirection: 'column', gap: '12px' },
@@ -1349,14 +1449,14 @@ const styles: Record<string, any> = {
     transition: '0.15s ease',
   },
   historyInfo: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  histDate: { fontSize: '15px', fontWeight: '900', color: '#0F172A' },
+  histDate: { fontSize: '15px', fontWeight: '700', color: '#0F172A' },
   histMethod: { fontSize: '11px', fontWeight: '700', color: '#94A3B8' },
   historyAmount: { display: 'flex', alignItems: 'center', gap: '20px' },
   amountWrap: { textAlign: 'right' },
-  amountText: { fontSize: '15px', fontWeight: '950', color: '#000', display: 'block' },
-  statusPill: { fontSize: '9px', fontWeight: '950', color: '#10B981', marginTop: '2px', textTransform: 'uppercase' },
+  amountText: { fontSize: '15px', fontWeight: '700', color: '#000', display: 'block' },
+  statusPill: { fontSize: '9px', fontWeight: '700', color: '#10B981', marginTop: '2px', textTransform: 'uppercase' },
 
-  billingAlert: { marginTop: '48px', padding: '24px', backgroundColor: '#EEFCEF', borderRadius: '20px', color: '#10B981', fontSize: '13px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '14px' }
+  billingAlert: { marginTop: '48px', padding: '24px', backgroundColor: '#EEFCEF', borderRadius: '20px', color: '#10B981', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '14px' }
 };
 
 export default ZaptroProfile;

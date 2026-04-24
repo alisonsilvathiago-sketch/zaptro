@@ -193,17 +193,17 @@ export const MasterKnowledge: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '40px', backgroundColor: 'transparent' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' },
-  bread: { fontSize: '11px', fontWeight: '850', color: 'var(--primary)', letterSpacing: '1px', marginBottom: '8px' },
-  title: { fontSize: '36px', fontWeight: '950', color: 'var(--text-main)', letterSpacing: '-1.5px', marginBottom: '8px' },
+  bread: { fontSize: '11px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '1px', marginBottom: '8px' },
+  title: { fontSize: '36px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-1.5px', marginBottom: '8px' },
   subtitle: { fontSize: '16px', color: 'var(--text-muted)', maxWidth: '600px' },
   headerActions: { display: 'flex', gap: '12px' },
-  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
-  catBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', fontWeight: '800', color: 'var(--text-main)', cursor: 'pointer' },
+  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' },
+  catBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer' },
 
   statsBar: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '40px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' },
-  statLabel: { fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' },
-  statValue: { fontSize: '28px', fontWeight: '950', color: 'var(--text-main)' },
+  statLabel: { fontSize: '12px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' },
+  statValue: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)' },
 
   searchBar: { display: 'flex', justifyContent: 'space-between', marginBottom: '32px', gap: '20px' },
   searchWrapper: { flex: 1, position: 'relative', display: 'flex', alignItems: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '0 16px' },
@@ -214,10 +214,10 @@ const styles: Record<string, any> = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' },
   card: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', transition: 'transform 0.2s', display: 'flex', flexDirection: 'column' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '16px' },
-  cardCategory: { padding: '4px 8px', backgroundColor: '#ebebeb', borderRadius: '6px', fontSize: '10px', fontWeight: '900', color: '#64748b' },
+  cardCategory: { padding: '4px 8px', backgroundColor: '#ebebeb', borderRadius: '6px', fontSize: '10px', fontWeight: '700', color: '#64748b' },
   cardActions: { display: 'flex', gap: '4px' },
   actionBtn: { width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', border: 'none', color: '#94a3b8', borderRadius: '8px', cursor: 'pointer' },
-  cardTitle: { fontSize: '18px', fontWeight: '850', color: 'var(--text-main)', marginBottom: '12px', lineHeight: '1.4' },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '12px', lineHeight: '1.4' },
   cardSnippet: { fontSize: '13px', color: '#64748b', lineHeight: '1.6', flex: 1, marginBottom: '20px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #e8e8e8' },
   cardStatus: { fontSize: '11px', fontWeight: '700', color: '#10b981' },
@@ -227,17 +227,17 @@ const styles: Record<string, any> = {
   listItem: { display: 'flex', alignItems: 'center', padding: '20px 24px', borderBottom: '1px solid #e8e8e8', gap: '20px' },
   listIcon: { width: '40px', height: '40px', backgroundColor: '#ebebeb', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   listInfo: { flex: 1 },
-  listName: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)' },
+  listName: { fontSize: '16px', fontWeight: '600', color: 'var(--text-main)' },
   listMeta: { fontSize: '12px', color: '#94a3b8' },
   listActions: { display: 'flex', gap: '8px' },
 
   form: { display: 'flex', flexDirection: 'column', gap: '20px' },
   fRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   fGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  fLabel: { fontSize: '12px', fontWeight: '850', color: '#64748b', textTransform: 'uppercase' },
+  fLabel: { fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' },
   input: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', outline: 'none' },
   textarea: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4', outline: 'none', minHeight: '100px', resize: 'none' },
-  submitBtn: { marginTop: '10px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' }
+  submitBtn: { marginTop: '10px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default MasterKnowledge;

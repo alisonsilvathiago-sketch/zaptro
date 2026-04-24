@@ -226,28 +226,28 @@ const UserManagement: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '40px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-1.5px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '-1.5px' },
   subtitle: { color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-muted)' },
   
   statsRow: { display: 'flex', gap: '20px', marginBottom: '32px' },
   statMini: { backgroundColor: 'white', padding: '16px 24px', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', minWidth: '160px' },
-  statMiniLabel: { fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' },
-  statMiniValue: { fontSize: '24px', fontWeight: '900', color: 'var(--primary)' },
+  statMiniLabel: { fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' },
+  statMiniValue: { fontSize: '24px', fontWeight: '700', color: 'var(--primary)' },
 
   controls: { display: 'flex', gap: '16px', marginBottom: '24px' },
   searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)' },
   searchInput: { border: 'none', outline: 'none', width: '100%', fontSize: '14px', fontWeight: '600' },
   
   filterGroup: { display: 'flex', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '12px', gap: '4px' },
-  filterTab: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: '800', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px', background: 'none' },
+  filterTab: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: '600', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px', background: 'none' },
   activeFilter: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
 
   listCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' },
   table: { width: '100%', borderCollapse: 'collapse' },
   tableHead: { backgroundColor: '#f4f4f4', borderBottom: '1px solid var(--border)' },
-  th: { padding: '16px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' },
+  th: { padding: '16px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' },
   tr: { borderBottom: '1px solid var(--border)', transition: 'background 0.2s' },
   td: { padding: '18px 24px' },
   emptyTd: { padding: '48px', textAlign: 'center', color: '#94a3b8', fontWeight: '600' },
@@ -255,14 +255,14 @@ const styles: Record<string, any> = {
   loadingBox: { padding: '64px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: '#64748b', fontWeight: '700' },
 
   userInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatar: { width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900' },
-  userName: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)' },
+  avatar: { width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' },
+  userName: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)' },
   userEmail: { fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' },
 
   companyBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: '#f4f4f4', borderRadius: '10px', color: '#475569', fontSize: '12px', fontWeight: '700', border: '1px solid #e2e8f0' },
-  roleBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900' },
+  roleBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' },
   
-  zaptroStatus: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', border: '1px solid', width: 'fit-content' },
+  zaptroStatus: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', border: '1px solid', width: 'fit-content' },
   
   actions: { display: 'flex', gap: '8px' },
   actionBtn: { width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0', borderRadius: '8px', background: 'white', color: '#94a3b8', cursor: 'pointer' }

@@ -154,7 +154,7 @@ const WhatsAppDepartments: React.FC<WhatsAppDepartmentsProps> = ({ hideLayout = 
 
         {loadingList ? (
           <div style={styles.empty}>
-            <p style={{ margin: 0, fontWeight: 800, color: '#000' }}>Carregando setores...</p>
+            <p style={{ margin: 0, fontWeight: 600, color: '#000' }}>Carregando setores...</p>
           </div>
         ) : (
           <>
@@ -209,28 +209,28 @@ const WhatsAppDepartments: React.FC<WhatsAppDepartmentsProps> = ({ hideLayout = 
 const styles: Record<string, any> = {
   container: { backgroundColor: '#FFFFFF' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-1.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000', margin: 0, letterSpacing: '-1.5px' },
   subtitle: { color: '#94A3B8', fontSize: '15px', marginTop: '6px', fontWeight: '500' },
-  addBtn: { backgroundColor: '#000', color: '#FFF', border: 'none', padding: '16px 28px', borderRadius: '18px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '950', cursor: 'pointer' },
+  addBtn: { backgroundColor: '#000', color: '#FFF', border: 'none', padding: '16px 28px', borderRadius: '18px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '700', cursor: 'pointer' },
   
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' },
   card: { backgroundColor: 'white', borderRadius: '32px', border: '1.5px solid #e8e8e8', padding: '30px', position: 'relative', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' },
   cardEdit: { backgroundColor: '#FFFFFF', borderRadius: '32px', border: '2.5px solid #000', padding: '30px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)' },
-  badge: { position: 'absolute', top: '30px', right: '30px', backgroundColor: '#EEFCEF', color: '#10B981', padding: '6px 14px', borderRadius: '14px', fontSize: '11px', fontWeight: '950' },
+  badge: { position: 'absolute', top: '30px', right: '30px', backgroundColor: '#EEFCEF', color: '#10B981', padding: '6px 14px', borderRadius: '14px', fontSize: '11px', fontWeight: '700' },
   cardHeader: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '25px' },
   iconCircle: { width: '42px', height: '42px', backgroundColor: '#000', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   iconBox: { width: '56px', height: '56px', borderRadius: '18px', backgroundColor: '#FBFBFC', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  cardTitle: { fontSize: '20px', fontWeight: '950', margin: 0, color: '#000' },
-  cardSubtitle: { fontSize: '11px', color: '#10B981', fontWeight: '950', margin: '4px 0 0 0' },
+  cardTitle: { fontSize: '20px', fontWeight: '700', margin: 0, color: '#000' },
+  cardSubtitle: { fontSize: '11px', color: '#10B981', fontWeight: '700', margin: '4px 0 0 0' },
   cardFooter: { display: 'flex', gap: '12px', borderTop: '1px solid #EBEBEC', paddingTop: '20px' },
   iconBtn: { background: 'none', border: '1px solid #EBEBEC', color: '#000000', cursor: 'pointer', padding: '10px', borderRadius: '14px' },
   form: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  label: { fontSize: '11px', fontWeight: '950', color: '#000000' },
-  input: { padding: '16px 20px', borderRadius: '18px', border: '1px solid #EBEBEC', fontSize: '15px', fontWeight: '800', outline: 'none', backgroundColor: '#FBFBFC' },
+  label: { fontSize: '11px', fontWeight: '700', color: '#000000' },
+  input: { padding: '16px 20px', borderRadius: '18px', border: '1px solid #EBEBEC', fontSize: '15px', fontWeight: '600', outline: 'none', backgroundColor: '#FBFBFC' },
   hint: { fontSize: '12px', color: '#94A3B8', margin: 0, fontWeight: '500', lineHeight: '1.4' },
   formActions: { display: 'flex', gap: '15px', marginTop: '10px' },
-  saveBtn: { flex: 1, backgroundColor: '#000', color: '#D9FF00', border: 'none', padding: '18px', borderRadius: '18px', fontWeight: '950', cursor: 'pointer' },
-  cancelBtn: { padding: '18px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '18px', fontWeight: '950', color: '#64748B', cursor: 'pointer' },
+  saveBtn: { flex: 1, backgroundColor: '#000', color: '#D9FF00', border: 'none', padding: '18px', borderRadius: '18px', fontWeight: '700', cursor: 'pointer' },
+  cancelBtn: { padding: '18px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '18px', fontWeight: '700', color: '#64748B', cursor: 'pointer' },
   empty: { gridColumn: '1 / -1', padding: '80px', textAlign: 'center', backgroundColor: '#FBFBFC', borderRadius: '40px', color: '#94A3B8', fontWeight: '600' }
 };
 

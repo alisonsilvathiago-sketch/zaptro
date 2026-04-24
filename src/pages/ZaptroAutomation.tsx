@@ -698,7 +698,7 @@ const ZaptroAutomation: React.FC<ZaptroAutomationProps> = ({ hideLayout = false 
              <div style={styles.simulatorCard} onClick={e => e.stopPropagation()}>
                 <div style={styles.simHeader}>
                    <div style={styles.simAvatar}><Bot size={18} /></div>
-                   <div style={{flex: 1}}><h4 style={{margin: 0, fontSize: '14px', fontWeight: '950'}}>Simulador Zaptro Bot</h4><span style={{fontSize: '10px', color: '#404040', fontWeight: '800'}}>ONLINE</span></div>
+                   <div style={{flex: 1}}><h4 style={{margin: 0, fontSize: '14px', fontWeight: '700'}}>Simulador Zaptro Bot</h4><span style={{fontSize: '10px', color: '#404040', fontWeight: '600'}}>ONLINE</span></div>
                    <button style={styles.closeBtn} onClick={() => setIsSimulatorOpen(false)}><X size={16} /></button>
                 </div>
                 <div style={styles.simBody}>
@@ -1086,7 +1086,7 @@ const styles: Record<string, any> = {
   automationLandingTitle: {
     margin: '14px 0 0',
     fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '-0.03em',
     lineHeight: 1.15,
   },
@@ -1113,7 +1113,7 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     gap: 8,
     fontSize: 15,
-    fontWeight: 800,
+    fontWeight: 600,
     textDecoration: 'underline',
     textUnderlineOffset: 4,
     cursor: 'pointer',
@@ -1124,7 +1124,7 @@ const styles: Record<string, any> = {
     border: 'none',
     padding: '16px 28px',
     borderRadius: 999,
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 15,
     cursor: 'pointer',
     fontFamily: 'inherit',
@@ -1137,7 +1137,7 @@ const styles: Record<string, any> = {
   container: { padding: '0px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' },
   headerInfo: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000000', margin: 0, letterSpacing: '-1.5px' },
   headerActions: { display: 'flex', gap: '12px', width: '390px' },
   primaryBtn: {
     backgroundColor: '#0F172A',
@@ -1145,7 +1145,7 @@ const styles: Record<string, any> = {
     border: 'none',
     padding: '16px 28px',
     borderRadius: '16px',
-    fontWeight: '950',
+    fontWeight: '700',
     fontSize: '14px',
     cursor: 'pointer',
     display: 'flex',
@@ -1160,7 +1160,7 @@ const styles: Record<string, any> = {
     border: '1px solid #E2E8F0',
     padding: '16px 24px',
     borderRadius: '16px',
-    fontWeight: '950',
+    fontWeight: '700',
     fontSize: '14px',
     cursor: 'pointer',
     display: 'flex',
@@ -1172,7 +1172,7 @@ const styles: Record<string, any> = {
   card: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #EBEBEC', overflow: 'hidden' },
   cardHeader: { padding: '28px 36px', borderBottom: '1px solid #EBEBEC', display: 'flex', alignItems: 'center', gap: '16px' },
   iconBox: { width: '44px', height: '44px', backgroundColor: '#FBFBFC', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  cardTitle: { fontSize: '18px', fontWeight: '900', color: '#0F172A', margin: 0 },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: '#0F172A', margin: 0 },
   editorArea: { padding: '36px 40px 40px' },
   textarea: {
     width: '100%',
@@ -1193,7 +1193,7 @@ const styles: Record<string, any> = {
   previewHintLabel: {
     margin: '28px 0 12px',
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.1em',
     color: '#64748B',
     textTransform: 'uppercase',
@@ -1215,7 +1215,7 @@ const styles: Record<string, any> = {
     borderRadius: '16px',
     fontSize: '13px',
     color: '#0F172A',
-    fontWeight: 800,
+    fontWeight: 600,
     border: '1px solid #EBEBEC',
     transition: '0.2s',
     lineHeight: 1.45,
@@ -1223,7 +1223,7 @@ const styles: Record<string, any> = {
     minWidth: 0,
     boxSizing: 'border-box',
   },
-  hintKeyword: { fontWeight: 950, color: '#0F172A' },
+  hintKeyword: { fontWeight: 700, color: '#0F172A' },
   hintSep: { opacity: 0.45, fontWeight: 700, padding: '0 2px' },
   menuSectionCard: {
     backgroundColor: '#FAFAFB',
@@ -1289,7 +1289,7 @@ const styles: Record<string, any> = {
     color: '#64748B',
     fontWeight: 600,
   },
-  addBtn: { backgroundColor: '#CCFF00', color: '#0F172A', border: 'none', padding: '10px 20px', borderRadius: '12px', fontWeight: '950', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 },
+  addBtn: { backgroundColor: '#CCFF00', color: '#0F172A', border: 'none', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 },
   optionCard: {
     backgroundColor: 'white',
     borderRadius: '28px',
@@ -1310,7 +1310,7 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '16px',
-    fontWeight: '950',
+    fontWeight: '700',
     flexShrink: 0,
   },
   optInput: {
@@ -1320,14 +1320,14 @@ const styles: Record<string, any> = {
     border: 'none',
     outline: 'none',
     fontSize: '16px',
-    fontWeight: '900',
+    fontWeight: '700',
     color: '#0F172A',
   },
   delBtn: { border: 'none', backgroundColor: 'transparent', color: '#52525b', cursor: 'pointer', padding: 6, borderRadius: 10 },
   optBody: { display: 'flex', flexDirection: 'column', gap: '16px' },
   settingRow: { display: 'flex', flexDirection: 'column', gap: '6px' },
-  miniLabel: { fontSize: '10px', fontWeight: '950', color: '#000000', letterSpacing: '0.5px' },
-  select: { padding: '12px', borderRadius: '12px', border: '1px solid #EBEBEC', fontSize: '13px', fontWeight: '800', outline: 'none', accentColor: '#000', backgroundColor: '#fff', color: '#0F172A' },
+  miniLabel: { fontSize: '10px', fontWeight: '700', color: '#000000', letterSpacing: '0.5px' },
+  select: { padding: '12px', borderRadius: '12px', border: '1px solid #EBEBEC', fontSize: '13px', fontWeight: '600', outline: 'none', accentColor: '#000', backgroundColor: '#fff', color: '#0F172A' },
   miniTextarea: {
     width: '100%',
     minHeight: '96px',
@@ -1341,14 +1341,14 @@ const styles: Record<string, any> = {
     boxSizing: 'border-box',
   },
   sideCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #EBEBEC' },
-  sideTitle: { margin: '0 0 12px', fontSize: '14px', fontWeight: '950', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  sideTitle: { margin: '0 0 12px', fontSize: '14px', fontWeight: '700', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
   sideDesc: { fontSize: '13px', color: '#94A3B8', lineHeight: 1.65, fontWeight: '600', marginBottom: '24px' },
   configItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   configInfo: { display: 'flex', flexDirection: 'column' },
-  configLabel: { fontSize: '13px', fontWeight: '850', color: '#0F172A' },
+  configLabel: { fontSize: '13px', fontWeight: '700', color: '#0F172A' },
   configDesc: { fontSize: '11px', color: '#94A3B8', fontWeight: '600' },
-  tinySelect: { padding: '8px 10px', borderRadius: '10px', border: '1px solid #E4E4E7', fontSize: '11px', fontWeight: '900', accentColor: '#000', backgroundColor: '#fff', color: '#0F172A', boxSizing: 'border-box' },
-  proBtn: { width: '100%', padding: '16px 14px', borderRadius: '14px', border: 'none', backgroundColor: '#CCFF00', color: '#0F172A', fontWeight: '950', fontSize: '13px', cursor: 'pointer', marginTop: 4 },
+  tinySelect: { padding: '8px 10px', borderRadius: '10px', border: '1px solid #E4E4E7', fontSize: '11px', fontWeight: '700', accentColor: '#000', backgroundColor: '#fff', color: '#0F172A', boxSizing: 'border-box' },
+  proBtn: { width: '100%', padding: '16px 14px', borderRadius: '14px', border: 'none', backgroundColor: '#CCFF00', color: '#0F172A', fontWeight: '700', fontSize: '13px', cursor: 'pointer', marginTop: 4 },
   simulatorOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 },
   simulatorCard: { width: '400px', height: '600px', backgroundColor: 'white', borderRadius: '40px', overflow: 'hidden', display: 'flex', flexDirection: 'column' },
   simHeader: { padding: '24px 32px', backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC', display: 'flex', alignItems: 'center', gap: '16px' },
@@ -1358,17 +1358,17 @@ const styles: Record<string, any> = {
   simMsg: { padding: '14px 20px', borderRadius: '18px', maxWidth: '85%', fontSize: '14px', fontWeight: '700', lineHeight: '1.5' },
   simFooter: { padding: '24px 32px', backgroundColor: '#FBFBFC', borderTop: '1px solid #EBEBEC' },
   simOptions: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  simOptBtn: { width: '100%', padding: '14px 24px', backgroundColor: 'white', border: '1px solid #EBEBEC', borderRadius: '16px', fontSize: '13px', fontWeight: '850', color: '#0F172A', textAlign: 'left', cursor: 'pointer' },
+  simOptBtn: { width: '100%', padding: '14px 24px', backgroundColor: 'white', border: '1px solid #EBEBEC', borderRadius: '16px', fontSize: '13px', fontWeight: '700', color: '#0F172A', textAlign: 'left', cursor: 'pointer' },
   aiModal: { padding: '20px 10px' },
   aiHeader: { textAlign: 'center', marginBottom: '32px' },
   aiSubtitle: { fontSize: '14px', color: '#64748B', fontWeight: '500', marginTop: '12px', lineHeight: '1.5' },
   aiGrid: { display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '40px' },
   aiOption: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FBFBFC', padding: '20px', borderRadius: '20px', border: '1px solid #EBEBEC' },
-  aiLabel: { fontSize: '15px', fontWeight: '900', color: '#0F172A', display: 'block', marginBottom: '4px' },
+  aiLabel: { fontSize: '15px', fontWeight: '700', color: '#0F172A', display: 'block', marginBottom: '4px' },
   aiDesc: { fontSize: '12px', color: '#94A3B8', fontWeight: '600', maxWidth: '300px', lineHeight: '1.4' },
   aiToggle: { width: '48px', height: '24px', borderRadius: '24px', border: 'none', cursor: 'pointer', transition: '0.3s' },
   aiToggleOff: { backgroundColor: '#d4d4d8' },
-  aiSaveBtn: { width: '100%', padding: '18px', borderRadius: '16px', border: 'none', backgroundColor: '#0F172A', color: 'white', fontWeight: '950', fontSize: '15px', cursor: 'pointer' }
+  aiSaveBtn: { width: '100%', padding: '18px', borderRadius: '16px', border: 'none', backgroundColor: '#0F172A', color: 'white', fontWeight: '700', fontSize: '15px', cursor: 'pointer' }
 };
 
 export default ZaptroAutomation;

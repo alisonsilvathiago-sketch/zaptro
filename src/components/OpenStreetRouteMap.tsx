@@ -9,6 +9,12 @@ import { ZAPTRO_DEMO_DRIVERS } from '../constants/zaptroDriversDemo';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import { ZAPTRO_MAP_ROUTE_HANDOFF_KEY, type ZaptroMapRouteHandoffPayload } from '../constants/zaptroMapRouteHandoff';
 import { notifyZaptro } from './Zaptro/ZaptroNotificationSystem';
+import { 
+  ZAPTRO_MAP_ORIGIN_ICON, 
+  ZAPTRO_MAP_DEST_ICON, 
+  ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_ROUTE_COLORS 
+} from '../constants/zaptroMapStyles';
 
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -57,19 +63,9 @@ async function fetchOsrmDrivingRoute(from: LatLng, to: LatLng, signal?: AbortSig
 /** Rota e pontos no mapa — lime Zaptro (não só na barra lateral da app). */
 const MAP_ROUTE_ACCENT = '#D9FF00';
 
-const originIcon = L.divIcon({
-  className: 'osrm-pin osrm-pin-origin',
-  html: `<div style="width:18px;height:18px;border-radius:50%;background:#000;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.45)"></div>`,
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-});
-
-const destIcon = L.divIcon({
-  className: 'osrm-pin osrm-pin-dest',
-  html: `<div style="width:18px;height:18px;border-radius:50%;background:#fff;box-sizing:border-box;border:3px solid #000;box-shadow:0 2px 10px rgba(0,0,0,.35)"></div>`,
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-});
+const originIcon = ZAPTRO_MAP_ORIGIN_ICON;
+const destIcon = ZAPTRO_MAP_DEST_ICON;
+const driverIcon = ZAPTRO_MAP_DRIVER_ICON;
 
 const freeIcon = (n: number) =>
   L.divIcon({
@@ -111,16 +107,30 @@ export type OpenStreetRouteMapProps = {
   /** Altura CSS do container do mapa (ex.: `420px`, `min(70vh, 560px)`). */
   height?: string;
   className?: string;
+  /** Modo do mapa: 'planning' (traçar rotas) ou 'tracking' (acompanhar motorista ao vivo). */
+  mode?: 'planning' | 'tracking';
+  /** Coordenadas atuais do motorista (para modo tracking). */
+  driverPos?: LatLng;
+  /** Coordenadas iniciais. */
+  initialOrigin?: LatLng;
+  initialDest?: LatLng;
 };
 
 /**
  * Mapa OpenStreetMap (Leaflet) centrado no Brasil: marcadores, rota rodoviária real via OSRM.
  * Sem Google Maps — apenas tiles OSM + motor de rotas OSRM público.
  */
-const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(72vh, 560px)', className }) => {
+const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ 
+  height = 'min(72vh, 560px)', 
+  className,
+  mode = 'planning',
+  driverPos,
+  initialOrigin,
+  initialDest
+}) => {
   const navigate = useNavigate();
-  const [origin, setOrigin] = useState<LatLng | null>(null);
-  const [dest, setDest] = useState<LatLng | null>(null);
+  const [origin, setOrigin] = useState<LatLng | null>(initialOrigin || null);
+  const [dest, setDest] = useState<LatLng | null>(initialDest || null);
   const [freePins, setFreePins] = useState<{ id: string; lat: number; lng: number; n: number }[]>([]);
   const [tool, setTool] = useState<PlacementTool>('origin');
   const [route, setRoute] = useState<OsrmRouteResult | null>(null);
@@ -280,7 +290,7 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(7
           boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 800, color: '#64748b', marginRight: 4 }}>Colocar no mapa:</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginRight: 4 }}>Colocar no mapa:</span>
         <button
           type="button"
           onClick={() => setTool('origin')}
@@ -383,9 +393,9 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(7
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <Truck size={18} color="#0f172a" strokeWidth={2.2} aria-hidden />
-          <span style={{ fontSize: 12, fontWeight: 900, color: '#0f172a', letterSpacing: '0.04em' }}>MOTORISTA E ENTREGA</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#0f172a', letterSpacing: '0.04em' }}>MOTORISTA E ENTREGA</span>
         </div>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 800, color: '#64748b' }}>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 600, color: '#64748b' }}>
           Quem faz a entrega
           <select
             value={selectedDriverId}
@@ -457,7 +467,7 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(7
           <MapClickBridge tool={tool} onPick={handlePick} />
           {fitPositions.length >= 2 && <FitBounds positions={fitPositions} />}
 
-          {origin && (
+          {mode === 'planning' && origin && (
             <Marker position={[origin.lat, origin.lng]} icon={originIcon}>
               <Popup>
                 <strong>Origem</strong>
@@ -466,12 +476,29 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(7
               </Popup>
             </Marker>
           )}
-          {dest && (
+          {mode === 'planning' && dest && (
             <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
               <Popup>
                 <strong>Destino</strong>
                 <br />
                 {dest.lat.toFixed(5)}, {dest.lng.toFixed(5)}
+              </Popup>
+            </Marker>
+          )}
+          
+          {mode === 'tracking' && driverPos && (
+            <Marker position={[driverPos.lat, driverPos.lng]} icon={ZAPTRO_MAP_DRIVER_ICON}>
+              <Popup>
+                <strong>Motorista em Tempo Real</strong>
+                <br />
+                Localização atual: {driverPos.lat.toFixed(5)}, {driverPos.lng.toFixed(5)}
+              </Popup>
+            </Marker>
+          )}
+          {mode === 'tracking' && dest && (
+            <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
+              <Popup>
+                <strong>Ponto de Entrega</strong>
               </Popup>
             </Marker>
           )}
@@ -486,19 +513,30 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({ height = 'min(7
           ))}
           {route && (
             <>
+              {/* SHADOW LINE */}
               <Polyline
                 positions={route.positions}
-                color="#000000"
-                weight={8}
-                opacity={0.2}
+                color={ZAPTRO_MAP_ROUTE_COLORS.shadow}
+                weight={12}
+                opacity={0.1}
                 lineCap="round"
                 lineJoin="round"
               />
+              {/* MAIN BLACK LINE (TRACKING / PATH) */}
               <Polyline
                 positions={route.positions}
-                color={MAP_ROUTE_ACCENT}
-                weight={5}
-                opacity={0.95}
+                color={ZAPTRO_MAP_ROUTE_COLORS.main}
+                weight={6}
+                opacity={1}
+                lineCap="round"
+                lineJoin="round"
+              />
+              {/* ACCENT LIME LINE */}
+              <Polyline
+                positions={route.positions}
+                color={ZAPTRO_MAP_ROUTE_COLORS.accent}
+                weight={3}
+                opacity={0.7}
                 lineCap="round"
                 lineJoin="round"
               />
@@ -525,7 +563,7 @@ function btnStyle(active: boolean, primary?: boolean, danger?: boolean): React.C
       borderRadius: 12,
       border: '1px solid #fecaca',
       background: '#fff',
-      fontWeight: 800,
+      fontWeight: 600,
       fontSize: 12,
       cursor: 'pointer',
       color: '#b91c1c',
@@ -538,7 +576,7 @@ function btnStyle(active: boolean, primary?: boolean, danger?: boolean): React.C
       border: 'none',
       background: '#D9FF00',
       color: '#000000',
-      fontWeight: 800,
+      fontWeight: 600,
       fontSize: 12,
       cursor: 'pointer',
       opacity: active ? 0.88 : 1,
@@ -549,7 +587,7 @@ function btnStyle(active: boolean, primary?: boolean, danger?: boolean): React.C
     borderRadius: 12,
     border: active ? '2px solid #D9FF00' : '1px solid #cbd5e1',
     background: active ? 'rgba(217, 255, 0, 0.22)' : '#fff',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: 12,
     cursor: 'pointer',
     color: '#000000',

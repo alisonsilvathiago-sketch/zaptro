@@ -194,29 +194,29 @@ const styles: Record<string, any> = {
   header: { padding: '32px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1000px', margin: '0 auto' },
   brand: { display: 'flex', alignItems: 'center', gap: '12px' },
   logoBox: { width: '40px', height: '40px', backgroundColor: '#CCFF00', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  brandName: { fontSize: '18px', fontWeight: '950', letterSpacing: '-0.5px' },
+  brandName: { fontSize: '18px', fontWeight: '700', letterSpacing: '-0.5px' },
   companyInfo: { fontSize: '13px', color: '#64748B' },
 
   content: { maxWidth: '1000px', margin: '0 auto', padding: '0 40px 80px' },
   mainCard: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #e8e8e8', padding: '48px', marginBottom: '32px', boxShadow: ZAPTRO_SHADOW.lg },
   trackingHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' },
-  orderLabel: { fontSize: '11px', fontWeight: '950', color: '#000000', letterSpacing: '1px' },
-  orderId: { fontSize: '32px', fontWeight: '950', margin: '4px 0 0 0', letterSpacing: '-1.5px' },
-  statusBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '14px', fontSize: '13px', fontWeight: '950' },
+  orderLabel: { fontSize: '11px', fontWeight: '700', color: '#000000', letterSpacing: '1px' },
+  orderId: { fontSize: '32px', fontWeight: '700', margin: '4px 0 0 0', letterSpacing: '-1.5px' },
+  statusBadge: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '14px', fontSize: '13px', fontWeight: '700' },
 
   progressArea: { marginBottom: '48px' },
   progressBar: { height: '12px', backgroundColor: '#ebebeb', borderRadius: '6px', overflow: 'hidden', marginBottom: '16px' },
   progressFill: { height: '100%', transition: '1s cubic-bezier(0.4, 0, 0.2, 1)' },
   progressSteps: { display: 'flex', justifyContent: 'space-between' },
-  step: { flex: 1, fontSize: '12px', fontWeight: '900', color: '#000000' },
+  step: { flex: 1, fontSize: '12px', fontWeight: '700', color: '#000000' },
 
   detailsGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' },
   detailItem: { display: 'flex', gap: '16px', alignItems: 'center' },
-  detailLabel: { fontSize: '11px', fontWeight: '900', color: '#000000', textTransform: 'uppercase', display: 'block' },
-  detailValue: { fontSize: '16px', fontWeight: '800', color: '#0F172A' },
+  detailLabel: { fontSize: '11px', fontWeight: '700', color: '#000000', textTransform: 'uppercase', display: 'block' },
+  detailValue: { fontSize: '16px', fontWeight: '600', color: '#0F172A' },
 
   historyArea: { backgroundColor: 'white', borderRadius: '40px', border: '1px solid #e8e8e8', padding: '48px', boxShadow: ZAPTRO_SHADOW.lg },
-  sectionTitle: { fontSize: '20px', fontWeight: '950', marginBottom: '32px', letterSpacing: '-0.5px' },
+  sectionTitle: { fontSize: '20px', fontWeight: '700', marginBottom: '32px', letterSpacing: '-0.5px' },
   timeline: { display: 'flex', flexDirection: 'column', gap: '0px' },
   timelineItem: { display: 'flex', gap: '24px' },
   timelinePoint: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '24px' },
@@ -224,18 +224,18 @@ const styles: Record<string, any> = {
   timelineLine: { width: '2px', flex: 1, backgroundColor: '#ebebeb', margin: '4px 0' },
   timelineContent: { paddingBottom: '32px', flex: 1 },
   timelineMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' },
-  timelineStatus: { fontSize: '15px', fontWeight: '900', color: '#0F172A' },
+  timelineStatus: { fontSize: '15px', fontWeight: '700', color: '#0F172A' },
   timelineTime: { fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
   timelineNotes: { fontSize: '13px', color: '#64748B', fontWeight: '500', margin: 0 },
   emptyTimeline: { textAlign: 'center', color: '#94A3B8', fontSize: '14px', fontWeight: '600' },
 
   footer: { textAlign: 'center', padding: '40px' },
-  secureBadge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#EEFCEF', color: '#10B981', borderRadius: '12px', fontSize: '11px', fontWeight: '950', marginBottom: '12px' },
+  secureBadge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#EEFCEF', color: '#10B981', borderRadius: '12px', fontSize: '11px', fontWeight: '700', marginBottom: '12px' },
   footerNote: { fontSize: '12px', color: '#94A3B8', fontWeight: '500' },
 
-  errorTitle: { fontSize: '24px', fontWeight: '950', margin: '0 0 12px 0' },
+  errorTitle: { fontSize: '24px', fontWeight: '700', margin: '0 0 12px 0' },
   errorText: { fontSize: '16px', color: '#64748B', margin: '0 0 32px 0' },
-  backBtn: { padding: '16px 32px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '950', cursor: 'pointer' }
+  backBtn: { padding: '16px 32px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '700', cursor: 'pointer' }
 };
 
 export default ZaptroTrackingPublic;

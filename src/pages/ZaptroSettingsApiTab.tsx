@@ -143,7 +143,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
   const labelStyle: React.CSSProperties = {
     display: 'block',
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.06em',
     color: palette.textMuted,
     marginBottom: 6,
@@ -167,7 +167,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
           <Webhook size={26} color={palette.lime} strokeWidth={2.2} />
         </div>
         <div style={{ minWidth: 0 }}>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 950, letterSpacing: '-0.5px', color: palette.text }}>
+          <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px', color: palette.text }}>
             Integrações API
           </h2>
           <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: palette.textMuted, fontWeight: 600 }}>
@@ -201,7 +201,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
             style={{
               margin: '0 0 8px',
               fontSize: 12,
-              fontWeight: 950,
+              fontWeight: 700,
               letterSpacing: '0.06em',
               color: palette.textMuted,
             }}
@@ -258,7 +258,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
             ))}
           </div>
 
-          <div style={{ marginBottom: 8, fontSize: 10, fontWeight: 950, letterSpacing: '0.05em', color: palette.textMuted }}>
+          <div style={{ marginBottom: 8, fontSize: 10, fontWeight: 700, letterSpacing: '0.05em', color: palette.textMuted }}>
             WEBHOOKS (EXEMPLO)
           </div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -276,7 +276,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
                   backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#ebebeb',
                 }}
               >
-                <span style={{ fontSize: 11, fontWeight: 800, color: palette.text, minWidth: 224, flexShrink: 0 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: palette.text, minWidth: 224, flexShrink: 0 }}>
                   {w.label}
                 </span>
                 <code
@@ -305,7 +305,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
                     background: palette.mode === 'dark' ? '#111' : '#fff',
                     cursor: 'pointer',
                     fontSize: 11,
-                    fontWeight: 800,
+                    fontWeight: 600,
                     color: palette.text,
                   }}
                 >
@@ -346,7 +346,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
                 backgroundColor: cardBg,
               }}
             >
-              <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 950, color: palette.text, letterSpacing: '0.04em' }}>
+              <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: palette.text, letterSpacing: '0.04em' }}>
                 Nova integração
               </h3>
               <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(0,1fr)' }}>
@@ -423,7 +423,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
                     border: 'none',
                     backgroundColor: palette.lime,
                     color: '#000',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 14,
                     cursor: 'pointer',
                     width: 'fit-content',
@@ -435,7 +435,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
             </div>
           )}
 
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 950, color: palette.text, letterSpacing: '0.04em' }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: palette.text, letterSpacing: '0.04em' }}>
             Configuradas ({rows.length})
           </h3>
 
@@ -461,10 +461,10 @@ const ZaptroSettingsApiTab: React.FC = () => {
                   }}
                 >
                   <div style={{ minWidth: 0, flex: '1 1 220px' }}>
-                    <div style={{ fontSize: 12, fontWeight: 950, color: palette.lime, marginBottom: 4 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: palette.lime, marginBottom: 4 }}>
                       {ZAPTRO_EXTERNAL_API_CATEGORY_LABEL[r.category]}
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 950, color: palette.text, marginBottom: 6 }}>{r.name}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: palette.text, marginBottom: 6 }}>{r.name}</div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: palette.textMuted, wordBreak: 'break-all' }}>
                       {r.baseUrl}
                     </div>
@@ -476,7 +476,7 @@ const ZaptroSettingsApiTab: React.FC = () => {
                     <span
                       style={{
                         fontSize: 11,
-                        fontWeight: 950,
+                        fontWeight: 700,
                         padding: '6px 10px',
                         borderRadius: 999,
                         backgroundColor: r.enabled ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.2)',

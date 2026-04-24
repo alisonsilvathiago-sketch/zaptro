@@ -91,29 +91,29 @@ const PlansPage: React.FC = () => {
 const styles: Record<string, any> = {
   page: { padding: '120px 24px 80px 24px', backgroundColor: '#FFFFFF', minHeight: '100vh' },
   header: { textAlign: 'center', maxWidth: '800px', margin: '0 auto 80px auto' },
-  badge: { display: 'inline-block', padding: '6px 14px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '11px', fontWeight: '800', marginBottom: '20px', letterSpacing: '1px' },
-  title: { fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '800', color: 'var(--text-main)', marginBottom: '20px', lineHeight: '1.2' },
+  badge: { display: 'inline-block', padding: '6px 14px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '11px', fontWeight: '600', marginBottom: '20px', letterSpacing: '1px' },
+  title: { fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '600', color: 'var(--text-main)', marginBottom: '20px', lineHeight: '1.2' },
   subtitle: { fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.6' },
   
   grid: { maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'start' },
   card: { padding: '48px 32px', borderRadius: '24px', backgroundColor: 'white', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', transition: 'all 0.3s ease' },
-  recommended: { position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'var(--primary)', color: 'white', padding: '8px 20px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', whiteSpace: 'nowrap' },
+  recommended: { position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'var(--primary)', color: 'white', padding: '8px 20px', borderRadius: '20px', fontSize: '11px', fontWeight: '600', whiteSpace: 'nowrap' },
   iconBox: { width: '56px', height: '56px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' },
-  planName: { fontSize: '24px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '12px' },
+  planName: { fontSize: '24px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '12px' },
   planDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '32px', minHeight: '44px' },
   priceRow: { display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '32px' },
   currency: { fontSize: '20px', fontWeight: '600', color: 'var(--text-main)' },
-  amount: { fontSize: '48px', fontWeight: '800', color: 'var(--text-main)' },
+  amount: { fontSize: '48px', fontWeight: '600', color: 'var(--text-main)' },
   period: { fontSize: '16px', color: 'var(--text-muted)', fontWeight: '500' },
-  btn: { padding: '18px', borderRadius: '14px', border: 'none', fontWeight: '800', fontSize: '16px', cursor: 'pointer', marginBottom: '32px' },
+  btn: { padding: '18px', borderRadius: '14px', border: 'none', fontWeight: '600', fontSize: '16px', cursor: 'pointer', marginBottom: '32px' },
   divider: { height: '1px', backgroundColor: 'var(--border)', marginBottom: '32px' },
   featureList: { listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '16px' },
   featureItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' },
 
   comparisonSection: { marginTop: '100px', textAlign: 'center', backgroundColor: '#FAFBFD', padding: '80px 24px', borderRadius: '40px', border: '1px solid var(--border)' },
-  compTitle: { fontSize: '24px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '12px' },
+  compTitle: { fontSize: '24px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '12px' },
   compSub: { color: 'var(--text-secondary)', marginBottom: '32px' },
-  btnSecondary: { padding: '16px 40px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', fontSize: '16px', cursor: 'pointer' }
+  btnSecondary: { padding: '16px 40px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', fontSize: '16px', cursor: 'pointer' }
 };
 
 export default PlansPage;

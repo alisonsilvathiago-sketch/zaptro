@@ -40,8 +40,8 @@ const DriverFleetProfile: React.FC = () => {
     backBtn: { display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', cursor: 'pointer', color: '#64748B', fontWeight: '700' },
     profileSection: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0', marginBottom: '32px', display: 'flex', gap: '40px', alignItems: 'center' },
     avatar: { width: '120px', height: '120px', borderRadius: '32px', backgroundColor: '#ebebeb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
-    name: { fontSize: '28px', fontWeight: '900', color: '#0F172A', marginBottom: '8px' },
-    badge: { padding: '4px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: '800', backgroundColor: 'var(--success-light)', color: 'var(--success)', width: 'fit-content' },
+    name: { fontSize: '28px', fontWeight: '700', color: '#0F172A', marginBottom: '8px' },
+    badge: { padding: '4px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: '600', backgroundColor: 'var(--success-light)', color: 'var(--success)', width: 'fit-content' },
     infoGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', flex: 1 },
     infoItem: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
     label: { fontSize: '12px', color: '#94A3B8', fontWeight: '700', textTransform: 'uppercase' as const },
@@ -59,7 +59,7 @@ const DriverFleetProfile: React.FC = () => {
     
     grid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' },
     card: { backgroundColor: 'white', borderRadius: '32px', padding: '24px', border: '1px solid #E2E8F0' },
-    cardTitle: { fontSize: '18px', fontWeight: '800', color: '#0F172A', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' },
+    cardTitle: { fontSize: '18px', fontWeight: '600', color: '#0F172A', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' },
     historyItem: { display: 'flex', gap: '16px', padding: '20px', borderRadius: '20px', backgroundColor: '#f4f4f4', border: '1px solid transparent', marginBottom: '12px', position: 'relative' as const },
     timeline: { flexShrink: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
     line: { width: '2px', flex: 1, backgroundColor: '#E2E8F0' },
@@ -67,8 +67,8 @@ const DriverFleetProfile: React.FC = () => {
     
     statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' },
     miniCard: { padding: '20px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #E2E8F0' },
-    miniLabel: { fontSize: '11px', color: '#64748B', fontWeight: '800', textTransform: 'uppercase' as const, marginBottom: '4px' },
-    miniValue: { fontSize: '20px', fontWeight: '900', color: '#0F172A' }
+    miniLabel: { fontSize: '11px', color: '#64748B', fontWeight: '600', textTransform: 'uppercase' as const, marginBottom: '4px' },
+    miniValue: { fontSize: '20px', fontWeight: '700', color: '#0F172A' }
   };
 
   const renderVehicles = () => (
@@ -88,13 +88,13 @@ const DriverFleetProfile: React.FC = () => {
                </div>
                <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ fontWeight: '800', fontSize: '15px' }}>{item.vehicle} • {item.route}</span>
+                    <span style={{ fontWeight: '600', fontSize: '15px' }}>{item.vehicle} • {item.route}</span>
                     <span style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8' }}>{item.date}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '20px', fontSize: '12px', color: '#64748b' }}>
                     <span><Clock size={12} /> {item.in} - {item.out}</span>
                     <span><Truck size={12} /> {item.km} KM</span>
-                    <span style={{ fontWeight: '800', color: item.status === 'EM ROTA' ? '#10b981' : '#64748b' }}>{item.status}</span>
+                    <span style={{ fontWeight: '600', color: item.status === 'EM ROTA' ? '#10b981' : '#64748b' }}>{item.status}</span>
                   </div>
                </div>
             </div>
@@ -109,14 +109,14 @@ const DriverFleetProfile: React.FC = () => {
               <div style={{padding: '16px', backgroundColor: '#fef2f2', borderRadius: '16px', border: '1px solid #fee2e2'}}>
                  <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
                     <AlertCircle size={16} color="#ef4444" />
-                    <span style={{fontSize: '11px', fontWeight: '900', color: '#991b1b'}}>RECLAMAÇÃO DE CLIENTE</span>
+                    <span style={{fontSize: '11px', fontWeight: '700', color: '#991b1b'}}>RECLAMAÇÃO DE CLIENTE</span>
                  </div>
                  <p style={{fontSize: '13px', color: '#7f1d1d'}}>"Motorista não utilizou EPI na descarga." (02/04)</p>
               </div>
               <div style={{padding: '16px', backgroundColor: '#ecfdf5', borderRadius: '16px', border: '1px solid #dcfce7'}}>
                  <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
                     <CheckCircle2 size={16} color="#10b981" />
-                    <span style={{fontSize: '11px', fontWeight: '900', color: '#065f46'}}>ELOGIO OPERACIONAL</span>
+                    <span style={{fontSize: '11px', fontWeight: '700', color: '#065f46'}}>ELOGIO OPERACIONAL</span>
                  </div>
                  <p style={{fontSize: '13px', color: '#064e3b'}}>"Rota concluída com economia de 15% de diesel." (08/04)</p>
               </div>
@@ -189,7 +189,7 @@ const DriverFleetProfile: React.FC = () => {
             <span style={{ color: '#94a3b8' }}>até</span>
             <input type="date" style={{ border: 'none', outline: 'none', fontWeight: '700' }} />
          </div>
-         <button style={{ height: '100%', padding: '0 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', cursor: 'pointer' }}>
+         <button style={{ height: '100%', padding: '0 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', cursor: 'pointer' }}>
             Filtrar Dashboard
          </button>
       </div>

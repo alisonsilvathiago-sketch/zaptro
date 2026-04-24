@@ -230,7 +230,7 @@ const styles: Record<string, any> = {
       alignItems: 'center',
     }
   },
-  title: { fontSize: '28px', fontWeight: '800', color: 'var(--primary)' },
+  title: { fontSize: '28px', fontWeight: '600', color: 'var(--primary)' },
   subtitle: { color: 'var(--text-muted)', fontSize: '14px' },
   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', justifyContent: 'center' },
   
@@ -255,7 +255,7 @@ const styles: Record<string, any> = {
   iconBox: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   cardHeader: { display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '20px' },
   modelName: { fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' },
-  plateTag: { fontSize: '11px', fontWeight: '800', backgroundColor: 'var(--bg-app)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: '6px' },
+  plateTag: { fontSize: '11px', fontWeight: '600', backgroundColor: 'var(--bg-app)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: '6px' },
   deleteBtn: { padding: '8px', borderRadius: '8px', border: 'none', backgroundColor: 'transparent', color: 'var(--text-muted)', cursor: 'pointer' },
   details: { display: 'flex', flexDirection: 'column' as const, gap: '10px', marginBottom: '20px' },
   detailItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)' },
@@ -268,7 +268,7 @@ const styles: Record<string, any> = {
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '6px' },
   label: { fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' },
   formInput: { padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none', color: 'var(--text-main)' },
-  saveBtn: { marginTop: '10px', padding: '14px', borderRadius: '12px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', fontSize: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }
+  saveBtn: { marginTop: '10px', padding: '14px', borderRadius: '12px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '600', fontSize: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }
 };
 
 

@@ -137,6 +137,18 @@ const ZaptroDriverRoute: React.FC = () => {
     };
   }, []);
 
+  const [gpsPermissionState, setGpsPermissionState] = useState<'pending' | 'granted' | 'denied'>('pending');
+
+  useEffect(() => {
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+        if (status.state === 'granted') {
+          setGpsPermissionState('granted');
+        }
+      });
+    }
+  }, []);
+
   /** Alinha `html` / `body` / `#root` ao fundo escuro desta rota (evita branco por trás do shell). */
   useEffect(() => {
     const html = document.documentElement;
@@ -195,21 +207,33 @@ const ZaptroDriverRoute: React.FC = () => {
         },
       });
     }
+
+    if (next === 'started') {
+      iniciarRastreamento();
+    } else if (next === 'delivered' || next === 'issue') {
+      pararRastreamento();
+    }
   };
 
-  const shareLocation = () => {
-    if (!navigator.geolocation) {
-      notifyZaptro('warning', 'Localização', 'Geolocalização não disponível neste dispositivo.');
-      return;
-    }
-
+  const pararRastreamento = () => {
     if (watchRef.current != null) {
       navigator.geolocation.clearWatch(watchRef.current);
       watchRef.current = null;
       setGpsWatchActive(false);
       setLocActive(false);
       routeNotifyEmailSentRef.current = false;
-      notifyZaptro('info', 'Localização', 'Partilha em tempo real parada. O cliente deixa de receber novas coordenadas neste browser.');
+      notifyZaptro('info', 'Localização', 'Rastreamento parado.');
+    }
+  };
+
+  const iniciarRastreamento = () => {
+    if (!navigator.geolocation) {
+      notifyZaptro('warning', 'Localização', 'Geolocalização não disponível neste dispositivo.');
+      return;
+    }
+
+    if (watchRef.current != null) {
+      pararRastreamento();
       return;
     }
 
@@ -238,6 +262,17 @@ const ZaptroDriverRoute: React.FC = () => {
         const now = Date.now();
         if (now - lastPersistRef.current < 3500) return;
         lastPersistRef.current = now;
+
+        const data = {
+          rotaId: decoded,
+          motoristaId: profile.phone || 'mt-demo',
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          velocidade: pos.coords.speed,
+          timestamp: new Date().toISOString()
+        };
+        console.log("Localização:", data);
+
         patchRouteLive(decoded, {
           lastLat: pos.coords.latitude,
           lastLng: pos.coords.longitude,
@@ -299,7 +334,7 @@ const ZaptroDriverRoute: React.FC = () => {
     border: active ? 'none' : '1px solid rgba(255,255,255,0.12)',
     backgroundColor: active ? LIME : 'rgba(255,255,255,0.06)',
     color: active ? '#000' : '#f8fafc',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 15,
     cursor: 'pointer',
     textAlign: 'center',
@@ -342,6 +377,41 @@ const ZaptroDriverRoute: React.FC = () => {
     backgroundColor: side === 'company' ? 'rgba(37,99,235,0.2)' : 'rgba(148,163,184,0.18)',
   });
 
+  if (gpsPermissionState !== 'granted') {
+    return (
+      <div style={pageShell}>
+        <div style={{ ...pageInner, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', minHeight: '100dvh', gap: 20 }}>
+          <div style={{ width: 64, height: 64, borderRadius: 999, backgroundColor: 'rgba(217,255,0,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${LIME}` }}>
+            <MapPin size={32} color={LIME} />
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.03em' }}>Localização Obrigatória</h2>
+          <p style={{ fontSize: 15, fontWeight: 600, color: 'rgba(248,250,252,0.7)', lineHeight: 1.5, margin: 0 }}>
+            {gpsPermissionState === 'denied'
+              ? 'Você precisa ativar sua localização nas permissões do navegador para sincronizar com a rota. Sem isso, não é possível continuar.'
+              : 'Para rastrear a entrega em tempo real, precisamos de acesso ao GPS do seu dispositivo.'}
+          </p>
+          <button 
+            type="button"
+            onClick={() => {
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => {
+                    setGpsPermissionState('granted');
+                  },
+                  (err) => setGpsPermissionState('denied'),
+                  { enableHighAccuracy: true, timeout: 10000 }
+                );
+              }
+            }}
+            style={{ ...btn(true), marginTop: 10 }}
+          >
+            Ativar localização
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={pageShell}>
       <div style={pageInner}>
@@ -351,10 +421,10 @@ const ZaptroDriverRoute: React.FC = () => {
             <Truck size={22} color="#000" />
           </div>
           <div>
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.14em', color: 'rgba(248,250,252,0.55)' }}>
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(248,250,252,0.55)' }}>
               MOTORISTA · EXECUÇÃO DE ROTA
             </p>
-            <h1 style={{ margin: '4px 0 0', fontSize: 20, fontWeight: 950, color: '#fff', letterSpacing: '-0.03em' }}>Zaptro</h1>
+            <h1 style={{ margin: '4px 0 0', fontSize: 20, fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>Zaptro</h1>
           </div>
         </div>
         <p style={{ margin: '14px 0 0', fontSize: 13, color: 'rgba(248,250,252,0.75)', lineHeight: 1.45, fontWeight: 600 }}>
@@ -367,7 +437,7 @@ const ZaptroDriverRoute: React.FC = () => {
           <p style={eyebrow}>QUEM ESTÁ NESTA ROTA</p>
           <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-between', gap: 12, marginTop: 12 }}>
             <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 9, fontWeight: 950, letterSpacing: '0.12em', color: 'rgba(248,250,252,0.45)' }}>EMPRESA</span>
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(248,250,252,0.45)' }}>EMPRESA</span>
               <div style={avatarShell('company')}>
                 {companyUrl && !coPhotoFail ? (
                   <img
@@ -383,7 +453,7 @@ const ZaptroDriverRoute: React.FC = () => {
             </div>
             <div style={{ width: 1, backgroundColor: 'rgba(255,255,255,0.08)', alignSelf: 'stretch' }} />
             <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 9, fontWeight: 950, letterSpacing: '0.12em', color: 'rgba(248,250,252,0.45)' }}>MOTORISTA</span>
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(248,250,252,0.45)' }}>MOTORISTA</span>
               <div style={avatarShell('driver')}>
                 {profile.avatarUrl && !drPhotoFail ? (
                   <img
@@ -393,19 +463,19 @@ const ZaptroDriverRoute: React.FC = () => {
                     onError={() => setDrPhotoFail(true)}
                   />
                 ) : (
-                  <span style={{ fontSize: 15, fontWeight: 950, color: '#e2e8f0' }}>{driverInitials === '·' ? 'Mt' : driverInitials}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>{driverInitials === '·' ? 'Mt' : driverInitials}</span>
                 )}
               </div>
             </div>
           </div>
-          <h2 style={{ margin: '14px 0 6px', fontSize: 20, fontWeight: 950, color: '#fff', letterSpacing: '-0.03em' }}>{displayName}</h2>
+          <h2 style={{ margin: '14px 0 6px', fontSize: 20, fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>{displayName}</h2>
           <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'rgba(248,250,252,0.78)', lineHeight: 1.45 }}>
             {profile.phone.trim() || '—'} · {profile.vehicle.trim() || 'Veículo não indicado'}
           </p>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 14 }}>
             <MapPin size={18} color={LIME} style={{ flexShrink: 0, marginTop: 2 }} />
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: 'rgba(248,250,252,0.45)' }}>MORADA DA ENTREGA</p>
+              <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: 'rgba(248,250,252,0.45)' }}>MORADA DA ENTREGA</p>
               <p style={{ margin: '4px 0 0', fontSize: 14, fontWeight: 700, color: 'rgba(248,250,252,0.9)', lineHeight: 1.45 }}>{base.deliveryAddress}</p>
             </div>
           </div>
@@ -413,7 +483,7 @@ const ZaptroDriverRoute: React.FC = () => {
             {mapHref ? (
               <>
                 Onde estás (último GPS):{' '}
-                <a href={mapHref} target="_blank" rel="noreferrer" style={{ color: LIME, fontWeight: 950 }}>
+                <a href={mapHref} target="_blank" rel="noreferrer" style={{ color: LIME, fontWeight: 700 }}>
                   abrir no mapa
                 </a>
               </>
@@ -429,7 +499,7 @@ const ZaptroDriverRoute: React.FC = () => {
                 backgroundColor: 'rgba(217,255,0,0.12)',
                 border: '1px solid rgba(217,255,0,0.35)',
                 fontSize: 12,
-                fontWeight: 950,
+                fontWeight: 700,
                 color: LIME,
               }}
             >
@@ -442,7 +512,7 @@ const ZaptroDriverRoute: React.FC = () => {
                 backgroundColor: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 fontSize: 12,
-                fontWeight: 950,
+                fontWeight: 700,
                 color: '#e2e8f0',
               }}
             >
@@ -453,11 +523,11 @@ const ZaptroDriverRoute: React.FC = () => {
             Números locais até haver histórico na conta — altera em “Editar os meus dados”.
           </p>
           <details style={{ marginTop: 14 }}>
-            <summary style={{ cursor: 'pointer', fontWeight: 950, fontSize: 13, color: LIME, listStyle: 'none' } as React.CSSProperties}>
+            <summary style={{ cursor: 'pointer', fontWeight: 700, fontSize: 13, color: LIME, listStyle: 'none' } as React.CSSProperties}>
               Editar os meus dados neste aparelho
             </summary>
             <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <label style={{ fontSize: 11, fontWeight: 950, color: 'rgba(248,250,252,0.5)' }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(248,250,252,0.5)' }}>
                 Nome
                 <input
                   style={{ ...inputStyle, marginTop: 6 }}
@@ -466,7 +536,7 @@ const ZaptroDriverRoute: React.FC = () => {
                   placeholder="Ex.: João Silva"
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: 'rgba(248,250,252,0.5)' }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(248,250,252,0.5)' }}>
                 Telemóvel
                 <input
                   style={{ ...inputStyle, marginTop: 6 }}
@@ -475,7 +545,7 @@ const ZaptroDriverRoute: React.FC = () => {
                   placeholder="+351 …"
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: 'rgba(248,250,252,0.5)' }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(248,250,252,0.5)' }}>
                 Veículo
                 <input
                   style={{ ...inputStyle, marginTop: 6 }}
@@ -485,7 +555,7 @@ const ZaptroDriverRoute: React.FC = () => {
                 />
               </label>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                <label style={{ fontSize: 11, fontWeight: 950, color: 'rgba(248,250,252,0.5)', flex: '1 1 120px' }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(248,250,252,0.5)', flex: '1 1 120px' }}>
                   Entregas (contador local)
                   <input
                     type="number"
@@ -497,7 +567,7 @@ const ZaptroDriverRoute: React.FC = () => {
                     }
                   />
                 </label>
-                <label style={{ fontSize: 11, fontWeight: 950, color: 'rgba(248,250,252,0.5)', flex: '1 1 120px' }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(248,250,252,0.5)', flex: '1 1 120px' }}>
                   Rotas (contador local)
                   <input
                     type="number"
@@ -550,19 +620,19 @@ const ZaptroDriverRoute: React.FC = () => {
 
         <section style={card}>
           <p style={eyebrow}>{base.companyName}</p>
-          <h2 style={{ margin: '6px 0 8px', fontSize: 22, fontWeight: 950, color: '#fff', letterSpacing: '-0.04em' }}>{base.deliveryLabel}</h2>
+          <h2 style={{ margin: '6px 0 8px', fontSize: 22, fontWeight: 700, color: '#fff', letterSpacing: '-0.04em' }}>{base.deliveryLabel}</h2>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 10 }}>
             <MapPin size={18} color={LIME} style={{ flexShrink: 0, marginTop: 2 }} />
             <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'rgba(248,250,252,0.88)', lineHeight: 1.45 }}>{base.deliveryAddress}</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
             <Package size={16} color="rgba(248,250,252,0.55)" />
-            <span style={{ fontSize: 12, fontWeight: 800, color: 'rgba(248,250,252,0.55)' }}>Cliente (referência interna)</span>
-            <span style={{ fontSize: 13, fontWeight: 800, color: '#e2e8f0' }}>{base.customerName}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(248,250,252,0.55)' }}>Cliente (referência interna)</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{base.customerName}</span>
           </div>
           <div style={statusPill}>
             <Navigation size={16} color="#000" />
-            <span style={{ fontWeight: 950, color: '#000' }}>{ROUTE_STATUS_LABEL[status]}</span>
+            <span style={{ fontWeight: 700, color: '#000' }}>{ROUTE_STATUS_LABEL[status]}</span>
           </div>
         </section>
 
@@ -609,15 +679,15 @@ const ZaptroDriverRoute: React.FC = () => {
         </section>
 
         <section style={card}>
-          <button type="button" style={{ ...btn(locActive), marginBottom: 12 }} onClick={shareLocation}>
+          <button type="button" style={{ ...btn(locActive), marginBottom: 12 }} onClick={iniciarRastreamento}>
             <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-              <MapPin size={20} /> {locActive && gpsWatchActive ? 'Parar partilha' : locActive ? 'Partilhar de novo' : 'Partilhar localização'}
+              <MapPin size={20} /> {locActive && gpsWatchActive ? 'Parar partilha manual' : 'Partilhar localização'}
             </span>
           </button>
           <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: 'rgba(248,250,252,0.55)', lineHeight: 1.45 }}>
             {locActive && gpsWatchActive
-              ? 'GPS activo: a posição actualiza-se no link público do cliente (mesmo token, neste browser).'
-              : 'Toca para ligar o GPS em tempo real. Toca outra vez para parar. O cliente vê no /acompanhar/…'}
+              ? 'Rastreamento activo. A sua posição está a ser transmitida para a operação.'
+              : 'O rastreamento inicia automaticamente ao clicar em "Iniciar rota". Pode ligar manualmente aqui.'}
           </p>
         </section>
 
@@ -668,7 +738,7 @@ const card: React.CSSProperties = {
 const eyebrow: React.CSSProperties = {
   margin: 0,
   fontSize: 11,
-  fontWeight: 950,
+  fontWeight: 700,
   letterSpacing: '0.12em',
   color: 'rgba(248,250,252,0.45)',
 };

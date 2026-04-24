@@ -222,36 +222,36 @@ const ZaptroLogistics: React.FC = () => {
 const styles: Record<string, any> = {
   container: { backgroundColor: '#FFFFFF' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '50px' },
-  title: { fontSize: '38px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-2px' },
+  title: { fontSize: '38px', fontWeight: '700', color: '#000', margin: 0, letterSpacing: '-2px' },
   subtitle: { fontSize: '15px', color: '#94A3B8', fontWeight: '600', margin: '6px 0 0 0' },
-  primaryBtn: { backgroundColor: '#000', color: '#D9FF00', border: 'none', padding: '18px 30px', borderRadius: '18px', fontWeight: '950', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
+  primaryBtn: { backgroundColor: '#000', color: '#D9FF00', border: 'none', padding: '18px 30px', borderRadius: '18px', fontWeight: '700', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
   
   statsBar: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '25px', marginBottom: '50px' },
   statCard: { backgroundColor: '#FFFFFF', padding: '28px', borderRadius: '35px', border: '1px solid #EBEBEC', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: ZAPTRO_SHADOW.md },
   statIcon: { width: '52px', height: '52px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  statLabel: { margin: '0 0 4px 0', fontSize: '12px', fontWeight: '950', color: '#000000', letterSpacing: '1px' },
-  statVal: { margin: 0, fontSize: '26px', fontWeight: '950', color: '#000' },
+  statLabel: { margin: '0 0 4px 0', fontSize: '12px', fontWeight: '700', color: '#000000', letterSpacing: '1px' },
+  statVal: { margin: 0, fontSize: '26px', fontWeight: '700', color: '#000' },
 
   tableCard: { backgroundColor: '#FFFFFF', borderRadius: '40px', border: '1px solid #EBEBEC', overflow: 'hidden', boxShadow: ZAPTRO_SHADOW.lg },
   toolbar: { padding: '25px 40px', borderBottom: '1px solid #EBEBEC', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   searchBox: { display: 'flex', alignItems: 'center', gap: '15px', backgroundColor: '#FBFBFC', padding: '14px 25px', borderRadius: '20px', width: '450px', border: '1px solid #EBEBEC' },
   searchInput: { border: 'none', background: 'transparent', outline: 'none', fontSize: '15px', fontWeight: '700', width: '100%', color: '#000' },
   filters: { display: 'flex', gap: '12px' },
-  filterBtn: { display: 'flex', alignItems: 'center', gap: '10px', border: 'none', backgroundColor: '#FBFBFC', color: '#000', padding: '12px 20px', borderRadius: '16px', fontSize: '13px', fontWeight: '900', cursor: 'pointer' },
+  filterBtn: { display: 'flex', alignItems: 'center', gap: '10px', border: 'none', backgroundColor: '#FBFBFC', color: '#000', padding: '12px 20px', borderRadius: '16px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' },
 
   table: { width: '100%', borderCollapse: 'collapse' },
   thRow: { backgroundColor: '#FBFBFC' },
-  th: { padding: '22px 40px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#000000', letterSpacing: '1.5px' },
+  th: { padding: '22px 40px', textAlign: 'left', fontSize: '11px', fontWeight: '700', color: '#000000', letterSpacing: '1.5px' },
   tr: { borderBottom: '1px solid #EBEBEC', transition: '0.2s' },
   td: { padding: '24px 40px' },
 
   idCell: { display: 'flex', alignItems: 'center', gap: '18px' },
   iconCircle: { width: '42px', height: '42px', borderRadius: '14px', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D9FF00' },
-  mainText: { display: 'block', fontSize: '15px', fontWeight: '950', color: '#000' },
+  mainText: { display: 'block', fontSize: '15px', fontWeight: '700', color: '#000' },
   subText: { fontSize: '11px', color: '#94A3B8', fontWeight: '750', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' },
   driverCell: { display: 'flex', alignItems: 'center', gap: '14px' },
-  avatarMini: { width: '30px', height: '30px', borderRadius: '10px', backgroundColor: '#000', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '950' },
-  badge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '950' },
+  avatarMini: { width: '30px', height: '30px', borderRadius: '10px', backgroundColor: '#000', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700' },
+  badge: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700' },
   badgeDot: { width: '6px', height: '6px', borderRadius: '50%' },
   actionRow: { display: 'flex', gap: '12px', justifyContent: 'flex-end' },
   iconBtn: { width: '40px', height: '40px', borderRadius: '14px', border: 'none', backgroundColor: '#FBFBFC', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
@@ -259,20 +259,20 @@ const styles: Record<string, any> = {
 
   modalContent: { padding: '10px' },
   modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' },
-  pTag: { padding: '4px 8px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '6px', fontSize: '9px', fontWeight: '950', display: 'inline-block', marginBottom: '10px' },
-  pTitle: { fontSize: '32px', fontWeight: '950', margin: 0, letterSpacing: '-1.5px' },
+  pTag: { padding: '4px 8px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '6px', fontSize: '9px', fontWeight: '700', display: 'inline-block', marginBottom: '10px' },
+  pTitle: { fontSize: '32px', fontWeight: '700', margin: 0, letterSpacing: '-1.5px' },
   pSub: { fontSize: '14px', color: '#94A3B8', fontWeight: '700' },
-  sLabel: { fontSize: '10px', fontWeight: '950', color: '#000000', display: 'block', marginBottom: '6px' },
-  sVal: { fontSize: '16px', fontWeight: '950' },
+  sLabel: { fontSize: '10px', fontWeight: '700', color: '#000000', display: 'block', marginBottom: '6px' },
+  sVal: { fontSize: '16px', fontWeight: '700' },
 
   infoGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' },
   infoCard: { padding: '24px', backgroundColor: '#FBFBFC', borderRadius: '24px', display: 'flex', gap: '18px', alignItems: 'center' },
   infoIconBox: { width: '44px', height: '44px', borderRadius: '15px', backgroundColor: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #EBEBEC' },
-  iLabel: { display: 'block', fontSize: '10px', fontWeight: '950', color: '#000000', marginBottom: '4px' },
-  iVal: { fontSize: '14px', fontWeight: '900', margin: 0 },
+  iLabel: { display: 'block', fontSize: '10px', fontWeight: '700', color: '#000000', marginBottom: '4px' },
+  iVal: { fontSize: '14px', fontWeight: '700', margin: 0 },
 
   timelineBox: { padding: '30px', backgroundColor: '#FBFBFC', borderRadius: '28px' },
-  tTitle: { fontSize: '14px', fontWeight: '950', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '10px' },
+  tTitle: { fontSize: '14px', fontWeight: '700', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '10px' },
   timeline: { borderLeft: '2px solid #d4d4d8', marginLeft: '10px', paddingLeft: '35px', display: 'flex', flexDirection: 'column', gap: '30px' },
   tItem: { position: 'relative' },
   tDotActive: { position: 'absolute', left: '-42px', top: '2px', width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#D9FF00', border: '2px solid #d4d4d8' },
@@ -281,10 +281,10 @@ const styles: Record<string, any> = {
 
   addForm: { padding: '10px' },
   inputStack: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  fLabel: { fontSize: '11px', fontWeight: '950', color: '#000000', letterSpacing: '1px' },
+  fLabel: { fontSize: '11px', fontWeight: '700', color: '#000000', letterSpacing: '1px' },
   fInput: { padding: '16px 20px', borderRadius: '18px', border: '1px solid #EBEBEC', fontSize: '15px', fontWeight: '750', outline: 'none' },
-  fSelect: { padding: '16px 20px', borderRadius: '18px', border: '1px solid #EBEBEC', fontSize: '15px', fontWeight: '950', outline: 'none', appearance: 'none' },
-  fActionBtn: { width: '100%', marginTop: '40px', padding: '20px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '20px', border: 'none', fontSize: '16px', fontWeight: '950', cursor: 'pointer' }
+  fSelect: { padding: '16px 20px', borderRadius: '18px', border: '1px solid #EBEBEC', fontSize: '15px', fontWeight: '700', outline: 'none', appearance: 'none' },
+  fActionBtn: { width: '100%', marginTop: '40px', padding: '20px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '20px', border: 'none', fontSize: '16px', fontWeight: '700', cursor: 'pointer' }
 };
 
 export default ZaptroLogistics;

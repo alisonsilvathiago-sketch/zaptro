@@ -265,7 +265,7 @@ const RouteCardDualAvatars: React.FC<{
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: 11,
-        fontWeight: 950,
+        fontWeight: 700,
         color: fg,
         flexShrink: 0,
         boxSizing: 'border-box',
@@ -505,7 +505,7 @@ const ZaptroRoutesInner: React.FC = () => {
       border: `1px solid ${border}`,
       backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#fff',
       color: text,
-      fontWeight: 900,
+      fontWeight: 700,
       fontSize: 14,
       cursor: 'pointer',
       fontFamily: 'inherit',
@@ -668,7 +668,7 @@ const ZaptroRoutesInner: React.FC = () => {
       }}
     >
       <header style={{ marginBottom: 24 }}>
-        <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 950, letterSpacing: '0.12em', color: muted }}>OPERAÇÃO</p>
+        <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', color: muted }}>OPERAÇÃO</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div
             style={{
@@ -693,7 +693,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   border: `1px solid ${border}`,
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : ROUTES_UI_NEUTRAL.railBg,
                   color: text,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 14,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -707,7 +707,7 @@ const ZaptroRoutesInner: React.FC = () => {
               style={{
                 margin: 0,
                 fontSize: 38,
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '-1.2px',
                 color: text,
                 flex: '1 1 160px',
@@ -718,15 +718,6 @@ const ZaptroRoutesInner: React.FC = () => {
             </h1>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-            {canOpenAutomation ? (
-              <button
-                type="button"
-                onClick={() => navigate(`${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=automation`)}
-                style={routesHeaderGhostBtn}
-              >
-                <Workflow size={18} strokeWidth={2.2} /> Automação
-              </button>
-            ) : null}
             <button
               type="button"
               aria-pressed={showActiveRoutesMap}
@@ -746,6 +737,39 @@ const ZaptroRoutesInner: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                if (!filteredRows.length) {
+                  notifyZaptro('info', 'Sem dados', 'Crie rotas primeiro para exportar.');
+                  return;
+                }
+                import('../lib/exportToExcel').then(({ exportToExcel }) => {
+                  exportToExcel(
+                    filteredRows.map((r) => ({
+                      'Token': r.token,
+                      'Cliente / Referência': r.clientRef || '—',
+                      'Rótulo': r.label,
+                      'Status': r.status,
+                      'Criado por': r.createdBy || '—',
+                      'Data criação': new Date(r.createdAt).toLocaleString('pt-BR'),
+                      'Nota interna': r.internalNote || '—',
+                    })),
+                    'rotas_zaptro',
+                  );
+                  notifyZaptro('success', 'Excel gerado!', `${filteredRows.length} rotas exportadas.`);
+                });
+              }}
+              style={{
+                ...routesHeaderGhostBtn,
+                color: '#16a34a',
+                borderColor: '#16a34a',
+                gap: 7,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+              Excel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 setClientRefDraft('');
                 setNoteDraft('');
                 setStartModalOpen(true);
@@ -759,7 +783,7 @@ const ZaptroRoutesInner: React.FC = () => {
                 border: `1px solid ${border}`,
                 backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : 'rgba(217,255,0,0.35)',
                 color: text,
-                fontWeight: 900,
+                fontWeight: 700,
                 fontSize: 14,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -767,6 +791,7 @@ const ZaptroRoutesInner: React.FC = () => {
             >
               <Truck size={18} strokeWidth={2.2} /> Iniciar rota
             </button>
+
           </div>
         </div>
       </header>
@@ -810,7 +835,7 @@ const ZaptroRoutesInner: React.FC = () => {
             }}
           >
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontSize: 13, fontWeight: 950, color: text }}>Mapa operacional</p>
+              <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: text }}>Mapa operacional</p>
               <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 600, color: muted, lineHeight: 1.45 }}>
                 <strong style={{ color: text }}>{stats.ativas}</strong> rotas ativas na lista · vista de exemplo (frota). Com GPS no token, os marcadores passam a refletir a operação real.
               </p>
@@ -861,7 +886,7 @@ const ZaptroRoutesInner: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 14 }}>
-          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: text }}>Todas as rotas</h2>
+          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: text }}>Todas as rotas</h2>
           {rows.length > 0 ? (
             <span style={{ fontSize: 12, fontWeight: 700, color: muted }}>
               <strong style={{ color: text }}>{filteredRows.length}</strong> rotas visíveis
@@ -924,7 +949,7 @@ const ZaptroRoutesInner: React.FC = () => {
                             ? 'rgba(255,255,255,0.04)'
                             : '#fff',
                         color: text,
-                        fontWeight: 900,
+                        fontWeight: 700,
                         fontSize: 11,
                         cursor: 'pointer',
                         fontFamily: 'inherit',
@@ -938,7 +963,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       <span
                         style={{
                           fontSize: 10,
-                          fontWeight: 800,
+                          fontWeight: 600,
                           color: muted,
                           opacity: 0.95,
                           minWidth: 18,
@@ -1040,7 +1065,7 @@ const ZaptroRoutesInner: React.FC = () => {
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 12 }}>
             <div style={{ flex: '2 1 220px', minWidth: 0 }}>
-              <label style={{ display: 'block', fontSize: 10, fontWeight: 950, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>PESQUISAR</label>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>PESQUISAR</label>
               <div style={{ position: 'relative' }}>
                 <Search
                   size={16}
@@ -1058,11 +1083,11 @@ const ZaptroRoutesInner: React.FC = () => {
               </div>
             </div>
             <div style={{ flex: '1 1 160px', minWidth: 0 }}>
-              <label style={{ display: 'block', fontSize: 10, fontWeight: 950, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>DESDE</label>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>DESDE</label>
               <input type="datetime-local" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} style={inputShell} />
             </div>
             <div style={{ flex: '1 1 160px', minWidth: 0 }}>
-              <label style={{ display: 'block', fontSize: 10, fontWeight: 950, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>ATÉ</label>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: muted, marginBottom: 6 }}>ATÉ</label>
               <input type="datetime-local" value={dateTo} onChange={(e) => setDateTo(e.target.value)} style={inputShell} />
             </div>
             {hasActiveFilters ? (
@@ -1079,7 +1104,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${border}`,
                   background: 'transparent',
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 12,
                   cursor: 'pointer',
                   color: muted,
@@ -1134,7 +1159,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   gap: 4,
                   padding: '7px 6px',
                   borderRadius: 10,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 10,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -1188,17 +1213,17 @@ const ZaptroRoutesInner: React.FC = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                         <RouteCardDualAvatars visual={visual} border={border} mode={palette.mode} />
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>ESTADO</div>
-                          <div style={{ fontSize: 13, fontWeight: 950, color: text, lineHeight: 1.25 }}>{visual.title}</div>
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>ESTADO</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: text, lineHeight: 1.25 }}>{visual.title}</div>
                         </div>
                       </div>
                       <div style={{ marginBottom: 8, minWidth: 0 }}>
                         {r.clientRef ? (
-                          <strong style={{ fontSize: 13, fontWeight: 950, color: text, lineHeight: 1.3, display: 'block', wordBreak: 'break-word' }}>
+                          <strong style={{ fontSize: 13, fontWeight: 700, color: text, lineHeight: 1.3, display: 'block', wordBreak: 'break-word' }}>
                             {r.clientRef}
                           </strong>
                         ) : (
-                          <strong style={{ fontSize: 13, fontWeight: 950, color: text, lineHeight: 1.3, wordBreak: 'break-word' }}>{r.label}</strong>
+                          <strong style={{ fontSize: 13, fontWeight: 700, color: text, lineHeight: 1.3, wordBreak: 'break-word' }}>{r.label}</strong>
                         )}
                       </div>
                       <div
@@ -1321,11 +1346,11 @@ const ZaptroRoutesInner: React.FC = () => {
               <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#fff' }}>
                 <thead>
                   <tr style={{ backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f4f4f4', borderBottom: `1px solid ${border}` }}>
-                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>ESTADO</th>
-                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>CLIENTE / REF.</th>
-                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>TOKEN</th>
-                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>CRIADO</th>
-                    <th style={{ textAlign: 'right', padding: '12px 14px', fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>AÇÕES</th>
+                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>ESTADO</th>
+                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>CLIENTE / REF.</th>
+                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>TOKEN</th>
+                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>CRIADO</th>
+                    <th style={{ textAlign: 'right', padding: '12px 14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>AÇÕES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1340,7 +1365,7 @@ const ZaptroRoutesInner: React.FC = () => {
                       gap: 4,
                       padding: '6px 8px',
                       borderRadius: 8,
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 10,
                       cursor: 'pointer',
                       fontFamily: 'inherit',
@@ -1367,10 +1392,10 @@ const ZaptroRoutesInner: React.FC = () => {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ width: 4, alignSelf: 'stretch', borderRadius: 4, backgroundColor: visual.accent, flexShrink: 0 }} />
                             <RouteCardDualAvatars visual={visual} border={border} mode={palette.mode} />
-                            <span style={{ fontSize: 13, fontWeight: 950, color: text }}>{visual.title}</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: text }}>{visual.title}</span>
                           </div>
                         </td>
-                        <td style={{ padding: '10px 14px', fontSize: 13, fontWeight: 800, color: text, maxWidth: 220 }}>
+                        <td style={{ padding: '10px 14px', fontSize: 13, fontWeight: 600, color: text, maxWidth: 220 }}>
                           <div style={{ wordBreak: 'break-word' }}>{r.clientRef || r.label}</div>
                           {r.internalNote ? (
                             <div style={{ fontSize: 10, fontWeight: 600, color: muted, marginTop: 4 }} title={r.internalNote}>
@@ -1478,7 +1503,7 @@ const ZaptroRoutesInner: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-              <h2 id="zaptro-routes-start-title" style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>
+              <h2 id="zaptro-routes-start-title" style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>
                 Nova rota
               </h2>
               <button
@@ -1494,7 +1519,7 @@ const ZaptroRoutesInner: React.FC = () => {
               O <strong>token</strong> identifica a rota no sistema. O <strong>cliente</strong> (opcional) ajuda-te a saber de quem é a entrega na lista. Depois
               usas <strong>Motorista</strong> (frota) ou <strong>Copiar público</strong> (cliente final).
             </p>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: muted, marginBottom: 8 }}>CLIENTE OU REFERÊNCIA (OPCIONAL)</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: muted, marginBottom: 8 }}>CLIENTE OU REFERÊNCIA (OPCIONAL)</label>
             <input
               value={clientRefDraft}
               onChange={(e) => setClientRefDraft(e.target.value)}
@@ -1513,7 +1538,7 @@ const ZaptroRoutesInner: React.FC = () => {
                 fontFamily: 'inherit',
               }}
             />
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: muted, marginBottom: 8 }}>NOTA INTERNA (OPCIONAL)</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: muted, marginBottom: 8 }}>NOTA INTERNA (OPCIONAL)</label>
             <textarea
               value={noteDraft}
               onChange={(e) => setNoteDraft(e.target.value)}
@@ -1543,7 +1568,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${border}`,
                   background: 'transparent',
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                   color: muted,
@@ -1561,7 +1586,7 @@ const ZaptroRoutesInner: React.FC = () => {
                   border: 'none',
                   background: '#000000',
                   color: LIME,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -1620,14 +1645,14 @@ const ZaptroRoutesInner: React.FC = () => {
               const listStatus = d.status === 'ativa' ? 'Activa na lista' : 'Encerrada na lista';
               const detailLine = (label: string, value: string) => (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted, marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted, marginBottom: 4 }}>{label}</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: text, lineHeight: 1.4, wordBreak: 'break-word' }}>{value}</div>
                 </div>
               );
               return (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 16 }}>
-                    <h2 id="zaptro-routes-detail-title" style={{ margin: 0, fontSize: 20, fontWeight: 950, lineHeight: 1.2 }}>
+                    <h2 id="zaptro-routes-detail-title" style={{ margin: 0, fontSize: 20, fontWeight: 700, lineHeight: 1.2 }}>
                       {d.clientRef || d.label}
                     </h2>
                     <button
@@ -1654,8 +1679,8 @@ const ZaptroRoutesInner: React.FC = () => {
                   >
                     <RouteCardDualAvatars visual={dv} border={border} mode={palette.mode} />
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted }}>ESTADO NA ROTA</div>
-                      <div style={{ fontSize: 15, fontWeight: 950, color: text }}>{dv.title}</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted }}>ESTADO NA ROTA</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: text }}>{dv.title}</div>
                     </div>
                   </div>
 
@@ -1679,7 +1704,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#fff',
                       }}
                     >
-                      <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: '0.08em', color: muted, marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: muted, marginBottom: 10 }}>
                         DADOS NO BROWSER (LINK MOTORISTA)
                       </div>
                       {live.driverDisplayName ? detailLine('Motorista', live.driverDisplayName) : null}
@@ -1708,7 +1733,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         border: `1px solid ${border}`,
                         background: '#000',
                         color: LIME,
-                        fontWeight: 900,
+                        fontWeight: 700,
                         fontSize: 13,
                         cursor: 'pointer',
                         fontFamily: 'inherit',
@@ -1731,7 +1756,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         border: `1px solid ${border}`,
                         background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                         color: text,
-                        fontWeight: 900,
+                        fontWeight: 700,
                         fontSize: 13,
                         cursor: 'pointer',
                         fontFamily: 'inherit',
@@ -1762,7 +1787,7 @@ const ZaptroRoutesInner: React.FC = () => {
                         border: '1px solid rgba(220,38,38,0.45)',
                         background: 'rgba(220,38,38,0.08)',
                         color: '#dc2626',
-                        fontWeight: 950,
+                        fontWeight: 700,
                         fontSize: 13,
                         cursor: 'pointer',
                         fontFamily: 'inherit',

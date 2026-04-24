@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Lock, Mail, Loader2, AlertCircle } from 'lucide-react';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
-import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { getZaptroPostLoginLandingUrl } from '../utils/domains';
 import { profileHasZaptroProductAccess } from '../utils/authProductGate';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
@@ -118,7 +117,6 @@ const ZaptroCompanyLogin: React.FC = () => {
         setErr('Esta conta não tem o módulo Zaptro ativo.');
         return;
       }
-      notifyZaptro('success', 'Bem-vindo', 'A abrir o painel…');
       window.location.assign(getZaptroPostLoginLandingUrl());
     } catch {
       setErr('Falha ao entrar. Tente de novo.');
@@ -147,8 +145,8 @@ const ZaptroCompanyLogin: React.FC = () => {
   if (loadErr || !row) {
     return (
       <div style={{ minHeight: '100dvh', padding: 32, background: pageBg, fontFamily: 'inherit' }}>
-        <p style={{ fontWeight: 800, color: '#0f172a' }}>{loadErr || 'Indisponível.'}</p>
-        <a href={ZAPTRO_ROUTES.SALES} style={{ color: pri, fontWeight: 800 }}>
+        <p style={{ fontWeight: 600, color: '#0f172a' }}>{loadErr || 'Indisponível.'}</p>
+        <a href={ZAPTRO_ROUTES.SALES} style={{ color: pri, fontWeight: 600 }}>
           Voltar
         </a>
       </div>
@@ -207,7 +205,7 @@ const ZaptroCompanyLogin: React.FC = () => {
           border: 'none',
           background: btn,
           color: '#000',
-          fontWeight: 950,
+          fontWeight: 700,
           fontSize: 15,
           cursor: busy ? 'wait' : 'pointer',
           opacity: busy ? 0.75 : 1,
@@ -217,7 +215,7 @@ const ZaptroCompanyLogin: React.FC = () => {
       </button>
       <p style={{ margin: 0, fontSize: 11, color: '#64748b', textAlign: 'center', fontWeight: 600 }}>
         Login da equipa <strong style={{ color: '#0f172a' }}>{row.name}</strong> ·{' '}
-        <a href="/login" style={{ color: sec, fontWeight: 800 }}>
+        <a href="/login" style={{ color: sec, fontWeight: 600 }}>
           Acesso Zaptro global
         </a>
       </p>
@@ -255,9 +253,9 @@ const ZaptroCompanyLogin: React.FC = () => {
             ) : fav ? (
               <img src={fav} alt="" style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover' }} />
             ) : (
-              <span style={{ fontWeight: 950, fontSize: 18, color: '#0f172a' }}>{row.name}</span>
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#0f172a' }}>{row.name}</span>
             )}
-            <h1 style={{ margin: '14px 0 6px', fontSize: 24, fontWeight: 950, color: '#0f172a' }}>Bem-vindo</h1>
+            <h1 style={{ margin: '14px 0 6px', fontSize: 24, fontWeight: 700, color: '#0f172a' }}>Bem-vindo</h1>
             <p style={{ margin: 0, fontSize: 14, color: '#64748b', fontWeight: 600 }}>Entre com o e-mail da equipa.</p>
           </div>
           {formBlock}
@@ -289,7 +287,7 @@ const ZaptroCompanyLogin: React.FC = () => {
         ) : fav ? (
           <img src={fav} alt="" style={{ width: 72, height: 72, borderRadius: 16, objectFit: 'cover' }} />
         ) : (
-          <span style={{ color: '#e2e8f0', fontWeight: 950, fontSize: 22, letterSpacing: '-0.02em' }}>{row.name}</span>
+          <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 22, letterSpacing: '-0.02em' }}>{row.name}</span>
         )}
       </div>
       <div

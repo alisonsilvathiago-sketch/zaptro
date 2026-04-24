@@ -193,38 +193,38 @@ const styles = {
   container: { padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '40px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   headerInfo: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  badge: { backgroundColor: '#f0fdf4', color: '#10b981', padding: '6px 14px', borderRadius: '10px', fontSize: '11px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1.2px' },
+  badge: { backgroundColor: '#f0fdf4', color: '#10b981', padding: '6px 14px', borderRadius: '10px', fontSize: '11px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000000', margin: 0, letterSpacing: '-1.2px' },
   subtitle: { fontSize: '16px', color: '#6b7280', margin: 0, maxWidth: '600px' },
-  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '18px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 8px 16px rgba(217, 255, 0, 0.2)', transition: 'transform 0.2s', fontSize: '15px' },
+  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '18px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 8px 16px rgba(217, 255, 0, 0.2)', transition: 'transform 0.2s', fontSize: '15px' },
   
   contentGrid: { display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '32px' },
   
   infoCard: { backgroundColor: '#f4f4f4', padding: '40px', borderRadius: '32px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   infoIcon: { marginBottom: '8px' },
-  infoTitle: { fontSize: '20px', fontWeight: '900', color: '#000000', margin: 0 },
+  infoTitle: { fontSize: '20px', fontWeight: '700', color: '#000000', margin: 0 },
   infoText: { fontSize: '15px', color: '#64748b', lineHeight: '1.6', margin: 0 },
   infoSpecs: { marginTop: '12px', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  specItem: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '800', color: '#334155' },
+  specItem: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#334155' },
 
   listCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   cardHeader: { padding: '32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  cardTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: '#000000', margin: 0 },
   refreshBtn: { width: '40px', height: '40px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' },
 
   backupList: { display: 'flex', flexDirection: 'column' as const },
   backupItem: { padding: '24px 32px', borderBottom: '1px solid #e8e8e8', display: 'grid', gridTemplateColumns: 'minmax(150px, 1fr) 1.5fr auto', alignItems: 'center', gap: '24px', transition: 'background-color 0.2s' },
   itemDate: { display: 'flex', gap: '14px', alignItems: 'center' },
   dateInfo: { display: 'flex', flexDirection: 'column' as const },
-  dateText: { fontSize: '15px', fontWeight: '800', color: '#000000' },
+  dateText: { fontSize: '15px', fontWeight: '600', color: '#000000' },
   timeText: { fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
   itemMeta: { display: 'flex', alignItems: 'center', gap: '16px' },
-  typeBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase' as const },
-  sizeText: { fontSize: '13px', fontWeight: '800', color: '#64748b' },
-  restoreBtn: { padding: '10px 18px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#334155', fontSize: '13px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' },
+  typeBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' as const },
+  sizeText: { fontSize: '13px', fontWeight: '600', color: '#64748b' },
+  restoreBtn: { padding: '10px 18px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: 'white', color: '#334155', fontSize: '13px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' },
   
   emptyState: { padding: '80px 40px', textAlign: 'center' as const, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '16px', color: '#94a3b8' },
-  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '800' }
+  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '600' }
 };
 
 export default CompanyBackup;

@@ -159,9 +159,9 @@ const styles: Record<string, any> = {
   header: { marginBottom: '40px' },
   backBtn: { 
     display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', 
-    color: 'var(--primary)', fontWeight: '800', fontSize: '14px', marginBottom: '24px', cursor: 'pointer' 
+    color: 'var(--primary)', fontWeight: '600', fontSize: '14px', marginBottom: '24px', cursor: 'pointer' 
   },
-  title: { fontSize: '36px', fontWeight: '950', color: '#0F172A', letterSpacing: '-1.5px', marginBottom: '16px' },
+  title: { fontSize: '36px', fontWeight: '700', color: '#0F172A', letterSpacing: '-1.5px', marginBottom: '16px' },
   meta: { display: 'flex', gap: '24px', fontSize: '13px', color: '#94a3b8', fontWeight: '500' },
   metaItem: { display: 'flex', alignItems: 'center', gap: '6px' },
   
@@ -172,7 +172,7 @@ const styles: Record<string, any> = {
   
   footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   feedback: { display: 'flex', alignItems: 'center', gap: '24px' },
-  feedbackTitle: { fontSize: '15px', fontWeight: '800', color: '#0f172a' },
+  feedbackTitle: { fontSize: '15px', fontWeight: '600', color: '#0f172a' },
   feedbackBtns: { display: 'flex', gap: '8px' },
   fBtn: { 
     display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', 
@@ -187,7 +187,7 @@ const styles: Record<string, any> = {
 
   sidebar: { display: 'flex', flexDirection: 'column', gap: '32px' },
   sidebarBox: { padding: '32px', border: '1px solid #e8e8e8', borderRadius: '24px' },
-  sidebarTitle: { fontSize: '18px', fontWeight: '900', color: '#0f172a', marginBottom: '20px' },
+  sidebarTitle: { fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '20px' },
   relatedList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   relatedItem: { 
     fontSize: '14px', color: '#64748B', fontWeight: '600', cursor: 'pointer', 
@@ -197,7 +197,7 @@ const styles: Record<string, any> = {
   supportText: { fontSize: '14px', color: '#94a3b8', lineHeight: '1.5', marginBottom: '20px' },
   contactBtn: { 
     width: '100%', padding: '12px', backgroundColor: 'var(--primary)', color: 'white', 
-    border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' 
+    border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' 
   }
 };
 

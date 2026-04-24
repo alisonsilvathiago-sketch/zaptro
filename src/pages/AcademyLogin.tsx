@@ -126,21 +126,21 @@ const styles: Record<string, any> = {
   card: { backgroundColor: 'white', width: '100%', maxWidth: '440px', padding: '60px 40px', borderRadius: '40px', boxShadow: '0 40px 100px -20px rgba(217, 255, 0, 0.08)', border: '1px solid #f3e8ff' },
   header: { textAlign: 'center', marginBottom: '40px' },
   logoBox: { width: '48px', height: '48px', backgroundColor: '#D9FF00', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' },
-  title: { fontSize: '24px', fontWeight: '950', color: '#1e1b4b', letterSpacing: '-1px' },
+  title: { fontSize: '24px', fontWeight: '700', color: '#1e1b4b', letterSpacing: '-1px' },
   subtitle: { fontSize: '14px', color: '#D9FF00', marginTop: '8px' },
   form: { display: 'flex', flexDirection: 'column', gap: '24px' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '12px', fontWeight: '900', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  label: { fontSize: '12px', fontWeight: '700', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' },
   inputWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
   icon: { position: 'absolute', left: '16px', color: '#a5b4fc' },
   input: { width: '100%', padding: '16px 16px 16px 48px', borderRadius: '16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', border: '1px solid rgba(217, 255, 0, 0.28)', fontSize: '15px', outline: 'none' },
   eyeBtn: { position: 'absolute', right: '16px', background: 'none', border: 'none', color: '#a5b4fc', cursor: 'pointer' },
-  loginBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', borderRadius: '16px', border: 'none', fontWeight: '900', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.35)' },
+  loginBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', borderRadius: '16px', border: 'none', fontWeight: '700', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.35)' },
   footer: { marginTop: '40px', borderTop: '1px solid #f3e8ff', paddingTop: '32px', textAlign: 'center' },
   upsellText: { fontSize: '13px', color: '#D9FF00', marginBottom: '16px' },
-  registerBtn: { backgroundColor: 'transparent', border: '1px solid #D9FF00', color: '#D9FF00', padding: '12px 24px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
+  registerBtn: { backgroundColor: 'transparent', border: '1px solid #D9FF00', color: '#D9FF00', padding: '12px 24px', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' },
   features: { display: 'flex', gap: '24px', marginTop: '40px' },
-  featItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#a5b4fc', fontWeight: '800' }
+  featItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#a5b4fc', fontWeight: '600' }
 };
 
 export default AcademyLogin;

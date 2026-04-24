@@ -179,20 +179,20 @@ const styles: Record<string, any> = {
   },
   logo: { display: 'flex', alignItems: 'center', gap: '12px' },
   mecoLogo: { width: '40px', height: '40px', backgroundColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: '24px', fontWeight: '950', color: '#D2FF00', letterSpacing: '-1px' },
+  logoText: { fontSize: '24px', fontWeight: '700', color: '#D2FF00', letterSpacing: '-1px' },
   navLinks: { display: 'flex', gap: '32px' },
   navLink: { fontSize: '14px', fontWeight: '500', color: '#9dffc8', opacity: 0.8, cursor: 'pointer' },
   authActions: { display: 'flex', gap: '16px' },
   loginBtn: { backgroundColor: 'transparent', border: 'none', color: '#fff', padding: '10px 24px', fontWeight: '600', cursor: 'pointer' },
-  signUpBtn: { backgroundColor: '#D2FF00', color: '#000', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: '850', cursor: 'pointer' },
+  signUpBtn: { backgroundColor: '#D2FF00', color: '#000', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: '700', cursor: 'pointer' },
 
   main: { position: 'relative', zIndex: 1 },
   hero: { padding: '80px 100px 0 100px', textAlign: 'center' },
   heroContent: { maxWidth: '1200px', margin: '0 auto', position: 'relative' },
-  heroTitle: { fontSize: '64px', fontWeight: '800', maxWidth: '900px', margin: '0 auto', lineHeight: '1.1', letterSpacing: '-1px' },
+  heroTitle: { fontSize: '64px', fontWeight: '600', maxWidth: '900px', margin: '0 auto', lineHeight: '1.1', letterSpacing: '-1px' },
   heroSub: { fontSize: '18px', color: '#9dffc8', opacity: 0.6, maxWidth: '700px', margin: '24px auto', lineHeight: '1.6' },
   heroButtons: { display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '80px' },
-  getStarted: { padding: '16px 32px', backgroundColor: '#D2FF00', color: '#000', border: 'none', borderRadius: '30px', fontWeight: '900', fontSize: '16px', cursor: 'pointer' },
+  getStarted: { padding: '16px 32px', backgroundColor: '#D2FF00', color: '#000', border: 'none', borderRadius: '30px', fontWeight: '700', fontSize: '16px', cursor: 'pointer' },
   watchDemo: { padding: '16px 32px', backgroundColor: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '30px', fontWeight: '700', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' },
 
   visualContainer: { position: 'relative', width: '100%', height: '700px', marginTop: '40px' },
@@ -215,24 +215,24 @@ const styles: Record<string, any> = {
   appTabs: { display: 'flex', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '4px' },
   appTab: { flex: 1, textAlign: 'center', fontSize: '11px', padding: '8px', borderRadius: '8px', color: '#9dffc8' },
   appStatLabel: { fontSize: '12px', color: '#9dffc8', opacity: 0.5, marginBottom: '4px' },
-  appStatValue: { fontSize: '28px', fontWeight: '800', margin: 0 },
+  appStatValue: { fontSize: '28px', fontWeight: '600', margin: 0 },
   statGraph: { height: '80px', position: 'relative', borderBottom: '1px solid rgba(210,255,0,0.2)' },
   statIndicator: { position: 'absolute', bottom: '0', width: '1px', height: '100%', backgroundColor: '#D2FF00' },
-  statTooltip: { position: 'absolute', top: '20%', left: '-20px', backgroundColor: '#D2FF00', color: '#000', padding: '4px 8px', borderRadius: '30px', fontSize: '10px', fontWeight: '900' },
+  statTooltip: { position: 'absolute', top: '20%', left: '-20px', backgroundColor: '#D2FF00', color: '#000', padding: '4px 8px', borderRadius: '30px', fontSize: '10px', fontWeight: '700' },
   
   transactionCard: { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '16px' },
   transHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' },
   avatarSmall: { width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#444' },
   transName: { fontSize: '12px', fontWeight: '700', margin: 0 },
   transDate: { fontSize: '10px', opacity: 0.5, margin: 0 },
-  transValue: { fontSize: '16px', fontWeight: '800' },
+  transValue: { fontSize: '16px', fontWeight: '600' },
 
   incomeCard: { 
     position: 'absolute', top: '10%', left: '20%', backgroundColor: 'rgba(255,255,255,0.95)',
     padding: '20px', borderRadius: '24px', color: '#000', textAlign: 'left', width: '180px', zIndex: 10,
     boxShadow: '0 30px 60px rgba(0,0,0,0.2)'
   },
-  incomeValue: { fontSize: '20px', fontWeight: '900' },
+  incomeValue: { fontSize: '20px', fontWeight: '700' },
   incomeBadge: { fontSize: '10px', backgroundColor: '#ecfdf5', color: '#059669', padding: '4px 8px', borderRadius: '30px', marginLeft: '10px' },
   incomeLabel: { fontSize: '12px', color: '#666', marginTop: '4px', display: 'block' },
 
@@ -241,7 +241,7 @@ const styles: Record<string, any> = {
     padding: '24px', borderRadius: '24px', color: '#000', textAlign: 'left', width: '220px', zIndex: 10,
     boxShadow: '0 30px 60px rgba(0,0,0,0.2)'
   },
-  balanceValue: { fontSize: '24px', fontWeight: '900' },
+  balanceValue: { fontSize: '24px', fontWeight: '700' },
   balanceBadge: { fontSize: '10px', backgroundColor: '#ecfdf5', color: '#10b981', padding: '4px 8px', borderRadius: '30px', marginLeft: '10px' },
   balanceLabel: { fontSize: '12px', color: '#666', marginBottom: '8px', display: 'block' },
 
@@ -250,20 +250,20 @@ const styles: Record<string, any> = {
     padding: '24px', borderRadius: '32px', color: '#000', textAlign: 'left', width: '220px', zIndex: 10,
     boxShadow: '0 40px 80px rgba(0,0,0,0.3)'
   },
-  sellBtn: { width: '100%', backgroundColor: '#D2FF00', border: 'none', padding: '12px', borderRadius: '16px', fontWeight: '900', marginTop: '16px', cursor: 'pointer' },
-  sellValue: { fontSize: '20px', fontWeight: '900', margin: '4px 0' },
+  sellBtn: { width: '100%', backgroundColor: '#D2FF00', border: 'none', padding: '12px', borderRadius: '16px', fontWeight: '700', marginTop: '16px', cursor: 'pointer' },
+  sellValue: { fontSize: '20px', fontWeight: '700', margin: '4px 0' },
   sellTrend: { fontSize: '12px', color: '#D9FF00', fontWeight: '700' },
   avatarGroup: { display: 'flex', marginBottom: '16px' },
   avatarBox: { width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ddd', border: '2px solid #fff', marginLeft: '-8px' },
-  avatarMore: { fontSize: '10px', fontWeight: '900', padding: '4px' },
+  avatarMore: { fontSize: '10px', fontWeight: '700', padding: '4px' },
 
   partnersSection: { backgroundColor: '#fff', color: '#000', padding: '100px', textAlign: 'center', position: 'relative', zIndex: 10 },
-  partnersTitle: { fontSize: '24px', fontWeight: '800', marginBottom: '60px' },
+  partnersTitle: { fontSize: '24px', fontWeight: '600', marginBottom: '60px' },
   partnersGrid: { display: 'flex', justifyContent: 'center', gap: '60px', opacity: 0.5 },
-  partnerItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '20px', fontWeight: '900' },
+  partnerItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '20px', fontWeight: '700' },
 
   ctaSection: { padding: '120px 100px', textAlign: 'center', backgroundColor: '#fff', color: '#000' },
-  ctaTitle: { fontSize: '48px', fontWeight: '800', maxWidth: '900px', margin: '0 auto' }
+  ctaTitle: { fontSize: '48px', fontWeight: '600', maxWidth: '900px', margin: '0 auto' }
 };
 
 export default WhatsAppWaaS;

@@ -307,7 +307,7 @@ const AdmAgenda: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '32px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '600', color: 'var(--text-main)', letterSpacing: '-1px' },
   subtitle: { fontSize: '14px', color: 'var(--text-muted)' },
   headerRight: { display: 'flex', gap: '16px', alignItems: 'center' },
   collabFilter: { display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'var(--bg-card)', padding: '4px 12px', borderRadius: '12px', border: '1px solid var(--border)' },
@@ -318,15 +318,15 @@ const styles: Record<string, any> = {
   calHeader: { padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)' },
   monthNav: { display: 'flex', alignItems: 'center', gap: '16px' },
   navBtn: { width: '36px', height: '36px', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' },
-  monthTitle: { fontSize: '20px', fontWeight: '800', color: 'var(--text-main)', textTransform: 'capitalize' },
+  monthTitle: { fontSize: '20px', fontWeight: '600', color: 'var(--text-main)', textTransform: 'capitalize' },
   
   searchBox: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'var(--bg-app)', padding: '8px 16px', borderRadius: '12px', width: '250px', border: '1px solid var(--border)' },
   searchInp: { border: 'none', background: 'none', outline: 'none', fontSize: '13px', color: 'var(--text-main)' },
   
   grid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' },
-  weekday: { padding: '12px', textAlign: 'center', fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', borderBottom: '1px solid var(--border)' },
+  weekday: { padding: '12px', textAlign: 'center', fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', borderBottom: '1px solid var(--border)' },
   day: { minHeight: '140px', borderRight: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '10px', transition: 'background 0.2s' },
-  dayNum: { fontSize: '13px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '8px', display: 'block' },
+  dayNum: { fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '8px', display: 'block' },
   today: { backgroundColor: 'var(--primary-light)' },
   eventList: { display: 'flex', flexDirection: 'column', gap: '4px' },
   event: { padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'pointer' },
@@ -336,7 +336,7 @@ const styles: Record<string, any> = {
   formRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   label: { fontSize: '13px', fontWeight: '700', color: 'var(--text-secondary)' },
   input: { padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none', backgroundColor: 'var(--bg-app)' },
-  saveBtn: { padding: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
+  saveBtn: { padding: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
 };
 
 export default AdmAgenda;

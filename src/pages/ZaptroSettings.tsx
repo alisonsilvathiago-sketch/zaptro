@@ -78,7 +78,7 @@ function ZaptroChatbotTab() {
           <Bot size={26} color={palette.text} strokeWidth={2.2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 950, letterSpacing: '-0.5px', color: palette.text }}>
+          <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', color: palette.text }}>
             Chatbot
           </h2>
           <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: palette.textMuted, fontWeight: 600 }}>
@@ -91,7 +91,7 @@ function ZaptroChatbotTab() {
                 border: 'none',
                 padding: 0,
                 font: 'inherit',
-                fontWeight: 950,
+                fontWeight: 700,
                 color: palette.text,
                 cursor: 'pointer',
                 textDecoration: 'underline',
@@ -116,7 +116,7 @@ function ZaptroChatbotTab() {
         }}
       >
         <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>TOM DAS RESPOSTAS</span>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', color: palette.textMuted }}>TOM DAS RESPOSTAS</span>
           <select
             value={tone}
             onChange={(e) => setTone(e.target.value as typeof tone)}
@@ -144,7 +144,7 @@ function ZaptroChatbotTab() {
         </label>
 
         <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>ASSINATURA / DESPEDIDA (TEXTO CURTO)</span>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', color: palette.textMuted }}>ASSINATURA / DESPEDIDA (TEXTO CURTO)</span>
           <input
             value={signOff}
             onChange={(e) => setSignOff(e.target.value)}
@@ -172,7 +172,7 @@ function ZaptroChatbotTab() {
               border: 'none',
               background: '#000',
               color: palette.lime,
-              fontWeight: 950,
+              fontWeight: 700,
               fontSize: 14,
               cursor: 'pointer',
             }}
@@ -270,6 +270,9 @@ const ZaptroSettingsInner: React.FC = () => {
             border: `1px solid ${tabBorder}`,
             boxSizing: 'border-box',
             alignSelf: 'flex-start',
+            position: 'sticky',
+            top: 20,
+            zIndex: 10,
           }}
         >
           {visibleTabs.map(({ id, label }) => {
@@ -303,12 +306,13 @@ const ZaptroSettingsInner: React.FC = () => {
               >
                 <span
                   style={{
-                    fontWeight: 850,
-                    fontSize: 12.5,
+                    fontWeight: 700,
+                    fontSize: 14.5,
                     lineHeight: 1.35,
                     textAlign: 'left',
                     whiteSpace: 'normal',
                     wordBreak: 'break-word',
+                    letterSpacing: '-0.01em'
                   }}
                 >
                   {label}

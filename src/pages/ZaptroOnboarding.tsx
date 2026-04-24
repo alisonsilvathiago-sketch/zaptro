@@ -159,7 +159,7 @@ const ZaptroOnboarding: React.FC = () => {
                           <CheckCircle size={80} color="#10B981" />
                        </div>
                        <h3 style={{...styles.title, fontSize: '24px', marginTop: '24px'}}>Conectado!</h3>
-                       <p style={{...styles.desc, color: '#10B981', fontWeight: '800'}}>Tudo pronto! Seu sistema está ativo 🚀</p>
+                       <p style={{...styles.desc, color: '#10B981', fontWeight: '600'}}>Tudo pronto! Seu sistema está ativo 🚀</p>
                     </div>
                   ) : qrCode ? (
                     <div style={styles.qrWrapper} className="qr-pulse">
@@ -171,7 +171,7 @@ const ZaptroOnboarding: React.FC = () => {
                   ) : (
                     <div style={{textAlign: 'center'}}>
                        <Loader2 className="animate-spin" size={48} color="#CCFF00" />
-                       <p style={{marginTop: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px'}}>Iniciando Motor Zaptro...</p>
+                       <p style={{marginTop: '20px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.5px'}}>Iniciando Motor Zaptro...</p>
                     </div>
                   )}
                </div>
@@ -179,7 +179,7 @@ const ZaptroOnboarding: React.FC = () => {
                <div style={styles.statusFooter}>
                   <div style={styles.statusRow}>
                      <div style={{...styles.statusDot, backgroundColor: status === 'connected' ? '#10B981' : '#F59E0B'}} className="status-blink" />
-                     <span style={{fontWeight: '950', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: status === 'connected' ? '#10B981' : '#F59E0B'}}>
+                     <span style={{fontWeight: '700', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: status === 'connected' ? '#10B981' : '#F59E0B'}}>
                         {status === 'connected' ? 'SISTEMA ONLINE' : 'AGUARDANDO LEITURA...'}
                      </span>
                   </div>
@@ -210,19 +210,19 @@ const styles: Record<string, any> = {
   },
   header: { display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '40px' },
   logoBox: { width: '44px', height: '44px', backgroundColor: '#0F172A', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: '26px', fontWeight: '950', color: '#0F172A', margin: 0, letterSpacing: '-1.8px' },
+  logoText: { fontSize: '26px', fontWeight: '700', color: '#0F172A', margin: 0, letterSpacing: '-1.8px' },
   
   content: { display: 'flex', flexDirection: 'column', gap: '24px' },
-  heroBadge: { backgroundColor: '#CCFF0015', color: '#0F172A', fontSize: '10px', fontWeight: '950', padding: '6px 14px', borderRadius: '20px', width: 'fit-content', letterSpacing: '1px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#0F172A', margin: 0, lineHeight: '1.1', letterSpacing: '-1.8px' },
+  heroBadge: { backgroundColor: '#CCFF0015', color: '#0F172A', fontSize: '10px', fontWeight: '700', padding: '6px 14px', borderRadius: '20px', width: 'fit-content', letterSpacing: '1px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#0F172A', margin: 0, lineHeight: '1.1', letterSpacing: '-1.8px' },
   desc: { fontSize: '16px', color: '#64748B', lineHeight: '1.6', margin: 0, fontWeight: '500' },
   
   featureList: { display: 'flex', flexDirection: 'column', gap: '14px', margin: '8px 0' },
-  featureItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '15px', fontWeight: '800', color: '#0F172A' },
+  featureItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '15px', fontWeight: '600', color: '#0F172A' },
   
   primaryBtn: { 
     marginTop: '12px', backgroundColor: '#0F172A', color: 'white', border: 'none', 
-    padding: '20px', borderRadius: '24px', fontSize: '16px', fontWeight: '950', 
+    padding: '20px', borderRadius: '24px', fontSize: '16px', fontWeight: '700', 
     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
     boxShadow: ZAPTRO_SHADOW.md
   },
@@ -241,10 +241,10 @@ const styles: Record<string, any> = {
   statusFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' },
   statusRow: { display: 'flex', alignItems: 'center', gap: '10px' },
   statusDot: { width: '10px', height: '10px', borderRadius: '50%', boxShadow: '0 0 10px rgba(245, 158, 11, 0.5)' },
-  refreshBtn: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  refreshBtn: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   
   footer: { marginTop: '48px', borderTop: '1px solid #e8e8e8', paddingTop: '24px', display: 'flex', justifyContent: 'space-between' },
-  footerLink: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }
+  footerLink: { border: 'none', background: 'transparent', color: '#94A3B8', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }
 };
 
 export default ZaptroOnboarding;

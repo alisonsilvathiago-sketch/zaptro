@@ -271,7 +271,7 @@ const styles = {
   container: { padding: '20px', backgroundColor: '#fcfcfc', minHeight: '100%' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' },
   headerLeft: { display: 'flex', alignItems: 'center', gap: '40px' },
-  title: { fontSize: '24px', fontWeight: '800', color: '#000000' },
+  title: { fontSize: '24px', fontWeight: '600', color: '#000000' },
   filterGroup: { display: 'flex', gap: '8px', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '10px' },
   filterBtn: { padding: '6px 12px', borderRadius: '8px', border: 'none', background: 'none', fontSize: '13px', fontWeight: '600', color: '#64748b', cursor: 'pointer' },
   filterActive: { backgroundColor: 'white', color: '#000000', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
@@ -283,9 +283,9 @@ const styles = {
   calNav: { padding: '24px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   navLeft: { display: 'flex', alignItems: 'center', gap: '16px' },
   dateBox: { padding: '8px', border: '1px solid #e2e8f0', borderRadius: '10px', textAlign: 'center' as const, minWidth: '50px' },
-  dateDay: { fontSize: '10px', fontWeight: '800', color: '#94a3b8', display: 'block' },
-  dateNum: { fontSize: '18px', fontWeight: '900', color: '#000000' },
-  monthTitle: { fontSize: '18px', fontWeight: '800', color: '#000000' },
+  dateDay: { fontSize: '10px', fontWeight: '600', color: '#94a3b8', display: 'block' },
+  dateNum: { fontSize: '18px', fontWeight: '700', color: '#000000' },
+  monthTitle: { fontSize: '18px', fontWeight: '600', color: '#000000' },
   dateRange: { fontSize: '13px', color: '#64748b' },
   
   navRight: { display: 'flex', alignItems: 'center', gap: '16px' },
@@ -306,7 +306,7 @@ const styles = {
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   inpGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   inp: { padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', outline: 'none' },
-  saveBtn: { padding: '14px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
+  saveBtn: { padding: '14px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '10px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
 };
 
 export default LogtaCalendar;

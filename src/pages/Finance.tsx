@@ -324,7 +324,7 @@ const Finance: React.FC = () => {
         />
         <div style={styles.intelBannerOverlay}>
           <div style={styles.intelBadge}>CENTRO DE INTELIGÊNCIA FINANCEIRA</div>
-          <h2 style={{ color: 'white', fontSize: '28px', fontWeight: '900', margin: '8px 0' }}>
+          <h2 style={{ color: 'white', fontSize: '28px', fontWeight: '700', margin: '8px 0' }}>
             Análise Preditiva do Fluxo Financeiro
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>
@@ -540,8 +540,8 @@ const styles: Record<string, any> = {
   },
   kpiTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   kpiIcon: { width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  kpiTrend: { fontSize: '12px', fontWeight: '800' },
-  kpiValue: { fontSize: '26px', fontWeight: '900', color: 'var(--text-main)', margin: '0 0 4px 0', letterSpacing: '-0.5px' },
+  kpiTrend: { fontSize: '12px', fontWeight: '600' },
+  kpiValue: { fontSize: '26px', fontWeight: '700', color: 'var(--text-main)', margin: '0 0 4px 0', letterSpacing: '-0.5px' },
   kpiLabel: { fontSize: '12px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', margin: 0 },
 
   filterBar: {
@@ -568,19 +568,19 @@ const styles: Record<string, any> = {
   },
   btnPrimary: {
     padding: '10px 18px', borderRadius: '12px', backgroundColor: 'var(--primary)',
-    color: 'white', border: 'none', fontWeight: '800', cursor: 'pointer',
+    color: 'white', border: 'none', fontWeight: '600', cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px'
   },
   calcBtn: {
     padding: '10px 18px', borderRadius: '12px', backgroundColor: 'rgba(217, 255, 0, 0.18)',
-    color: 'var(--primary)', border: '1px solid rgba(217, 255, 0, 0.2)', fontWeight: '800',
+    color: 'var(--primary)', border: '1px solid rgba(217, 255, 0, 0.2)', fontWeight: '600',
     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px'
   },
 
   chartsGrid: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' },
   chartCard: { backgroundColor: 'white', padding: '28px', borderRadius: '24px', border: '1px solid #e8e8e8' },
   chartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
-  chartTitle: { fontSize: '16px', fontWeight: '900', color: 'var(--text-main)', margin: '0 0 20px 0' },
+  chartTitle: { fontSize: '16px', fontWeight: '700', color: 'var(--text-main)', margin: '0 0 20px 0' },
   refreshBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' },
 
   alertItem: {
@@ -589,14 +589,14 @@ const styles: Record<string, any> = {
   },
   alertDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
   alertLabel: { flex: 1, fontSize: '13px', fontWeight: '700', color: '#475569' },
-  alertValue: { fontSize: '14px', fontWeight: '900' },
+  alertValue: { fontSize: '14px', fontWeight: '700' },
 
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e8e8e8', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8', backgroundColor: '#fcfdfe' },
+  th: { textAlign: 'left', padding: '16px 24px', fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', borderBottom: '1px solid #e8e8e8', backgroundColor: '#fcfdfe' },
   td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid #e8e8e8', color: '#475569' },
   tr: { transition: 'background-color 0.2s' },
-  statusTag: { padding: '5px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' },
+  statusTag: { padding: '5px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' },
   categoryBadge: { padding: '4px 8px', backgroundColor: '#f4f4f4', borderRadius: '8px', fontSize: '11px', color: '#64748b', fontWeight: '700', border: '1px solid #e8e8e8' },
   iconBtn: { padding: '6px', color: '#94a3b8', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '6px' },
 
@@ -609,7 +609,7 @@ const styles: Record<string, any> = {
   },
   intelBadge: {
     display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.3)',
-    color: '#c4b5fd', borderRadius: '20px', fontSize: '10px', fontWeight: '900', letterSpacing: '1px',
+    color: '#c4b5fd', borderRadius: '20px', fontSize: '10px', fontWeight: '700', letterSpacing: '1px',
     border: '1px solid rgba(196,181,253,0.3)'
   },
 
@@ -621,7 +621,7 @@ const styles: Record<string, any> = {
   insightText: { margin: 0, fontSize: '14px', color: '#475569', fontWeight: '600', lineHeight: '1.5' },
 
   formGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '13px', fontWeight: '800', color: 'var(--text-main)' },
+  label: { fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' },
   formInput: { padding: '14px 16px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', outline: 'none', color: 'var(--text-main)' },
 };
 

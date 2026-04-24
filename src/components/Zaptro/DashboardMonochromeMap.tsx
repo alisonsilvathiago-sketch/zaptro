@@ -12,32 +12,21 @@ import { readRouteLive, type RouteLiveBucket } from '../../constants/zaptroRoute
 import { ROUTE_STATUS_LABEL, type RouteExecutionStatus, zaptroDriverRoutePath } from '../../constants/zaptroRouteExecution';
 import { zaptroDriverProfilePath } from '../../constants/zaptroRoutes';
 
-const DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+import { 
+  ZAPTRO_MAP_ORIGIN_ICON, 
+  ZAPTRO_MAP_DEST_ICON, 
+  ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_ROUTE_COLORS 
+} from '../../constants/zaptroMapStyles';
+
+const DefaultIcon = ZAPTRO_MAP_DRIVER_ICON;
 L.Marker.prototype.options.icon = DefaultIcon;
 
 /** Rota em verde lima; sombra escura por baixo para leitura no mapa P&B. */
 const ROUTE_GREEN = '#D9FF00';
 
-/** Partida (saída): disco preto + bordo branco. */
-const monoStartIcon = L.divIcon({
-  className: 'zaptro-mono-marker',
-  html: `<div style="width:16px;height:16px;border-radius:50%;background:#000;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.45)"></div>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-});
-
-/** Chegada: disco branco + bordo preto. */
-const monoEndIcon = L.divIcon({
-  className: 'zaptro-mono-marker',
-  html: `<div style="width:16px;height:16px;border-radius:50%;background:#fff;box-sizing:border-box;border:3px solid #000;box-shadow:0 2px 10px rgba(0,0,0,.35)"></div>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-});
+const monoStartIcon = ZAPTRO_MAP_ORIGIN_ICON;
+const monoEndIcon = ZAPTRO_MAP_DEST_ICON;
 
 async function fetchOsrmDriving(from: { lat: number; lng: number }, to: { lat: number; lng: number }, signal?: AbortSignal): Promise<[number, number][] | null> {
   const path = `${from.lng},${from.lat};${to.lng},${to.lat}`;
@@ -136,7 +125,7 @@ const popupBtn: React.CSSProperties = {
   border: '1px solid rgba(15,23,42,0.15)',
   background: '#000',
   color: '#fff',
-  fontWeight: 800,
+  fontWeight: 600,
   fontSize: 12,
   cursor: 'pointer',
   fontFamily: 'inherit',
@@ -164,13 +153,13 @@ function MarkerWithDriverPopup({
     <Marker position={position} icon={icon}>
       <Popup>
         <div style={{ minWidth: 200, maxWidth: 260 }}>
-          <div style={{ fontWeight: 950, fontSize: 13, marginBottom: 6 }}>{name}</div>
+          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6 }}>{name}</div>
           <div style={{ fontSize: 12, color: '#334155', lineHeight: 1.35 }}>
             <div>
-              <strong style={{ fontWeight: 800 }}>Rota:</strong> {routeLabel}
+              <strong style={{ fontWeight: 600 }}>Rota:</strong> {routeLabel}
             </div>
             <div style={{ marginTop: 4 }}>
-              <strong style={{ fontWeight: 800 }}>Estado:</strong> {stLabel}
+              <strong style={{ fontWeight: 600 }}>Estado:</strong> {stLabel}
             </div>
           </div>
           <button
@@ -348,17 +337,17 @@ const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark,
                 <>
                   <Polyline
                     positions={pr.path}
-                    color="#000000"
-                    weight={7}
-                    opacity={0.22}
+                    color={ZAPTRO_MAP_ROUTE_COLORS.main}
+                    weight={6}
+                    opacity={1}
                     lineCap="round"
                     lineJoin="round"
                   />
                   <Polyline
                     positions={pr.path}
-                    color={ROUTE_GREEN}
-                    weight={4}
-                    opacity={1}
+                    color={ZAPTRO_MAP_ROUTE_COLORS.accent}
+                    weight={3}
+                    opacity={0.8}
                     lineCap="round"
                     lineJoin="round"
                   />
@@ -392,7 +381,7 @@ const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark,
           zIndex: 500,
           pointerEvents: 'none',
           fontSize: 10,
-          fontWeight: 900,
+          fontWeight: 700,
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
           color: isDark ? 'rgba(248,250,252,0.85)' : 'rgba(15,23,42,0.75)',

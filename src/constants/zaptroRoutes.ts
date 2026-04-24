@@ -5,7 +5,11 @@
 export const ZAPTRO_ROUTES = {
   SALES: '/vendas',
   DASHBOARD: '/inicio',
+  /** Painel com métricas e widgets (antigo «início»). */
+  RESULTADOS: '/resultados',
   REGISTER: '/registrar',
+  /** Pós-pagamento / onboarding guiado (mesmo fluxo que `/registrar`). */
+  ONBOARDING_CADASTRO: '/cadastro',
   LEGACY_REGISTER: '/zaptro-registrar',
   CHAT: '/whatsapp',
   /** Legado Evolution; redireciona para `/configuracao?tab=config`. */
@@ -57,6 +61,10 @@ export const zaptroOccurrencePath = (id: string | number) => `/ocorrencia/${id}`
 /** Perfil unificado do contacto (histórico WhatsApp + CRM local, etc.) — não confundir com `/whatsapp`. */
 export function zaptroClientProfilePath(id: string): string {
   return `/clientes/perfil/${encodeURIComponent(id)}`;
+}
+
+export function zaptroLeadProfilePath(id: string): string {
+  return `/clientes/leads/perfil/${encodeURIComponent(id)}`;
 }
 
 export function zaptroDriverProfilePath(id: string): string {

@@ -28,22 +28,22 @@ const styles: Record<string, any> = {
     width: '120px', height: '120px', borderRadius: '40px', 
     backgroundColor: 'var(--primary-light)', color: 'var(--primary)', 
     display: 'flex', alignItems: 'center', justifyContent: 'center', 
-    fontSize: '48px', fontWeight: '950', border: '4px solid white',
+    fontSize: '48px', fontWeight: '700', border: '4px solid white',
     boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'
   },
   heroInfo: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  heroTitle: { fontSize: '32px', fontWeight: '950', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
+  heroTitle: { fontSize: '32px', fontWeight: '700', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
   heroSubtitle: { fontSize: '16px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '12px' },
-  badgeActive: { padding: '6px 16px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '30px', fontSize: '12px', fontWeight: '900' },
+  badgeActive: { padding: '6px 16px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '30px', fontSize: '12px', fontWeight: '700' },
   
   actionGroup: { display: 'flex', gap: '12px' },
-  btnAction: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', fontWeight: '800', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' },
+  btnAction: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', fontWeight: '600', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' },
   btnPrimary: { backgroundColor: 'var(--primary)', color: 'white', border: 'none' },
 
   mainGrid: { display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '32px' },
   sidebar: { display: 'flex', flexDirection: 'column', gap: '24px' },
   sideCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
-  sideTitle: { fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '1px' },
+  sideTitle: { fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '1px' },
   infoItem: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', color: 'var(--text-secondary)', fontSize: '14px' },
 
   contentArea: { display: 'flex', flexDirection: 'column', gap: '32px' },
@@ -54,7 +54,7 @@ const styles: Record<string, any> = {
   },
   tab: { 
     padding: '10px 20px', border: 'none', borderRadius: '16px', 
-    background: 'none', fontWeight: '800', fontSize: '13px', 
+    background: 'none', fontWeight: '600', fontSize: '13px', 
     color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
     display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' 
   },
@@ -62,7 +62,7 @@ const styles: Record<string, any> = {
 
   statsRow: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  statValue: { fontSize: '24px', fontWeight: '950', color: 'var(--text-main)', margin: '4px 0 0 0' },
+  statValue: { fontSize: '24px', fontWeight: '700', color: 'var(--text-main)', margin: '4px 0 0 0' },
   statLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', margin: 0 },
   
   chartCard: { backgroundColor: 'white', padding: '32px', borderRadius: '24px', border: '1px solid var(--border)' },
@@ -76,7 +76,7 @@ const styles: Record<string, any> = {
   },
   histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   histMain: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  histStatus: { padding: '6px 12px', borderRadius: '10px', fontSize: '10px', fontWeight: '950' }
+  histStatus: { padding: '6px 12px', borderRadius: '10px', fontSize: '10px', fontWeight: '700' }
 };
 
 const ClientProfile: React.FC = () => {
@@ -201,15 +201,15 @@ const ClientProfile: React.FC = () => {
             <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '13px'}}>
                   <span>NPS Médio</span>
-                  <span style={{color: 'var(--success)', fontWeight: '900'}}>9.8/10</span>
+                  <span style={{color: 'var(--success)', fontWeight: '700'}}>9.8/10</span>
                </div>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '13px'}}>
                   <span>Pontualidade Pag.</span>
-                  <span style={{color: 'var(--success)', fontWeight: '900'}}>100%</span>
+                  <span style={{color: 'var(--success)', fontWeight: '700'}}>100%</span>
                </div>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '13px'}}>
                   <span>Retenção</span>
-                  <span style={{color: 'var(--primary)', fontWeight: '900'}}>Premium</span>
+                  <span style={{color: 'var(--primary)', fontWeight: '700'}}>Premium</span>
                </div>
             </div>
           </div>
@@ -234,7 +234,7 @@ const ClientProfile: React.FC = () => {
 
           <div style={styles.chartCard}>
              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px'}}>
-                <h3 style={{margin: 0, fontWeight: '900'}}>Evolução Mensal de Faturamento</h3>
+                <h3 style={{margin: 0, fontWeight: '700'}}>Evolução Mensal de Faturamento</h3>
                 <div style={{display: 'flex', gap: '8px'}}>
                    <button style={{...styles.btnAction, padding: '8px 16px', fontSize: '11px'}}>Últimos 6 meses</button>
                    <button style={{...styles.btnAction, padding: '8px 16px', fontSize: '11px'}}><Download size={14} /> Dados</button>
@@ -300,7 +300,7 @@ const ClientProfile: React.FC = () => {
                    {item.status === 'ENTREGUE' ? <CheckCircle2 size={24} color="#10b981" /> : <AlertTriangle size={24} color="#ef4444" />}
                 </div>
                 <div style={styles.histMain}>
-                   <h4 style={{margin: 0, fontSize: '15px', fontWeight: '800'}}>Pedido #{item.id} — {item.items}</h4>
+                   <h4 style={{margin: 0, fontSize: '15px', fontWeight: '600'}}>Pedido #{item.id} — {item.items}</h4>
                    <p style={{margin: 0, fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px'}}>
                       <span style={{fontWeight: '700', color: 'var(--primary)'}}>Motorista:</span> {item.driver} 
                       <span style={{margin: '0 8px', color: '#cbd5e1'}}>|</span>
@@ -308,12 +308,12 @@ const ClientProfile: React.FC = () => {
                    </p>
                 </div>
                 <div>
-                   <p style={{margin: 0, fontSize: '11px', color: '#94a3b8', fontWeight: '800'}}>CHEGADA / LOCAL</p>
+                   <p style={{margin: 0, fontSize: '11px', color: '#94a3b8', fontWeight: '600'}}>CHEGADA / LOCAL</p>
                    <p style={{margin: 0, fontSize: '13px', fontWeight: '700', color: '#1e293b', marginTop: '4px'}}>{item.date} às {item.arrival}</p>
                 </div>
                 <div>
-                   <p style={{margin: 0, fontSize: '11px', color: '#94a3b8', fontWeight: '800'}}>VALOR PAGO</p>
-                   <p style={{margin: 0, fontSize: '13px', fontWeight: '950', color: '#10b981', marginTop: '4px'}}>{formatCurrency(parseFloat(item.val.replace('R$ ', '').replace('.', '')))}</p>
+                   <p style={{margin: 0, fontSize: '11px', color: '#94a3b8', fontWeight: '600'}}>VALOR PAGO</p>
+                   <p style={{margin: 0, fontSize: '13px', fontWeight: '700', color: '#10b981', marginTop: '4px'}}>{formatCurrency(parseFloat(item.val.replace('R$ ', '').replace('.', '')))}</p>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                     <span style={{
@@ -343,14 +343,14 @@ const ClientProfile: React.FC = () => {
                   {/* Espaço para o histórico de chat filtrado por telefone */}
                   <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
                      <div style={{padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', gap: '12px'}}>
-                        <div style={{width: '32px', height: '32px', backgroundColor: 'var(--primary)', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: '900'}}>Z</div>
+                        <div style={{width: '32px', height: '32px', backgroundColor: 'var(--primary)', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: '700'}}>Z</div>
                         <div>
                            <p style={{margin: 0, fontSize: '13px', fontWeight: '700'}}>Zaptro Automação</p>
                            <p style={{margin: '4px 0 0 0', fontSize: '13px', color: '#475569'}}>Contrato enviado e aguardando assinatura.</p>
                         </div>
                      </div>
                      <div style={{padding: '20px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', gap: '12px', alignSelf: 'flex-start'}}>
-                        <div style={{width: '32px', height: '32px', backgroundColor: '#E2E8F0', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: '900'}}>{client?.name?.[0]}</div>
+                        <div style={{width: '32px', height: '32px', backgroundColor: '#E2E8F0', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: '700'}}>{client?.name?.[0]}</div>
                         <div>
                            <p style={{margin: 0, fontSize: '13px', fontWeight: '700'}}>{client?.name}</p>
                            <p style={{margin: '4px 0 0 0', fontSize: '13px', color: '#475569'}}>Ok, vou verificar e retorno.</p>
@@ -366,7 +366,7 @@ const ClientProfile: React.FC = () => {
                      <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
                         <div style={{width: '40px', height: '40px', backgroundColor: '#fef2f2', borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><FileText color="#ef4444" size={20} /></div>
                         <div>
-                           <p style={{margin: 0, fontSize: '14px', fontWeight: '800'}}>Contrato_Prestacao_Servicos.pdf</p>
+                           <p style={{margin: 0, fontSize: '14px', fontWeight: '600'}}>Contrato_Prestacao_Servicos.pdf</p>
                            <p style={{margin: 0, fontSize: '11px', color: '#94a3b8'}}>Assinado em 12/04/2026</p>
                         </div>
                      </div>
@@ -376,7 +376,7 @@ const ClientProfile: React.FC = () => {
                      <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
                         <div style={{width: '40px', height: '40px', backgroundColor: 'rgba(217, 255, 0, 0.12)', borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><FileText color="#D9FF00" size={20} /></div>
                         <div>
-                           <p style={{margin: 0, fontSize: '14px', fontWeight: '800'}}>Comprovante_Entrega_9921.jpg</p>
+                           <p style={{margin: 0, fontSize: '14px', fontWeight: '600'}}>Comprovante_Entrega_9921.jpg</p>
                            <p style={{margin: 0, fontSize: '11px', color: '#94a3b8'}}>Anexado via WhatsApp</p>
                         </div>
                      </div>

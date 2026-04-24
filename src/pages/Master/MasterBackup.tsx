@@ -214,15 +214,15 @@ const MasterBackup: React.FC = () => {
 const styles = {
   container: { padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: '28px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: '#000000', margin: 0, letterSpacing: '-1px' },
   subtitle: { fontSize: '16px', color: '#6b7280', margin: '8px 0 0 0' },
-  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
+  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '16px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
   
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '20px' },
   statIcon: { width: '56px', height: '56px', borderRadius: '18px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  statLabel: { fontSize: '13px', fontWeight: '800', color: '#64748b', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
-  statValue: { fontSize: '24px', fontWeight: '950', color: '#000000', margin: '4px 0 0 0', letterSpacing: '-0.5px' },
+  statLabel: { fontSize: '13px', fontWeight: '600', color: '#64748b', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  statValue: { fontSize: '24px', fontWeight: '700', color: '#000000', margin: '4px 0 0 0', letterSpacing: '-0.5px' },
 
   mainCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   cardHeader: { padding: '24px 32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fcfcfd' },
@@ -232,13 +232,13 @@ const styles = {
 
   tableWrap: { overflowX: 'auto' as const },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  th: { textAlign: 'left' as const, padding: '20px 32px', fontSize: '12px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px', borderBottom: '1px solid #e8e8e8' },
+  th: { textAlign: 'left' as const, padding: '20px 32px', fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px', borderBottom: '1px solid #e8e8e8' },
   tr: { borderBottom: '1px solid #e8e8e8', transition: 'background-color 0.2s' },
   td: { padding: '20px 32px', fontSize: '14px', color: '#334155', fontWeight: '700' },
   dateTime: { display: 'flex', alignItems: 'center', gap: '8px', color: '#334155' },
-  companyCell: { display: 'flex', alignItems: 'center', gap: '10px', color: '#000000', fontWeight: '800' },
-  typeBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '900' },
-  statusTag: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '800' },
+  companyCell: { display: 'flex', alignItems: 'center', gap: '10px', color: '#000000', fontWeight: '600' },
+  typeBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '700' },
+  statusTag: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '600' },
   actions: { display: 'flex', gap: '8px' },
   actionBtn: { width: '36px', height: '36px', borderRadius: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', transition: 'all 0.2s' },
   empty: { padding: '60px', textAlign: 'center' as const, color: '#94a3b8', fontSize: '16px', fontWeight: '700' }

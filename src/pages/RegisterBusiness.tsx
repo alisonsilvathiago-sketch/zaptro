@@ -278,11 +278,11 @@ const styles: Record<string, any> = {
   formContent: { width: '100%', maxWidth: '440px' },
   logtaHeaderSmall: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '80px', position: 'absolute' as const, top: '60px', left: '60px' },
   logoBoxPurple: { width: '40px', height: '40px', backgroundColor: '#D9FF00', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoTitle: { fontSize: '20px', fontWeight: '900', color: '#0F172A', margin: 0 },
+  logoTitle: { fontSize: '20px', fontWeight: '700', color: '#0F172A', margin: 0 },
   
   welcomeSection: { marginBottom: '32px' },
-  badgeRegister: { fontSize: '11px', fontWeight: '900', color: '#D9FF00', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' },
-  titleBig: { fontSize: '36px', fontWeight: '950', color: '#0F172A', margin: '0 0 12px 0', letterSpacing: '-1.5px' },
+  badgeRegister: { fontSize: '11px', fontWeight: '700', color: '#D9FF00', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' },
+  titleBig: { fontSize: '36px', fontWeight: '700', color: '#0F172A', margin: '0 0 12px 0', letterSpacing: '-1.5px' },
   subtitleSmall: { fontSize: '16px', color: '#64748B', fontWeight: '500' },
   
   stepperComplex: { height: '6px', width: '100%', backgroundColor: '#ebebeb', borderRadius: '10px', position: 'relative' as const, margin: '32px 0 40px' },
@@ -293,26 +293,26 @@ const styles: Record<string, any> = {
   formArea: { minHeight: '300px' },
   formStackLogta: { display: 'flex', flexDirection: 'column', gap: '24px' },
   fieldLogta: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  labelLogta: { fontSize: '14px', fontWeight: '850', color: '#0F172A' },
+  labelLogta: { fontSize: '14px', fontWeight: '700', color: '#0F172A' },
   inputWrapperLogta: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e8e8e8' },
   inputClean: { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '15px', fontWeight: '600', color: '#1E293B' },
   
   btnRow: { display: 'flex', gap: '16px' },
-  secBtn: { flex: 0.4, padding: '18px', backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '16px', color: '#64748B', fontWeight: '800', cursor: 'pointer' },
+  secBtn: { flex: 0.4, padding: '18px', backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '16px', color: '#64748B', fontWeight: '600', cursor: 'pointer' },
   submitBtnLogta: { 
     flex: 1, padding: '20px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', 
-    borderRadius: '16px', fontSize: '16px', fontWeight: '900', cursor: 'pointer', 
+    borderRadius: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', 
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', 
     boxShadow: '0 10px 30px rgba(217, 255, 0, 0.2)', transition: '0.2s' 
   },
 
   plansSelect: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' },
   planItem: { padding: '16px', borderRadius: '16px', border: '2px solid #e8e8e8', cursor: 'pointer', textAlign: 'center' as const },
-  planNameLabel: { fontSize: '11px', fontWeight: '800', color: '#94A3B8', display: 'block', marginBottom: '4px' },
-  planPriceLabel: { fontSize: '18px', fontWeight: '900', color: '#0F172A' },
+  planNameLabel: { fontSize: '11px', fontWeight: '600', color: '#94A3B8', display: 'block', marginBottom: '4px' },
+  planPriceLabel: { fontSize: '18px', fontWeight: '700', color: '#0F172A' },
 
   footerLinkArea: { textAlign: 'center' as const, marginTop: '40px', fontSize: '14px', color: '#64748B', display: 'flex', justifyContent: 'center', gap: '8px' },
-  linkAction: { color: '#D9FF00', fontWeight: '900', cursor: 'pointer' },
+  linkAction: { color: '#D9FF00', fontWeight: '700', cursor: 'pointer' },
   copyrightBottom: { position: 'absolute' as const, bottom: '40px', left: '60px', fontSize: '12px', color: '#94A3B8', fontWeight: '500' },
 
   // BRANDING PANE (RIGHT)
@@ -324,7 +324,7 @@ const styles: Record<string, any> = {
   },
   cardHeader: { textAlign: 'center' as const, marginBottom: '60px' },
   cardIconBox: { width: '64px', height: '64px', backgroundColor: '#0F172A', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px' },
-  cardTitle: { fontSize: '24px', fontWeight: '950', color: '#0F172A', margin: '0 0 12px 0', letterSpacing: '1px' },
+  cardTitle: { fontSize: '24px', fontWeight: '700', color: '#0F172A', margin: '0 0 12px 0', letterSpacing: '1px' },
   cardSubtitle: { fontSize: '15px', color: '#64748B', fontWeight: '500', maxWidth: '380px', margin: '0 auto' },
   
   cardVisualRegister: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'visible' },

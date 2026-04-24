@@ -87,7 +87,7 @@ const styles = {
   },
   title: {
     fontSize: '20px',
-    fontWeight: '800',
+    fontWeight: '600',
     color: '#1e293b',
     marginBottom: '12px',
     letterSpacing: '-0.5px'
@@ -104,7 +104,7 @@ const styles = {
     color: 'white',
     border: 'none',
     borderRadius: '14px',
-    fontWeight: '800',
+    fontWeight: '600',
     fontSize: '14px',
     cursor: 'pointer',
     transition: 'all 0.2s',

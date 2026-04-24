@@ -162,10 +162,10 @@ const styles: Record<string, any> = {
   heroContent: { maxWidth: '800px', margin: '0 auto' },
   badge: { 
     display: 'inline-block', padding: '6px 16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', 
-    color: 'var(--primary)', borderRadius: '20px', fontSize: '12px', fontWeight: '900', 
+    color: 'var(--primary)', borderRadius: '20px', fontSize: '12px', fontWeight: '700', 
     marginBottom: '24px', letterSpacing: '1px' 
   },
-  heroTitle: { fontSize: '48px', fontWeight: '950', color: '#0F172A', letterSpacing: '-2px', marginBottom: '16px' },
+  heroTitle: { fontSize: '48px', fontWeight: '700', color: '#0F172A', letterSpacing: '-2px', marginBottom: '16px' },
   heroSubtitle: { fontSize: '18px', color: '#64748B', lineHeight: '1.6', marginBottom: '40px' },
   searchBox: { 
     width: '100%', backgroundColor: 'white', borderRadius: '24px', 
@@ -173,7 +173,7 @@ const styles: Record<string, any> = {
     border: '1px solid #e2e8f0', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.08)'
   },
   searchInput: { flex: 1, border: 'none', outline: 'none', fontSize: '18px', color: '#1E293B' },
-  searchBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '18px', fontWeight: '800', cursor: 'pointer' },
+  searchBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '18px', fontWeight: '600', cursor: 'pointer' },
 
   main: { maxWidth: '1300px', margin: '0 auto', padding: '60px 40px' },
   tabContainer: { 
@@ -182,45 +182,45 @@ const styles: Record<string, any> = {
   },
   tab: { 
     padding: '16px 8px', border: 'none', backgroundColor: 'transparent', 
-    fontSize: '16px', fontWeight: '800', cursor: 'pointer', display: 'flex', 
+    fontSize: '16px', fontWeight: '600', cursor: 'pointer', display: 'flex', 
     alignItems: 'center', gap: '10px', transition: 'all 0.2s' 
   },
 
   contentLayout: { display: 'grid', gridTemplateColumns: '1fr 360px', gap: '80px' },
   mainContent: { display: 'flex', flexDirection: 'column', gap: '32px' },
-  sectionTitle: { fontSize: '24px', fontWeight: '900', color: '#0f172a' },
+  sectionTitle: { fontSize: '24px', fontWeight: '700', color: '#0f172a' },
   faqList: { display: 'flex', flexDirection: 'column', gap: '16px' },
   faqItem: { 
     backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e8e8e8', 
     cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)'
   },
   faqHeader: { padding: '28px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' },
-  faqQuestion: { fontSize: '17px', fontWeight: '800', color: '#1e293b' },
+  faqQuestion: { fontSize: '17px', fontWeight: '600', color: '#1e293b' },
   faqAnswer: { padding: '0 32px 32px 32px', fontSize: '15px', color: '#64748b' },
 
   supportBanner: { 
     marginTop: '40px', padding: '48px', borderRadius: '32px', backgroundColor: '#0f172a',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white'
   },
-  bannerTitle: { fontSize: '24px', fontWeight: '900', marginBottom: '8px' },
+  bannerTitle: { fontSize: '24px', fontWeight: '700', marginBottom: '8px' },
   bannerText: { color: '#94a3b8', fontSize: '16px' },
   supportBtn: { 
     padding: '18px 32px', backgroundColor: 'white', color: '#0f172a', 
-    border: 'none', borderRadius: '18px', fontWeight: '900', fontSize: '16px',
+    border: 'none', borderRadius: '18px', fontWeight: '700', fontSize: '16px',
     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' 
   },
 
   sidebar: { display: 'flex', flexDirection: 'column', gap: '24px' },
   card: { padding: '32px', borderRadius: '28px', border: '1px solid #e8e8e8', backgroundColor: 'white' },
   cardHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' },
-  cardTitle: { fontSize: '18px', fontWeight: '900', color: '#1e293b' },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: '#1e293b' },
   cardText: { fontSize: '14px', color: '#64748b', lineHeight: '1.6', marginBottom: '24px' },
   statusRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', backgroundColor: '#f0fdf4', borderRadius: '12px' },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' },
-  statusText: { fontSize: '13px', fontWeight: '800', color: '#166534' },
+  statusText: { fontSize: '13px', fontWeight: '600', color: '#166534' },
   academyBtn: { 
     width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.2)', 
-    color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', 
+    color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', 
     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' 
   }
 };

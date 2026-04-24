@@ -75,7 +75,7 @@ export const ZaptroWhiteLabelInner: React.FC<ZaptroWhiteLabelInnerProps> = ({ em
   const h2 = {
     margin: '0 0 12px 0',
     fontSize: '22px',
-    fontWeight: 950 as const,
+    fontWeight: 700 as const,
     color: palette.text,
     letterSpacing: '-0.5px',
   };
@@ -90,7 +90,7 @@ export const ZaptroWhiteLabelInner: React.FC<ZaptroWhiteLabelInnerProps> = ({ em
 
   const kicker = {
     fontSize: '11px',
-    fontWeight: 950 as const,
+    fontWeight: 700 as const,
     letterSpacing: '0.12em',
     color: palette.lime,
     marginBottom: '8px',

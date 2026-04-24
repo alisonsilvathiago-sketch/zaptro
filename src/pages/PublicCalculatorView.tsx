@@ -39,8 +39,8 @@ const PublicCalculatorView: React.FC = () => {
     container: { minHeight: '100vh', backgroundColor: '#F0F9FF', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', padding: '40px 20px' },
     card: { backgroundColor: 'white', maxWidth: '800px', width: '100%', borderRadius: '32px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)', padding: '50px', border: '1px solid #E0F2FE' },
     header: { textAlign: 'center' as const, marginBottom: '50px' },
-    badge: { display: 'inline-flex', padding: '6px 16px', backgroundColor: '#E0F2FE', color: '#0369A1', borderRadius: '30px', fontSize: '11px', fontWeight: '950', marginBottom: '16px', letterSpacing: '1.5px', textTransform: 'uppercase' as const },
-    title: { fontSize: '32px', fontWeight: '900', color: '#0C4A6E', marginBottom: '12px' },
+    badge: { display: 'inline-flex', padding: '6px 16px', backgroundColor: '#E0F2FE', color: '#0369A1', borderRadius: '30px', fontSize: '11px', fontWeight: '700', marginBottom: '16px', letterSpacing: '1.5px', textTransform: 'uppercase' as const },
+    title: { fontSize: '32px', fontWeight: '700', color: '#0C4A6E', marginBottom: '12px' },
     companyLine: { fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: '700' },
     
     divider: { height: '1px', backgroundColor: '#ebebeb', margin: '40px 0' },
@@ -48,20 +48,20 @@ const PublicCalculatorView: React.FC = () => {
     entryList: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
     entry: { padding: '24px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #e8e8e8' },
     entryH: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' },
-    entryTitle: { fontSize: '16px', fontWeight: '800', color: '#1E293B' },
+    entryTitle: { fontSize: '16px', fontWeight: '600', color: '#1E293B' },
     entryExpr: { fontSize: '13px', color: '#94A3B8', fontFamily: 'monospace' },
-    entryRes: { fontSize: '24px', fontWeight: '900', color: '#0369A1', marginTop: '12px' },
+    entryRes: { fontSize: '24px', fontWeight: '700', color: '#0369A1', marginTop: '12px' },
     entryObs: { marginTop: '12px', fontSize: '13px', color: '#64748B', fontStyle: 'italic', borderTop: '1px dashed #E2E8F0', paddingTop: '12px' },
     
     totalCard: { marginTop: '40px', padding: '32px', borderRadius: '24px', backgroundColor: '#0C4A6E', color: 'white', textAlign: 'right' as const },
-    totalLabel: { fontSize: '12px', fontWeight: '800', opacity: 0.7, textTransform: 'uppercase' as const },
-    totalValue: { fontSize: '36px', fontWeight: '900', marginTop: '4px' },
+    totalLabel: { fontSize: '12px', fontWeight: '600', opacity: 0.7, textTransform: 'uppercase' as const },
+    totalValue: { fontSize: '36px', fontWeight: '700', marginTop: '4px' },
     
     footer: { marginTop: '40px', textAlign: 'center' as const, color: '#94A3B8' },
-    footerLink: { color: '#0369A1', textDecoration: 'none', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px' },
+    footerLink: { color: '#0369A1', textDecoration: 'none', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px' },
     
     denied: { textAlign: 'center' as const, padding: '100px 40px' },
-    deniedTitle: { fontSize: '24px', fontWeight: '900', color: '#EF4444', marginBottom: '16px' }
+    deniedTitle: { fontSize: '24px', fontWeight: '700', color: '#EF4444', marginBottom: '16px' }
   };
 
   if (loading) return (
@@ -81,7 +81,7 @@ const PublicCalculatorView: React.FC = () => {
           <Lock size={64} color="#EF4444" style={{marginBottom: '24px'}} />
           <h2 style={styles.deniedTitle}>Conteúdo Não Disponível</h2>
           <p style={{color: '#64748B', maxWidth: '400px', margin: '0 auto 32px auto'}}>Este link foi revogado pelo administrador ou expirou. Você não tem permissão para visualizar este conteúdo no momento.</p>
-          <button onClick={() => navigate('/')} style={{padding: '12px 24px', borderRadius: '14px', border: 'none', backgroundColor: '#0C4A6E', color: 'white', fontWeight: '800', cursor: 'pointer'}}>Ir para Home</button>
+          <button onClick={() => navigate('/')} style={{padding: '12px 24px', borderRadius: '14px', border: 'none', backgroundColor: '#0C4A6E', color: 'white', fontWeight: '600', cursor: 'pointer'}}>Ir para Home</button>
        </div>
     </div>
   );

@@ -194,7 +194,7 @@ const styles = {
   },
   logoText: {
     fontSize: '24px',
-    fontWeight: 900,
+    fontWeight: 700,
     letterSpacing: '1px',
     margin: 0,
   },
@@ -245,7 +245,7 @@ const styles = {
     borderRadius: '14px',
     padding: '16px',
     fontSize: '16px',
-    fontWeight: 800,
+    fontWeight: 600,
     cursor: 'pointer',
   },
   errorBox: {
@@ -278,7 +278,7 @@ const styles = {
   },
   trackingTitle: {
     fontSize: '20px',
-    fontWeight: 800,
+    fontWeight: 600,
     margin: '0 0 4px 0',
   },
   trackingSub: {
@@ -292,7 +292,7 @@ const styles = {
     padding: '6px 12px',
     borderRadius: '99px',
     fontSize: '12px',
-    fontWeight: 800,
+    fontWeight: 600,
     border: '1px solid rgba(217, 255, 0, 0.3)',
   },
   progressContainer: {
@@ -327,7 +327,7 @@ const styles = {
   },
   timelineTitle: {
     fontSize: '14px',
-    fontWeight: 800,
+    fontWeight: 600,
     color: '#94a3b8',
     display: 'flex',
     alignItems: 'center',
@@ -369,7 +369,7 @@ const styles = {
   },
   timelineStatus: {
     fontSize: '13px',
-    fontWeight: 800,
+    fontWeight: 600,
     color: '#f8fafc',
   },
   timelineDate: {

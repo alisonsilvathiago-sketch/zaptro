@@ -192,7 +192,7 @@ const Integrations: React.FC = () => {
             <div style={styles.modalHero}>
                <div style={styles.heroIcon}>{selectedApi && getApiIcon(selectedApi.icon_name)}</div>
                <div>
-                  <h4 style={{margin: 0, fontSize: '18px', fontWeight: '900'}}>{selectedApi?.name}</h4>
+                  <h4 style={{margin: 0, fontSize: '18px', fontWeight: '700'}}>{selectedApi?.name}</h4>
                   <p style={{fontSize: '12px', color: 'var(--text-muted)', margin: 0}}>Libere automações de {selectedApi?.category.toLowerCase()}.</p>
                </div>
             </div>
@@ -247,12 +247,12 @@ const styles: Record<string, any> = {
   container: { padding: '40px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   headerPremium: { marginBottom: '40px' },
   headerTitleArea: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  headerBadge: { display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content', padding: '6px 14px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '30px', fontSize: '11px', fontWeight: '900', letterSpacing: '1px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
+  headerBadge: { display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content', padding: '6px 14px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '30px', fontSize: '11px', fontWeight: '700', letterSpacing: '1px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
   subtitle: { fontSize: '15px', color: '#64748b', maxWidth: '700px' },
   
   filterBar: { display: 'flex', gap: '8px', marginBottom: '40px', overflowX: 'auto', paddingBottom: '12px' },
-  filterTab: { padding: '10px 20px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '800', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' },
+  filterTab: { padding: '10px 20px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '600', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' },
   filterTabActive: { backgroundColor: 'var(--primary)', color: 'white', borderColor: 'var(--primary)', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
 
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' },
@@ -260,27 +260,27 @@ const styles: Record<string, any> = {
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' },
   logoBox: { width: '56px', height: '56px', borderRadius: '16px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', border: '1px solid #e2e8f0' },
   badgeArea: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
-  statusActive: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: '800' },
-  statusDispo: { padding: '6px 12px', backgroundColor: '#ebebeb', color: '#64748b', borderRadius: '20px', fontSize: '11px', fontWeight: '800' },
-  apiName: { fontSize: '18px', fontWeight: '900', color: '#000000', marginBottom: '8px' },
+  statusActive: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: '600' },
+  statusDispo: { padding: '6px 12px', backgroundColor: '#ebebeb', color: '#64748b', borderRadius: '20px', fontSize: '11px', fontWeight: '600' },
+  apiName: { fontSize: '18px', fontWeight: '700', color: '#000000', marginBottom: '8px' },
   apiDesc: { fontSize: '13px', color: '#64748b', lineHeight: '1.6', marginBottom: '24px', flex: 1 },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '20px', borderTop: '1px solid #e8e8e8' },
-  typeTag: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1px' },
-  setupBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
-  configBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: '#f4f4f4', color: '#475569', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
+  typeTag: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1px' },
+  setupBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' },
+  configBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: '#f4f4f4', color: '#475569', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' },
 
   modalBody: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '12px' },
   modalHero: { display: 'flex', gap: '16px', alignItems: 'center', backgroundColor: '#f4f4f4', padding: '20px', borderRadius: '20px' },
   heroIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', border: '1px solid #e2e8f0' },
   alertInfo: { display: 'flex', gap: '12px', padding: '16px', backgroundColor: '#f0f9ff', borderRadius: '14px', color: '#0369a1', fontSize: '13px', fontWeight: '600' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '13px', fontWeight: '800', color: '#475569' },
+  label: { fontSize: '13px', fontWeight: '600', color: '#475569' },
   inputWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
   input: { flex: 1, padding: '14px 14px 14px 40px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px', fontWeight: '600' },
   formActions: { display: 'flex', gap: '12px', marginTop: '12px' },
-  cancelBtn: { flex: 1, padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', color: '#64748b', fontWeight: '800', cursor: 'pointer' },
-  saveBtn: { flex: 2, padding: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' },
-  loading: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: '800', fontSize: '15px' }
+  cancelBtn: { flex: 1, padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', color: '#64748b', fontWeight: '600', cursor: 'pointer' },
+  saveBtn: { flex: 2, padding: '14px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' },
+  loading: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: '600', fontSize: '15px' }
 };
 
 export default Integrations;

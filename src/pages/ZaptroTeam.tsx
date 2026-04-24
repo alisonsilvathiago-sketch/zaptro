@@ -368,11 +368,12 @@ const ZaptroTeamContent: React.FC = () => {
 
   const labelStyle: React.CSSProperties = {
     display: 'block',
-    fontSize: 11,
-    fontWeight: 950,
-    letterSpacing: '0.08em',
+    fontSize: 12,
+    fontWeight: 600,
     color: modalMuted,
     marginBottom: 6,
+    textTransform: 'uppercase',
+    letterSpacing: '0.02em',
   };
 
   const body = (
@@ -382,6 +383,14 @@ const ZaptroTeamContent: React.FC = () => {
           outline: 2px solid #d9ff00;
           outline-offset: 2px;
           border-radius: ${ZAPTRO_PERM_CB_RADIUS + 6}px;
+        }
+        @keyframes zaptroFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes zaptroSlideInRight {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
         }
       `}</style>
       <header style={styles.header}>
@@ -763,7 +772,8 @@ const ZaptroTeamContent: React.FC = () => {
           <div
             style={{
               ...styles.modalCard,
-              ...styles.modalWide,
+              width: 'min(92vw, 860px)',
+              maxWidth: 860,
               backgroundColor: modalCardBg,
               border: `1px solid ${modalBorder}`,
               color: modalText,
@@ -773,63 +783,47 @@ const ZaptroTeamContent: React.FC = () => {
             aria-modal="true"
             aria-labelledby="add-member-title"
           >
-            <header style={styles.modalHead}>
+            <header style={{ ...styles.modalHead, marginBottom: 20 }}>
               <h2 id="add-member-title" style={{ ...styles.modalTitle, color: modalText }}>
-                Adicionar colaborador
+                Novo colaborador
               </h2>
               <button type="button" style={styles.modalClose} aria-label="Fechar" onClick={() => setAddOpen(false)}>
                 <X size={22} color={modalMuted} />
               </button>
             </header>
-            <p style={{ ...styles.modalHint, color: modalMuted }}>
-              Preencha os dados. A criação da conta por convite depende da configuração Auth do projeto. As páginas marcadas serão as mesmas ids
-              gravadas em <strong>profiles.permissions</strong> quando o fluxo de convite estiver ativo.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label style={labelStyle}>Nome completo</label>
-                <input style={inputStyle} value={addForm.full_name} onChange={(e) => setAddForm((f) => ({ ...f, full_name: e.target.value }))} />
+
+            {/* 2-COLUMN HORIZONTAL LAYOUT */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+              {/* LEFT — Dados básicos */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>Nome completo</label>
+                  <input style={inputStyle} value={addForm.full_name} onChange={(e) => setAddForm((f) => ({ ...f, full_name: e.target.value }))} placeholder="Ex: Maria Silva" />
+                </div>
+                <div>
+                  <label style={labelStyle}>E-mail</label>
+                  <input style={inputStyle} type="email" autoComplete="off" value={addForm.email} onChange={(e) => setAddForm((f) => ({ ...f, email: e.target.value }))} placeholder="email@empresa.com" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Senha inicial</label>
+                  <input style={inputStyle} type="password" autoComplete="new-password" value={addForm.password} onChange={(e) => setAddForm((f) => ({ ...f, password: e.target.value }))} placeholder="Mínimo 6 caracteres" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Função</label>
+                  <select style={{ ...inputStyle, cursor: 'pointer' }} value={addForm.role} onChange={(e) => setAddForm((f) => ({ ...f, role: e.target.value }))}>
+                    {TEAM_ROLE_OPTIONS.filter((o) => o.value !== 'ADMIN').map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {/* RIGHT — Permissões */}
               <div>
-                <label style={labelStyle}>E-mail</label>
-                <input
-                  style={inputStyle}
-                  type="email"
-                  autoComplete="off"
-                  value={addForm.email}
-                  onChange={(e) => setAddForm((f) => ({ ...f, email: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Senha (definida no primeiro acesso)</label>
-                <input
-                  style={inputStyle}
-                  type="password"
-                  autoComplete="new-password"
-                  value={addForm.password}
-                  onChange={(e) => setAddForm((f) => ({ ...f, password: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Área / função na transportadora</label>
-                <select
-                  style={{ ...inputStyle, cursor: 'pointer' }}
-                  value={addForm.role}
-                  onChange={(e) => setAddForm((f) => ({ ...f, role: e.target.value }))}
-                >
-                  {TEAM_ROLE_OPTIONS.filter((o) => o.value !== 'ADMIN').map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label style={labelStyle}>Páginas do painel (plano da transportadora)</label>
-                <p style={{ ...styles.modalHint, color: modalMuted, marginTop: 0, marginBottom: 6 }}>
-                  Quando o convite por Auth estiver ativo, estas caixas definem o que a pessoa poderá abrir após entrar.
-                </p>
-                <div style={{ ...styles.permCheckGrid, maxHeight: 200 }}>
+                <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>
+                  Páginas que pode acessar
+                </label>
+                <div style={{ ...styles.permCheckGrid, maxHeight: 260, overflowY: 'auto' }}>
                   {ZAPTRO_PAGE_PERMISSION_DEFS.filter(
                     (d) => !d.requiresBrandingPlan || isZaptroBrandingEntitledByPlan(company),
                   ).map((d) => (
@@ -846,17 +840,19 @@ const ZaptroTeamContent: React.FC = () => {
                 </div>
               </div>
             </div>
-            <footer style={styles.modalFooter}>
+
+            <footer style={{ ...styles.modalFooter, marginTop: 24 }}>
               <button type="button" style={styles.btnGhost} onClick={() => setAddOpen(false)}>
                 Cancelar
               </button>
               <button type="button" style={styles.btnPrimary} onClick={() => void submitAddMember()}>
-                Guardar pedido
+                Guardar
               </button>
             </footer>
           </div>
         </div>
       )}
+
 
       {memberDialog && (
         <div style={styles.modalOverlay} onClick={() => setMemberDialog(null)}>
@@ -901,7 +897,7 @@ const ZaptroTeamContent: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontWeight: 950,
+                      fontWeight: 700,
                       fontSize: 18,
                     }}
                   >
@@ -910,7 +906,7 @@ const ZaptroTeamContent: React.FC = () => {
                 );
               })()}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ margin: 0, fontSize: 17, fontWeight: 950, color: modalText }}>{memberDialog.full_name || 'Sem nome'}</p>
+                <p style={{ margin: 0, fontSize: 17, fontWeight: 700, color: modalText }}>{memberDialog.full_name || 'Sem nome'}</p>
                 <p style={{ margin: '4px 0 0', fontSize: 12, fontWeight: 700, color: modalMuted }}>{roleLabel(memberDialog.role)}</p>
                 <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 650, color: modalMuted, wordBreak: 'break-word' }}>
                   {displayEmail(memberDialog)}
@@ -1055,7 +1051,7 @@ const ZaptroTeamContent: React.FC = () => {
               <h2 id="delete-title" style={{ ...styles.deleteModalTitle, color: modalText }}>
                 Remover da equipa?
               </h2>
-              <p style={{ margin: '10px 0 0', fontSize: 18, fontWeight: 950, color: modalText, letterSpacing: '-0.02em' }}>
+              <p style={{ margin: '10px 0 0', fontSize: 18, fontWeight: 700, color: modalText, letterSpacing: '-0.02em' }}>
                 {deleteTarget.full_name || 'Colaborador'}
               </p>
             </div>
@@ -1111,9 +1107,9 @@ const ZaptroTeam: React.FC<ZaptroTeamProps> = ({ hideLayout = false }) => {
 };
 
 const styles: Record<string, React.CSSProperties> = {
-  container: { backgroundColor: 'transparent', width: '100%', minWidth: 0, boxSizing: 'border-box' },
+  container: { backgroundColor: 'transparent', width: '100%', maxWidth: 1360, margin: '0 auto', minWidth: 0, boxSizing: 'border-box' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' },
-  title: { fontSize: '38px', fontWeight: 950, margin: 0, letterSpacing: '-2px' },
+  title: { fontSize: '38px', fontWeight: 700, margin: 0, letterSpacing: '-2px' },
   subtitle: { fontSize: '15px', fontWeight: 600, marginTop: '6px' },
   primaryBtn: {
     backgroundColor: '#000',
@@ -1121,7 +1117,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     padding: '18px 25px',
     borderRadius: '18px',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: '14px',
     cursor: 'pointer',
     display: 'flex',
@@ -1170,7 +1166,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '10px 18px',
     borderRadius: 14,
     fontSize: 13,
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'inherit',
   },
@@ -1196,7 +1192,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '12px',
     padding: '48px',
     color: '#64748B',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: '14px',
   },
   emptyBox: { gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: '#64748B', fontWeight: 700, fontSize: '14px' },
@@ -1219,13 +1215,13 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '20px',
-    fontWeight: 950,
+    fontWeight: 700,
     flexShrink: 0,
   },
   avatarImg: { width: '56px', height: '56px', borderRadius: '18px', objectFit: 'cover', display: 'block', flexShrink: 0 },
   mInfo: { flex: 1, minWidth: 0 },
-  mName: { margin: 0, fontSize: '17px', fontWeight: 950, letterSpacing: '-0.02em' },
-  mRole: { fontSize: '11px', color: '#94A3B8', fontWeight: 900 },
+  mName: { margin: 0, fontSize: '17px', fontWeight: 700, letterSpacing: '-0.02em' },
+  mRole: { fontSize: '11px', color: '#94A3B8', fontWeight: 700 },
   statusDot: {
     width: '12px',
     height: '12px',
@@ -1239,11 +1235,11 @@ const styles: Record<string, React.CSSProperties> = {
   emailRow: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', minWidth: 0 },
   emailText: { fontSize: '12px', fontWeight: 700, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   mStats: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: '#FBFBFC', padding: '16px', borderRadius: '16px', marginBottom: '18px' },
-  mStatItem: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10px', fontWeight: 950, color: '#94A3B8' },
+  mStatItem: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10px', fontWeight: 700, color: '#94A3B8' },
   cardActions: { display: 'flex', gap: '10px', paddingTop: '16px', borderTop: '1px solid #EBEBEC' },
   iconBtn: { padding: '10px', background: 'transparent', border: '1px solid #EBEBEC', borderRadius: '12px', cursor: 'pointer', color: '#64748B' },
   placeholderTab: { padding: '48px 24px', textAlign: 'center', color: '#64748B', fontWeight: 700, fontSize: '14px', lineHeight: 1.6 },
-  linkBtn: { background: 'none', border: 'none', color: '#000000', fontWeight: 950, cursor: 'pointer', textDecoration: 'underline', padding: 0, font: 'inherit' },
+  linkBtn: { background: 'none', border: 'none', color: '#000000', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline', padding: 0, font: 'inherit' },
   tabPanel: {
     padding: '8px 0 24px',
     boxSizing: 'border-box',
@@ -1260,7 +1256,7 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: ZAPTRO_FIELD_BG,
     border: `1px solid ${ZAPTRO_SECTION_BORDER}`,
   },
-  tabPanelTitle: { margin: '0 0 8px 0', fontSize: 18, fontWeight: 950, letterSpacing: '-0.3px', color: '#0f172a' },
+  tabPanelTitle: { margin: '0 0 8px 0', fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px', color: '#0f172a' },
   tabPanelLead: { margin: 0, fontSize: 13, fontWeight: 650, color: '#52525b', lineHeight: 1.55 },
   tabPanelEmpty: { margin: '24px 0', color: '#64748B', fontWeight: 700, fontSize: 14 },
   rankingLoading: {
@@ -1269,7 +1265,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 12,
     padding: '32px 0',
     color: '#64748B',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: 14,
   },
   rankingList: {
@@ -1295,16 +1291,16 @@ const styles: Record<string, React.CSSProperties> = {
   rankingActions: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, justifyContent: 'flex-end' },
   rankingPos: {
     fontSize: 18,
-    fontWeight: 950,
+    fontWeight: 700,
     color: '#94a3b8',
     textAlign: 'center',
   },
   rankingMain: { minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 },
-  rankingName: { fontSize: 15, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.02em' },
+  rankingName: { fontSize: 15, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.01em' },
   rankingMeta: { fontSize: 12, fontWeight: 700, color: '#71717a' },
   rankingBadge: {
     fontSize: 11,
-    fontWeight: 900,
+    fontWeight: 700,
     letterSpacing: '0.04em',
     padding: '6px 10px',
     borderRadius: 999,
@@ -1316,7 +1312,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid #18181b',
     background: '#fff',
     fontSize: 12,
-    fontWeight: 900,
+    fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'inherit',
     color: '#0f172a',
@@ -1338,7 +1334,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 12,
     marginBottom: 12,
   },
-  accessName: { fontSize: 16, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.02em' },
+  accessName: { fontSize: 16, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.01em' },
   accessRole: { fontSize: 12, fontWeight: 700, color: '#71717a', marginTop: 4 },
   accessEditBtn: {
     padding: '10px 16px',
@@ -1347,7 +1343,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: '#0f172a',
     color: '#fff',
     fontSize: 12,
-    fontWeight: 900,
+    fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'inherit',
     flexShrink: 0,
@@ -1355,7 +1351,7 @@ const styles: Record<string, React.CSSProperties> = {
   accessChips: { display: 'flex', flexWrap: 'wrap', gap: 8 },
   accessChip: {
     fontSize: 11,
-    fontWeight: 800,
+    fontWeight: 600,
     padding: '6px 10px',
     borderRadius: 10,
     backgroundColor: '#f4f4f5',
@@ -1369,14 +1365,14 @@ const styles: Record<string, React.CSSProperties> = {
   modalOverlay: {
     position: 'fixed',
     inset: 0,
-    zIndex: 4000,
-    backgroundColor: 'rgba(15, 23, 42, 0.45)',
-    backdropFilter: 'blur(10px)',
+    zIndex: 5000,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backdropFilter: 'blur(4px)',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
+    justifyContent: 'flex-end',
     boxSizing: 'border-box',
+    animation: 'zaptroFadeIn 0.3s ease',
   },
   modalWide: { maxWidth: 480 },
   /** Duas colunas, compacto, alinhado à esquerda (modais de permissões). */
@@ -1421,11 +1417,17 @@ const styles: Record<string, React.CSSProperties> = {
   },
   modalCard: {
     width: '100%',
-    maxWidth: 440,
-    borderRadius: 28,
-    padding: '28px 28px 24px',
-    boxShadow: '0 24px 80px rgba(0,0,0,0.18)',
+    maxWidth: 480,
+    height: '100%',
+    backgroundColor: '#fff',
+    boxShadow: '-10px 0 40px rgba(0,0,0,0.1)',
     boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    borderTopLeftRadius: '32px',
+    borderBottomLeftRadius: '32px',
+    padding: '40px 32px',
+    animation: 'zaptroSlideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   deleteCard: {
     width: '100%',
@@ -1435,10 +1437,10 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: '0 24px 80px rgba(0,0,0,0.18)',
     boxSizing: 'border-box',
   },
-  deleteModalTitle: { margin: 0, fontSize: 17, fontWeight: 950, letterSpacing: '-0.02em', lineHeight: 1.2 },
+  deleteModalTitle: { margin: 0, fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 },
   modalHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8 },
-  modalTitle: { margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: '-0.5px' },
-  modalHint: { margin: '0 0 20px', fontSize: 13, fontWeight: 600, lineHeight: 1.5 },
+  modalTitle: { margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em' },
+  modalHint: { margin: '0 0 24px', fontSize: 14, fontWeight: 500, lineHeight: 1.6, color: '#64748B' },
   modalClose: { border: 'none', background: 'transparent', cursor: 'pointer', padding: 4, borderRadius: 12, flexShrink: 0 },
   modalFooter: { display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24, flexWrap: 'wrap' },
   btnGhost: {
@@ -1446,7 +1448,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 16,
     border: '1px solid #E2E8F0',
     background: 'transparent',
-    fontWeight: 900,
+    fontWeight: 700,
     fontSize: 14,
     cursor: 'pointer',
     color: '#64748B',
@@ -1457,7 +1459,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     background: '#0F172A',
     color: '#fff',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 14,
     cursor: 'pointer',
   },
@@ -1470,7 +1472,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     background: '#000000',
     color: '#D9FF00',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 15,
     cursor: 'pointer',
   },
@@ -1482,7 +1484,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid #E2E8F0',
     background: 'transparent',
     color: '#64748B',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: 14,
     cursor: 'pointer',
   },

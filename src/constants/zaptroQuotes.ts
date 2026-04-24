@@ -82,7 +82,7 @@ export function quoteStatusBadgeStyle(
     padding: '5px 11px',
     borderRadius: 999,
     fontSize: 11,
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.02em',
     boxSizing: 'border-box',
     borderWidth: 1,

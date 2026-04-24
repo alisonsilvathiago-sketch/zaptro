@@ -98,7 +98,7 @@ const ZaptroPublicQuote: React.FC = () => {
         }}
       >
         <div>
-          <p style={{ fontSize: 'clamp(16px, 4vw, 18px)', fontWeight: 800 }}>Orçamento não encontrado</p>
+          <p style={{ fontSize: 'clamp(16px, 4vw, 18px)', fontWeight: 600 }}>Orçamento não encontrado</p>
           <p style={{ color: TEXT_MUTED, marginTop: 8 }}>O link pode ter expirado ou foi gerado noutro ambiente.</p>
         </div>
       </div>
@@ -126,7 +126,7 @@ const ZaptroPublicQuote: React.FC = () => {
     width: '100%',
     padding: 'clamp(14px, 3.5vw, 16px) clamp(16px, 4vw, 20px)',
     borderRadius: 16,
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: 'clamp(15px, 3.8vw, 16px)',
     cursor: 'pointer',
     display: 'flex',
@@ -191,7 +191,7 @@ const ZaptroPublicQuote: React.FC = () => {
               style={{
                 margin: 0,
                 fontSize: 'clamp(10px, 2.6vw, 11px)',
-                fontWeight: 800,
+                fontWeight: 600,
                 letterSpacing: '0.12em',
                 color: TEXT_MUTED,
               }}
@@ -202,7 +202,7 @@ const ZaptroPublicQuote: React.FC = () => {
               style={{
                 margin: '4px 0 0',
                 fontSize: 'clamp(18px, 5vw, 22px)',
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '-0.03em',
                 color: TEXT,
                 lineHeight: 1.15,
@@ -226,14 +226,14 @@ const ZaptroPublicQuote: React.FC = () => {
             marginBottom: 20,
           }}
         >
-          <p style={{ margin: '0 0 12px', fontSize: 11, fontWeight: 900, letterSpacing: '0.1em', color: TEXT_MUTED }}>
+          <p style={{ margin: '0 0 12px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: TEXT_MUTED }}>
             STATUS
           </p>
           <p
             style={{
               margin: 0,
               fontSize: 'clamp(15px, 4vw, 16px)',
-              fontWeight: 950,
+              fontWeight: 700,
               color: quote.status === 'aprovado' ? '#15803d' : quote.status === 'recusado' ? '#dc2626' : '#0f172a',
             }}
           >
@@ -245,14 +245,14 @@ const ZaptroPublicQuote: React.FC = () => {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <Banknote size={18} style={{ flexShrink: 0, marginTop: 2, color: '#0f172a' }} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: TEXT_MUTED }}>VALOR DO FRETE</div>
-              <div style={{ fontSize: 'clamp(22px, 6vw, 26px)', fontWeight: 950, color: TEXT }}>{val}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED }}>VALOR DO FRETE</div>
+              <div style={{ fontSize: 'clamp(22px, 6vw, 26px)', fontWeight: 700, color: TEXT }}>{val}</div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <MapPin size={18} style={{ flexShrink: 0, marginTop: 2, color: '#0f172a' }} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: TEXT_MUTED }}>ROTA</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED }}>ROTA</div>
               <div style={{ fontSize: 'clamp(14px, 3.8vw, 15px)', fontWeight: 700, color: TEXT, wordBreak: 'break-word' }}>
                 {routeLine}
               </div>
@@ -261,7 +261,7 @@ const ZaptroPublicQuote: React.FC = () => {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <Package size={18} style={{ flexShrink: 0, marginTop: 2, color: '#0f172a' }} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: TEXT_MUTED }}>CARGA / PESO</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED }}>CARGA / PESO</div>
               <div style={{ fontSize: 'clamp(14px, 3.8vw, 15px)', fontWeight: 700, color: TEXT, wordBreak: 'break-word' }}>
                 {cargoLine}
               </div>
@@ -270,13 +270,13 @@ const ZaptroPublicQuote: React.FC = () => {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <Calendar size={18} style={{ flexShrink: 0, marginTop: 2, color: '#0f172a' }} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: TEXT_MUTED }}>PRAZO DE ENTREGA</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED }}>PRAZO DE ENTREGA</div>
               <div style={{ fontSize: 'clamp(14px, 3.8vw, 15px)', fontWeight: 700, color: TEXT }}>{quote.deliveryDeadline}</div>
             </div>
           </div>
           {quote.notes ? (
             <div style={{ paddingTop: 8, borderTop: `1px solid ${BORDER}` }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: TEXT_MUTED, marginBottom: 6 }}>OBSERVAÇÕES</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED, marginBottom: 6 }}>OBSERVAÇÕES</div>
               <div style={{ fontSize: 'clamp(13px, 3.5vw, 14px)', lineHeight: 1.5, color: TEXT_SOFT, wordBreak: 'break-word' }}>
                 {quote.notes}
               </div>
@@ -322,7 +322,7 @@ const ZaptroPublicQuote: React.FC = () => {
               background: done === 'aprovar' || quote.status === 'aprovado' ? '#ecfdf5' : '#fef2f2',
               border: `1px solid ${done === 'aprovar' || quote.status === 'aprovado' ? '#bbf7d0' : '#fecaca'}`,
               textAlign: 'center',
-              fontWeight: 800,
+              fontWeight: 600,
               fontSize: 'clamp(14px, 3.6vw, 15px)',
               color: TEXT,
             }}
@@ -373,14 +373,14 @@ const ZaptroPublicQuote: React.FC = () => {
                     <Truck size={26} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 18, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.02em' }}>ZAPTRO</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>ZAPTRO</div>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>Transporte inteligente</div>
                   </div>
                 </div>
               )}
             </div>
             <div style={{ textAlign: 'right', minWidth: 140 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, letterSpacing: '0.06em', color: '#334155' }}>{issuer.toUpperCase()}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#334155' }}>{issuer.toUpperCase()}</div>
               <div style={{ fontSize: 11, color: '#64748b', marginTop: 4, lineHeight: 1.4 }}>Documento para aprovação interna</div>
             </div>
           </div>
@@ -396,24 +396,24 @@ const ZaptroPublicQuote: React.FC = () => {
             }}
           >
             <div style={{ flex: '1 1 200px', minWidth: 0 }}>
-              <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: '0.14em', color: '#64748b', marginBottom: 8 }}>DESTINATÁRIO</div>
-              <div style={{ fontSize: 15, fontWeight: 950, color: '#0f172a' }}>{snap.clientName}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: '#64748b', marginBottom: 8 }}>DESTINATÁRIO</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{snap.clientName}</div>
               <div style={{ fontSize: 11, color: '#475569', marginTop: 6, lineHeight: 1.45 }}>
                 Orçamento de frete rodoviário conforme dados abaixo.
               </div>
             </div>
             <div style={{ textAlign: 'right', flex: '0 1 auto' }}>
-              <div style={{ fontSize: 28, fontWeight: 950, color: '#0f172a', letterSpacing: '-0.03em' }}>Orçamento</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.03em' }}>Orçamento</div>
               <div style={{ marginTop: 10, fontSize: 11 }}>
-                <span style={{ fontWeight: 800, color: '#334155' }}>REF.</span>{' '}
+                <span style={{ fontWeight: 600, color: '#334155' }}>REF.</span>{' '}
                 <span style={{ color: '#0f172a' }}>{quote.id}</span>
               </div>
               <div style={{ marginTop: 4, fontSize: 11 }}>
-                <span style={{ fontWeight: 800, color: '#334155' }}>DATA</span>{' '}
+                <span style={{ fontWeight: 600, color: '#334155' }}>DATA</span>{' '}
                 <span style={{ color: '#0f172a' }}>{quoteDate}</span>
               </div>
               <div style={{ marginTop: 4, fontSize: 11 }}>
-                <span style={{ fontWeight: 800, color: '#334155' }}>STATUS</span>{' '}
+                <span style={{ fontWeight: 600, color: '#334155' }}>STATUS</span>{' '}
                 <span style={{ color: '#0f172a' }}>{statusPdf}</span>
               </div>
             </div>
@@ -437,8 +437,8 @@ const ZaptroPublicQuote: React.FC = () => {
                       textAlign: h === 'VALOR' ? 'right' : 'left',
                       padding: '10px 8px',
                       fontSize: 10,
-                      fontWeight: 900,
-                      letterSpacing: '0.08em',
+                      fontWeight: 700,
+                      letterSpacing: '0.02em',
                       color: '#64748b',
                     }}
                   >
@@ -466,7 +466,7 @@ const ZaptroPublicQuote: React.FC = () => {
                     </div>
                   ) : null}
                 </td>
-                <td style={{ padding: '14px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a', whiteSpace: 'nowrap' }}>{valFull}</td>
+                <td style={{ padding: '14px 8px', textAlign: 'right', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap' }}>{valFull}</td>
               </tr>
             </tbody>
           </table>
@@ -486,8 +486,8 @@ const ZaptroPublicQuote: React.FC = () => {
                   borderTop: '2px solid #e2e8f0',
                 }}
               >
-                <span style={{ fontSize: 12, fontWeight: 900, letterSpacing: '0.06em', color: '#334155' }}>TOTAL</span>
-                <span style={{ fontSize: 22, fontWeight: 950, color: accent }}>{valFull}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#334155' }}>TOTAL</span>
+                <span style={{ fontSize: 22, fontWeight: 700, color: accent }}>{valFull}</span>
               </div>
             </div>
           </div>

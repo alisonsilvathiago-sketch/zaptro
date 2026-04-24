@@ -10,7 +10,8 @@ import { zaptroSettingsEntryPermissionIds } from './utils/zaptroPagePermissionMa
 
 const WhatsAppSales = lazy(() => import('./pages/WhatsAppSales'));
 const Login = lazy(() => import('./pages/Login'));
-const ZaptroDashboard = lazy(() => import('./pages/ZaptroDashboard'));
+const ZaptroHomeInicio = lazy(() => import('./pages/ZaptroHomeInicio'));
+const ZaptroDashboardResults = lazy(() => import('./pages/ZaptroDashboardResults'));
 const ZaptroRegister = lazy(() => import('./pages/ZaptroRegister'));
 const WhatsAppPremium = lazy(() => import('./pages/WhatsAppPremium'));
 const ZaptroSettings = lazy(() => import('./pages/ZaptroSettings'));
@@ -29,13 +30,15 @@ const ZaptroOccurrence = lazy(() => import('./pages/ZaptroOccurrence'));
 const ZaptroClientDetail = lazy(() => import('./pages/ZaptroClientDetail'));
 const ZaptroDriverRoute = lazy(() => import('./pages/ZaptroDriverRoute'));
 const ZaptroPublicTrack = lazy(() => import('./pages/ZaptroPublicTrack'));
-const ZaptroOpenStreetMap = lazy(() => import('./pages/ZaptroOpenStreetMap'));
 const ZaptroDriverProfile = lazy(() => import('./pages/ZaptroDriverProfile'));
 const ZaptroCompanyLogin = lazy(() => import('./pages/ZaptroCompanyLogin'));
+const ZaptroLeadProfile = lazy(() => import('./pages/ZaptroLeadProfile'));
 
 const App: React.FC = () => {
-  const { isLoading } = useAuth();
+  const { isLoading, isLoggingOut, isLoggingIn } = useAuth();
 
+  if (isLoggingOut) return <Loading context="logout" />;
+  if (isLoggingIn) return <Loading context="login" />;
   if (isLoading) return <Loading />;
 
   return (
@@ -54,6 +57,7 @@ const App: React.FC = () => {
           <Route path={ZAPTRO_ROUTES.COMPANY_LOGIN} element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path={ZAPTRO_ROUTES.REGISTER} element={<ZaptroRegister />} />
+          <Route path={ZAPTRO_ROUTES.ONBOARDING_CADASTRO} element={<ZaptroRegister />} />
 
           {/* Zaptro Product ONLY (Protegidas) */}
           <Route
@@ -61,7 +65,17 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ZaptroPagePermissionRoute pageId="inicio">
-                  <ZaptroDashboard />
+                  <ZaptroHomeInicio />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ZAPTRO_ROUTES.RESULTADOS}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="inicio">
+                  <ZaptroDashboardResults />
                 </ZaptroPagePermissionRoute>
               </ProtectedRoute>
             }
@@ -117,16 +131,8 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path={ZAPTRO_ROUTES.OPENSTREETMAP}
-            element={
-              <ProtectedRoute>
-                <ZaptroPagePermissionRoute anyOf={['mapa', 'rotas', 'crm', 'operacoes']}>
-                  <ZaptroOpenStreetMap />
-                </ZaptroPagePermissionRoute>
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/mapa" element={<Navigate to={ZAPTRO_ROUTES.ROUTES} replace />} />
+
           <Route
             path={ZAPTRO_ROUTES.DRIVERS}
             element={
@@ -203,6 +209,16 @@ const App: React.FC = () => {
               <ProtectedRoute>
                 <ZaptroPagePermissionRoute pageId="historico">
                   <ZaptroHistory />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clientes/leads/perfil/:id"
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="clientes">
+                  <ZaptroLeadProfile />
                 </ZaptroPagePermissionRoute>
               </ProtectedRoute>
             }

@@ -93,38 +93,38 @@ const styles: Record<string, any> = {
   appContainer: { backgroundColor: '#000000', minHeight: '100vh', color: '#FFFFFF', fontFamily: 'Inter, sans-serif' },
   loadingScreen: { height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' },
   zapPulse: { animation: 'pulse 1.5s infinite ease-in-out' },
-  loadingText: { marginTop: '20px', color: '#D9FF00', fontWeight: '900', fontSize: '14px', letterSpacing: '1px' },
+  loadingText: { marginTop: '20px', color: '#D9FF00', fontWeight: '700', fontSize: '14px', letterSpacing: '1px' },
 
   header: { padding: '50px 25px 30px', backgroundColor: '#111', borderBottom: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   topInfo: { display: 'flex', alignItems: 'center', gap: '15px' },
-  driverAvatar: { width: '50px', height: '50px', borderRadius: '15px', backgroundColor: '#D9FF00', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: '950' },
-  welcome: { margin: 0, fontSize: '18px', fontWeight: '950' },
-  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: '#10B981', fontWeight: '900', marginTop: '4px' },
+  driverAvatar: { width: '50px', height: '50px', borderRadius: '15px', backgroundColor: '#D9FF00', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: '700' },
+  welcome: { margin: 0, fontSize: '18px', fontWeight: '700' },
+  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: '#10B981', fontWeight: '700', marginTop: '4px' },
   dot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 8px #10B981' },
   logoutBtn: { background: 'transparent', border: '1px solid #333', color: '#666', padding: '10px', borderRadius: '12px', cursor: 'pointer' },
 
   main: { padding: '25px' },
   routeHeader: { backgroundColor: '#111', padding: '25px', borderRadius: '25px', border: '1px solid #222', marginBottom: '40px' },
-  pLabel: { fontSize: '10px', color: '#94A3B8', fontWeight: '950', letterSpacing: '2px' },
-  pVal: { fontSize: '20px', fontWeight: '950', color: '#D9FF00', margin: '10px 0' },
+  pLabel: { fontSize: '10px', color: '#94A3B8', fontWeight: '700', letterSpacing: '2px' },
+  pVal: { fontSize: '20px', fontWeight: '700', color: '#D9FF00', margin: '10px 0' },
   pBar: { height: '6px', backgroundColor: '#222', borderRadius: '3px', overflow: 'hidden' },
   pFill: { height: '100%', backgroundColor: '#D9FF00' },
 
-  secTitle: { fontSize: '12px', fontWeight: '950', color: '#666', letterSpacing: '2px', marginBottom: '20px' },
+  secTitle: { fontSize: '12px', fontWeight: '700', color: '#666', letterSpacing: '2px', marginBottom: '20px' },
   deliveryCard: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '30px', padding: '25px', marginBottom: '20px' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '20px' },
-  stopNum: { fontSize: '11px', fontWeight: '950', color: '#D9FF00', backgroundColor: '#D9FF0020', padding: '4px 10px', borderRadius: '6px' },
+  stopNum: { fontSize: '11px', fontWeight: '700', color: '#D9FF00', backgroundColor: '#D9FF0020', padding: '4px 10px', borderRadius: '6px' },
   stopTime: { fontSize: '11px', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '5px' },
-  clientName: { fontSize: '22px', fontWeight: '950', margin: '0 0 10px 0' },
+  clientName: { fontSize: '22px', fontWeight: '700', margin: '0 0 10px 0' },
   addressBox: { display: 'flex', gap: '10px', fontSize: '14px', color: '#94A3B8', lineHeight: 1.4, marginBottom: '25px' },
 
   cardActions: { display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '15px' },
-  navBtn: { padding: '15px', backgroundColor: '#222', border: 'none', borderRadius: '15px', color: '#FFF', fontWeight: '950', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
-  completeBtn: { padding: '15px', backgroundColor: '#D9FF00', border: 'none', borderRadius: '15px', color: '#000', fontWeight: '950' },
+  navBtn: { padding: '15px', backgroundColor: '#222', border: 'none', borderRadius: '15px', color: '#FFF', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
+  completeBtn: { padding: '15px', backgroundColor: '#D9FF00', border: 'none', borderRadius: '15px', color: '#000', fontWeight: '700' },
 
   footer: { position: 'fixed', bottom: '0', left: '0', right: '0', padding: '25px', backgroundColor: '#000', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', borderTop: '1px solid #222' },
-  emergencyBtn: { padding: '18px', backgroundColor: '#B91C1C20', color: '#EF4444', border: '1px solid #B91C1C', borderRadius: '18px', fontWeight: '950', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
-  supportBtn: { padding: '18px', backgroundColor: '#111', color: '#FFF', border: '1px solid #333', borderRadius: '18px', fontWeight: '950', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }
+  emergencyBtn: { padding: '18px', backgroundColor: '#B91C1C20', color: '#EF4444', border: '1px solid #B91C1C', borderRadius: '18px', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
+  supportBtn: { padding: '18px', backgroundColor: '#111', color: '#FFF', border: '1px solid #333', borderRadius: '18px', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }
 };
 
 export default DriverApp;

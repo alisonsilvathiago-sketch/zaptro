@@ -78,6 +78,8 @@ export function zaptroMenuPathToPageId(fullPath: string): ZaptroPagePermissionId
   const [base, queryPart] = splitPath(fullPath);
   const query = queryPart ? `?${queryPart}` : '';
 
+  if (base === ZAPTRO_ROUTES.RESULTADOS) return 'inicio';
+
   if (base === ZAPTRO_ROUTES.SETTINGS_ALIAS || base === '/whatsapp/config') {
     const tabHave = new URLSearchParams(query).get('tab') || 'config';
     const normalizedTab = tabHave === 'branding' ? 'marca' : tabHave;

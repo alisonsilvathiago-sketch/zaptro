@@ -297,7 +297,7 @@ const AcademyCheckout: React.FC = () => {
                <span>R$ {course.price?.toFixed(2)}</span>
             </div>
             <div style={styles.divider} />
-            <div style={{...styles.priceRow, fontWeight: '900', fontSize: '20px', color: '#1e293b'}}>
+            <div style={{...styles.priceRow, fontWeight: '700', fontSize: '20px', color: '#1e293b'}}>
                <span>Total</span>
                <span>R$ {course.price?.toFixed(2)}</span>
             </div>
@@ -310,7 +310,7 @@ const AcademyCheckout: React.FC = () => {
 const styles = {
   container: { backgroundColor: '#f3f4f6', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const },
   header: { maxWidth: '1000px', width: '100%', margin: '0 auto', padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  logo: { fontSize: '20px', fontWeight: '950', color: '#000000', letterSpacing: '-1px' },
+  logo: { fontSize: '20px', fontWeight: '700', color: '#000000', letterSpacing: '-1px' },
   countrySelector: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4b5563', backgroundColor: 'white', padding: '6px 14px', borderRadius: '10px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', cursor: 'pointer' },
   
   wrapper: { maxWidth: '1000px', width: '100%', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', paddingBottom: '80px' },
@@ -333,10 +333,10 @@ const styles = {
   saveData: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#374151', margin: '24px 0' },
   securityMsg: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#6b7280', marginBottom: '24px' },
   
-  submitBtn: { width: '100%', padding: '20px', backgroundColor: '#10b981', color: 'white', fontSize: '18px', fontWeight: '800', border: 'none', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' },
+  submitBtn: { width: '100%', padding: '20px', backgroundColor: '#10b981', color: 'white', fontSize: '18px', fontWeight: '600', border: 'none', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' },
   
   footerBranding: { marginTop: '40px', textAlign: 'center' as const, borderTop: '1px solid #f3f4f6', paddingTop: '32px' },
-  fLogo: { fontSize: '16px', fontWeight: '900', color: '#d1d5db', marginBottom: '8px' },
+  fLogo: { fontSize: '16px', fontWeight: '700', color: '#d1d5db', marginBottom: '8px' },
   fLegal: { fontSize: '12px', color: '#9ca3af', lineHeight: '1.5', maxWidth: '500px', margin: '0 auto' },
   
   summary: { backgroundColor: 'white', padding: '32px', borderRadius: '12px', border: '1px solid #e5e7eb', height: 'fit-content' },
@@ -349,7 +349,7 @@ const styles = {
   priceRow: { display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#6b7280', margin: '8px 0' },
   divider: { height: '1px', backgroundColor: '#f3f4f6', margin: '16px 0' },
   
-  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '800' }
+  loading: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '600' }
 };
 
 export default AcademyCheckout;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { getContext, isZaptroProductPath } from '../utils/domains';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
+import { useAuth } from '../context/AuthContext';
 import {
   ZAPTRO_LOADING_FADE_MS,
   ZAPTRO_LOADING_PHRASES,
@@ -13,7 +14,15 @@ type ZaptroAuthLoadingInnerProps = {
 };
 
 const ZaptroAuthLoadingInner: React.FC<ZaptroAuthLoadingInnerProps> = ({ context }) => {
-  const steps = ZAPTRO_LOADING_PHRASES[context];
+  const { profile } = useAuth();
+  const userName = profile?.full_name?.split(' ')[0] || 'Comandante';
+  
+  const rawSteps = ZAPTRO_LOADING_PHRASES[context];
+  const steps = React.useMemo(() => 
+    rawSteps.map(s => s.replace('{{name}}', userName)),
+    [rawSteps, userName]
+  );
+
   const [step, setStep] = React.useState(0);
   const [textOpacity, setTextOpacity] = React.useState(1);
   const [showRetry, setShowRetry] = React.useState(false);
@@ -31,20 +40,30 @@ const ZaptroAuthLoadingInner: React.FC<ZaptroAuthLoadingInnerProps> = ({ context
 
   React.useEffect(() => {
     clearTimers();
-    if (step >= steps.length - 1) return;
+    if (step >= steps.length) return;
+
+    // Tempo que a frase fica visível ANTES de começar o fade out
+    const holdTime = ZAPTRO_LOADING_STEP_HOLD_MS;
+    // Tempo total até a próxima frase (hold + fade out + respiro)
+    const nextStepDelay = ZAPTRO_LOADING_STEP_HOLD_MS + ZAPTRO_LOADING_FADE_MS + 200;
 
     const q = (fn: () => void, ms: number) => {
       const id = window.setTimeout(fn, ms);
       timeoutIdsRef.current.push(id);
     };
 
+    // Inicia Fade Out
     q(() => {
       setTextOpacity(0);
-      q(() => {
+    }, holdTime);
+
+    // Troca para próxima frase e Inicia Fade In
+    q(() => {
+      if (step < steps.length - 1) {
         setStep((s) => s + 1);
         setTextOpacity(1);
-      }, ZAPTRO_LOADING_FADE_MS);
-    }, ZAPTRO_LOADING_STEP_HOLD_MS);
+      }
+    }, nextStepDelay);
 
     return clearTimers;
   }, [step, steps.length]);
@@ -75,25 +94,25 @@ const ZaptroAuthLoadingInner: React.FC<ZaptroAuthLoadingInnerProps> = ({ context
   );
 };
 
-const Loading: React.FC = () => {
-  const context = getContext();
+const Loading: React.FC<{ context?: ZaptroLoadingPhraseContext; message?: string }> = ({ 
+  context: explicitContext,
+  message 
+}) => {
+  const auth = useAuth();
+  const domainContext = getContext();
   const path = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isZaptro = context === 'WHATSAPP' || isZaptroProductPath(path);
+  const isZaptro = domainContext === 'WHATSAPP' || isZaptroProductPath(path);
   const [showRetry, setShowRetry] = React.useState(false);
 
+  // Se já terminou o carregamento inicial (auth.isLoading === false)
+  // e o usuário está logado (auth.user), mostramos o "Lite" para navegação.
+  // A exceção é se passamos explicitamente 'logout' ou 'login'.
+  const isInternalNavigation = !auth.isLoading && !!auth.user && explicitContext !== 'logout' && explicitContext !== 'login';
+
   const currentContext = React.useMemo<ZaptroLoadingPhraseContext>(() => {
-    if (!isZaptro) return 'sistema';
-    if (path === ZAPTRO_ROUTES.DASHBOARD) return 'dashboard';
-    if (path.startsWith(ZAPTRO_ROUTES.CHAT)) return 'mensagens';
-    if (path.startsWith(ZAPTRO_ROUTES.ROUTES)) return 'rotas';
-    if (path.startsWith(ZAPTRO_ROUTES.LOGISTICS)) return 'cargas';
-    if (path.startsWith(ZAPTRO_ROUTES.COMMERCIAL_QUOTES)) return 'orcamentos';
-    if (path.startsWith(ZAPTRO_ROUTES.DRIVERS)) return 'motoristas';
-    if (path.startsWith(ZAPTRO_ROUTES.DRIVER_PROFILE)) return 'motoristas';
-    if (path.startsWith(ZAPTRO_ROUTES.COMMERCIAL_CRM)) return 'crm';
-    if (path.startsWith(ZAPTRO_ROUTES.OPENSTREETMAP)) return 'mapa';
+    if (explicitContext) return explicitContext;
     return 'sistema';
-  }, [path, isZaptro]);
+  }, [explicitContext]);
 
   React.useEffect(() => {
     if (isZaptro) return;
@@ -101,8 +120,28 @@ const Loading: React.FC = () => {
     return () => clearTimeout(retryTimer);
   }, [isZaptro]);
 
-  if (isZaptro) {
+  // Versão PREMIUM: Apenas para entrada e saída do sistema, conforme pedido rigoroso do usuário.
+  if (isZaptro && (explicitContext === 'login' || explicitContext === 'logout')) {
     return <ZaptroAuthLoadingInner key={currentContext} context={currentContext} />;
+  }
+
+  // Versão LITE: Apenas barra de progresso no topo para navegação interna ou qualquer carregamento Zaptro não-auth
+  // Isso inclui o fallback de Suspense e o isLoading inicial.
+  if (isZaptro) {
+    return (
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 10000, overflow: 'hidden' }}>
+        <div style={styles.liteBar} />
+      </div>
+    );
+  }
+
+  // Fallback para Logta ERP ou outros contextos (mantido por retrocompatibilidade se não for Zaptro)
+  if (isInternalNavigation) {
+    return (
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 10000, overflow: 'hidden' }}>
+        <div style={styles.liteBar} />
+      </div>
+    );
   }
 
   return (
@@ -112,7 +151,7 @@ const Loading: React.FC = () => {
           <div style={styles.classicSpinner} />
         </div>
         <h1 style={{ ...styles.classicTitle, color: '#0F172A' }}>Logta SaaS</h1>
-        <p style={{ color: '#94A3B8', fontSize: '13px', fontWeight: 600 }}>Sincronizando dados...</p>
+        <p style={{ color: '#94A3B8', fontSize: '13px', fontWeight: 600 }}>{message || 'Sincronizando dados...'}</p>
 
         {showRetry && (
           <button
@@ -125,7 +164,7 @@ const Loading: React.FC = () => {
               background: '#D9FF00',
               color: '#FFF',
               border: 'none',
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: 'pointer',
             }}
           >
@@ -135,6 +174,11 @@ const Loading: React.FC = () => {
       </div>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes liteProgress {
+          0% { left: -30%; width: 30%; }
+          50% { left: 40%; width: 40%; }
+          100% { left: 100%; width: 30%; }
+        }
       `}</style>
     </div>
   );
@@ -173,7 +217,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   premiumText: {
     fontSize: 'clamp(24px, 3.6vw, 38px)',
-    fontWeight: 800,
+    fontWeight: 600,
     margin: 0,
     maxWidth: 'min(92vw, 640px)',
     lineHeight: 1.2,
@@ -196,9 +240,39 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '12px 24px',
     borderRadius: '14px',
     fontSize: '11px',
-    fontWeight: 900,
+    fontWeight: 700,
     cursor: 'pointer',
     letterSpacing: '1px',
+  },
+  liteContainer: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 9999,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    backdropFilter: 'blur(4px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  liteBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '3px',
+    background: '#D9FF00',
+    boxShadow: '0 0 10px #D9FF00',
+    animation: 'liteProgress 2s ease-in-out infinite',
+  },
+  liteSpinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid rgba(217, 255, 0, 0.1)',
+    borderTopColor: '#D9FF00',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite',
   },
   classicOverlay: {
     position: 'fixed',
@@ -228,7 +302,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   classicTitle: {
     fontSize: 20,
-    fontWeight: 900,
+    fontWeight: 700,
     margin: '0 0 8px 0',
   },
 };

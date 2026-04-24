@@ -43,6 +43,7 @@ export interface Profile {
   /** Produto Logta SaaS (ERP) — quando `true`, o utilizador tem contrato / módulo ERP explícito. */
   tem_logta?: boolean;
   avatar_url?: string;
+  department?: string;
   two_factor_enabled?: boolean;
   last_login_ip?: string;
   security_settings?: {
@@ -73,6 +74,9 @@ export interface AuthContextType {
   profile: Profile | null;
   onlineUsers: string[];
   isLoading: boolean;
+  isLoggingOut: boolean;
+  isLoggingIn: boolean;
+  setIsLoggingIn: (val: boolean) => void;
   authError: { message: string; code?: string } | null;
   isVerifyingMFA: boolean;
 

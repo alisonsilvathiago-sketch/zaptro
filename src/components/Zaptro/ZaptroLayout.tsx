@@ -27,6 +27,9 @@ import {
   TrendingUp,
   LayoutGrid,
   MapPin,
+  Building2,
+  FileText,
+  BarChart3,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -35,7 +38,7 @@ import { supabaseZaptro } from '../../lib/supabase-zaptro';
 import { ZAPTRO_ROUTES } from '../../constants/zaptroRoutes';
 import { ZAPTRO_SHADOW } from '../../constants/zaptroShadows';
 import { zaptroCardSurfaceStyle } from '../../constants/zaptroCardSurface';
-import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER } from '../../constants/zaptroUi';
+import { ZAPTRO_FIELD_BG, ZAPTRO_SECTION_BORDER, ZAPTRO_SOFT_NEUTRAL_MUTED } from '../../constants/zaptroUi';
 import { ZaptroThemeProvider, useZaptroTheme } from '../../context/ZaptroThemeContext';
 import { hasZaptroGranularPermission, isZaptroTenantAdminRole } from '../../utils/zaptroPermissions';
 import { zaptroMenuPathToPageId } from '../../utils/zaptroPagePermissionMap';
@@ -45,13 +48,15 @@ import { isZaptroAccessEnabled } from '../../utils/zaptroSubscription';
 import { getZaptroPlanVerifiedTier } from '../../utils/zaptroPlanVerifiedSeal';
 import ZaptroPlanGateModal from './ZaptroPlanGateModal';
 import { ZaptroPlanVerifiedSealBubble } from './ZaptroPlanVerifiedSealBubble';
-import ZaptroLoading from './ZaptroLoading';
+
 import { getContext, isZaptroProductPath } from '../../utils/domains';
 
 interface ZaptroLayoutProps {
   children: React.ReactNode;
   hideSidebar?: boolean;
   hideTopbar?: boolean;
+  /** Esconde só o `<header>` de desktop; o header móvel (menu / logo) mantém-se. */
+  hideDesktopTopbar?: boolean;
   /** Coluna principal sem cap 1320px (ex.: Kanban em `/comercial`). */
   contentFullWidth?: boolean;
   /** Conteúdo opcional como primeiro filho de `.zaptro-scroll-area` (acima do wrapper da página). */
@@ -66,6 +71,35 @@ type MenuEntry = {
 };
 
 type TeamPresenceRow = { id: string; full_name: string | null; avatar_url?: string | null };
+
+/** Marca Zaptro: fundo preto + raio lima (favicon / header / rail). */
+function ZaptroBrandMark({ size = 36 }: { size?: number }) {
+  const iconSize = Math.max(14, Math.round(size * 0.52));
+  return (
+    <div
+      aria-hidden
+      style={{
+        width: size,
+        height: size,
+        borderRadius: Math.max(8, Math.round(size * 0.24)),
+        backgroundColor: '#000000',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        boxSizing: 'border-box',
+      }}
+    >
+      <Zap
+        size={iconSize}
+        color="rgba(217, 255, 0, 1)"
+        strokeWidth={2}
+        fill="rgba(217, 255, 0, 1)"
+        style={{ filter: 'drop-shadow(0 0 8px rgba(217, 255, 0, 0.32))' }}
+      />
+    </div>
+  );
+}
 
 /** Só quem está online — fila fixa no topbar, avatares sobrepostos, sem scroll. */
 function SidebarTeamPresence({
@@ -122,15 +156,16 @@ function SidebarTeamPresence({
 
   const dotStyle = (): React.CSSProperties => ({
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 1,
+    right: 1,
     width: dotSize,
     height: dotSize,
     borderRadius: '50%',
     backgroundColor: 'rgba(75, 231, 8, 1)',
-    border: `2px solid ${ringBg}`,
+    border: `1.5px solid ${ringBg}`,
     boxSizing: 'border-box',
     pointerEvents: 'none',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   });
 
   return (
@@ -160,7 +195,7 @@ function SidebarTeamPresence({
               position: 'relative',
               width: size,
               height: size,
-              marginLeft: i === 0 ? 0 : -overlap,
+              marginLeft: i === 0 ? 0 : 4,
               zIndex: n - i,
               flexShrink: 0,
             }}
@@ -173,10 +208,11 @@ function SidebarTeamPresence({
                 style={{
                   width: size,
                   height: size,
-                  borderRadius: 10,
+                  borderRadius: '50%',
                   objectFit: 'cover',
                   display: 'block',
-                  boxShadow: '0 0 0 1px rgba(0,0,0,0.06)',
+                  border: `2px solid ${ringBg}`,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }}
               />
             ) : (
@@ -185,15 +221,16 @@ function SidebarTeamPresence({
                 style={{
                   width: size,
                   height: size,
-                  borderRadius: 10,
+                  borderRadius: '50%',
                   backgroundColor: '#0f172a',
                   color: '#D9FF00',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: Math.max(11, Math.round(size * 0.38)),
-                  fontWeight: 950,
-                  boxShadow: '0 0 0 1px rgba(0,0,0,0.06)',
+                  fontSize: Math.max(10, Math.round(size * 0.35)),
+                  fontWeight: 700,
+                  border: `2px solid ${ringBg}`,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }}
               >
                 {(m.full_name || '?')[0].toUpperCase()}
@@ -246,6 +283,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
   children,
   hideSidebar = false,
   hideTopbar = false,
+  hideDesktopTopbar = false,
   contentFullWidth = false,
   scrollAreaTop,
 }) => {
@@ -256,42 +294,9 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
   const [planRechecking, setPlanRechecking] = useState(false);
   const { palette, toggleMode, canCustomizeTenant } = useZaptroTheme();
   
-  // 🔥 Cinematic Loading Control
-  const [isPageLoading, setIsPageLoading] = useState(true);
-  const contextType = getContext();
-  const isZaptro = contextType === 'WHATSAPP' || isZaptroProductPath(location.pathname);
 
-  // Re-trigger loading on significant path changes for that "premium" feel
-  useEffect(() => {
-    if (isZaptro) {
-      setIsPageLoading(true);
-    }
-  }, [location.pathname, isZaptro]);
 
-  /** Referência estável — se passarmos inline `() => set…` ao `ZaptroLoading`, cada render cancela os timers do loader. */
-  const finishPageLoading = useCallback(() => {
-    setIsPageLoading(false);
-  }, []);
 
-  /** Garante que o painel nunca fica preso atrás do loader se algo falhar nos timers. */
-  useEffect(() => {
-    if (!isZaptro || !isPageLoading) return;
-    const id = window.setTimeout(() => setIsPageLoading(false), 12000);
-    return () => window.clearTimeout(id);
-  }, [isZaptro, isPageLoading, location.pathname]);
-
-  const currentLoadingContext = useMemo(() => {
-    const p = location.pathname;
-    if (p === ZAPTRO_ROUTES.DASHBOARD) return 'dashboard';
-    if (p.startsWith(ZAPTRO_ROUTES.CHAT)) return 'mensagens';
-    if (p.startsWith(ZAPTRO_ROUTES.ROUTES)) return 'rotas';
-    if (p.startsWith(ZAPTRO_ROUTES.LOGISTICS)) return 'cargas';
-    if (p.startsWith(ZAPTRO_ROUTES.COMMERCIAL_QUOTES)) return 'orcamentos';
-    if (p.startsWith(ZAPTRO_ROUTES.DRIVERS)) return 'motoristas';
-    if (p.startsWith(ZAPTRO_ROUTES.COMMERCIAL_CRM)) return 'crm';
-    if (p.startsWith(ZAPTRO_ROUTES.OPENSTREETMAP)) return 'mapa';
-    return 'sistema';
-  }, [location.pathname]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -316,23 +321,20 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
   const menuItems = useMemo<MenuEntry[]>(() => {
     const all: MenuEntry[] = [
       { icon: LayoutDashboard, label: 'Início', path: ZAPTRO_ROUTES.DASHBOARD },
+      { icon: BarChart3, label: 'Resultados', path: ZAPTRO_ROUTES.RESULTADOS },
       { icon: Kanban, label: 'CRM', path: ZAPTRO_ROUTES.COMMERCIAL_CRM },
       { icon: FileSpreadsheet, label: 'Orçamentos', path: ZAPTRO_ROUTES.COMMERCIAL_QUOTES },
       { icon: Navigation, label: 'Rotas', path: ZAPTRO_ROUTES.ROUTES },
-      { icon: MapPin, label: 'Mapa', path: ZAPTRO_ROUTES.OPENSTREETMAP },
+      { icon: Truck, label: 'Motoristas', path: ZAPTRO_ROUTES.DRIVERS },
       { icon: MessageSquare, label: 'WhatsApp', path: ZAPTRO_ROUTES.CHAT },
       { icon: Clock, label: 'Histórico', path: ZAPTRO_ROUTES.HISTORY },
       { icon: Users, label: 'Clientes', path: ZAPTRO_ROUTES.CLIENTS },
-      { icon: Users, label: 'Equipe', path: ZAPTRO_ROUTES.TEAM },
       { icon: Settings, label: 'Ajustes', path: `${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=config` },
     ];
     if (isMaster || isZaptroTenantAdminRole(profile?.role)) return all;
     return all.filter((item) => {
       if (item.path === ZAPTRO_ROUTES.ROUTES) {
         return canAccessZaptroRoutesPage(profile?.role, profile?.permissions, isMaster);
-      }
-      if (item.path === ZAPTRO_ROUTES.OPENSTREETMAP) {
-        return canAccessZaptroMapPage(profile?.role, profile?.permissions, isMaster);
       }
       const id = zaptroMenuPathToPageId(item.path);
       if (!id) return true;
@@ -418,15 +420,35 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
             marginLeft: expanded ? 0 : 'auto',
             marginRight: expanded ? 0 : 'auto',
             borderRadius: 12,
-            backgroundColor: isActive ? palette.navActiveBg : 'transparent',
-            color: activeFg,
+            background: item.label === 'WhatsApp' ? '#000000' : 'unset',
+            backgroundColor: item.label === 'WhatsApp' ? '#000000' : isActive ? palette.navActiveBg : 'transparent',
+            color: item.label === 'WhatsApp' ? palette.lime : activeFg,
             flexShrink: 0,
             boxSizing: 'border-box',
             transition: 'background-color 0.2s ease, color 0.2s ease',
+            boxShadow: item.label === 'WhatsApp' ? '0 4px 12px rgba(217, 255, 0, 0.15)' : 'none',
           }}
         >
-          <Icon size={20} strokeWidth={isActive ? 2.35 : 2} color="currentColor" />
-          {expanded && <span style={styles.navLabel}>{item.label}</span>}
+          {item.label === 'WhatsApp' ? (
+            <Zap 
+              size={20} 
+              strokeWidth={2.4} 
+              fill={palette.lime} 
+              color={palette.lime} 
+              style={{ filter: 'drop-shadow(0 0 6px rgba(217, 255, 0, 0.4))' }} 
+            />
+          ) : (
+            <Icon size={20} strokeWidth={isActive ? 2.35 : 2} color="currentColor" />
+          )}
+          {expanded && (
+            <span style={{ 
+              ...styles.navLabel, 
+              color: item.label === 'WhatsApp' ? '#FFFFFF' : 'inherit',
+              fontWeight: item.label === 'WhatsApp' ? 900 : 'inherit'
+            }}>
+              {item.label}
+            </span>
+          )}
         </button>
       );
     },
@@ -585,14 +607,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
         ['--zaptro-secondary' as any]: company?.secondary_color || (isDark ? '#000' : '#000'),
       }}
     >
-      {/* 🎬 Premium Cinematic Loader */}
-      {isZaptro && isPageLoading && (
-        <ZaptroLoading
-          key={`${location.pathname}:${currentLoadingContext}`}
-          context={currentLoadingContext as any}
-          onFinished={finishPageLoading}
-        />
-      )}
+
       <style>{`
         :root {
           --z-p: ${company?.primary_color || palette.lime};
@@ -620,23 +635,10 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
             <Menu size={24} color={palette.text} />
           </button>
           <div style={styles.mobileLogo}>
-            <Zap size={20} color={palette.text} fill="var(--z-p)" />
+            <ZaptroBrandMark size={36} />
             <span style={{ ...styles.logoTextMainMobile, color: palette.text }}>ZAPTRO</span>
           </div>
           <div style={{ ...styles.mobileActions, gap: 10 }}>
-            <button
-              type="button"
-              style={styles.hubBtnMobile}
-              onClick={toggleMode}
-              title={palette.mode === 'light' ? 'Modo escuro' : 'Modo claro'}
-              aria-label={palette.mode === 'light' ? 'Modo escuro' : 'Modo claro'}
-            >
-              {palette.mode === 'light' ? (
-                <Moon size={20} color={palette.text} />
-              ) : (
-                <Sun size={20} color={palette.lime} />
-              )}
-            </button>
             <button
               type="button"
               style={styles.hubBtnMobile}
@@ -788,7 +790,14 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                   boxSizing: 'border-box',
                 }}
               >
-                <Zap size={22} color={palette.lime} strokeWidth={2} fill={palette.lime} aria-hidden />
+                <Zap
+                  size={22}
+                  color="rgba(217, 255, 0, 1)"
+                  strokeWidth={2}
+                  fill="rgba(217, 255, 0, 1)"
+                  aria-hidden
+                  style={{ filter: 'drop-shadow(0 0 10px rgba(217, 255, 0, 0.35))' }}
+                />
                 {(isMobile || railHover) && <span style={{ ...styles.logoMain, color: '#ffffff', fontSize: 18 }}>ZAPTRO</span>}
               </button>
             </div>
@@ -806,44 +815,6 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                   }}
                 >
                   {sidebarNavItems.map(renderSidebarNavButton)}
-                  {!isMobile && (
-                    <button
-                      type="button"
-                      className="zaptro-sidebar-nav-btn"
-                      title={palette.mode === 'light' ? 'Modo escuro' : 'Modo claro'}
-                      aria-label={palette.mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-                      onClick={toggleMode}
-                      style={{
-                        border: 'none',
-                        cursor: 'pointer',
-                        width: railHover ? '100%' : 44,
-                        height: 44,
-                        minHeight: railHover ? 48 : 44,
-                        marginLeft: railHover ? 0 : 'auto',
-                        marginRight: railHover ? 0 : 'auto',
-                        borderRadius: 12,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: railHover ? 'flex-start' : 'center',
-                        gap: railHover ? 14 : 0,
-                        padding: railHover ? '12px 14px' : 0,
-                        background: 'transparent',
-                        color: palette.textMuted,
-                        boxSizing: 'border-box',
-                      }}
-                    >
-                      {palette.mode === 'light' ? (
-                        <Moon size={20} strokeWidth={2} />
-                      ) : (
-                        <Sun size={20} color={palette.lime} strokeWidth={2} />
-                      )}
-                      {railHover && (
-                        <span style={{ fontWeight: 850, fontSize: 14, color: palette.text }}>
-                          {palette.mode === 'light' ? 'Modo escuro' : 'Modo claro'}
-                        </span>
-                      )}
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
@@ -878,7 +849,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                 }}
               >
                 <LogOut size={20} strokeWidth={2} />
-                {(isMobile || railHover) && <span style={{ fontWeight: 950, fontSize: 15 }}>Sair do Sistema</span>}
+                {(isMobile || railHover) && <span style={{ fontWeight: 700, fontSize: 15 }}>Sair do Sistema</span>}
               </button>
             </div>
 
@@ -941,7 +912,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                           width: '100%',
                           height: '100%',
                           fontSize: 16,
-                          fontWeight: 950,
+                          fontWeight: 700,
                           color: palette.text,
                           background: palette.profileBg,
                         }}
@@ -951,7 +922,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                     )}
                   </span>
                   {railHover && (
-                    <span style={{ fontWeight: 850, fontSize: 13, color: palette.text, textAlign: 'left', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: palette.text, textAlign: 'left', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       Minha conta
                     </span>
                   )}
@@ -969,7 +940,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
           backgroundColor: palette.pageBg,
         }}
       >
-        {!hideTopbar && !isMobile && (
+        {!hideTopbar && !hideDesktopTopbar && !isMobile && (
           <header
             style={{
               ...styles.topbarShell,
@@ -991,8 +962,8 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                 type="button"
                 style={{
                   ...styles.newsBtn,
-                  backgroundColor: palette.iconButtonBg,
-                  border: `1px solid ${palette.iconButtonBorder}`,
+                  backgroundColor: 'rgba(240, 240, 240, 1)',
+                  border: '1px solid rgba(0, 0, 0, 0.12)',
                 }}
                 onClick={() => setIsNewsOpen(!isNewsOpen)}
               >
@@ -1000,58 +971,138 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                 <div style={{ ...styles.newsDot, borderColor: palette.pageBg }} />
               </button>
 
-              {!isMobile && hideSidebar && (
-                <button
-                  type="button"
-                  style={{
-                    ...styles.newsBtn,
-                    backgroundColor: palette.iconButtonBg,
-                    border: `1px solid ${palette.iconButtonBorder}`,
-                  }}
-                  onClick={toggleMode}
-                  title={palette.mode === 'light' ? 'Modo escuro (aparência)' : 'Modo claro (aparência)'}
-                  aria-label={palette.mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-                >
-                  {palette.mode === 'light' ? (
-                    <Moon size={22} color={palette.text} strokeWidth={2.2} />
-                  ) : (
-                    <Sun size={22} color={palette.lime} strokeWidth={2.2} />
-                  )}
-                </button>
-              )}
 
-              <div style={styles.hubContainer}>
-                <button type="button" style={styles.hubBtn} onClick={() => setIsHubOpen(!isHubOpen)}>
-                  <div style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: '#000',
-                    boxShadow: '0 0 12px rgba(0,0,0,0.4)',
-                    animation: 'zaptro-pulse 1.8s infinite'
-                  }} />
-                  <span>SISTEMA ATIVO</span>
-                </button>
-                <style>{`
-                  @keyframes zaptro-pulse {
-                    0% { transform: scale(0.95); opacity: 1; }
-                    50% { transform: scale(1.15); opacity: 0.7; }
-                    100% { transform: scale(0.95); opacity: 1; }
-                  }
-                `}</style>
+              <div style={{ position: 'relative' }}>
+                {/* ── SISTEMA STATUS BUTTON ── */}
+                {(() => {
+                  const status: 'ativo' | 'suspenso' | 'bloqueado' =
+                    !company ? 'bloqueado' :
+                    company.status === 'suspended' ? 'suspenso' :
+                    company.status === 'blocked' ? 'bloqueado' : 'ativo';
 
-                {isHubOpen && (
-                  <div
-                    style={{
-                      ...styles.hubPopup,
-                      backgroundColor: palette.hubPopupBg,
-                      border: `1px solid ${palette.searchBorder}`,
-                    }}
-                  >
-                    {hubPopupBody}
-                  </div>
-                )}
+                  const statusCfg = {
+                    ativo:    { color: '#000',    bg: '#D9FF00', dot: '#16a34a', label: 'SISTEMA ATIVO' },
+                    suspenso: { color: '#fff',    bg: '#1a1a1a', dot: '#f59e0b', label: 'SUSPENSO' },
+                    bloqueado:{ color: '#fff',    bg: '#000000', dot: '#ef4444', label: 'BLOQUEADO' },
+                  }[status];
+
+                  // Simulated credit data — would come from Supabase billing table
+                  const credits = { total: 1000, usado: 350, disponivel: 650 };
+
+                  return (
+                    <>
+                      <button
+                        type="button"
+                        style={{
+                          ...styles.hubBtn,
+                          backgroundColor: statusCfg.bg,
+                          color: statusCfg.color,
+                        }}
+                        onClick={() => setIsHubOpen(!isHubOpen)}
+                      >
+                        <div style={{
+                          width: 10, height: 10, borderRadius: '50%',
+                          backgroundColor: statusCfg.dot,
+                          boxShadow: `0 0 10px ${statusCfg.dot}80`,
+                          animation: status === 'ativo' ? 'zaptro-pulse 1.8s infinite' : 'none',
+                        }} />
+                        <span>{statusCfg.label}</span>
+                      </button>
+                      <style>{`
+                        @keyframes zaptro-pulse {
+                          0% { transform: scale(0.95); opacity: 1; }
+                          50% { transform: scale(1.15); opacity: 0.7; }
+                          100% { transform: scale(0.95); opacity: 1; }
+                        }
+                      `}</style>
+
+                      {isHubOpen && (
+                        <>
+                          <div
+                            onClick={() => setIsHubOpen(false)}
+                            style={{ position: 'fixed', inset: 0, zIndex: 998 }}
+                          />
+                          <div style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            right: 0,
+                            width: 300,
+                            borderRadius: 20,
+                            background: '#fff',
+                            border: '1px solid rgba(0,0,0,0.08)',
+                            boxShadow: '0 24px 48px rgba(0,0,0,0.14)',
+                            zIndex: 999,
+                            overflow: 'hidden',
+                            animation: 'zaptroSlideUp 0.18s ease-out',
+                          }}>
+                            {/* Header */}
+                            <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid rgba(0,0,0,0.06)', background: statusCfg.bg }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: statusCfg.dot }} />
+                                <span style={{ fontSize: 12, fontWeight: 800, color: statusCfg.color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{statusCfg.label}</span>
+                              </div>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: statusCfg.color, opacity: 0.7 }}>
+                                {company?.name || 'Sua Empresa'}
+                              </div>
+                            </div>
+
+                            {/* Credits */}
+                            <div style={{ padding: '16px 20px' }}>
+                              <div style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>📊 Créditos do Plano</div>
+
+                              {/* Progress bar */}
+                              <div style={{ marginBottom: 16 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                  <span style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>Utilizados</span>
+                                  <span style={{ fontSize: 12, fontWeight: 800, color: '#0f172a' }}>{credits.usado} / {credits.total}</span>
+                                </div>
+                                <div style={{ height: 8, borderRadius: 999, background: '#f1f5f9', overflow: 'hidden' }}>
+                                  <div style={{
+                                    height: '100%',
+                                    width: `${(credits.usado / credits.total) * 100}%`,
+                                    borderRadius: 999,
+                                    background: credits.disponivel < 200 ? '#ef4444' : '#D9FF00',
+                                    transition: 'width 0.6s ease',
+                                  }} />
+                                </div>
+                              </div>
+
+                              {/* Stats row */}
+                              {[
+                                { label: 'Total', value: credits.total, color: '#374151' },
+                                { label: 'Usados', value: credits.usado, color: '#10b981' },
+                                { label: 'Disponíveis', value: credits.disponivel, color: '#D9FF00' },
+                              ].map(({ label, value, color }) => (
+                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                                  <span style={{ fontSize: 13, fontWeight: 600, color: '#6b7280' }}>{label}</span>
+                                  <span style={{ fontSize: 14, fontWeight: 800, color }}>{value.toLocaleString()}</span>
+                                </div>
+                              ))}
+
+                              {/* Plan info */}
+                              <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 12, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                  <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8' }}>PLANO ATUAL</div>
+                                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>
+                                    {(company as any)?.plan || 'Starter'}
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => { setIsHubOpen(false); navigate(ZAPTRO_ROUTES.BILLING ?? '/conta?tab=plano'); }}
+                                  style={{ padding: '6px 14px', borderRadius: 10, border: 'none', background: '#0f172a', color: '#D9FF00', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                                >
+                                  Upgrade
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
+
 
               <div ref={profileMenuRef} style={styles.profileMenuWrap}>
                 <div
@@ -1181,7 +1232,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                               alignItems: 'center',
                               justifyContent: 'center',
                               fontSize: 15,
-                              fontWeight: 950,
+                              fontWeight: 700,
                               flexShrink: 0,
                               overflow: 'hidden',
                             }}
@@ -1210,7 +1261,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                             <div
                               style={{
                                 fontSize: 15,
-                                fontWeight: 950,
+                                fontWeight: 700,
                                 color: palette.text,
                                 letterSpacing: '-0.02em',
                               }}
@@ -1252,6 +1303,54 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                             Meu plano
                           </button>
                         )}
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          style={{ ...styles.profileMenuItem, color: palette.text }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = palette.navActiveBg;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                          onClick={() => goProfileMenu('/conta?tab=empresa')}
+                        >
+                          <Building2 size={18} strokeWidth={2.2} color={palette.text} />
+                          Minha Empresa
+                        </button>
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          style={{ ...styles.profileMenuItem, color: palette.text }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = palette.navActiveBg;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                          onClick={() => goProfileMenu(ZAPTRO_ROUTES.TEAM)}
+                        >
+                          <Users size={18} strokeWidth={2.2} color={palette.text} />
+                          Minha Equipe
+                        </button>
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          style={{ ...styles.profileMenuItem, color: palette.text }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = palette.navActiveBg;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                          onClick={() => goProfileMenu('/conta?tab=billing')}
+                        >
+                          <FileText size={18} strokeWidth={2.2} color={palette.text} />
+                          Assinatura & Faturamento
+                        </button>
 
                         {showProfileAdvancedLinks && (
                           <>
@@ -1335,7 +1434,7 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                           color: '#ef4444',
                           borderRadius: 0,
                           padding: '14px 18px',
-                          fontWeight: 950,
+                          fontWeight: 700,
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor =
@@ -1358,24 +1457,25 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
         )}
 
         {/*
-          Coluna principal: filho directo de `main` com classe explícita `zaptro-main-primary`
-          (modelo “conteúdo da página” antes de qualquer outro bloco auxiliar).
-          Mantém `zaptro-scroll-area` para estilos de scrollbar existentes.
+          Coluna principal (`zaptro-main-primary`): altura fixa à área útil, sem scroll.
+          Rolagem fina na coluna `zaptro-scroll-area` (contentInner) ou, em full-width, só dentro dos filhos.
         */}
         <div
-          className="zaptro-main-primary zaptro-scroll-area"
+          className="zaptro-main-primary"
           style={{
             ...styles.content,
             backgroundColor: palette.pageBg,
             color: palette.text,
-            scrollbarWidth: 'thin',
-            scrollbarColor: isDark ? 'rgba(148, 163, 184, 0.45) transparent' : 'rgba(100, 116, 139, 0.4) transparent',
+            ...(contentFullWidth ? { padding: 0 } : {}),
           }}
         >
-          {scrollAreaTop}
+          {scrollAreaTop ? <div style={{ flexShrink: 0 }}>{scrollAreaTop}</div> : null}
           <div
+            className="zaptro-scroll-area"
             style={{
               ...styles.contentInner,
+              scrollbarWidth: 'thin',
+              scrollbarColor: isDark ? 'rgba(148, 163, 184, 0.45) transparent' : 'rgba(100, 116, 139, 0.4) transparent',
               ...(contentFullWidth
                 ? {
                     maxWidth: 'none',
@@ -1384,6 +1484,14 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                     marginRight: 0,
                     paddingLeft: 'clamp(10px, 1.25vw, 20px)',
                     paddingRight: 'clamp(10px, 1.25vw, 20px)',
+                    /** Coluna encosta à altura útil; rolagem fica nos filhos (ex. inbox), não no `main`. */
+                    height: '100%',
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxSizing: 'border-box',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
                   }
                 : {}),
             }}
@@ -1424,6 +1532,7 @@ const ZaptroLayout: React.FC<ZaptroLayoutProps> = ({
   children,
   hideSidebar = false,
   hideTopbar = false,
+  hideDesktopTopbar = false,
   contentFullWidth = false,
   scrollAreaTop,
 }) => {
@@ -1445,6 +1554,7 @@ const ZaptroLayout: React.FC<ZaptroLayoutProps> = ({
       <ZaptroLayoutChrome
         hideSidebar={hideSidebar}
         hideTopbar={hideTopbar}
+        hideDesktopTopbar={hideDesktopTopbar}
         contentFullWidth={contentFullWidth}
         scrollAreaTop={scrollAreaTop}
       >
@@ -1484,7 +1594,7 @@ const styles: Record<string, React.CSSProperties> = {
   hubContainer: { position: 'relative' },
   mobileLogo: { display: 'flex', alignItems: 'center', gap: 10 },
   mobileActions: { display: 'flex', alignItems: 'center', gap: 10 },
-  logoTextMainMobile: { fontSize: '20px', fontWeight: 950, letterSpacing: '-1px' },
+  logoTextMainMobile: { fontSize: '20px', fontWeight: 700, letterSpacing: '-0.02em' },
   sidebar: {
     position: 'fixed',
     top: 0,
@@ -1514,7 +1624,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
   },
   logoText: { display: 'flex', flexDirection: 'column' },
-  logoMain: { fontSize: '22px', fontWeight: 950, letterSpacing: '-1.5px', lineHeight: 1 },
+  logoMain: { fontSize: '22px', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 },
   navColumn: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 },
   /** Ocupa o espaço entre logo e equipe; menu alinhado ao topo (não centrado verticalmente). */
   navCenterWrap: {
@@ -1560,7 +1670,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '18px',
     fontSize: '15px',
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     width: '100%',
   },
@@ -1620,15 +1730,17 @@ const styles: Record<string, React.CSSProperties> = {
   hubBtn: {
     padding: '14px 24px',
     borderRadius: '18px',
-    backgroundColor: '#D9FF00',
-    border: 'none',
-    color: '#000',
-    fontWeight: 950,
+    backgroundColor: 'rgba(217, 255, 0, 1)',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
+    color: '#000000',
+    fontWeight: 700,
     fontSize: '14px',
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
     cursor: 'pointer',
+    boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 8px 22px rgba(217, 255, 0, 0.22)',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
   },
   hubPopup: {
     position: 'absolute',
@@ -1641,7 +1753,7 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 1000,
   },
   hubHeader: { display: 'flex', gap: '15px', marginBottom: '20px' },
-  hubTitle: { margin: 0, fontSize: '16px', fontWeight: 950 },
+  hubTitle: { margin: 0, fontSize: '16px', fontWeight: 700 },
   hubDesc: { margin: '4px 0 0 0', fontSize: '13px', color: '#94A3B8', fontWeight: 600 },
   hubFooter: { borderTop: '1px solid #e8e8e8', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' },
   supportBtn: {
@@ -1649,7 +1761,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: ZAPTRO_FIELD_BG,
     border: 'none',
     borderRadius: '12px',
-    fontWeight: 900,
+    fontWeight: 700,
     cursor: 'pointer',
     color: '#000',
     display: 'flex',
@@ -1662,7 +1774,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'transparent',
     border: 'none',
     color: '#EF4444',
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -1700,7 +1812,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 14,
     backgroundColor: 'transparent',
     cursor: 'pointer',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: 14,
     textAlign: 'left',
     fontFamily: 'inherit',
@@ -1734,14 +1846,14 @@ const styles: Record<string, React.CSSProperties> = {
     outline: 'none',
   },
   profileInfo: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' },
-  profileName: { fontSize: '14px', fontWeight: 950 },
+  profileName: { fontSize: '14px', fontWeight: 700 },
   roleBadgeHeader: {
     padding: '2px 8px',
     backgroundColor: '#000',
     color: '#D9FF00',
     borderRadius: '6px',
     fontSize: '9px',
-    fontWeight: 950,
+    fontWeight: 700,
   },
   avatarMini: {
     width: '42px',
@@ -1752,32 +1864,36 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: 950,
+    fontWeight: 700,
     fontSize: '16px',
   },
   /**
-   * Área rolável full-bleed no `main` (sem max-width): scroll e cor de fundo; margens laterais “originais”.
+   * Coluna principal sob o `main`: sem rolagem aqui — fica fixa à área útil; quem rola é `contentInner` ou páginas full-width por dentro.
    */
   content: {
     flex: 1,
     minHeight: 0,
     minWidth: 0,
     width: '100%',
+    height: 0,
     margin: 0,
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    padding: '24px 0 64px',
+    overflow: 'hidden',
+    padding: '24px 0 32px',
     boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
   },
-  /** Coluna centrada: largura maior em desktop para menos “faixa” cinzenta à esquerda/direita. */
+  /** Coluna centrada: rolagem vertical padrão; em `contentFullWidth` passa a `overflow: hidden` e os filhos controlam scroll. */
   contentInner: {
     width: '100%',
     maxWidth: 'min(100%, 1720px)',
     marginLeft: 'auto',
     marginRight: 'auto',
-    paddingLeft: 'clamp(8px, 1vw, 14px)',
-    paddingRight: 'clamp(8px, 1vw, 14px)',
     boxSizing: 'border-box',
+    flex: 1,
+    minHeight: 0,
+    overflowX: 'hidden',
+    overflowY: 'auto',
   },
 };
 

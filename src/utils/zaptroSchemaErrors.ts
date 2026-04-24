@@ -4,7 +4,7 @@
  */
 
 const WHATSAPP_COMPANIES_FIX =
-  'No Supabase → SQL Editor, executa o ficheiro do repo: logta/supabase/migrations/20260415100000_create_whatsapp_companies_zaptro.sql (cria public.whatsapp_companies e RLS). Depois recarrega a página.';
+  'No Supabase → SQL Editor, executa no repo: supabase/migrations/20260415100000_create_whatsapp_companies_zaptro.sql (ou scripts/schema-zaptro-minimal.sql — secção whatsapp_companies). Cria public.whatsapp_companies e RLS. Depois recarrega a página.';
 
 function extractMessage(err: unknown): string {
   if (err == null) return '';

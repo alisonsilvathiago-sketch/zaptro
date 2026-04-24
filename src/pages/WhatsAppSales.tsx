@@ -2196,7 +2196,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-sticky-trust-phrase {
           display: block;
           font-size: clamp(1.85rem, 4.8vw, 3.1rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.035em;
           line-height: 1.12;
           color: ${WHITE};
@@ -2206,7 +2206,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-sticky-trust-num {
           font-size: clamp(3rem, 11vw, 5.75rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.045em;
           line-height: 0.95;
           color: ${WHITE};
@@ -2216,10 +2216,10 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-sticky-trust-kicker {
           font-size: 13px;
-          font-weight: 800;
+          font-weight: 600;
           color: rgba(255,255,255,0.92);
           text-transform: uppercase;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.02em;
         }
         .zt-sticky-trust-body {
           margin: 0;
@@ -2352,7 +2352,7 @@ const ZaptroMarketing: React.FC = () => {
           align-items: center;
           justify-content: center;
         }
-        .zt-brand { font-size: 21px; font-weight: 950; letter-spacing: -0.04em; color: ${BLACK}; }
+        .zt-brand { font-size: 21px; font-weight: 700; letter-spacing: -0.04em; color: ${BLACK}; }
         .zt-nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
         .zt-nav-mega-root {
           flex: 1;
@@ -2378,7 +2378,7 @@ const ZaptroMarketing: React.FC = () => {
           cursor: pointer;
           font: inherit;
           font-size: 13px;
-          font-weight: 800;
+          font-weight: 600;
           color: var(--zt-muted);
           padding: 8px 12px;
           border-radius: 999px;
@@ -2446,7 +2446,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-nav-mega-kicker {
           margin: 0 0 8px;
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: rgba(0, 0, 0, 0.45);
@@ -2486,7 +2486,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-nav-mega-link-t {
           display: block;
           font-size: 14px;
-          font-weight: 850;
+          font-weight: 700;
           color: ${BLACK};
           letter-spacing: -0.02em;
         }
@@ -2519,7 +2519,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-nav-mega-tile-t {
           font-size: 14px;
-          font-weight: 850;
+          font-weight: 700;
           color: ${BLACK};
           letter-spacing: -0.02em;
         }
@@ -2554,7 +2554,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 999px;
           border: 1px solid var(--zt-line);
           background: var(--zt-card);
-          font-weight: 800;
+          font-weight: 600;
           font-size: 13px;
           cursor: pointer;
           color: var(--zt-fg);
@@ -2571,7 +2571,7 @@ const ZaptroMarketing: React.FC = () => {
           border: none;
           background: ${LIME};
           color: ${BLACK};
-          font-weight: 950;
+          font-weight: 700;
           font-size: 13px;
           cursor: pointer;
           display: inline-flex;
@@ -2591,7 +2591,7 @@ const ZaptroMarketing: React.FC = () => {
           border: none;
           background: ${BLACK};
           color: ${WHITE};
-          font-weight: 950;
+          font-weight: 700;
           font-size: 15px;
           cursor: pointer;
           display: inline-flex;
@@ -2608,7 +2608,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 999px;
           border: 2px solid var(--zt-border);
           background: var(--zt-card);
-          font-weight: 900;
+          font-weight: 700;
           font-size: 15px;
           cursor: pointer;
           display: inline-flex;
@@ -2661,7 +2661,7 @@ const ZaptroMarketing: React.FC = () => {
           align-items: center;
           gap: 8px;
           font-size: 13px;
-          font-weight: 800;
+          font-weight: 600;
           color: var(--zt-muted);
           margin: 0 0 16px;
         }
@@ -2690,7 +2690,7 @@ const ZaptroMarketing: React.FC = () => {
           align-items: center;
           gap: 0.02em;
           font-size: clamp(2.35rem, 7.8vw, 4.1rem);
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: -0.046em;
           line-height: 1.02;
           max-width: 100%;
@@ -2941,7 +2941,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-plan-tier-eyebrow {
           margin: 0 0 10px;
           font-size: 11px;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: 0.09em;
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.48);
@@ -2949,7 +2949,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-plan-tier-name {
           margin: 0 0 12px;
           font-size: clamp(1.35rem, 3vw, 1.6rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.03em;
           color: var(--zt-fg);
         }
@@ -2993,7 +2993,7 @@ const ZaptroMarketing: React.FC = () => {
           border-bottom: none;
         }
         .zt-compare-prob {
-          font-weight: 850;
+          font-weight: 700;
           font-size: 14px;
           line-height: 1.35;
           color: rgba(255, 255, 255, 0.78);
@@ -3253,7 +3253,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-stat-atl-num {
           font-size: clamp(2rem, 5vw, 3.35rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.045em;
           line-height: 1;
           margin-bottom: 10px;
@@ -3261,10 +3261,10 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-stat-atl-label {
           font-size: 12px;
-          font-weight: 800;
+          font-weight: 600;
           color: var(--zt-muted);
           text-transform: uppercase;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.02em;
           line-height: 1.35;
         }
         .zt-stat-atl-pitch {
@@ -3458,7 +3458,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-spot-tag {
           font-size: 12px;
-          font-weight: 950;
+          font-weight: 700;
           color: ${LIME};
           text-transform: uppercase;
           letter-spacing: 0.1em;
@@ -3482,14 +3482,14 @@ const ZaptroMarketing: React.FC = () => {
             0 0 48px -8px rgba(217,255,0,0.1),
             0 16px 48px rgba(0,0,0,0.5);
         }
-        .zt-h3 { font-size: 1.35rem; font-weight: 950; margin: 0 0 10px; letter-spacing: -0.02em; color: var(--zt-fg); }
+        .zt-h3 { font-size: 1.35rem; font-weight: 700; margin: 0 0 10px; letter-spacing: -0.02em; color: var(--zt-fg); }
         @media (max-width: 768px) {
           .zt-h3 {
             font-size: clamp(1.12rem, 3.8vw, 1.32rem);
             line-height: 1.25;
           }
         }
-        .zt-h4 { font-size: 1.05rem; font-weight: 950; margin: 0 0 8px; color: var(--zt-fg); }
+        .zt-h4 { font-size: 1.05rem; font-weight: 700; margin: 0 0 8px; color: var(--zt-fg); }
         .zt-card-p { font-size: 15px; color: var(--zt-muted); line-height: 1.6; margin: 0; }
         .zt-card-p.sm { font-size: 14px; }
         .zt-bento-visual { position: relative; margin-top: 20px; border-radius: 20px; overflow: hidden; border: 1px solid var(--zt-border); }
@@ -3502,7 +3502,7 @@ const ZaptroMarketing: React.FC = () => {
           background: ${BLACK};
           color: ${LIME};
           font-size: 12px;
-          font-weight: 900;
+          font-weight: 700;
           display: inline-flex;
           align-items: center;
           gap: 8px;
@@ -3556,8 +3556,8 @@ const ZaptroMarketing: React.FC = () => {
           .zt-split { grid-template-columns: 1fr; }
         }
         .zt-stat-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-        .zt-stat-num { font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 950; letter-spacing: -0.04em; line-height: 1; }
-        .zt-stat-label { font-size: 13px; font-weight: 800; color: var(--zt-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+        .zt-stat-num { font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+        .zt-stat-label { font-size: 13px; font-weight: 600; color: var(--zt-muted); text-transform: uppercase; letter-spacing: 0.06em; }
         .zt-t-grid-wrap { position: relative; margin-top: 40px; }
         .zt-t-grid {
           display: grid;
@@ -3587,13 +3587,13 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 14px;
           background: ${BLACK};
           color: ${LIME};
-          font-weight: 950;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 16px;
         }
-        .zt-t-name { font-weight: 900; font-size: 14px; color: var(--zt-fg); }
+        .zt-t-name { font-weight: 700; font-size: 14px; color: var(--zt-fg); }
         .zt-t-role { font-size: 12px; color: var(--zt-faint); font-weight: 600; margin-top: 2px; }
         .zt-t-body { font-size: 14px; color: var(--zt-muted); line-height: 1.55; margin: 0; }
         .zt-t-fade {
@@ -3616,7 +3616,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 999px;
           border: 2px solid var(--zt-border);
           background: var(--zt-card);
-          font-weight: 900;
+          font-weight: 700;
           font-size: 14px;
           cursor: pointer;
           display: inline-flex;
@@ -3650,7 +3650,7 @@ const ZaptroMarketing: React.FC = () => {
             0 16px 48px rgba(0,0,0,0.45);
         }
         .zt-blog-img-wrap { aspect-ratio: 16/10; overflow: hidden; background: #000000; }
-        .zt-blog-date { display: block; font-size: 12px; font-weight: 800; color: var(--zt-faint); padding: 16px 20px 0; }
+        .zt-blog-date { display: block; font-size: 12px; font-weight: 600; color: var(--zt-faint); padding: 16px 20px 0; }
         .zt-blog-title {
           font-size: clamp(1.12rem, 2vw, 1.35rem);
           font-weight: 600;
@@ -3680,7 +3680,7 @@ const ZaptroMarketing: React.FC = () => {
           border-color: rgba(217,255,0,0.2);
           box-shadow: 0 0 32px -12px rgba(217,255,0,0.08);
         }
-        .zt-faq-q { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 15px; color: var(--zt-fg); }
+        .zt-faq-q { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 15px; color: var(--zt-fg); }
         .zt-faq-a { margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--zt-border); color: var(--zt-muted); font-size: 15px; line-height: 1.6; }
         .zt-cta-band {
           position: relative;
@@ -3948,7 +3948,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-bento-cap-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.05rem, 1.8vw, 1.2rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.02em;
           color: ${WHITE};
           margin: 0 0 10px;
@@ -3998,12 +3998,12 @@ const ZaptroMarketing: React.FC = () => {
           color: #334155;
         }
         .zt-bento-mock-total strong {
-          font-weight: 900;
+          font-weight: 700;
           color: #0f172a;
         }
         .zt-bento-mock-pill {
           font-size: 10px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 6px 10px;
           border-radius: 999px;
           background: #000000;
@@ -4048,7 +4048,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-bento-seg--green { background: #22c55e; }
         .zt-bento-flow-label {
           font-size: 10px;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: 0.06em;
           text-transform: uppercase;
           color: #64748b;
@@ -4075,7 +4075,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-bento-tag-hi {
           font-size: 9px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 3px 8px;
           border-radius: 6px;
           background: rgba(249, 115, 22, 0.15);
@@ -4088,7 +4088,7 @@ const ZaptroMarketing: React.FC = () => {
           background: #000000;
           color: ${LIME};
           font-size: 9px;
-          font-weight: 950;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -4098,7 +4098,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 12px;
           padding: 10px;
           text-align: center;
-          font-weight: 800;
+          font-weight: 600;
           font-size: 11px;
           color: #64748b;
         }
@@ -4154,7 +4154,7 @@ const ZaptroMarketing: React.FC = () => {
           border-bottom: 1px solid #e2e8f0;
         }
         .zt-bento-chat-title {
-          font-weight: 800;
+          font-weight: 600;
           font-size: 12px;
           color: #0f172a;
         }
@@ -4166,7 +4166,7 @@ const ZaptroMarketing: React.FC = () => {
           background: #D9FF00;
           color: ${WHITE};
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -4195,7 +4195,7 @@ const ZaptroMarketing: React.FC = () => {
           background: linear-gradient(135deg, #D9FF00, #D9FF00);
           color: ${WHITE};
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -4216,7 +4216,7 @@ const ZaptroMarketing: React.FC = () => {
           min-width: 0;
         }
         .zt-bento-chat-name {
-          font-weight: 800;
+          font-weight: 600;
           font-size: 11px;
           color: #0f172a;
         }
@@ -4234,7 +4234,7 @@ const ZaptroMarketing: React.FC = () => {
           flex-shrink: 0;
         }
         .zt-bento-table-cap {
-          font-weight: 800;
+          font-weight: 600;
           font-size: 12px;
           color: #0f172a;
           margin-bottom: 10px;
@@ -4264,7 +4264,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-bento-table-row--head {
           background: #f4f4f4;
           font-size: 10px;
-          font-weight: 800;
+          font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.04em;
           color: #64748b;
@@ -4284,7 +4284,7 @@ const ZaptroMarketing: React.FC = () => {
           background: #0f172a;
           color: ${WHITE};
           font-size: 9px;
-          font-weight: 950;
+          font-weight: 700;
           font-style: normal;
           display: inline-flex;
           align-items: center;
@@ -4333,7 +4333,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-metric-band-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.75rem, 4.8vw, 3.1rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.04em;
           color: ${WHITE};
           margin: 0 0 12px;
@@ -4404,7 +4404,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-metric-val {
           font-family: var(--zt-font-heading);
           font-size: clamp(2rem, 4.2vw, 2.65rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.045em;
           color: ${WHITE};
           line-height: 1;
@@ -4530,7 +4530,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-steps-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.85rem, 5vw, 3.15rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.04em;
           color: ${WHITE};
           margin: 0 0 14px;
@@ -4589,7 +4589,7 @@ const ZaptroMarketing: React.FC = () => {
           margin-bottom: 20px;
           border-radius: 999px;
           font-size: 11px;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.9);
@@ -4603,7 +4603,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-pricing-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.85rem, 5.2vw, 3.15rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.04em;
           line-height: 1.08;
           margin: 0 0 clamp(14px, 2.4vw, 22px);
@@ -4702,7 +4702,7 @@ const ZaptroMarketing: React.FC = () => {
           text-align: center;
           padding: 10px 16px;
           font-size: 10px;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: #f0f0f0;
@@ -4736,7 +4736,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-pricing-card-name {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.15rem, 2.2vw, 1.35rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.03em;
           line-height: 1.15;
           margin: 0;
@@ -4761,14 +4761,14 @@ const ZaptroMarketing: React.FC = () => {
         .zt-pricing-price {
           font-family: var(--zt-font-heading);
           font-size: clamp(2rem, 4.2vw, 2.6rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 1;
           color: #fafafa;
         }
         .zt-pricing-price--consult {
           font-size: clamp(1.35rem, 2.8vw, 1.85rem);
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: -0.03em;
         }
         .zt-pricing-period {
@@ -4784,7 +4784,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-pricing-features-label {
           margin: 0 0 10px;
           font-size: 12px;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: 0.04em;
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.42);
@@ -4828,7 +4828,7 @@ const ZaptroMarketing: React.FC = () => {
           padding: 14px 18px;
           border-radius: 12px;
           font-size: 14px;
-          font-weight: 800;
+          font-weight: 600;
           font-family: inherit;
           cursor: pointer;
           text-decoration: none;
@@ -4933,7 +4933,7 @@ const ZaptroMarketing: React.FC = () => {
           margin-bottom: 18px;
           border-radius: 999px;
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.88);
@@ -4947,7 +4947,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-lp-faq-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.85rem, 5.2vw, 3.15rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.04em;
           line-height: 1.08;
           margin: 0 0 clamp(14px, 2.2vw, 20px);
@@ -5169,7 +5169,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-steps-tab {
           font-size: 10px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 6px 10px;
           border-radius: 8px;
           color: #94a3b8;
@@ -5186,7 +5186,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-steps-col-h {
           font-size: 9px;
-          font-weight: 950;
+          font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.06em;
           color: #64748b;
@@ -5201,7 +5201,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-steps-pill {
           display: inline-block;
           font-size: 9px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 3px 8px;
           border-radius: 6px;
           background: rgba(217, 255, 0, 0.35);
@@ -5210,7 +5210,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-steps-card-t {
           font-size: 11px;
-          font-weight: 800;
+          font-weight: 600;
           color: #0f172a;
           line-height: 1.35;
           margin-bottom: 4px;
@@ -5258,7 +5258,7 @@ const ZaptroMarketing: React.FC = () => {
           background: ${LIME};
           color: ${BLACK};
           font-size: 13px;
-          font-weight: 950;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -5267,7 +5267,7 @@ const ZaptroMarketing: React.FC = () => {
           margin: 0 0 8px;
           font-family: var(--zt-font-heading);
           font-size: clamp(1.02rem, 1.6vw, 1.15rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.02em;
           color: #fafafa;
           line-height: 1.25;
@@ -5288,7 +5288,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-step-embed-title {
           font-size: 12px;
-          font-weight: 800;
+          font-weight: 600;
           color: rgba(255, 255, 255, 0.78);
           margin-bottom: 10px;
           text-align: center;
@@ -5300,7 +5300,7 @@ const ZaptroMarketing: React.FC = () => {
           padding: 10px 14px;
           border-radius: 10px;
           font-size: 12px;
-          font-weight: 900;
+          font-weight: 700;
           cursor: pointer;
           border: none;
           font-family: inherit;
@@ -5365,7 +5365,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-idemo-title {
           font-family: var(--zt-font-heading);
           font-size: clamp(1.75rem, 4.8vw, 3rem);
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.04em;
           color: ${WHITE};
           margin: 0 0 14px;
@@ -5411,7 +5411,7 @@ const ZaptroMarketing: React.FC = () => {
           background: rgba(217, 255, 0, 0.16);
           color: #f8fafc;
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -5419,7 +5419,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-logo-txt {
           font-size: 12px;
-          font-weight: 800;
+          font-weight: 600;
           color: rgba(255, 255, 255, 0.82);
           white-space: nowrap;
         }
@@ -5632,7 +5632,7 @@ const ZaptroMarketing: React.FC = () => {
           background: ${LIME};
           color: ${BLACK};
           font-size: 9px;
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: 0.04em;
         }
         .zt-idemo-pill-safe svg {
@@ -5655,7 +5655,7 @@ const ZaptroMarketing: React.FC = () => {
           background: #0f172a;
           color: #f8fafc;
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -5668,12 +5668,12 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-user-name {
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 700;
           color: #0f172a;
         }
         .zt-idemo-user-role {
           font-size: 9px;
-          font-weight: 800;
+          font-weight: 600;
           color: #64748b;
         }
         @media (max-width: 480px) {
@@ -5854,8 +5854,8 @@ const ZaptroMarketing: React.FC = () => {
         .zt-idemo-demo-pill {
           align-self: flex-start;
           font-size: 8px;
-          font-weight: 950;
-          letter-spacing: 0.08em;
+          font-weight: 700;
+          letter-spacing: 0.02em;
           padding: 3px 8px;
           border-radius: 6px;
           background: #e2e8f0;
@@ -5868,7 +5868,7 @@ const ZaptroMarketing: React.FC = () => {
           height: 37px;
           box-sizing: border-box;
           font-size: 8px;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: 0.05em;
           color: #14532d;
           padding: 4px 8px;
@@ -5893,7 +5893,7 @@ const ZaptroMarketing: React.FC = () => {
           color: #0f172a;
           border: 1px solid rgba(15, 23, 42, 0.08);
           font-size: 10px;
-          font-weight: 900;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -5930,7 +5930,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-thread-name {
           font-size: 10px;
-          font-weight: 900;
+          font-weight: 700;
           color: #0f172a;
           white-space: nowrap;
           overflow: hidden;
@@ -5995,7 +5995,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-chat-name {
           font-size: 12px;
-          font-weight: 950;
+          font-weight: 700;
           color: #0f172a;
           line-height: 1.25;
           letter-spacing: -0.02em;
@@ -6018,7 +6018,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-badge {
           font-size: 8px;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: 0.06em;
           padding: 3px 8px;
           border-radius: 6px;
@@ -6046,7 +6046,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-dot {
           font-size: 9px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 5px 10px;
           border-radius: 999px;
           background: ${WHITE};
@@ -6062,7 +6062,7 @@ const ZaptroMarketing: React.FC = () => {
           background: rgba(217, 255, 0, 0.55);
           border-color: rgba(217, 255, 0, 0.85);
           color: #14532d;
-          font-weight: 950;
+          font-weight: 700;
         }
         .zt-idemo-messages {
           flex: 1;
@@ -6184,7 +6184,7 @@ const ZaptroMarketing: React.FC = () => {
           align-self: flex-end;
           background: ${LIME};
           color: ${BLACK};
-          font-weight: 800;
+          font-weight: 600;
         }
         .zt-idemo-quick {
           display: flex;
@@ -6194,7 +6194,7 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-quick span {
           font-size: 9px;
-          font-weight: 800;
+          font-weight: 600;
           padding: 5px 8px;
           border-radius: 8px;
           background: ${WHITE};
@@ -6265,7 +6265,7 @@ const ZaptroMarketing: React.FC = () => {
           background: #f4f4f4;
           border: 1px solid rgba(15, 23, 42, 0.1);
           font-size: 13px;
-          font-weight: 950;
+          font-weight: 700;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -6282,13 +6282,13 @@ const ZaptroMarketing: React.FC = () => {
         }
         .zt-idemo-side-co {
           font-size: 10px;
-          font-weight: 950;
+          font-weight: 700;
           color: #0f172a;
           line-height: 1.3;
         }
         .zt-idemo-side-tag {
           font-size: 8px;
-          font-weight: 900;
+          font-weight: 700;
           color: #64748b;
         }
         .zt-idemo-side-block {
@@ -6302,7 +6302,7 @@ const ZaptroMarketing: React.FC = () => {
           align-items: center;
           gap: 6px;
           font-size: 9px;
-          font-weight: 950;
+          font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
           color: #64748b;
@@ -6373,7 +6373,7 @@ const ZaptroMarketing: React.FC = () => {
           color: #0f0f0f;
           font-family: var(--zt-font-heading);
           font-size: 1.35rem;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.02em;
         }
         .zt-footer-brand-logo {
@@ -6430,7 +6430,7 @@ const ZaptroMarketing: React.FC = () => {
           border-radius: 10px;
           background: ${LIME};
           color: ${BLACK};
-          font-weight: 900;
+          font-weight: 700;
           font-size: 13px;
           cursor: pointer;
           font-family: inherit;
@@ -6448,7 +6448,7 @@ const ZaptroMarketing: React.FC = () => {
         .zt-foot-block-title {
           font-family: var(--zt-font-heading);
           font-size: 15px;
-          font-weight: 800;
+          font-weight: 600;
           letter-spacing: -0.02em;
           color: #0f0f0f;
           margin: 0 0 16px;
@@ -6513,7 +6513,7 @@ const ZaptroMarketing: React.FC = () => {
           max-width: min(100%, 420px);
         }
         .zt-footer-credits strong {
-          font-weight: 900;
+          font-weight: 700;
           color: rgba(0, 0, 0, 0.55);
         }
         .zt-footer-bottom-social {
@@ -6570,7 +6570,7 @@ const ZaptroMarketing: React.FC = () => {
           z-index: 0;
           font-family: var(--zt-font-heading);
           font-size: clamp(4rem, 22vw, 12.5rem);
-          font-weight: 950;
+          font-weight: 700;
           letter-spacing: -0.03em;
           line-height: 0.82;
           white-space: nowrap;
@@ -6651,7 +6651,7 @@ const ZaptroMarketing: React.FC = () => {
           .zt-dark #planos .zt-pricing-title,
           .zt-dark #faq .zt-lp-faq-title {
             font-size: clamp(1.95rem, 5.85vw + 0.45rem, 2.48rem);
-            font-weight: 800;
+            font-weight: 600;
             letter-spacing: -0.045em;
             line-height: 1.07;
             text-wrap: balance;
@@ -6668,7 +6668,7 @@ const ZaptroMarketing: React.FC = () => {
           .zt-dark #planos .zt-pricing-title .zt-section-head__grad,
           .zt-dark #faq .zt-lp-faq-title .zt-section-head__plain,
           .zt-dark #faq .zt-lp-faq-title .zt-section-head__grad {
-            font-weight: 800;
+            font-weight: 600;
           }
           .zt-dark #faq .zt-lp-faq-title .zt-section-head__grad,
           .zt-dark #planos .zt-pricing-title .zt-section-head__grad {

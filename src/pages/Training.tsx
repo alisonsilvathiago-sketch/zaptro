@@ -268,8 +268,8 @@ const styles = {
   container: { padding: '32px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   headerPremium: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap' as const, gap: '24px' },
   headerTitleArea: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' },
+  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '700', marginBottom: '8px', letterSpacing: '1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-1px' },
   tabNavCompact: { display: 'flex', gap: '8px', backgroundColor: 'rgba(241, 245, 249, 0.5)', padding: '6px', borderRadius: '18px', border: '1px solid var(--border)', overflowX: 'auto' as const, scrollbarWidth: 'none' as const },
   tabBtnCompact: { 
     display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', 
@@ -282,9 +282,9 @@ const styles = {
   dashboardSection: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' },
   kpiCard: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  kpiLabel: { fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const, marginBottom: '8px' },
+  kpiLabel: { fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const, marginBottom: '8px' },
   kpiInfo: { display: 'flex', flexDirection: 'column' as const },
-  kpiValue: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)' },
+  kpiValue: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)' },
 
   addBtn: {
     backgroundColor: 'var(--primary)', color: 'white', border: 'none', 
@@ -305,12 +305,12 @@ const styles = {
   },
   courseHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   iconBox: { width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  segmentBadge: { fontSize: '10px', fontWeight: '800', textTransform: 'uppercase' as const, color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 8px', borderRadius: '8px' },
-  courseTitle: { fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' },
+  segmentBadge: { fontSize: '10px', fontWeight: '600', textTransform: 'uppercase' as const, color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 8px', borderRadius: '8px' },
+  courseTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--text-main)' },
   courseDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5' },
   courseFooter: { marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid var(--border)' },
   meta: { fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' },
-  playBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', width: '100%', justifyContent: 'center', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '800', cursor: 'pointer', marginTop: '10px' },
+  playBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', width: '100%', justifyContent: 'center', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '600', cursor: 'pointer', marginTop: '10px' },
   upgradeCard: { textAlign: 'center' as const, padding: '80px', backgroundColor: 'white', borderRadius: '32px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '20px' },
   emptyView: { textAlign: 'center' as const, padding: '100px', backgroundColor: 'white', borderRadius: '32px', border: '1px solid var(--border)', color: '#94a3b8' },
   empty: { textAlign: 'center' as const, padding: '40px', color: 'var(--text-muted)', gridColumn: '1 / -1' }

@@ -11,7 +11,8 @@ import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { isZaptroDemoDriverId, ZAPTRO_DEMO_DRIVERS } from '../constants/zaptroDriversDemo';
 import { ZAPTRO_ROUTES, zaptroDriverProfilePath } from '../constants/zaptroRoutes';
 import { extractPlateFromVehicleText, vehicleTextContainsPlate } from '../utils/zaptroDriverVehicle';
-
+import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
+import { ZaptroVehiclesTab } from './ZaptroVehiclesTab';
 function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties> {
   const d = p.mode === 'dark';
   const border = p.sidebarBorder;
@@ -34,9 +35,9 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       flexShrink: 0,
     },
     headerText: { flex: '1 1 240px', minWidth: 0 },
-    title: { fontSize: 30, fontWeight: 950, color: p.text, margin: '0 0 8px 0', letterSpacing: '-1.2px' },
+    title: { fontSize: 30, fontWeight: 700, color: p.text, margin: '0 0 8px 0', letterSpacing: '-1.2px' },
     subtitle: { margin: 0, fontSize: 15, color: p.textMuted, fontWeight: 600, lineHeight: 1.55, maxWidth: 720 },
-    code: { fontSize: 12, fontWeight: 800, fontFamily: 'ui-monospace, monospace', color: p.text },
+    code: { fontSize: 12, fontWeight: 600, fontFamily: 'ui-monospace, monospace', color: p.text },
 
     noTenantBanner: {
       marginBottom: 22,
@@ -64,10 +65,10 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       top: 20,
       boxShadow: d ? 'none' : ZAPTRO_SHADOW.xs,
     },
-    cardTitle: { fontSize: 17, fontWeight: 950, color: p.text, marginBottom: 22, letterSpacing: '-0.3px' },
+    cardTitle: { fontSize: 17, fontWeight: 700, color: p.text, marginBottom: 22, letterSpacing: '-0.3px' },
     form: { display: 'flex', flexDirection: 'column', gap: 18 },
     inputGroup: { display: 'flex', flexDirection: 'column', gap: 8 },
-    label: { fontSize: 10, fontWeight: 950, color: p.text, letterSpacing: '0.12em' },
+    label: { fontSize: 10, fontWeight: 700, color: p.text, letterSpacing: '0.12em' },
     input: {
       padding: '14px 16px',
       borderRadius: 14,
@@ -86,7 +87,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       backgroundColor: 'transparent',
       border: `1px solid ${border}`,
       borderRadius: 14,
-      fontWeight: 800,
+      fontWeight: 600,
       color: p.text,
       cursor: 'pointer',
       fontFamily: 'inherit',
@@ -97,7 +98,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       color: '#000000',
       border: 'none',
       borderRadius: 16,
-      fontWeight: 950,
+      fontWeight: 700,
       fontSize: 14,
       cursor: 'pointer',
       display: 'flex',
@@ -153,7 +154,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       padding: '0 18px',
       borderRadius: 16,
       fontSize: 13,
-      fontWeight: 800,
+      fontWeight: 600,
       cursor: 'pointer',
       height: 48,
       fontFamily: 'inherit',
@@ -180,8 +181,8 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       justifyContent: 'center',
       flexShrink: 0,
     },
-    driverName: { fontSize: 16, fontWeight: 950, color: p.text, margin: '0 0 4px 0', letterSpacing: '-0.02em' },
-    statusBadge: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontWeight: 900, color: p.textMuted },
+    driverName: { fontSize: 16, fontWeight: 700, color: p.text, margin: '0 0 4px 0', letterSpacing: '-0.02em' },
+    statusBadge: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontWeight: 700, color: p.textMuted },
     statusDot: { width: 6, height: 6, borderRadius: '50%' },
     actions: { display: 'flex', gap: 6 },
     iconBtn: {
@@ -210,7 +211,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       alignItems: 'center',
       paddingLeft: 62,
     },
-    footerLabel: { fontSize: 9, fontWeight: 950, color: p.textMuted, letterSpacing: '0.08em' },
+    footerLabel: { fontSize: 9, fontWeight: 700, color: p.textMuted, letterSpacing: '0.02em' },
     waIcon: {
       width: 26,
       height: 26,
@@ -230,7 +231,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       borderRadius: 20,
       border: `1px dashed ${border}`,
     },
-    emptyTitle: { margin: 0, fontWeight: 950, color: p.text, fontSize: 16 },
+    emptyTitle: { margin: 0, fontWeight: 700, color: p.text, fontSize: 16 },
     emptySub: { margin: '10px 0 0', color: p.textMuted, fontSize: 14, fontWeight: 600, lineHeight: 1.5 },
 
     deleteOverlay: {
@@ -280,11 +281,11 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    deleteModalTitle: { margin: 0, fontSize: 18, fontWeight: 950, color: p.text, textAlign: 'center', letterSpacing: '-0.02em' },
+    deleteModalTitle: { margin: 0, fontSize: 18, fontWeight: 700, color: p.text, textAlign: 'center', letterSpacing: '-0.02em' },
     deleteModalName: {
       margin: '10px 0 0',
       fontSize: 17,
-      fontWeight: 950,
+      fontWeight: 700,
       color: p.text,
       textAlign: 'center',
       letterSpacing: '-0.02em',
@@ -304,7 +305,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       padding: '15px 20px',
       borderRadius: 16,
       border: 'none',
-      fontWeight: 950,
+      fontWeight: 700,
       fontSize: 15,
       cursor: 'pointer',
       fontFamily: 'inherit',
@@ -325,7 +326,7 @@ function buildStyles(p: ZaptroThemePalette): Record<string, React.CSSProperties>
       border: `1px solid ${border}`,
       backgroundColor: 'transparent',
       color: p.textMuted,
-      fontWeight: 800,
+      fontWeight: 600,
       fontSize: 14,
       cursor: 'pointer',
       fontFamily: 'inherit',
@@ -339,6 +340,7 @@ const ZaptroDriversContent: React.FC = () => {
   const { palette } = useZaptroTheme();
   const s = useMemo(() => buildStyles(palette), [palette]);
   const isDark = palette.mode === 'dark';
+  const [activeTab, setActiveTab] = useState<'drivers' | 'vehicles'>('drivers');
 
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -562,7 +564,7 @@ const ZaptroDriversContent: React.FC = () => {
               border: `1px solid ${palette.sidebarBorder}`,
               backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F4F4F5',
               color: palette.text,
-              fontWeight: 900,
+              fontWeight: 700,
               fontSize: 13,
               cursor: 'pointer',
               flexShrink: 0,
@@ -580,7 +582,43 @@ const ZaptroDriversContent: React.FC = () => {
           </div>
         )}
 
-        <div className="zaptro-drivers-main" style={s.mainLayout}>
+        <div style={{ display: 'flex', gap: 16, borderBottom: `1px solid ${palette.sidebarBorder}`, marginBottom: 28 }}>
+          <button
+            onClick={() => setActiveTab('drivers')}
+            style={{
+              padding: '12px 16px',
+              border: 'none',
+              borderBottom: activeTab === 'drivers' ? `2px solid ${palette.lime}` : '2px solid transparent',
+              backgroundColor: 'transparent',
+              color: activeTab === 'drivers' ? palette.text : palette.textMuted,
+              fontWeight: 700,
+              fontSize: 14,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}
+          >
+            Motoristas da Operação
+          </button>
+          <button
+            onClick={() => setActiveTab('vehicles')}
+            style={{
+              padding: '12px 16px',
+              border: 'none',
+              borderBottom: activeTab === 'vehicles' ? `2px solid ${palette.lime}` : '2px solid transparent',
+              backgroundColor: 'transparent',
+              color: activeTab === 'vehicles' ? palette.text : palette.textMuted,
+              fontWeight: 700,
+              fontSize: 14,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}
+          >
+            Frota (Veículos)
+          </button>
+        </div>
+
+        {activeTab === 'drivers' ? (
+          <div className="zaptro-drivers-main" style={s.mainLayout}>
           <div className="zaptro-drivers-form" style={s.formCard}>
             <h3 style={s.cardTitle}>{selectedDriver ? 'Editar motorista' : 'Novo motorista'}</h3>
             <form onSubmit={handleSave} style={s.form}>
@@ -782,6 +820,9 @@ const ZaptroDriversContent: React.FC = () => {
             )}
           </div>
         </div>
+        ) : (
+          <ZaptroVehiclesTab />
+        )}
       </div>
 
       {deleteIntent && (

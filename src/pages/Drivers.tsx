@@ -460,7 +460,7 @@ const Drivers: React.FC = () => {
                             <td style={styles.td}>
                                <div style={styles.scoreRow}>
                                   <div style={{...styles.scoreBar, width: `${driver.health_score || 85}%`, backgroundColor: (driver.health_score || 85) > 90 ? '#10b981' : '#f59e0b'}} />
-                                  <span style={{fontSize: '11px', fontWeight: '800', marginLeft: '8px'}}>{driver.health_score || 85}%</span>
+                                  <span style={{fontSize: '11px', fontWeight: '600', marginLeft: '8px'}}>{driver.health_score || 85}%</span>
                                </div>
                             </td>
                             <td style={styles.td}>
@@ -498,16 +498,16 @@ const styles: Record<string, any> = {
   container: { padding: '40px', backgroundColor: '#f4f4f4', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   titleArea: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  badge: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 12px', borderRadius: '30px', width: 'fit-content', letterSpacing: '1px' },
-  titleText: { fontSize: '32px', fontWeight: '950', color: '#0f172a', letterSpacing: '-1.5px' },
+  badge: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 12px', borderRadius: '30px', width: 'fit-content', letterSpacing: '1px' },
+  titleText: { fontSize: '32px', fontWeight: '700', color: '#0f172a', letterSpacing: '-1.5px' },
   headerActions: { display: 'flex', gap: '12px' },
-  primaryBtn: { height: '52px', padding: '0 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.3)' },
+  primaryBtn: { height: '52px', padding: '0 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.3)' },
   
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
   kpiCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
   kpiInfo: { display: 'flex', flexDirection: 'column' as const },
-  kpiLabel: { fontSize: '11px', color: '#64748b', fontWeight: '800', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  kpiValue: { fontSize: '24px', fontWeight: '950', color: '#0f172a', margin: '2px 0' },
+  kpiLabel: { fontSize: '11px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  kpiValue: { fontSize: '24px', fontWeight: '700', color: '#0f172a', margin: '2px 0' },
   kpiSub: { fontSize: '11px', color: '#94a3b8' },
   kpiIconBox: { width: '56px', height: '56px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
 
@@ -517,12 +517,12 @@ const styles: Record<string, any> = {
   actionGroup: { display: 'flex', gap: '12px', alignItems: 'center' },
   dateFilter: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '0 20px', borderRadius: '16px', border: '1px solid #e2e8f0', height: '52px' },
   dateInput: { border: 'none', outline: 'none', fontSize: '12px', color: '#1E293B', backgroundColor: 'transparent', fontWeight: '700' },
-  excelBtn: { height: '52px', padding: '0 20px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ecfdf5', fontSize: '14px', fontWeight: '800', color: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  excelBtn: { height: '52px', padding: '0 20px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: '#ecfdf5', fontSize: '14px', fontWeight: '600', color: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   filterBtn: { height: '52px', padding: '0 20px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: 'white', fontSize: '14px', fontWeight: '700', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
 
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const, borderBottom: '1px solid #e8e8e8' },
+  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' as const, borderBottom: '1px solid #e8e8e8' },
   td: { padding: '16px 24px', borderBottom: '1px solid #e8e8e8' },
   tr: { transition: 'background 0.2s' },
 
@@ -531,13 +531,13 @@ const styles: Record<string, any> = {
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   label: { fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   input: { height: '48px', padding: '0 16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '14px', outline: 'none', transition: 'all 0.2s' },
-  primaryBtnFull: { height: '52px', width: '100%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', marginTop: '12px' },
+  primaryBtnFull: { height: '52px', width: '100%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', fontSize: '15px', cursor: 'pointer', marginTop: '12px' },
 
   userCell: { display: 'flex', alignItems: 'center', gap: '12px' },
-  avatarMini: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '800' },
+  avatarMini: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '600' },
   uName: { fontSize: '14px', fontWeight: '700', color: '#0f172a', margin: 0 },
   uSub: { fontSize: '12px', color: '#64748b', margin: 0 },
-  badgeLink: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' as const },
+  badgeLink: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' as const },
   scoreRow: { display: 'flex', alignItems: 'center', gap: '8px' },
   scoreBar: { height: '6px', backgroundColor: '#ebebeb', borderRadius: '3px', flex: 1 },
   statusDotLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: '700' },
@@ -550,11 +550,11 @@ const styles: Record<string, any> = {
   profileHeader: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', color: '#64748b', fontWeight: '700', cursor: 'pointer', fontSize: '14px' },
   profileHero: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '32px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' },
-  avatarLarge: { width: '100px', height: '100px', borderRadius: '28px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', fontWeight: '900' },
+  avatarLarge: { width: '100px', height: '100px', borderRadius: '28px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', fontWeight: '700' },
   heroInfo: { flex: 1 },
-  heroName: { fontSize: '32px', fontWeight: '950', color: '#0f172a', margin: 0, letterSpacing: '-1px' },
+  heroName: { fontSize: '32px', fontWeight: '700', color: '#0f172a', margin: 0, letterSpacing: '-1px' },
   heroSub: { fontSize: '14px', color: '#64748b', margin: '8px 0 0 0' },
-  statusTag: { padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' as const },
+  statusTag: { padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' as const },
   heroStats: { display: 'flex', gap: '16px' },
   miniStat: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#334155' },
 
@@ -565,7 +565,7 @@ const styles: Record<string, any> = {
   profileCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
   cardTitleArea: { display: 'flex', alignItems: 'center', gap: '12px' },
-  cardTitle: { fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: 0 },
+  cardTitle: { fontSize: '18px', fontWeight: '600', color: '#0f172a', margin: 0 },
   
   timelineList: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   timelineItem: { display: 'flex', gap: '16px', position: 'relative' as const },
@@ -575,11 +575,11 @@ const styles: Record<string, any> = {
   timelineText: { fontSize: '13px', color: '#64748b', margin: 0, lineHeight: '1.5' },
 
   tableMini: { marginTop: '16px' },
-  miniTh: { textAlign: 'left' as const, fontSize: '11px', fontWeight: '800', color: '#94a3b8', padding: '12px 0', borderBottom: '1px solid #e8e8e8', textTransform: 'uppercase' as const },
+  miniTh: { textAlign: 'left' as const, fontSize: '11px', fontWeight: '600', color: '#94a3b8', padding: '12px 0', borderBottom: '1px solid #e8e8e8', textTransform: 'uppercase' as const },
   miniTd: { padding: '12px 0', fontSize: '13px', borderBottom: '1px solid #e8e8e8' },
 
   sideCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0' },
-  sideCardTitle: { fontSize: '15px', fontWeight: '800', color: '#0f172a', margin: 0 },
+  sideCardTitle: { fontSize: '15px', fontWeight: '600', color: '#0f172a', margin: 0 },
   healthMetric: { marginTop: '24px' },
   healthHeader: { display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '700', marginBottom: '8px', color: '#64748b' },
   healthBar: { height: '8px', backgroundColor: '#ebebeb', borderRadius: '10px', overflow: 'hidden' },
@@ -588,12 +588,12 @@ const styles: Record<string, any> = {
   pontoItem: { display: 'flex', gap: '12px', alignItems: 'center', backgroundColor: '#f4f4f4', padding: '12px', borderRadius: '12px' },
   sideDivider: { height: '1px', backgroundColor: '#ebebeb', margin: '24px 0' },
   docListMini: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  docTitleMini: { fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, marginBottom: '4px' },
+  docTitleMini: { fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, marginBottom: '4px' },
   docItemMini: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#334155', padding: '8px 12px', backgroundColor: '#f4f4f4', borderRadius: '8px', border: '1px solid #e8e8e8' },
   
   feedbackList: { display: 'flex', flexDirection: 'column' as const, gap: '16px', marginTop: '24px' },
   feedbackItem: { padding: '16px', borderLeft: '3px solid var(--primary)', backgroundColor: '#f4f4f4' },
-  typeBadge: { fontSize: '9px', fontWeight: '900', padding: '2px 8px', borderRadius: '4px', marginBottom: '8px', width: 'fit-content' },
+  typeBadge: { fontSize: '9px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', marginBottom: '8px', width: 'fit-content' },
   fullActionBtn: { width: '100%', height: '44px', marginTop: '24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', color: 'var(--primary)', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s' },
   
   financeMini: { display: 'flex', flexDirection: 'column' as const, gap: '12px', marginTop: '24px' },

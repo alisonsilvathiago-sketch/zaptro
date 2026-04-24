@@ -64,19 +64,21 @@ function ZaptroToastCard({
         padding: '14px 16px 14px 14px',
         backgroundColor: '#ffffff',
         color: '#0f172a',
-        border: '1px solid rgba(15, 23, 42, 0.1)',
-        borderLeft: `3px solid ${accent}`,
-        boxShadow: '0 12px 40px rgba(15, 23, 42, 0.12), 0 1px 3px rgba(15, 23, 42, 0.06)',
+        border: '1px solid rgba(15, 23, 42, 0.15)',
+        borderLeft: `4px solid ${accent}`,
+        boxShadow: '0 24px 48px rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.08)',
+        backdropFilter: 'blur(10px)',
         textAlign: 'left',
         boxSizing: 'border-box',
         pointerEvents: 'auto',
         wordBreak: 'break-word',
         overflowWrap: 'anywhere',
+        zIndex: 100000,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 950, fontSize: 14, letterSpacing: '-0.02em', lineHeight: 1.25, color: '#0f172a' }}>
+          <div style={{ fontWeight: 700, fontSize: 14, letterSpacing: '-0.02em', lineHeight: 1.25, color: '#0f172a' }}>
             {title}
           </div>
           <div style={{ marginTop: 6, fontSize: 13, fontWeight: 600, color: '#475569', lineHeight: 1.45 }}>

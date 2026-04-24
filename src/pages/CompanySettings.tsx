@@ -152,7 +152,7 @@ const CompanySettings: React.FC = () => {
              </div>
              <div style={styles.card}>
                  <div style={styles.sectionHeader}><ShieldCheck size={20} color="var(--primary)" /> <h3 style={styles.sectionTitle}>Plano Contratado</h3></div>
-                 <h2 style={{fontSize: '24px', fontWeight: '800', color: 'var(--primary)'}}>{formData.plan}</h2>
+                 <h2 style={{fontSize: '24px', fontWeight: '600', color: 'var(--primary)'}}>{formData.plan}</h2>
              </div>
           </div>
         )}
@@ -196,14 +196,14 @@ const CompanySettings: React.FC = () => {
 const styles = {
   container: { padding: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' },
-  title: { fontSize: '28px', fontWeight: '800', color: 'var(--text-main)' },
+  title: { fontSize: '28px', fontWeight: '600', color: 'var(--text-main)' },
   subtitle: { fontSize: '14px', color: 'var(--text-muted)' },
   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: 'none', borderRadius: '14px', color: 'white', fontWeight: '700', cursor: 'pointer' },
   grid: { display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '32px' },
   leftCol: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   card: { backgroundColor: 'var(--bg-card)', padding: '32px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-premium)' },
   sectionHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' },
-  sectionTitle: { fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' },
+  sectionTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--text-main)' },
   formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' },
   formGroup: { marginBottom: '20px' },
   label: { fontSize: '13px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '8px', display: 'block' },
@@ -212,8 +212,8 @@ const styles = {
   inputNoBorder: { border: 'none', outline: 'none', flex: 1, backgroundColor: 'transparent', color: 'var(--text-main)', fontSize: '14px' },
   assetsGrid: { display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '20px', marginBottom: '24px' },
   assetBox: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  logoPreview: { height: '80px', borderRadius: '16px', backgroundColor: 'var(--bg-app)', border: '1px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '12px', fontWeight: '800' },
-  iconPreview: { width: '80px', height: '80px', borderRadius: '16px', backgroundColor: 'var(--bg-app)', border: '1px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '20px', fontWeight: '800' },
+  logoPreview: { height: '80px', borderRadius: '16px', backgroundColor: 'var(--bg-app)', border: '1px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '12px', fontWeight: '600' },
+  iconPreview: { width: '80px', height: '80px', borderRadius: '16px', backgroundColor: 'var(--bg-app)', border: '1px dashed var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '20px', fontWeight: '600' },
   colorRow: { display: 'flex', gap: '24px', borderTop: '1px solid var(--border)', paddingTop: '24px' },
   rightCol: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   tabsContainer: { display: 'flex', gap: '32px', borderBottom: '1px solid var(--border)', marginBottom: '32px', padding: '0 8px' },

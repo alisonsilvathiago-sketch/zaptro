@@ -35,7 +35,7 @@ const SuspendedAccount: React.FC = () => {
           </p>
           
           <div style={styles.contactSection}>
-             <p style={{ fontWeight: '800', marginBottom: '12px', fontSize: '12px' }}>Canais de Atendimento:</p>
+             <p style={{ fontWeight: '600', marginBottom: '12px', fontSize: '12px' }}>Canais de Atendimento:</p>
              <div style={styles.contactItem}><Phone size={14} /> (11) 9999-LOGTA</div>
              <div style={styles.contactItem}><Mail size={14} /> financeiro@logta.app</div>
           </div>
@@ -83,12 +83,12 @@ const styles = {
     backgroundColor: 'var(--accent)', filter: 'blur(50px)', opacity: 0.4
   },
   title: {
-    fontSize: '36px', fontWeight: '900', color: 'var(--primary)',
+    fontSize: '36px', fontWeight: '700', color: 'var(--primary)',
     marginBottom: '8px', letterSpacing: '-1.5px'
   },
   badge: {
     display: 'inline-block', backgroundColor: '#fef2f2', color: '#ef4444',
-    padding: '6px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '800',
+    padding: '6px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '600',
     marginBottom: '24px', border: '1px solid #fee2e2'
   },
   message: {
@@ -101,7 +101,7 @@ const styles = {
   },
   infoLabel: {
     display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px',
-    fontWeight: '800', color: 'var(--primary)', marginBottom: '12px'
+    fontWeight: '600', color: 'var(--primary)', marginBottom: '12px'
   },
   infoText: {
     fontSize: '14px', color: '#64748b', marginBottom: '24px', lineHeight: '1.5'
@@ -116,13 +116,13 @@ const styles = {
   button: {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
     padding: '18px', backgroundColor: 'white', color: 'var(--primary)',
-    border: '1px solid var(--border)', borderRadius: '18px', fontWeight: '800', fontSize: '15px',
+    border: '1px solid var(--border)', borderRadius: '18px', fontWeight: '600', fontSize: '15px',
     cursor: 'pointer', width: '100%', transition: 'all 0.3s'
   },
   payButton: {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
     padding: '18px', backgroundColor: 'var(--primary)', color: 'white',
-    border: 'none', borderRadius: '18px', fontWeight: '800', fontSize: '16px',
+    border: 'none', borderRadius: '18px', fontWeight: '600', fontSize: '16px',
     cursor: 'pointer', width: '100%', transition: 'all 0.3s',
     boxShadow: '0 10px 20px -5px rgba(63, 11, 120, 0.4)', marginBottom: '12px'
   },

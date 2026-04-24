@@ -185,18 +185,18 @@ const styles = {
   header: { marginBottom: '40px' },
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', border: 'none', backgroundColor: 'transparent', color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer', marginBottom: '24px' },
   courseHeader: { backgroundColor: 'var(--bg-card)', padding: '32px', borderRadius: '32px', border: '1px solid var(--border)' },
-  badge: { display: 'inline-block', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', fontSize: '10px', fontWeight: '800', padding: '6px 12px', borderRadius: '10px', marginBottom: '16px', textTransform: 'uppercase' as const },
-  title: { fontSize: '32px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '12px' },
+  badge: { display: 'inline-block', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', fontSize: '10px', fontWeight: '600', padding: '6px 12px', borderRadius: '10px', marginBottom: '16px', textTransform: 'uppercase' as const },
+  title: { fontSize: '32px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '12px' },
   subtitle: { fontSize: '16px', color: 'var(--text-muted)', lineHeight: '1.6' },
   content: { marginTop: '40px' },
   modulesHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
-  sectionTitle: { fontSize: '20px', fontWeight: '800', color: 'var(--text-main)' },
+  sectionTitle: { fontSize: '20px', fontWeight: '600', color: 'var(--text-main)' },
   addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' },
   moduleList: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   moduleCard: { backgroundColor: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden' },
   moduleHeader: { padding: '20px 24px', borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-app)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   moduleTitleRow: { display: 'flex', alignItems: 'center', gap: '12px' },
-  moduleName: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)' },
+  moduleName: { fontSize: '16px', fontWeight: '600', color: 'var(--text-main)' },
   miniAddBtn: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '700', color: 'var(--primary)', border: 'none', backgroundColor: 'transparent', cursor: 'pointer' },
   lessonList: { padding: '8px' },
   lessonItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 24px', borderRadius: '16px', transition: 'background 0.2s', cursor: 'pointer' },
@@ -212,7 +212,7 @@ const styles = {
   label: { fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' },
   input: { padding: '14px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-app)', color: 'var(--text-main)', outline: 'none' },
   textarea: { padding: '14px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-app)', color: 'var(--text-main)', outline: 'none', height: '80px', resize: 'none' as const },
-  submitBtn: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' }
+  submitBtn: { padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default CourseDetail;

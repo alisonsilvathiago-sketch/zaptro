@@ -315,7 +315,7 @@ const MasterStaff: React.FC = () => {
                               }} />
                               <span style={{
                                  color: member.status === 'ativo' ? '#10b981' : '#ef4444',
-                                 fontWeight: '800',
+                                 fontWeight: '600',
                                  textTransform: 'uppercase'
                               }}>{member.status}</span>
                            </div>
@@ -431,39 +431,39 @@ const MasterStaff: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0', backgroundColor: 'transparent', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  bread: { fontSize: '10px', fontWeight: '900', color: '#D9FF00', marginBottom: '4px', opacity: 0.6 },
-  title: { fontSize: '28px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
+  bread: { fontSize: '10px', fontWeight: '700', color: '#D9FF00', marginBottom: '4px', opacity: 0.6 },
+  title: { fontSize: '28px', fontWeight: '700', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
   subtitle: { color: '#64748b', fontSize: '15px', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#64748b' },
-  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
-  performanceBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', color: '#000000' },
+  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
+  performanceBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', color: '#000000' },
   
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '32px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: 'var(--shadow-sm)' },
   statHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' },
   statIcon: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  statLabel: { fontSize: '12px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  statValue: { fontSize: '28px', fontWeight: '950', color: '#1e293b', marginBottom: '4px' },
+  statLabel: { fontSize: '12px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  statValue: { fontSize: '28px', fontWeight: '700', color: '#1e293b', marginBottom: '4px' },
   statFooter: { fontSize: '11px', color: '#94a3b8', fontWeight: '600' },
 
   mainCard: { backgroundColor: 'white', borderRadius: '28px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' },
   cardHeader: { padding: '24px 32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between' },
   searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f4f4f4', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e2e8f0', width: '400px' },
   searchInput: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '14px', fontWeight: '600', width: '100%', color: '#1e293b' },
-  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
+  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' },
 
   table: { width: '100%', borderCollapse: 'collapse' as const },
   thead: { backgroundColor: '#f9fafb', textAlign: 'left' as const },
-  th: { padding: '16px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  th: { padding: '16px 32px', fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
   tr: { borderBottom: '1px solid #e8e8e8', transition: 'background 0.2s' },
   td: { padding: '16px 32px' },
   memberCell: { display: 'flex', alignItems: 'center', gap: '12px' },
-  memberName: { fontSize: '15px', fontWeight: '800', color: '#1e293b' },
+  memberName: { fontSize: '15px', fontWeight: '600', color: '#1e293b' },
   memberEmail: { fontSize: '12px', color: '#94a3b8', margin: 0, fontWeight: '500' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '18px' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '18px' },
   roleContainer: { display: 'flex', alignItems: 'center', gap: '6px' },
-  roleBadge: { fontSize: '11px', fontWeight: '800', color: '#D9FF00', letterSpacing: '0.5px' },
+  roleBadge: { fontSize: '11px', fontWeight: '600', color: '#D9FF00', letterSpacing: '0.5px' },
   departmentText: { fontSize: '13px', color: '#64748b', fontWeight: '700' },
   statusBox: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px' },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%' },
@@ -473,22 +473,22 @@ const styles: Record<string, any> = {
   form: { padding: '10px', display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  labelForm: { fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px' },
+  labelForm: { fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px' },
   input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none', fontSize: '14px' },
   hintText: { fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
-  submitBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', marginTop: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.3)' },
+  submitBtn: { padding: '18px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '12px', boxShadow: '0 10px 20px -5px rgba(217, 255, 0, 0.3)' },
 
   permContainer: { padding: '10px' },
   permHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #e8e8e8' },
-  permTitle: { fontSize: '16px', fontWeight: '900', color: '#1e293b' },
+  permTitle: { fontSize: '16px', fontWeight: '700', color: '#1e293b' },
   matrixList: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
   moduleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e8e8e8' },
   moduleName: { display: 'flex', flexDirection: 'column' as const, gap: '2px' },
   actionGrid: { display: 'flex', gap: '20px' },
-  actionCheck: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#64748b' },
+  actionCheck: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '600', color: '#64748b' },
   permFooter: { marginTop: '32px', display: 'flex', justifyContent: 'flex-end', gap: '12px' },
-  cancelBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' },
-  savePermBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer' }
+  cancelBtn: { padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' },
+  savePermBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default MasterStaff;

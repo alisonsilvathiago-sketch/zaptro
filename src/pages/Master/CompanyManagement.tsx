@@ -293,7 +293,7 @@ const CompanyManagement: React.FC = () => {
             <h3 style={styles.chartTitle}>Distribuição por Plano</h3>
             <div style={{height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                <div style={{textAlign: 'center'}}>
-                  <div style={{fontSize: '32px', fontWeight: '900', color: 'var(--primary)'}}>
+                  <div style={{fontSize: '32px', fontWeight: '700', color: 'var(--primary)'}}>
                      {Math.round((companies.filter(c => c.plan === 'OURO').length / (companies.length || 1)) * 100)}%
                   </div>
                   <div style={{fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700'}}>EMPRESAS NO PLANO OURO</div>
@@ -508,7 +508,7 @@ const CompanyManagement: React.FC = () => {
                                  <td style={{fontWeight: '700'}}>{u.full_name}</td>
                                  <td><span style={styles.roleBadge}>{u.role}</span></td>
                                  <td style={{color: '#64748b'}}>{u.email || 'N/A'}</td>
-                                 <td><span style={{color: '#10b981', fontWeight: '800'}}>ATIVO</span></td>
+                                 <td><span style={{color: '#10b981', fontWeight: '600'}}>ATIVO</span></td>
                                  <td>
                                     <button style={styles.iconOnlyBtn}><Edit2 size={14} /></button>
                                     <button style={styles.iconOnlyBtn}><Lock size={14} /></button>
@@ -562,22 +562,22 @@ const CompanyManagement: React.FC = () => {
                      <div style={styles.planSummary}>
                         <div>
                            <div style={styles.infoLabel}>Plano Contratado</div>
-                           <div style={{fontSize: '24px', fontWeight: '900', color: 'var(--primary)'}}>{selectedCompany?.plan}</div>
+                           <div style={{fontSize: '24px', fontWeight: '700', color: 'var(--primary)'}}>{selectedCompany?.plan}</div>
                         </div>
                         <div style={{textAlign: 'right'}}>
                            <div style={styles.infoLabel}>Valor Mensal</div>
-                           <div style={{fontSize: '24px', fontWeight: '900', color: '#10b981'}}>R$ 997,00</div>
+                           <div style={{fontSize: '24px', fontWeight: '700', color: '#10b981'}}>R$ 997,00</div>
                         </div>
                      </div>
-                     <h4 style={{marginTop: '24px', marginBottom: '16px', fontSize: '14px', fontWeight: '800'}}>HISTÓRICO DE FATURAMENTO</h4>
+                     <h4 style={{marginTop: '24px', marginBottom: '16px', fontSize: '14px', fontWeight: '600'}}>HISTÓRICO DE FATURAMENTO</h4>
                      <div style={styles.billingRow}>
                         <span>Fatura #9928 - Abril 2026</span>
-                        <span style={{color: '#10b981', fontWeight: '800'}}>PAGO</span>
+                        <span style={{color: '#10b981', fontWeight: '600'}}>PAGO</span>
                         <span>12/04/2026</span>
                      </div>
                      <div style={styles.billingRow}>
                         <span>Fatura #9812 - Março 2026</span>
-                        <span style={{color: '#10b981', fontWeight: '800'}}>PAGO</span>
+                        <span style={{color: '#10b981', fontWeight: '600'}}>PAGO</span>
                         <span>10/03/2026</span>
                      </div>
                   </div>
@@ -697,46 +697,46 @@ const CompanyManagement: React.FC = () => {
 const styles = {
   container: { padding: '0', backgroundColor: 'transparent', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-1.5px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '-1.5px' },
   subtitle: { color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all 0.2s' },
-  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 24px', height: '46px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
+  addBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 24px', height: '46px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
   
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
   statHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' },
   statIcon: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  statLabel: { fontSize: '13px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
-  statValue: { fontSize: '32px', fontWeight: '900', color: 'var(--primary)', marginBottom: '8px' },
+  statLabel: { fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
+  statValue: { fontSize: '32px', fontWeight: '700', color: 'var(--primary)', marginBottom: '8px' },
   statFooter: { display: 'flex', alignItems: 'center', gap: '6px' },
   statSub: { fontSize: '11px', color: '#94a3b8', fontWeight: '600' },
 
   chartsRow: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', marginBottom: '32px' },
   chartCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
-  chartTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--primary)', marginBottom: '20px' },
+  chartTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--primary)', marginBottom: '20px' },
 
   controls: { display: 'flex', gap: '16px', marginBottom: '24px' },
   searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', transition: 'all 0.2s' },
   searchInput: { border: 'none', outline: 'none', width: '100%', fontSize: '14px', fontWeight: '600', color: 'var(--primary)' },
-  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '16px', fontSize: '14px', fontWeight: '800', cursor: 'pointer', color: 'var(--primary)' },
+  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '16px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', color: 'var(--primary)' },
   
   listCard: { backgroundColor: 'white', borderRadius: '28px', border: '1px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
   tableHead: { backgroundColor: '#f4f4f4', borderBottom: '1px solid var(--border)' },
-  th: { padding: '18px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  th: { padding: '18px 24px', textAlign: 'left' as const, fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
   tr: { borderBottom: '1px solid var(--border)', transition: 'background 0.2s' },
   td: { padding: '20px 24px' },
   companyInfo: { display: 'flex', alignItems: 'center', gap: '14px' },
-  avatar: { width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '900', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' },
-  companyName: { fontSize: '15px', fontWeight: '800', color: 'var(--primary)', marginBottom: '2px' },
+  avatar: { width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' },
+  companyName: { fontSize: '15px', fontWeight: '600', color: 'var(--primary)', marginBottom: '2px' },
   subdomainLink: { fontSize: '12px', color: 'var(--accent)', fontWeight: '700' },
   companyId: { fontSize: '10px', color: '#94a3b8', fontFamily: 'monospace' },
-  planBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900', width: 'fit-content' },
+  planBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700', width: 'fit-content' },
   contactCell: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   contactText: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#475569', fontWeight: '600' },
   cnpjText: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#94a3b8', fontWeight: '700' },
-  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', width: 'fit-content' },
+  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: '600', width: 'fit-content' },
   dateText: { fontSize: '12px', fontWeight: '700', color: '#64748b' },
   actions: { display: 'flex', gap: '10px' },
   actionBtn: { width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', borderRadius: '10px', cursor: 'pointer', transition: 'transform 0.2s' },
@@ -744,27 +744,27 @@ const styles = {
   // Modal Styles
   modalContent: { padding: '0px' },
   modalTabs: { display: 'flex', borderBottom: '1px solid var(--border)', backgroundColor: '#f4f4f4', padding: '0 20px' },
-  tabBtn: { padding: '20px 24px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '800', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' as const, transition: 'all 0.2s' },
+  tabBtn: { padding: '20px 24px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' as const, transition: 'all 0.2s' },
   activeTab: { color: 'var(--primary)', borderBottom: '3px solid var(--primary)' },
   tabContent: { padding: '32px', minHeight: '400px' },
   
   dadosGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px' },
   infoGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  infoLabel: { fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  infoValue: { fontSize: '15px', fontWeight: '800', color: 'var(--primary)' },
+  infoLabel: { fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  infoValue: { fontSize: '15px', fontWeight: '600', color: 'var(--primary)' },
   
   usersList: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   listHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  listTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--primary)' },
+  listTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--primary)' },
   smallAddBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' },
   smallTable: { width: '100%', borderCollapse: 'collapse' as const },
-  roleBadge: { backgroundColor: '#ebebeb', color: '#475569', padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '800' },
+  roleBadge: { backgroundColor: '#ebebeb', color: '#475569', padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '600' },
   iconOnlyBtn: { padding: '6px', border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer' },
   
   permissionsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' },
   permissionCard: { padding: '20px', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' },
   permIcon: { width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
-  permTitle: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)' },
+  permTitle: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)' },
   permDesc: { fontSize: '12px', color: '#94a3b8', fontWeight: '500' },
   
   financeView: { display: 'flex', flexDirection: 'column' as const },
@@ -783,11 +783,11 @@ const styles = {
   form: { display: 'flex', flexDirection: 'column' as const, gap: '20px', padding: '20px' },
   formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  label: { fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  label: { fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
   formInput: { padding: '14px 18px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', fontWeight: '600', outline: 'none', transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)' },
   subdomainInputBox: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 18px', height: '48px', borderRadius: '14px', border: '1px solid var(--border)', backgroundColor: '#f4f4f4' },
-  formInputSub: { border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: '14px', textAlign: 'right' as const, fontWeight: '800', color: 'var(--primary)' },
-  saveBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', fontSize: '15px', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.3)' }
+  formInputSub: { border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: '14px', textAlign: 'right' as const, fontWeight: '600', color: 'var(--primary)' },
+  saveBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '700', fontSize: '15px', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.3)' }
 };
 
 export default CompanyManagement;

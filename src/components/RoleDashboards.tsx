@@ -52,7 +52,7 @@ const MetricCard: React.FC<MetricProps> = ({ label, value, trend, icon, color })
     </div>
     <div>
       <p style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>{label}</p>
-      <h3 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', marginTop: '4px' }}>{value}</h3>
+      <h3 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', marginTop: '4px' }}>{value}</h3>
     </div>
   </div>
 );

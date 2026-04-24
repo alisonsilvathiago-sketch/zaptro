@@ -64,6 +64,10 @@ import {
   writeWorkspaceLocalTouchIso,
   ZAPTRO_CRM_WORKSPACE_PAYLOAD_VERSION,
 } from '../lib/zaptroCrmWorkspaceDb';
+import {
+  mergeWhatsappConversationsIntoLeads,
+  type ZaptroWaConversationRow,
+} from '../lib/zaptroCrmWhatsappInboxSync';
 import { resolveMemberAvatarUrl } from '../utils/zaptroAvatar';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
@@ -72,6 +76,7 @@ import {
   ZAPTRO_CARD_SHADOW_LIGHT,
   zaptroCardRowStyle,
   zaptroCardSurfaceStyle,
+  zaptroIconOrbStyle,
 } from '../constants/zaptroCardSurface';
 
 const LIME = '#D9FF00';
@@ -137,7 +142,6 @@ function leadHeat(lead: CrmLead): { label: string; variant: 'hot' | 'warm' | 'st
 }
 
 /** Área do Kanban (tema claro) — cinza muito claro; colunas/cartões em branco. */
-const CRM_KANBAN_PAGE_BG_LIGHT = '#F8F9FA';
 const CRM_KANBAN_COLUMN_BG_LIGHT = '#FFFFFF';
 
 /** Superfície do cartão: branco puro (claro) / cartão Zaptro (escuro), sem lavado verde. */
@@ -572,6 +576,54 @@ const ZaptroCrmContent: React.FC = () => {
     },
     [bumpWorkspaceLocalTouch, crmStorageId]
   );
+
+  const waCrmSyncTimerRef = useRef(0);
+
+  /** Sincroniza conversas `whatsapp_conversations` → cartões no Kanban (Realtime). */
+  useEffect(() => {
+    if (!companyId) return;
+    const run = () => {
+      void (async () => {
+        try {
+          const { data, error } = await supabaseZaptro
+            .from('whatsapp_conversations')
+            .select('id,sender_number,sender_name,last_message,status,last_customer_message_at')
+            .eq('company_id', companyId);
+          if (error) return;
+          const rows = (data || []) as ZaptroWaConversationRow[];
+          setLeads((prev) => {
+            const { next, touched } = mergeWhatsappConversationsIntoLeads(prev, rows);
+            if (!touched) return prev;
+            try {
+              localStorage.setItem(storageKey(crmStorageId), JSON.stringify(next));
+            } catch {
+              /* ignore */
+            }
+            bumpWorkspaceLocalTouch();
+            return next as CrmLead[];
+          });
+        } catch {
+          /* tabela em falta / rede */
+        }
+      })();
+    };
+    run();
+    const channel = supabaseZaptro
+      .channel(`zaptro_crm_wa_sync_${companyId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'whatsapp_conversations', filter: `company_id=eq.${companyId}` },
+        () => {
+          window.clearTimeout(waCrmSyncTimerRef.current);
+          waCrmSyncTimerRef.current = window.setTimeout(run, 320);
+        },
+      )
+      .subscribe();
+    return () => {
+      window.clearTimeout(waCrmSyncTimerRef.current);
+      void supabaseZaptro.removeChannel(channel);
+    };
+  }, [companyId, crmStorageId, bumpWorkspaceLocalTouch]);
 
   const appendLeadEvent = useCallback(
     (leadId: string, partial: Omit<CrmTimelineEvent, 'id'> & { id?: string }) => {
@@ -1291,7 +1343,7 @@ const ZaptroCrmContent: React.FC = () => {
       border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.1)'}`,
       backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : '#F4F4F5',
       fontSize: 11,
-      fontWeight: 900,
+      fontWeight: 700,
       color: isDark ? '#fafafa' : '#000000',
       cursor: 'pointer',
     };
@@ -1349,7 +1401,7 @@ const ZaptroCrmContent: React.FC = () => {
                 key={t}
                 style={{
                   fontSize: 10,
-                  fontWeight: 850,
+                  fontWeight: 700,
                   padding: '4px 9px',
                   borderRadius: 10,
                   backgroundColor: chipBg,
@@ -1390,14 +1442,14 @@ const ZaptroCrmContent: React.FC = () => {
             </span>
           )}
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 950, color: palette.text, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: palette.text, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
               {lead.clientName}
             </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8, alignItems: 'center' }}>
               <span
                 style={{
                   fontSize: 10,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase',
                   padding: '4px 9px',
@@ -1444,7 +1496,7 @@ const ZaptroCrmContent: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: 15,
               }}
               aria-hidden
@@ -1455,7 +1507,7 @@ const ZaptroCrmContent: React.FC = () => {
         </div>
 
         <p style={{ margin: '0 0 10px', fontSize: 11, fontWeight: 650, color: palette.textMuted, lineHeight: 1.45 }}>
-          <span style={{ fontWeight: 900, color: palette.text }}>Nota:</span> {lead.origin} → {lead.destination} · {lead.cargoType}
+          <span style={{ fontWeight: 700, color: palette.text }}>Nota:</span> {lead.origin} → {lead.destination} · {lead.cargoType}
         </p>
 
         <ul style={{ margin: '0 0 12px', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1487,12 +1539,12 @@ const ZaptroCrmContent: React.FC = () => {
           <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
             <Phone size={13} /> {lead.phone}
           </span>
-          <span style={{ fontSize: 17, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em' }}>{formatBrl(lead.estimatedValue)}</span>
+          <span style={{ fontSize: 17, fontWeight: 700, color: palette.text, letterSpacing: '-0.02em' }}>{formatBrl(lead.estimatedValue)}</span>
         </div>
         {lead.tag && (
           <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
             <Tag size={13} color={tagColor} />
-            <span style={{ fontSize: 10, fontWeight: 950, color: tagLabelColor, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: tagLabelColor, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {lead.tag}
             </span>
           </div>
@@ -1592,7 +1644,7 @@ const ZaptroCrmContent: React.FC = () => {
               />
             ))}
           </div>
-          <span style={{ fontSize: 12, fontWeight: 950, color: palette.textMuted }}>{progressPct}%</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted }}>{progressPct}%</span>
         </div>
 
         <div
@@ -1632,7 +1684,7 @@ const ZaptroCrmContent: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 12,
                   zIndex: 1,
                 }}
@@ -1641,7 +1693,7 @@ const ZaptroCrmContent: React.FC = () => {
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: palette.textMuted, fontSize: 11, fontWeight: 800 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: palette.textMuted, fontSize: 11, fontWeight: 600 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               <MessageSquare size={14} strokeWidth={2.2} /> {commentCount}
             </span>
@@ -1666,13 +1718,13 @@ const ZaptroCrmContent: React.FC = () => {
           margin: 0,
           padding: '0 0 48px',
           boxSizing: 'border-box',
-          /** Tema claro: cinza SaaS (#F8F9FA); escuro mantém fundo da área principal. */
-          backgroundColor: palette.mode === 'light' ? CRM_KANBAN_PAGE_BG_LIGHT : 'transparent',
+          /** Transparente: herda o fundo da área principal (`palette.pageBg` no layout). */
+          backgroundColor: 'transparent',
           minHeight: '100%',
         }}
       >
         <header style={{ marginBottom: 22 }}>
-          <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 950, letterSpacing: '0.12em', color: palette.textMuted }}>PIPELINE COMERCIAL</p>
+          <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', color: palette.textMuted }}>PIPELINE COMERCIAL</p>
           <div
             style={{
               display: 'flex',
@@ -1688,7 +1740,7 @@ const ZaptroCrmContent: React.FC = () => {
             }}
           >
             <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-              <h1 style={{ margin: 0, fontSize: 34, fontWeight: 950, letterSpacing: '-1.2px', color: palette.text }}>
+              <h1 style={{ margin: 0, fontSize: 34, fontWeight: 700, letterSpacing: '-1.2px', color: palette.text }}>
                 CRM — Pipeline e contactos
               </h1>
             </div>
@@ -1699,19 +1751,22 @@ const ZaptroCrmContent: React.FC = () => {
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 8,
-                  padding: '12px 18px',
+                  gap: 12,
+                  padding: '8px 20px 8px 12px',
                   borderRadius: 16,
                   border: `1px solid ${border}`,
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
                   color: palette.text,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                   boxShadow: palette.mode === 'light' ? '0 1px 2px rgba(15,23,42,0.06)' : 'none',
                 }}
               >
-                <Truck size={18} strokeWidth={2.2} /> Iniciar rota
+                <div style={zaptroIconOrbStyle({ size: 44, rounded: 'card' })}>
+                  <Truck size={24} strokeWidth={2} />
+                </div>
+                Iniciar rota
               </button>
               <button
                 type="button"
@@ -1725,7 +1780,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: `1px solid ${border}`,
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#F4F4F5',
                   color: palette.text,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                 }}
@@ -1745,12 +1800,32 @@ const ZaptroCrmContent: React.FC = () => {
                   border: `1px solid ${border}`,
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
                   color: palette.text,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                 }}
               >
                 <FileSpreadsheet size={18} strokeWidth={2.2} /> Nova proposta ou oportunidade
+              </button>
+              <button
+                type="button"
+                onClick={() => notifyZaptro('info', 'Zoom', 'Configuração de zoom do pipeline em breve.')}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '12px 18px',
+                  borderRadius: 16,
+                  border: `1px solid ${border}`,
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
+                  color: palette.text,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  boxShadow: palette.mode === 'light' ? '0 1px 2px rgba(15,23,42,0.06)' : 'none',
+                }}
+              >
+                <Plus size={18} strokeWidth={2.2} /> Configurar zoom
               </button>
               <button
                 type="button"
@@ -1764,7 +1839,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: 'none',
                   background: `linear-gradient(180deg, #0a0a0a 0%, #000 100%)`,
                   color: LIME,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 15,
                   cursor: 'pointer',
                   boxShadow: '0 10px 28px rgba(0,0,0,0.22)',
@@ -1799,7 +1874,7 @@ const ZaptroCrmContent: React.FC = () => {
             value={
               <>
                 {insights.avgDaysOpen || '—'}
-                {insights.avgDaysOpen ? <span style={{ fontSize: 18, fontWeight: 800 }}> dias</span> : null}
+                {insights.avgDaysOpen ? <span style={{ fontSize: 18, fontWeight: 600 }}> dias</span> : null}
               </>
             }
             subtitle="Média desde a criação do lead (vista)."
@@ -1842,7 +1917,7 @@ const ZaptroCrmContent: React.FC = () => {
               border: filter === 'ativos' ? '1px solid #000' : `1px solid ${border}`,
               backgroundColor: filter === 'ativos' ? '#000' : 'transparent',
               color: filter === 'ativos' ? LIME : palette.text,
-              fontWeight: 950,
+              fontWeight: 700,
               fontSize: 12,
               cursor: 'pointer',
             }}
@@ -1859,7 +1934,7 @@ const ZaptroCrmContent: React.FC = () => {
               border: filter === 'perdidos' ? '1px solid #000' : `1px solid ${border}`,
               backgroundColor: filter === 'perdidos' ? '#000' : 'transparent',
               color: filter === 'perdidos' ? LIME : palette.textMuted,
-              fontWeight: 950,
+              fontWeight: 700,
               fontSize: 12,
               cursor: 'pointer',
             }}
@@ -1876,7 +1951,7 @@ const ZaptroCrmContent: React.FC = () => {
               border: filter === 'todos' ? `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.14)'}` : `1px solid ${border}`,
               backgroundColor: filter === 'todos' ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)') : 'transparent',
               color: palette.text,
-              fontWeight: 950,
+              fontWeight: 700,
               fontSize: 12,
               cursor: 'pointer',
             }}
@@ -1898,7 +1973,7 @@ const ZaptroCrmContent: React.FC = () => {
                 border: `1px solid ${palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.35)' : 'rgba(245, 158, 11, 0.45)'}`,
                 backgroundColor: palette.mode === 'dark' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(254, 243, 199, 0.9)',
                 color: palette.text,
-                fontWeight: 900,
+                fontWeight: 700,
                 fontSize: 11,
                 cursor: 'help',
                 fontFamily: 'inherit',
@@ -1922,7 +1997,7 @@ const ZaptroCrmContent: React.FC = () => {
                 border: crmUiMode === 'kanban' ? '1px solid #000' : `1px solid ${border}`,
                 backgroundColor: crmUiMode === 'kanban' ? '#000' : palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
                 color: crmUiMode === 'kanban' ? LIME : palette.text,
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: 12,
                 cursor: 'pointer',
               }}
@@ -1942,7 +2017,7 @@ const ZaptroCrmContent: React.FC = () => {
                 border: crmUiMode === 'listas' ? `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.14)'}` : `1px solid ${border}`,
                 backgroundColor: crmUiMode === 'listas' ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#F4F4F5') : palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#fff',
                 color: palette.text,
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: 12,
                 cursor: 'pointer',
               }}
@@ -2021,7 +2096,7 @@ const ZaptroCrmContent: React.FC = () => {
               <div style={{ height: 3, borderRadius: 999, backgroundColor: col.accent, marginBottom: 2 }} />
               <div style={{ padding: '2px 4px 2px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, fontWeight: 950, color: palette.text, letterSpacing: '-0.02em', flex: 1, minWidth: 0 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: palette.text, letterSpacing: '-0.02em', flex: 1, minWidth: 0 }}>
                     {col.label}
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
@@ -2074,7 +2149,7 @@ const ZaptroCrmContent: React.FC = () => {
                     <span
                       style={{
                         fontSize: 11,
-                        fontWeight: 900,
+                        fontWeight: 700,
                         color: palette.textMuted,
                         minWidth: 22,
                         textAlign: 'center',
@@ -2087,7 +2162,7 @@ const ZaptroCrmContent: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 800, color: palette.textMuted, display: 'block', lineHeight: 1.35 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: palette.textMuted, display: 'block', lineHeight: 1.35 }}>
                   {col.probHint}
                 </span>
               </div>
@@ -2122,9 +2197,9 @@ const ZaptroCrmContent: React.FC = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ width: 4, height: 22, borderRadius: 999, backgroundColor: col.accent }} aria-hidden />
-                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950, color: palette.text }}>{col.label}</h2>
+                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: palette.text }}>{col.label}</h2>
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 900, color: palette.textMuted }}>{rows.length} contacto(s)</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted }}>{rows.length} contacto(s)</span>
                 </div>
                 {rows.length === 0 ? (
                   <p style={{ margin: 0, padding: 20, fontSize: 13, color: palette.textMuted, fontWeight: 600 }}>Nenhum lead nesta etapa na vista atual.</p>
@@ -2132,7 +2207,7 @@ const ZaptroCrmContent: React.FC = () => {
                   <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                       <thead>
-                        <tr style={{ textAlign: 'left', color: palette.textMuted, fontWeight: 950, fontSize: 11, letterSpacing: '0.06em' }}>
+                        <tr style={{ textAlign: 'left', color: palette.textMuted, fontWeight: 700, fontSize: 11, letterSpacing: '0.06em' }}>
                           <th style={{ padding: '12px 16px' }}>Cliente</th>
                           <th style={{ padding: '12px 16px' }}>Telefone</th>
                           <th style={{ padding: '12px 16px' }}>Valor</th>
@@ -2250,7 +2325,7 @@ const ZaptroCrmContent: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Novo contato</h2>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Novo contato</h2>
               <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setCreateOpen(false)} aria-label="Fechar">
                 <X size={22} color={palette.textMuted} />
               </button>
@@ -2263,7 +2338,7 @@ const ZaptroCrmContent: React.FC = () => {
                 ['destination', 'Destino'],
                 ['cargoType', 'Tipo de carga'],
               ].map(([key, lab]) => (
-                <label key={key} style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                <label key={key} style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                   {lab}
                   <input
                     style={{
@@ -2282,7 +2357,7 @@ const ZaptroCrmContent: React.FC = () => {
                   />
                 </label>
               ))}
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 Valor estimado (R$)
                 <input
                   style={{
@@ -2300,7 +2375,7 @@ const ZaptroCrmContent: React.FC = () => {
                   onChange={(e) => setCreateForm((f) => ({ ...f, estimatedValue: e.target.value }))}
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 Tag
                 <select
                   style={{
@@ -2323,7 +2398,7 @@ const ZaptroCrmContent: React.FC = () => {
                 </select>
               </label>
               {isAdmin && (
-                <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                   Responsável
                   <select
                     style={{
@@ -2350,10 +2425,10 @@ const ZaptroCrmContent: React.FC = () => {
               )}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-              <button type="button" onClick={() => setCreateOpen(false)} style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 900, cursor: 'pointer', color: palette.textMuted }}>
+              <button type="button" onClick={() => setCreateOpen(false)} style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 700, cursor: 'pointer', color: palette.textMuted }}>
                 Cancelar
               </button>
-              <button type="button" onClick={submitCreate} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}>
+              <button type="button" onClick={submitCreate} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 700, cursor: 'pointer' }}>
                 Criar lead
               </button>
             </div>
@@ -2389,7 +2464,7 @@ const ZaptroCrmContent: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>{detail.clientName}</h2>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>{detail.clientName}</h2>
               <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setDetail(null)} aria-label="Fechar">
                 <X size={22} color={palette.textMuted} />
               </button>
@@ -2414,7 +2489,7 @@ const ZaptroCrmContent: React.FC = () => {
                   <span
                     style={{
                       fontSize: 11,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.06em',
                       textTransform: 'uppercase',
                       padding: '6px 12px',
@@ -2427,7 +2502,7 @@ const ZaptroCrmContent: React.FC = () => {
                   >
                     {att.label}
                   </span>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
                     {!detail.assigneeId ? (
                       <>Responsável: <strong style={{ color: palette.text }}>— (livre)</strong></>
                     ) : (
@@ -2450,7 +2525,7 @@ const ZaptroCrmContent: React.FC = () => {
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F8F9FA',
                 }}
               >
-                <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 800, color: palette.text, lineHeight: 1.45 }}>
+                <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 600, color: palette.text, lineHeight: 1.45 }}>
                   Este cliente está a ser tratado por <strong>{detail.assigneeName}</strong>. Evita mensagens em duplicado no WhatsApp.
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -2463,7 +2538,7 @@ const ZaptroCrmContent: React.FC = () => {
                       borderRadius: 12,
                       border: `1px solid ${border}`,
                       background: palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : '#fff',
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 12,
                       cursor: 'pointer',
                       color: palette.text,
@@ -2481,7 +2556,7 @@ const ZaptroCrmContent: React.FC = () => {
                       border: 'none',
                       background: '#000',
                       color: LIME,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       fontSize: 12,
                       cursor: 'pointer',
                     }}
@@ -2497,7 +2572,7 @@ const ZaptroCrmContent: React.FC = () => {
                       borderRadius: 12,
                       border: `1px solid ${border}`,
                       background: 'transparent',
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 12,
                       cursor: 'pointer',
                       color: palette.textMuted,
@@ -2542,7 +2617,7 @@ const ZaptroCrmContent: React.FC = () => {
                 <Package size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
                 {detail.cargoType}
               </span>
-              <span style={{ color: palette.text, fontWeight: 950 }}>{formatBrl(detail.estimatedValue)}</span>
+              <span style={{ color: palette.text, fontWeight: 700 }}>{formatBrl(detail.estimatedValue)}</span>
             </div>
             {detailCanAct &&
               (() => {
@@ -2558,7 +2633,7 @@ const ZaptroCrmContent: React.FC = () => {
                       : [];
                 if (opts.length === 0) return null;
                 return (
-                  <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, display: 'block', marginBottom: 18 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'block', marginBottom: 18 }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                       <ArrowRightLeft size={14} /> Encaminhar / transferir
                     </span>
@@ -2601,7 +2676,7 @@ const ZaptroCrmContent: React.FC = () => {
                 }}
               >
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
-                  <p style={{ margin: 0, fontSize: 12, fontWeight: 950, color: palette.text, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: palette.text, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <CalendarClock size={16} /> Tarefas e retornos
                   </p>
                   {detailCanAct ? (
@@ -2614,7 +2689,7 @@ const ZaptroCrmContent: React.FC = () => {
                         border: 'none',
                         background: '#000',
                         color: LIME,
-                        fontWeight: 950,
+                        fontWeight: 700,
                         fontSize: 12,
                         cursor: 'pointer',
                         fontFamily: 'inherit',
@@ -2648,7 +2723,7 @@ const ZaptroCrmContent: React.FC = () => {
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 950, color: palette.text }}>{t.title}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: palette.text }}>{t.title}</div>
                           <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted, marginTop: 4 }}>
                             {t.status === 'done' ? 'Concluída' : t.status === 'cancelled' ? 'Cancelada' : 'Aberta'}
                             {t.due_at ? ` · até ${new Date(t.due_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}` : ''}
@@ -2666,7 +2741,7 @@ const ZaptroCrmContent: React.FC = () => {
                               borderRadius: 10,
                               border: `1px solid ${border}`,
                               background: 'transparent',
-                              fontWeight: 900,
+                              fontWeight: 700,
                               fontSize: 11,
                               cursor: 'pointer',
                               color: palette.text,
@@ -2706,7 +2781,7 @@ const ZaptroCrmContent: React.FC = () => {
                 }}
               >
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ margin: 0, fontSize: 12, fontWeight: 950, color: palette.text, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: palette.text, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <FileSpreadsheet size={16} /> Orçamentos (neste lead)
                   </p>
                   <p style={{ margin: '6px 0 0', fontSize: 11, fontWeight: 600, color: palette.textMuted, lineHeight: 1.45 }}>
@@ -2725,7 +2800,7 @@ const ZaptroCrmContent: React.FC = () => {
                     borderRadius: 12,
                     border: `1px solid ${border}`,
                     backgroundColor: palette.mode === 'dark' ? '#111' : '#fff',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 12,
                     cursor: 'pointer',
                     color: palette.text,
@@ -2759,7 +2834,7 @@ const ZaptroCrmContent: React.FC = () => {
                       }}
                     >
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 950, color: palette.text }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: palette.text }}>
                           {formatBrl(q.freightValue)} · {q.origin} → {q.destination}
                         </div>
                         <div style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, marginTop: 4 }}>
@@ -2775,7 +2850,7 @@ const ZaptroCrmContent: React.FC = () => {
                             borderRadius: 10,
                             border: `1px solid ${border}`,
                             background: 'transparent',
-                            fontWeight: 900,
+                            fontWeight: 700,
                             fontSize: 11,
                             cursor: 'pointer',
                             color: palette.text,
@@ -2795,7 +2870,7 @@ const ZaptroCrmContent: React.FC = () => {
                               border: 'none',
                               background: '#000',
                               color: LIME,
-                              fontWeight: 950,
+                              fontWeight: 700,
                               fontSize: 11,
                               cursor: 'pointer',
                             }}
@@ -2819,7 +2894,7 @@ const ZaptroCrmContent: React.FC = () => {
                     borderRadius: 12,
                     border: `1px solid ${border}`,
                     background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 12,
                     cursor: 'pointer',
                     color: palette.text,
@@ -2832,7 +2907,7 @@ const ZaptroCrmContent: React.FC = () => {
             </div>
 
             <div style={{ padding: 14, borderRadius: 16, backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#F4F4F5', marginBottom: 16 }}>
-              <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 800, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 600, color: palette.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ClipboardList size={16} /> HISTÓRICO COMPLETO (local + futuro WhatsApp)
               </p>
               {(() => {
@@ -2866,11 +2941,11 @@ const ZaptroCrmContent: React.FC = () => {
                           paddingLeft: 12,
                         }}
                       >
-                        <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: '0.06em', color: palette.textMuted, marginBottom: 2 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: palette.textMuted, marginBottom: 2 }}>
                           {formatDateTime(ev.at)} · {timelineKindLabel(ev.kind)}
                           {ev.actor ? ` · ${ev.actor}` : ''}
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 900, color: palette.text }}>{ev.title}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: palette.text }}>{ev.title}</div>
                         {ev.body ? (
                           <pre
                             style={{
@@ -2938,7 +3013,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: 'none',
                   background: LIME,
                   color: '#000',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: detailCanAct ? 'pointer' : 'not-allowed',
                   opacity: detailCanAct ? 1 : 0.48,
@@ -2970,7 +3045,7 @@ const ZaptroCrmContent: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${border}`,
                   background: detailApprovedForCargo ? 'rgba(34,197,94,0.12)' : 'transparent',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: detailCanAct && detailApprovedForCargo ? 'pointer' : 'not-allowed',
                   color: palette.text,
@@ -2996,7 +3071,7 @@ const ZaptroCrmContent: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${border}`,
                   background: 'transparent',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: detailCanAct ? 'pointer' : 'not-allowed',
                   color: palette.text,
@@ -3039,7 +3114,7 @@ const ZaptroCrmContent: React.FC = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 16 }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>Agendar retorno</h2>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Agendar retorno</h2>
                 <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted }}>
                   Grava no Supabase (tabela <code style={{ fontSize: 11 }}>zaptro_crm_tasks</code>).
                 </p>
@@ -3054,7 +3129,7 @@ const ZaptroCrmContent: React.FC = () => {
                 <X size={22} color={palette.textMuted} />
               </button>
             </div>
-            <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, display: 'block', marginBottom: 12 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'block', marginBottom: 12 }}>
               Título
               <input
                 value={taskForm.title}
@@ -3073,7 +3148,7 @@ const ZaptroCrmContent: React.FC = () => {
                 }}
               />
             </label>
-            <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, display: 'block', marginBottom: 12 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'block', marginBottom: 12 }}>
               Data e hora (opcional)
               <input
                 type="datetime-local"
@@ -3093,7 +3168,7 @@ const ZaptroCrmContent: React.FC = () => {
                 }}
               />
             </label>
-            <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, display: 'block', marginBottom: 18 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, display: 'block', marginBottom: 18 }}>
               Notas
               <textarea
                 value={taskForm.notes}
@@ -3124,7 +3199,7 @@ const ZaptroCrmContent: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${palette.mode === 'dark' ? '#334155' : '#e4e4e7'}`,
                   background: 'transparent',
-                  fontWeight: 900,
+                  fontWeight: 700,
                   cursor: taskSaving ? 'not-allowed' : 'pointer',
                   color: palette.textMuted,
                   fontFamily: 'inherit',
@@ -3142,7 +3217,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: 'none',
                   background: '#000',
                   color: LIME,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   cursor: taskSaving ? 'wait' : 'pointer',
                   fontFamily: 'inherit',
                 }}
@@ -3186,8 +3261,8 @@ const ZaptroCrmContent: React.FC = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 16 }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Orçamento de frete</h2>
-                <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 800, color: palette.textMuted }}>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Orçamento de frete</h2>
+                <p style={{ margin: '6px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted }}>
                   Cliente: <strong style={{ color: palette.text }}>{detail.clientName}</strong> · Passo {quoteWizardStep} de 3
                 </p>
               </div>
@@ -3227,7 +3302,7 @@ const ZaptroCrmContent: React.FC = () => {
                   ['freightValue', 'Valor do frete (R$)'],
                   ['deliveryDeadline', 'Prazo de entrega'],
                 ].map(([key, lab]) => (
-                  <label key={key} style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                  <label key={key} style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                     {lab}
                     <input
                       style={{
@@ -3246,7 +3321,7 @@ const ZaptroCrmContent: React.FC = () => {
                     />
                   </label>
                 ))}
-                <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                   Observações
                   <textarea
                     style={{
@@ -3270,14 +3345,14 @@ const ZaptroCrmContent: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setQuoteModalOpen(false)}
-                    style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 900, cursor: 'pointer', color: palette.textMuted }}
+                    style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 700, cursor: 'pointer', color: palette.textMuted }}
                   >
                     Cancelar
                   </button>
                   <button
                     type="button"
                     onClick={confirmQuoteStep2}
-                    style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}
+                    style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 700, cursor: 'pointer' }}
                   >
                     Continuar →
                   </button>
@@ -3287,7 +3362,7 @@ const ZaptroCrmContent: React.FC = () => {
 
             {quoteWizardStep === 2 && (
               <div style={{ fontSize: 14, fontWeight: 600, color: palette.textMuted, lineHeight: 1.55 }}>
-                <p style={{ margin: '0 0 12px', color: palette.text, fontWeight: 950 }}>Confirma os dados antes de gerar o orçamento</p>
+                <p style={{ margin: '0 0 12px', color: palette.text, fontWeight: 700 }}>Confirma os dados antes de gerar o orçamento</p>
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
                   <li>
                     <strong style={{ color: palette.text }}>Rota:</strong> {quoteForm.origin} → {quoteForm.destination}
@@ -3311,14 +3386,14 @@ const ZaptroCrmContent: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setQuoteWizardStep(1)}
-                    style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 900, cursor: 'pointer', color: palette.text }}
+                    style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 700, cursor: 'pointer', color: palette.text }}
                   >
                     ← Voltar
                   </button>
                   <button
                     type="button"
                     onClick={commitQuotePendente}
-                    style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}
+                    style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 700, cursor: 'pointer' }}
                   >
                     Gerar orçamento
                   </button>
@@ -3328,7 +3403,7 @@ const ZaptroCrmContent: React.FC = () => {
 
             {quoteWizardStep === 3 && lastCreatedQuote && (
               <div>
-                <p style={{ margin: '0 0 10px', fontSize: 14, fontWeight: 800, color: palette.text }}>
+                <p style={{ margin: '0 0 10px', fontSize: 14, fontWeight: 600, color: palette.text }}>
                   Estado: <strong>{QUOTE_STATUS_LABEL[lastCreatedQuote.status]}</strong> — partilha o link com o cliente.
                 </p>
                 <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.5 }}>
@@ -3361,7 +3436,7 @@ const ZaptroCrmContent: React.FC = () => {
                       borderRadius: 14,
                       border: `1px solid ${border}`,
                       background: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#fff',
-                      fontWeight: 950,
+                      fontWeight: 700,
                       fontSize: 13,
                       cursor: 'pointer',
                       color: palette.text,
@@ -3381,7 +3456,7 @@ const ZaptroCrmContent: React.FC = () => {
                       border: 'none',
                       background: '#000',
                       color: LIME,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       fontSize: 13,
                       cursor: 'pointer',
                     }}
@@ -3399,7 +3474,7 @@ const ZaptroCrmContent: React.FC = () => {
                       borderRadius: 14,
                       border: `1px solid ${border}`,
                       background: 'transparent',
-                      fontWeight: 900,
+                      fontWeight: 700,
                       fontSize: 13,
                       cursor: 'pointer',
                       color: palette.textMuted,
@@ -3440,7 +3515,7 @@ const ZaptroCrmContent: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 950 }}>Proposta ou oportunidade</h2>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Proposta ou oportunidade</h2>
               <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setProposalOpen(false)} aria-label="Fechar">
                 <X size={22} color={palette.textMuted} />
               </button>
@@ -3456,7 +3531,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: proposalForm.kind === 'proposal' ? '1px solid #000' : `1px solid ${border}`,
                   backgroundColor: proposalForm.kind === 'proposal' ? '#000' : 'transparent',
                   color: proposalForm.kind === 'proposal' ? LIME : palette.textMuted,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 12,
                   cursor: 'pointer',
                 }}
@@ -3473,7 +3548,7 @@ const ZaptroCrmContent: React.FC = () => {
                   border: proposalForm.kind === 'negotiation' ? '1px solid #000' : `1px solid ${border}`,
                   backgroundColor: proposalForm.kind === 'negotiation' ? '#000' : 'transparent',
                   color: proposalForm.kind === 'negotiation' ? LIME : palette.textMuted,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 12,
                   cursor: 'pointer',
                 }}
@@ -3482,7 +3557,7 @@ const ZaptroCrmContent: React.FC = () => {
               </button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 Lead
                 <select
                   style={{
@@ -3506,7 +3581,7 @@ const ZaptroCrmContent: React.FC = () => {
                   ))}
                 </select>
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 {proposalForm.kind === 'proposal' ? 'Título da proposta' : 'Título / tema'}
                 <input
                   style={{
@@ -3524,7 +3599,7 @@ const ZaptroCrmContent: React.FC = () => {
                   onChange={(e) => setProposalForm((f) => ({ ...f, title: e.target.value }))}
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 {proposalForm.kind === 'proposal' ? 'Valor (R$)' : 'Valor alvo (R$)'}
                 <input
                   style={{
@@ -3542,7 +3617,7 @@ const ZaptroCrmContent: React.FC = () => {
                   onChange={(e) => setProposalForm((f) => ({ ...f, value: e.target.value }))}
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 {proposalForm.kind === 'proposal' ? 'Validade (texto ou data)' : 'Prazo'}
                 <input
                   style={{
@@ -3560,7 +3635,7 @@ const ZaptroCrmContent: React.FC = () => {
                   onChange={(e) => setProposalForm((f) => ({ ...f, schedule: e.target.value }))}
                 />
               </label>
-              <label style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                 Notas
                 <textarea
                   style={{
@@ -3585,11 +3660,11 @@ const ZaptroCrmContent: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setProposalOpen(false)}
-                style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 900, cursor: 'pointer', color: palette.textMuted }}
+                style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 700, cursor: 'pointer', color: palette.textMuted }}
               >
                 Cancelar
               </button>
-              <button type="button" onClick={submitProposal} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 950, cursor: 'pointer' }}>
+              <button type="button" onClick={submitProposal} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 700, cursor: 'pointer' }}>
                 Guardar no histórico
               </button>
             </div>
@@ -3632,8 +3707,8 @@ const ZaptroCrmContent: React.FC = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
               <div style={{ minWidth: 0 }}>
-                <p style={{ margin: 0, fontSize: 11, fontWeight: 950, letterSpacing: '0.1em', color: palette.textMuted }}>LIGAR AO CLIENTE</p>
-                <h2 id="zaptro-crm-call-modal-title" style={{ margin: '8px 0 0', fontSize: 20, fontWeight: 950, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
+                <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: palette.textMuted }}>LIGAR AO CLIENTE</p>
+                <h2 id="zaptro-crm-call-modal-title" style={{ margin: '8px 0 0', fontSize: 20, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.25 }}>
                   {callModalLead.clientName}
                 </h2>
               </div>
@@ -3672,8 +3747,8 @@ const ZaptroCrmContent: React.FC = () => {
                 marginBottom: 14,
               }}
             >
-              <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>TELEFONE</p>
-              <p style={{ margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
+              <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: palette.textMuted }}>TELEFONE</p>
+              <p style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
                 {callModalLead.phone.trim() || waDigits(callModalLead.phone)}
               </p>
             </div>
@@ -3711,7 +3786,7 @@ const ZaptroCrmContent: React.FC = () => {
                   borderRadius: 14,
                   border: `1px solid ${border}`,
                   background: 'transparent',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
                   color: palette.text,
@@ -3737,7 +3812,7 @@ const ZaptroCrmContent: React.FC = () => {
                     border: 'none',
                     background: '#000',
                     color: LIME,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -3755,7 +3830,7 @@ const ZaptroCrmContent: React.FC = () => {
                   borderRadius: 12,
                   border: 'none',
                   background: 'transparent',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: 13,
                   cursor: 'pointer',
                   color: palette.textMuted,

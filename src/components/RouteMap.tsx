@@ -7,13 +7,14 @@ import type { Shipment } from '../types';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+import { 
+  ZAPTRO_MAP_ORIGIN_ICON, 
+  ZAPTRO_MAP_DEST_ICON, 
+  ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_ROUTE_COLORS 
+} from '../constants/zaptroMapStyles';
 
+const DefaultIcon = ZAPTRO_MAP_DRIVER_ICON;
 L.Marker.prototype.options.icon = DefaultIcon;
 
 interface RouteMapProps {
@@ -63,12 +64,19 @@ const RouteMap: React.FC<RouteMapProps> = ({ stops, center = [-23.5505, -46.6333
         {sortedCoords.length > 1 && (
           <Polyline
             positions={sortedCoords}
-            color="#D9FF00"
-            weight={5}
-            opacity={0.85}
+            color={ZAPTRO_MAP_ROUTE_COLORS.main}
+            weight={6}
+            opacity={1}
             lineCap="round"
             lineJoin="round"
-            dashArray="10, 10"
+          />
+          <Polyline
+            positions={sortedCoords}
+            color={ZAPTRO_MAP_ROUTE_COLORS.accent}
+            weight={3}
+            opacity={0.8}
+            lineCap="round"
+            lineJoin="round"
           />
         )}
 

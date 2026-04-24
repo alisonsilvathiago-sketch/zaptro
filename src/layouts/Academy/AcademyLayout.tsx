@@ -85,8 +85,8 @@ const styles = {
     display: 'flex', alignItems: 'center', justifyContent: 'center' 
   },
   logoText: { display: 'flex', flexDirection: 'column' as const },
-  logoMain: { fontSize: '18px', fontWeight: '950', color: '#1e293b', letterSpacing: '-0.5px' },
-  logoSub: { fontSize: '10px', fontWeight: '800', color: 'var(--primary)', letterSpacing: '1.5px' },
+  logoMain: { fontSize: '18px', fontWeight: '700', color: '#1e293b', letterSpacing: '-0.5px' },
+  logoSub: { fontSize: '10px', fontWeight: '600', color: 'var(--primary)', letterSpacing: '1.5px' },
   
   navCenter: { display: 'flex', gap: '8px' },
   navLink: { 
@@ -105,14 +105,14 @@ const styles = {
   navRight: { display: 'flex', alignItems: 'center', gap: '20px' },
   userProfile: { display: 'flex', alignItems: 'center', gap: '12px' },
   userInfo: { textAlign: 'right' as const },
-  userName: { fontSize: '14px', fontWeight: '800', color: '#1e293b', margin: 0 },
+  userName: { fontSize: '14px', fontWeight: '600', color: '#1e293b', margin: 0 },
   userBadge: { fontSize: '10px', fontWeight: '700', color: '#94a3b8' },
   avatar: { 
     width: '38px', height: '38px', borderRadius: '12px', 
     backgroundColor: '#ebebeb', border: '2px solid white', 
     boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontWeight: '800', color: '#1e293b'
+    fontWeight: '600', color: '#1e293b'
   },
   logoutBtn: { 
     padding: '10px', borderRadius: '12px', border: '1px solid #e8e8e8', 

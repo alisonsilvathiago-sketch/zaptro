@@ -4,23 +4,27 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Truck, Navigation, User, Package, Clock, Shield } from 'lucide-react';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
+import { useNavigate } from 'react-router-dom';
+import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 
 // Corrigindo ícones padrão do Leaflet no React
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
+import { 
+  ZAPTRO_MAP_ORIGIN_ICON, 
+  ZAPTRO_MAP_DEST_ICON, 
+  ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_ROUTE_COLORS 
+} from '../constants/zaptroMapStyles';
 
+const DefaultIcon = ZAPTRO_MAP_DRIVER_ICON;
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const FleetMap: React.FC = () => {
   const { palette } = useZaptroTheme();
   const isDark = palette.mode === 'dark';
+  const navigate = useNavigate();
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [shipments, setShipments] = useState<any[]>([]);
 
@@ -33,8 +37,8 @@ const FleetMap: React.FC = () => {
     
     // Mock de remessas pendentes/em rota
     const mockShipments = [
-      { id: 101, client: 'Indústria ABC', lat: -23.5700, lng: -46.6600, status: 'DELIVERY_PENDING' },
-      { id: 102, client: 'Mercado Central', lat: -23.5400, lng: -46.6200, status: 'DELIVERY_PENDING' },
+      { id: 101, token: 'rt-demo-001', client: 'Indústria ABC', lat: -23.5700, lng: -46.6600, status: 'DELIVERY_PENDING' },
+      { id: 102, token: 'rt-demo-002', client: 'Mercado Central', lat: -23.5400, lng: -46.6200, status: 'DELIVERY_PENDING' },
     ];
 
     setVehicles(mockVehicles);
@@ -69,7 +73,7 @@ const FleetMap: React.FC = () => {
 
         {/* VEÍCULOS */}
         {vehicles.map(vehicle => (
-          <Marker key={vehicle.id} position={[vehicle.lat, vehicle.lng] as any}>
+          <Marker key={vehicle.id} position={[vehicle.lat, vehicle.lng] as any} icon={ZAPTRO_MAP_DRIVER_ICON}>
             <Popup>
               <div style={styles.popup}>
                 <div style={styles.popupHeader}>
@@ -90,7 +94,7 @@ const FleetMap: React.FC = () => {
 
         {/* ENTREGAS */}
         {shipments.map(shipment => (
-          <Marker key={shipment.id} position={[shipment.lat, shipment.lng] as any}>
+          <Marker key={shipment.id} position={[shipment.lat, shipment.lng] as any} icon={ZAPTRO_MAP_DEST_ICON}>
             <Popup>
               <div style={styles.popup}>
                 <div style={{...styles.popupHeader, color: '#f59e0b'}}>
@@ -100,7 +104,12 @@ const FleetMap: React.FC = () => {
                 <div style={styles.pBody}>
                    <p style={styles.pText}><Clock size={12} /> Previsão: Hoje, 15:30</p>
                    <p style={styles.pText}><Shield size={12} /> Carga Segurada</p>
-                   <button style={styles.pBtn}>Ver Detalhes do Pedido</button>
+                   <button
+                     style={styles.pBtn}
+                     onClick={() => navigate(`${ZAPTRO_ROUTES.ROUTES}?token=${shipment.token}`)}
+                   >
+                     Ver Detalhes do Pedido
+                   </button>
                 </div>
               </div>
             </Popup>
@@ -108,6 +117,7 @@ const FleetMap: React.FC = () => {
         ))}
         </MapContainer>
       </div>
+
 
       {/* FLOATING LEGEND */}
       <div style={styles.floatingPanel}>
@@ -129,14 +139,14 @@ const styles = {
   mapWrap: { height: '100%', width: '100%', borderRadius: '24px', overflow: 'hidden', border: '1px solid #e2e8f0', position: 'relative' as const },
   popup: { minWidth: '180px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   popupHeader: { display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #e8e8e8', paddingBottom: '8px' },
-  pTitle: { fontSize: '14px', fontWeight: '900', color: '#000000', margin: 0 },
+  pTitle: { fontSize: '14px', fontWeight: '700', color: '#000000', margin: 0 },
   pBody: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   pText: { fontSize: '11px', color: '#64748b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' },
-  pStatus: { fontSize: '10px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px', textAlign: 'center' as const, marginTop: '4px' },
-  pBtn: { marginTop: '8px', width: '100%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' },
+  pStatus: { fontSize: '10px', fontWeight: '600', padding: '4px 8px', borderRadius: '6px', textAlign: 'center' as const, marginTop: '4px' },
+  pBtn: { marginTop: '8px', width: '100%', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '6px', fontSize: '11px', fontWeight: '600', cursor: 'pointer' },
 
   floatingPanel: { position: 'absolute' as const, top: '20px', right: '20px', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', padding: '16px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, display: 'flex', flexDirection: 'column' as const, gap: '10px', border: '1px solid white' },
-  panelTitle: { fontSize: '12px', fontWeight: '900', color: '#000000', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
+  panelTitle: { fontSize: '12px', fontWeight: '700', color: '#000000', margin: 0, textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   panelRow: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '700', color: '#475569' },
   dot: { width: '8px', height: '8px', borderRadius: '50%' }
 };

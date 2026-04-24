@@ -115,7 +115,7 @@ const ZaptroBilling: React.FC = () => {
                     borderRadius: '10px',
                     border: 'none',
                     fontSize: '13px',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     cursor: 'pointer',
                     backgroundColor: !isAnnual ? 'white' : 'transparent',
                     boxShadow: !isAnnual ? ZAPTRO_SHADOW.sm : 'none',
@@ -131,7 +131,7 @@ const ZaptroBilling: React.FC = () => {
                     borderRadius: '10px',
                     border: 'none',
                     fontSize: '13px',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     cursor: 'pointer',
                     backgroundColor: isAnnual ? 'white' : 'transparent',
                     boxShadow: isAnnual ? ZAPTRO_SHADOW.sm : 'none',
@@ -221,7 +221,7 @@ const ZaptroBilling: React.FC = () => {
                     {invoices.map(inv => (
                       <tr key={inv.id} style={styles.tr}>
                          <td style={styles.td}>{inv.date}</td>
-                         <td style={styles.td}><span style={{fontWeight: 800}}>{inv.id}</span></td>
+                         <td style={styles.td}><span style={{fontWeight: 600}}>{inv.id}</span></td>
                          <td style={styles.td}>{inv.amount}</td>
                          <td style={styles.td}>{inv.method}</td>
                          <td style={styles.td}>
@@ -257,7 +257,7 @@ const ZaptroBilling: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0px' },
   header: { marginBottom: '40px' },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-1.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000', margin: 0, letterSpacing: '-1.5px' },
   subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '500', margin: '4px 0 0 0' },
   
   mainGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '32px' },
@@ -266,32 +266,32 @@ const styles: Record<string, any> = {
   planCard: { border: '2px solid #D9FF00' },
   planHeader: { display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' },
   planIcon: { width: '52px', height: '52px', backgroundColor: '#D9FF00', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  planTitle: { fontSize: '20px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-0.5px' },
-  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#10B981', marginTop: '4px' },
+  planTitle: { fontSize: '20px', fontWeight: '700', color: '#000', margin: 0, letterSpacing: '-0.5px' },
+  statusBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '600', color: '#10B981', marginTop: '4px' },
   
   planDetails: { display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px', padding: '24px', backgroundColor: '#FBFBFC', borderRadius: '18px' },
   planPrice: { display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '24px' },
-  priceVal: { fontSize: '32px', fontWeight: '950', color: '#000' },
+  priceVal: { fontSize: '32px', fontWeight: '700', color: '#000' },
   priceUnit: { fontSize: '14px', color: '#64748B', fontWeight: '700' },
   featureList: { listStyle: 'none', padding: 0, margin: '0 0 32px 0', display: 'flex', flexDirection: 'column', gap: '12px' },
   featureItem: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: '#1E293B', fontWeight: '600' },
-  upgradeBtn: { width: '100%', padding: '16px', backgroundColor: '#000', color: '#FFF', border: 'none', borderRadius: '16px', fontWeight: '950', fontSize: '14px', cursor: 'pointer' },
+  upgradeBtn: { width: '100%', padding: '16px', backgroundColor: '#000', color: '#FFF', border: 'none', borderRadius: '16px', fontWeight: '700', fontSize: '14px', cursor: 'pointer' },
 
-  cardTitle: { fontSize: '18px', fontWeight: '950', color: '#000', marginBottom: '24px', letterSpacing: '-0.5px' },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: '#000', marginBottom: '24px', letterSpacing: '-0.5px' },
   cardBox: { display: 'flex', alignItems: 'center', gap: '20px', padding: '24px', border: '1px solid #EBEBEC', borderRadius: '18px', marginBottom: '20px' },
-  cardText: { margin: 0, fontSize: '15px', fontWeight: '900', color: '#000' },
+  cardText: { margin: 0, fontSize: '15px', fontWeight: '700', color: '#000' },
   cardExpiry: { margin: 0, fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
-  editCardBtn: { background: 'none', border: 'none', color: '#000', fontWeight: '950', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline' },
+  editCardBtn: { background: 'none', border: 'none', color: '#000', fontWeight: '700', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline' },
   securitySeal: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '700', color: '#64748B' },
 
   tableWrapper: { overflowX: 'auto' },
   table: { width: '100%', borderCollapse: 'collapse' },
   thead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
-  th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#000', textTransform: 'uppercase', letterSpacing: '1px' },
+  th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '700', color: '#000', textTransform: 'uppercase', letterSpacing: '1px' },
   tr: { borderBottom: '1px solid #e8e8e8' },
   td: { padding: '20px 24px', fontSize: '14px', color: '#1E293B', fontWeight: '600' },
-  badge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '950' },
-  downBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '950', cursor: 'pointer' },
+  badge: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' },
+  downBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '700', cursor: 'pointer' },
 
   upsellBanner: { marginTop: '40px', padding: '32px', backgroundColor: '#111', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: '20px' },
   upsellText: { margin: 0, color: '#94A3B8', fontSize: '15px', fontWeight: '600' },

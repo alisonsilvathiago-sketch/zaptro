@@ -52,33 +52,33 @@ const DriverHRProfile: React.FC = () => {
     profileCard: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0', textAlign: 'center' as const },
     avatarLarge: { width: '120px', height: '120px', borderRadius: '40px', backgroundColor: '#ebebeb', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', position: 'relative' as const },
     onlineDot: { width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#10b981', border: '3px solid white', position: 'absolute' as const, bottom: '5px', right: '5px' },
-    name: { fontSize: '24px', fontWeight: '900', color: '#0F172A', marginBottom: '4px' },
-    role: { fontSize: '12px', fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase' as const, letterSpacing: '0.05em', marginBottom: '24px', display: 'block' },
+    name: { fontSize: '24px', fontWeight: '700', color: '#0F172A', marginBottom: '4px' },
+    role: { fontSize: '12px', fontWeight: '600', color: '#94A3B8', textTransform: 'uppercase' as const, letterSpacing: '0.05em', marginBottom: '24px', display: 'block' },
     
     scoreGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' },
     scoreItem: { padding: '16px', borderRadius: '24px', backgroundColor: '#f4f4f4', border: '1px solid #e8e8e8' },
-    scoreLabel: { fontSize: '11px', color: '#94A3B8', fontWeight: '800', marginBottom: '4px' },
-    scoreValue: { fontSize: '18px', fontWeight: '900', color: '#1E293B' },
+    scoreLabel: { fontSize: '11px', color: '#94A3B8', fontWeight: '600', marginBottom: '4px' },
+    scoreValue: { fontSize: '18px', fontWeight: '700', color: '#1E293B' },
     
     contactInfo: { textAlign: 'left' as const, display: 'flex', flexDirection: 'column' as const, gap: '16px', paddingTop: '24px', borderTop: '1px solid #e8e8e8' },
     contactRow: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#64748B', fontWeight: '600' },
     iconBox: { padding: '8px', borderRadius: '10px', backgroundColor: '#ebebeb', color: 'var(--text-muted)' },
     
     tabNavPremium: { display: 'flex', gap: '8px', backgroundColor: 'white', padding: '8px', borderRadius: '24px', border: '1px solid #E2E8F0', marginBottom: '32px' },
-    tabBtn: { padding: '12px 24px', border: 'none', background: 'none', cursor: 'pointer', borderRadius: '18px', fontSize: '13px', fontWeight: '800', color: '#94A3B8', transition: 'all 0.2s' },
+    tabBtn: { padding: '12px 24px', border: 'none', background: 'none', cursor: 'pointer', borderRadius: '18px', fontSize: '13px', fontWeight: '600', color: '#94A3B8', transition: 'all 0.2s' },
     tabBtnActive: { backgroundColor: 'var(--primary)', color: 'white', boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)' },
     
     cardPremium: { backgroundColor: 'white', borderRadius: '32px', padding: '32px', border: '1px solid #E2E8F0' },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
-    sectionTitle: { fontSize: '18px', fontWeight: '800', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '12px' },
+    sectionTitle: { fontSize: '18px', fontWeight: '600', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '12px' },
     
     attendanceTable: { width: '100%', borderCollapse: 'separate' as const, borderSpacing: '0 8px' },
-    th: { textAlign: 'left' as const, padding: '12px 16px', fontSize: '11px', fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase' as const },
+    th: { textAlign: 'left' as const, padding: '12px 16px', fontSize: '11px', fontWeight: '600', color: '#94A3B8', textTransform: 'uppercase' as const },
     tr: { backgroundColor: '#f4f4f4', transition: 'all 0.2s' },
     td: { padding: '16px', fontSize: '14px', fontWeight: '600', color: '#475569' },
-    pontoBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '800' },
+    pontoBadge: { padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '600' },
     
-    actionBtn: { width: '100%', padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: 'auto' }
+    actionBtn: { width: '100%', padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: 'auto' }
   };
 
   const renderGeral = () => (
@@ -92,27 +92,27 @@ const DriverHRProfile: React.FC = () => {
              <div style={{ padding: '24px', borderRadius: '24px', backgroundColor: '#f0fdf4', border: '1px solid #dcfce7' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                    <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: '#10b981', color: 'white' }}><Heart size={16} /></div>
-                   <span style={{ fontSize: '12px', fontWeight: '800', color: '#166534' }}>Saúde Mental</span>
+                   <span style={{ fontSize: '12px', fontWeight: '600', color: '#166534' }}>Saúde Mental</span>
                 </div>
-                <h4 style={{ fontSize: '20px', fontWeight: '900', color: '#166534' }}>{driver?.health}</h4>
+                <h4 style={{ fontSize: '20px', fontWeight: '700', color: '#166534' }}>{driver?.health}</h4>
                 <p style={{ fontSize: '11px', color: '#15803d', marginTop: '4px' }}>Ótima performance de descanso</p>
              </div>
              
              <div style={{ padding: '24px', borderRadius: '24px', backgroundColor: 'rgba(217, 255, 0, 0.18)', border: '1px solid rgba(217, 255, 0, 0.28)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                    <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: 'var(--primary)', color: 'white' }}><Star size={16} /></div>
-                   <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--primary)' }}>Avaliação Media</span>
+                   <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--primary)' }}>Avaliação Media</span>
                 </div>
-                <h4 style={{ fontSize: '20px', fontWeight: '900', color: 'var(--primary)' }}>4.9/5.0</h4>
+                <h4 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--primary)' }}>4.9/5.0</h4>
                 <p style={{ fontSize: '11px', color: 'var(--primary)', marginTop: '4px' }}>Top 5% da frota</p>
              </div>
 
              <div style={{ padding: '24px', borderRadius: '24px', backgroundColor: '#fff7ed', border: '1px solid #ffedd5' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                    <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: '#f97316', color: 'white' }}><Award size={16} /></div>
-                   <span style={{ fontSize: '12px', fontWeight: '800', color: '#9a3412' }}>Tempo Casa</span>
+                   <span style={{ fontSize: '12px', fontWeight: '600', color: '#9a3412' }}>Tempo Casa</span>
                 </div>
-                <h4 style={{ fontSize: '20px', fontWeight: '900', color: '#9a3412' }}>284 Dias</h4>
+                <h4 style={{ fontSize: '20px', fontWeight: '700', color: '#9a3412' }}>284 Dias</h4>
                 <p style={{ fontSize: '11px', color: '#c2410c', marginTop: '4px' }}>Desde Jan 2024</p>
              </div>
           </div>

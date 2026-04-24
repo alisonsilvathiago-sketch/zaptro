@@ -53,7 +53,7 @@ if (rootElement) {
             position="bottom-right"
             containerStyle={{
               zIndex: 99999,
-              bottom: 'max(16px, env(safe-area-inset-bottom, 0px))',
+              bottom: 'max(80px, env(safe-area-inset-bottom, 0px))',
               right: 'max(16px, env(safe-area-inset-right, 0px))',
               left: 'auto',
               top: 'auto',

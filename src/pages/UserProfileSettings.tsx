@@ -240,7 +240,7 @@ const styles = {
     position: 'relative' as const
   },
   bannerContent: { maxWidth: '600px' },
-  greeting: { fontSize: '32px', fontWeight: '800', color: '#1E293B', marginBottom: '12px' },
+  greeting: { fontSize: '32px', fontWeight: '600', color: '#1E293B', marginBottom: '12px' },
   bannerSub: { fontSize: '15px', color: '#475569', lineHeight: '1.6' },
   bannerIllustration: { display: 'flex', alignItems: 'center' },
   
@@ -249,13 +249,13 @@ const styles = {
   mainAvatarBox: { marginBottom: '24px' },
   avatarLarge: { 
     width: '100px', height: '100px', borderRadius: '50%', backgroundColor: '#334155', border: '6px solid white',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', color: 'white', fontWeight: '800', position: 'relative' as const
+    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', color: 'white', fontWeight: '600', position: 'relative' as const
   },
   camBtn: { position: 'absolute' as const, bottom: '0', right: '0', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'white', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   
   sectionCard: { backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
-  cardTitle: { fontSize: '20px', fontWeight: '800', color: '#0F172A' },
+  cardTitle: { fontSize: '20px', fontWeight: '600', color: '#0F172A' },
   editLink: { display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #E2E8F0', backgroundColor: 'transparent', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', color: '#64748B', fontWeight: '700', cursor: 'pointer' },
   securityBtn: { display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #DBEAFE', backgroundColor: '#F0F9FF', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', color: '#D9FF00', fontWeight: '700', cursor: 'pointer' },
   
@@ -269,7 +269,7 @@ const styles = {
   dataLink: { fontSize: '14px', fontWeight: '600', color: '#D9FF00', textDecoration: 'none' },
   
   avatarMiniBox: { marginBottom: '16px' },
-  avatarMini: { width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000000', fontWeight: '800', fontSize: '20px' },
+  avatarMini: { width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000000', fontWeight: '600', fontSize: '20px' },
   
   socialGroup: { display: 'flex', gap: '16px' },
   

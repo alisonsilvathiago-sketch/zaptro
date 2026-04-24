@@ -104,7 +104,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             )}
           </div>
           
-          <h2 style={{ fontSize: '2.4rem', fontWeight: '950', color: '#000', marginBottom: '12px', letterSpacing: '-2px' }}>
+          <h2 style={{ fontSize: '2.4rem', fontWeight: '700', color: '#000', marginBottom: '12px', letterSpacing: '-2px' }}>
             {isMissingTable ? 'Banco de Dados Incompleto' : (isZaptro ? 'Sincronizar Zaptro' : 'Erro de Autenticação')}
           </h2>
           
@@ -139,7 +139,7 @@ CREATE POLICY "Self insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid()
           <div style={{ display: 'flex', gap: '16px', flexDirection: 'column', width: '300px' }}>
             <button 
               onClick={() => window.location.reload()} 
-              style={{ padding: '16px 32px', borderRadius: '16px', background: primaryColor, color: btnTextColor, border: 'none', fontWeight: '900', cursor: 'pointer', fontSize: '14px', boxShadow: isZaptro ? '0 10px 20px rgba(0,0,0,0.1)' : 'none' }}
+              style={{ padding: '16px 32px', borderRadius: '16px', background: primaryColor, color: btnTextColor, border: 'none', fontWeight: '700', cursor: 'pointer', fontSize: '14px', boxShadow: isZaptro ? '0 10px 20px rgba(0,0,0,0.1)' : 'none' }}
             >
               {isMissingTable ? 'Já rodei o SQL, Recarregar' : 'Forçar Sincronização Agora'}
             </button>
@@ -157,7 +157,7 @@ CREATE POLICY "Self insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid()
             </button>
           </div>
           
-          <div style={{ marginTop: '56px', fontSize: '10px', fontWeight: '800', color: '#CBD5E1', letterSpacing: '2px' }}>
+          <div style={{ marginTop: '56px', fontSize: '10px', fontWeight: '600', color: '#CBD5E1', letterSpacing: '2px' }}>
             {brandName.toUpperCase()} INTERNAL AUTH PROTOCOL • V4.0
           </div>
         </div>

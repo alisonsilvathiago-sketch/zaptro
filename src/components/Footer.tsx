@@ -110,7 +110,7 @@ const styles: Record<string, any> = {
   topSection: { display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '80px', marginBottom: '80px' },
   brandBox: { display: 'flex', flexDirection: 'column', gap: '24px' },
   logo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  logoText: { fontSize: '24px', fontWeight: '950', color: 'white', letterSpacing: '-1.5px' },
+  logoText: { fontSize: '24px', fontWeight: '700', color: 'white', letterSpacing: '-1.5px' },
   brandDesc: { fontSize: '15px', lineHeight: '1.6', color: '#64748b', maxWidth: '300px' },
   socials: { display: 'flex', gap: '12px' },
   socialIcon: { 
@@ -120,7 +120,7 @@ const styles: Record<string, any> = {
   },
   linksGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px' },
   sectionCol: { display: 'flex', flexDirection: 'column', gap: '24px' },
-  sectionTitle: { fontSize: '15px', fontWeight: '900', color: 'white', textTransform: 'uppercase', letterSpacing: '1px' },
+  sectionTitle: { fontSize: '15px', fontWeight: '700', color: 'white', textTransform: 'uppercase', letterSpacing: '1px' },
   linkList: { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' },
   linkItem: { margin: 0 },
   link: { color: '#94a3b8', fontSize: '14px', textDecoration: 'none', fontWeight: '600', display: 'flex', alignItems: 'center', transition: '0.2s' },
@@ -132,7 +132,7 @@ const styles: Record<string, any> = {
   made: { fontSize: '13px', margin: 0, color: '#475569' },
   badges: { display: 'flex', gap: '16px' },
   badge: { 
-    display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '800', 
+    display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '600', 
     backgroundColor: '#1e293b', color: '#94a3b8', padding: '6px 12px', borderRadius: '8px' 
   }
 };

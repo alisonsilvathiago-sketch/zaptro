@@ -163,39 +163,39 @@ const styles = {
   container: { padding: '40px', display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   headerInfo: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  title: { fontSize: '28px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-1.2px' },
+  title: { fontSize: '28px', fontWeight: '700', color: '#000000', margin: 0, letterSpacing: '-1.2px' },
   subtitle: { fontSize: '15px', color: '#6b7280', margin: 0 },
-  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 8px 16px rgba(217, 255, 0, 0.2)' },
+  primaryBtn: { backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '16px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 8px 16px rgba(217, 255, 0, 0.2)' },
   
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '20px' },
   statIcon: { width: '56px', height: '56px', borderRadius: '18px', backgroundColor: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  statLabel: { fontSize: '12px', fontWeight: '800', color: '#64748b', margin: 0, textTransform: 'uppercase' as const },
-  statValue: { fontSize: '24px', fontWeight: '950', color: '#000000', margin: '4px 0 0 0' },
+  statLabel: { fontSize: '12px', fontWeight: '600', color: '#64748b', margin: 0, textTransform: 'uppercase' as const },
+  statValue: { fontSize: '24px', fontWeight: '700', color: '#000000', margin: '4px 0 0 0' },
 
   refinement: { backgroundColor: 'white', padding: '16px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex' },
   searchWrap: { display: 'flex', alignItems: 'center', gap: '12px', padding: '0 16px', borderRight: '1px solid #e8e8e8', width: '400px' },
-  searchInput: { border: 'none', outline: 'none', fontSize: '14px', fontWeight: '800', color: '#000000', width: '100%' },
+  searchInput: { border: 'none', outline: 'none', fontSize: '14px', fontWeight: '600', color: '#000000', width: '100%' },
 
   mainCard: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e2e8f0', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' as const },
-  th: { textAlign: 'left' as const, padding: '20px 32px', fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px', borderBottom: '1px solid #e8e8e8' },
+  th: { textAlign: 'left' as const, padding: '20px 32px', fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' as const, letterSpacing: '1px', borderBottom: '1px solid #e8e8e8' },
   tr: { borderBottom: '1px solid #e8e8e8', transition: 'background-color 0.2s' },
   td: { padding: '20px 32px', fontSize: '14px', color: '#334155' },
   
   appCell: { display: 'flex', gap: '16px', alignItems: 'center' },
   iconThumb: { width: '40px', height: '40px', backgroundColor: '#f4f4f4', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e8e8e8' },
   appInfo: { display: 'flex', flexDirection: 'column' as const },
-  appName: { fontSize: '14px', fontWeight: '900', color: '#000000' },
-  appType: { fontSize: '10px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const },
+  appName: { fontSize: '14px', fontWeight: '700', color: '#000000' },
+  appType: { fontSize: '10px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' as const },
 
-  catBadge: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 10px', borderRadius: '8px' },
+  catBadge: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', backgroundColor: 'var(--primary-light)', padding: '4px 10px', borderRadius: '8px' },
   slugCode: { fontSize: '12px', fontWeight: '700', color: '#1e293b', backgroundColor: '#ebebeb', padding: '4px 8px', borderRadius: '6px' },
   
   priceCell: { display: 'flex', flexDirection: 'column' as const },
-  pricePeriod: { fontSize: '10px', color: '#94a3b8', fontWeight: '800' },
+  pricePeriod: { fontSize: '10px', color: '#94a3b8', fontWeight: '600' },
   
-  statusBtn: { background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '900', cursor: 'pointer' },
+  statusBtn: { background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' },
   
   actions: { display: 'flex', gap: '8px' },
   actionBtn: { width: '36px', height: '36px', borderRadius: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }

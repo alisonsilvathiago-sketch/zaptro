@@ -170,7 +170,7 @@ const styles: Record<string, any> = {
   header: { marginBottom: '32px', position: 'relative', zIndex: 2 },
   brandInfo: { display: 'flex', alignItems: 'center', gap: '20px' },
   logoBox: { width: '56px', height: '56px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: ZAPTRO_SHADOW.sm },
-  title: { fontSize: '28px', fontWeight: '900', margin: 0, letterSpacing: '-1px' },
+  title: { fontSize: '28px', fontWeight: '700', margin: 0, letterSpacing: '-1px' },
   subtitle: { fontSize: '14px', margin: '4px 0 0 0', opacity: 0.8 },
   
   tabNav: { display: 'flex', gap: '8px', borderBottom: '1px solid', marginBottom: '24px', position: 'relative', zIndex: 2 },
@@ -178,7 +178,7 @@ const styles: Record<string, any> = {
   
   content: { position: 'relative', zIndex: 2 },
   card: { borderRadius: '24px', padding: '40px', border: '1px solid', boxShadow: ZAPTRO_SHADOW.lg },
-  cardTitle: { fontSize: '22px', fontWeight: '900', marginBottom: '8px' },
+  cardTitle: { fontSize: '22px', fontWeight: '700', marginBottom: '8px' },
   cardSub: { fontSize: '14px', marginBottom: '32px', opacity: 0.7 },
   
   userList: { display: 'flex', flexDirection: 'column', marginBottom: '32px' },
@@ -191,20 +191,20 @@ const styles: Record<string, any> = {
   
   formGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px', marginBottom: '32px' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '12px', fontWeight: '800', opacity: 0.6, textTransform: 'uppercase', letterSpacing: '1px' },
+  label: { fontSize: '12px', fontWeight: '600', opacity: 0.6, textTransform: 'uppercase', letterSpacing: '1px' },
   input: { padding: '16px', border: '1px solid', borderRadius: '14px', outline: 'none', fontSize: '15px' },
   
   statusBanner: { padding: '24px', borderRadius: '20px', border: '1px solid', display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' },
   statusInfo: { flex: 1 },
-  statusTitle: { display: 'block', fontWeight: '900', fontSize: '17px' },
+  statusTitle: { display: 'block', fontWeight: '700', fontSize: '17px' },
   statusDesc: { display: 'block', fontSize: '13px' },
-  statusBadge: { padding: '6px 12px', fontWeight: '900', fontSize: '10px', borderRadius: '30px' },
+  statusBadge: { padding: '6px 12px', fontWeight: '700', fontSize: '10px', borderRadius: '30px' },
   
   apiBox: { marginBottom: '32px' },
   tokenRow: { display: 'flex', gap: '12px', marginTop: '12px' },
   btnCopy: { padding: '0 20px', backgroundColor: 'transparent', border: '1px solid rgba(124, 124, 124, 0.2)', borderRadius: '14px', cursor: 'pointer', fontSize: '13px', fontWeight: '700' },
   
-  btnSave: { padding: '18px 40px', border: 'none', borderRadius: '18px', fontWeight: '900', fontSize: '16px', cursor: 'pointer', boxShadow: ZAPTRO_SHADOW.md },
+  btnSave: { padding: '18px 40px', border: 'none', borderRadius: '18px', fontWeight: '700', fontSize: '16px', cursor: 'pointer', boxShadow: ZAPTRO_SHADOW.md },
 };
 
 export default ZaptroHub;

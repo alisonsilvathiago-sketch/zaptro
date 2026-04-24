@@ -227,12 +227,12 @@ const PersonalizacaoTab = ({ color, setColor }: any) => {
 const styles: Record<string, any> = {
   container: { padding: '0', minHeight: '100vh', backgroundColor: 'transparent' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' },
-  badge: { fontSize: '10px', fontWeight: '950', color: 'var(--primary)', letterSpacing: '1px', marginBottom: '8px', opacity: 0.8 },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
+  badge: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '1px', marginBottom: '8px', opacity: 0.8 },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
   subtitle: { fontSize: '15px', color: '#6b7280', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#64748b' },
-  saveBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' },
+  saveBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' },
 
   layout: { display: 'grid', gridTemplateColumns: '260px 1fr', gap: '40px', alignItems: 'flex-start' },
   sidebar: { display: 'flex', flexDirection: 'column' as const, gap: '6px', backgroundColor: 'white', padding: '12px', borderRadius: '24px', border: '1px solid #e2e8f0' },
@@ -241,22 +241,22 @@ const styles: Record<string, any> = {
 
   content: { backgroundColor: 'white', padding: '40px', borderRadius: '32px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', minHeight: '600px' },
   tabContent: { animation: 'slideIn 0.3s ease-out' },
-  tabTitle: { fontSize: '20px', fontWeight: '900', color: '#000000', marginBottom: '8px' },
+  tabTitle: { fontSize: '20px', fontWeight: '700', color: '#000000', marginBottom: '8px' },
   tabSub: { fontSize: '14px', color: '#6b7280', marginBottom: '32px' },
   tabPlaceholder: { height: '400px', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', color: '#94a3b8', gap: '16px', textAlign: 'center' as const },
 
   fGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' },
   fGroup: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
-  fLabel: { fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const },
+  fLabel: { fontSize: '12px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' as const },
   input: { padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', backgroundColor: '#f4f4f4', fontWeight: '700', outline: 'none' },
 
   brandingGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' },
   colorCard: { padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '16px', border: '1px solid #e2e8f0' },
   colorPreview: { width: '48px', height: '48px', borderRadius: '12px' },
-  colorName: { fontSize: '14px', fontWeight: '800', margin: 0 },
+  colorName: { fontSize: '14px', fontWeight: '600', margin: 0 },
   logoCard: { padding: '24px', backgroundColor: '#f4f4f4', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '16px', border: '1px solid #e2e8f0' },
-  logoPreview: { width: '48px', height: '48px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px' },
-  secondaryBtn: { padding: '8px 16px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }
+  logoPreview: { width: '48px', height: '48px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '20px' },
+  secondaryBtn: { padding: '8px 16px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }
 };
 
 export default MasterSettings;

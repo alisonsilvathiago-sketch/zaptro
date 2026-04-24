@@ -139,7 +139,7 @@ const styles: Record<string, any> = {
     alignItems: 'center', gap: '40px' 
   },
   headerContent: { flex: 1 },
-  title: { fontSize: '32px', fontWeight: '950', color: '#0F172A', letterSpacing: '-1.5px', marginBottom: '8px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#0F172A', letterSpacing: '-1.5px', marginBottom: '8px' },
   subtitle: { fontSize: '16px', color: '#64748B' },
   
   searchBox: { 
@@ -148,12 +148,12 @@ const styles: Record<string, any> = {
     border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
   },
   searchInput: { flex: 1, border: 'none', outline: 'none', fontSize: '15px' },
-  searchBtn: { padding: '10px 20px', backgroundColor: '#0f172a', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer' },
+  searchBtn: { padding: '10px 20px', backgroundColor: '#0f172a', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer' },
 
   main: { maxWidth: '1200px', margin: '0 auto' },
   loading: { padding: '80px', textAlign: 'center', color: '#64748B', fontWeight: '600' },
   emptyState: { textAlign: 'center', padding: '100px 40px', color: '#94a3b8' },
-  backBtn: { marginTop: '24px', padding: '12px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '12px', color: '#0f172a', fontWeight: '800', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' },
+  backBtn: { marginTop: '24px', padding: '12px 24px', backgroundColor: '#ebebeb', border: 'none', borderRadius: '12px', color: '#0f172a', fontWeight: '600', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' },
 
   resultsList: { display: 'grid', gridTemplateColumns: '1fr', gap: '20px' },
   resultCard: { 
@@ -161,12 +161,12 @@ const styles: Record<string, any> = {
     cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', gap: '12px',
     '&:hover': { borderColor: 'var(--primary)', transform: 'translateY(-4px)', boxShadow: '0 12px 30px rgba(0,0,0,0.05)' }
   },
-  categoryBadge: { width: 'fit-content', padding: '4px 10px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '8px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase' },
-  articleTitle: { fontSize: '20px', fontWeight: '900', color: '#1e293b' },
+  categoryBadge: { width: 'fit-content', padding: '4px 10px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: 'var(--primary)', borderRadius: '8px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' },
+  articleTitle: { fontSize: '20px', fontWeight: '700', color: '#1e293b' },
   articleExcerpt: { fontSize: '15px', color: '#64748B', lineHeight: '1.6' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '16px', borderTop: '1px solid #e8e8e8' },
   meta: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#94a3b8' },
-  link: { display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '800', fontSize: '14px' }
+  link: { display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: '600', fontSize: '14px' }
 };
 
 export default HelpSearch;

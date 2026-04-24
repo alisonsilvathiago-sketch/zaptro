@@ -562,7 +562,7 @@ const Logistics: React.FC = () => {
                <p style={styles.uSub}>Rastreando {routes.filter(r => r.status === 'EM_ROTA').length} veículos em tempo real...</p>
                {mapSearch && (
                  <div style={{marginTop: '20px', padding: '16px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid var(--border)'}}>
-                   <p style={{fontSize: '12px', fontWeight: '800'}}>Endereço Pesquisado:</p>
+                   <p style={{fontSize: '12px', fontWeight: '600'}}>Endereço Pesquisado:</p>
                    <p style={{fontSize: '14px', color: 'var(--primary)'}}>{mapSearch}</p>
                  </div>
                )}
@@ -589,7 +589,7 @@ const Logistics: React.FC = () => {
                     </div>
                     <div style={{flex: 1}}>
                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                          <p style={{fontWeight: '800'}}>{o.type} - {o.route_id}</p>
+                          <p style={{fontWeight: '600'}}>{o.type} - {o.route_id}</p>
                           <span style={styles.uSub}>{o.timestamp}</span>
                        </div>
                        <p style={{fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px'}}>{o.description}</p>
@@ -603,12 +603,12 @@ const Logistics: React.FC = () => {
              <div style={styles.cardHeader}><h3>Ações Recomendadas</h3></div>
              <div style={{padding: '24px', display: 'flex', flexDirection: 'column' as const, gap: '16px'}}>
                 <div style={styles.alertPanel}>
-                   <p style={{fontWeight: '800', fontSize: '13px'}}>Rota R-7003 muito atrasada</p>
+                   <p style={{fontWeight: '600', fontSize: '13px'}}>Rota R-7003 muito atrasada</p>
                    <p style={{fontSize: '11px', marginTop: '4px'}}>Contatar motorista ou realizar transbordo.</p>
                    <button style={styles.btnWarningSmall}>Agir Agora</button>
                 </div>
                 <div style={{...styles.alertPanel, backgroundColor: 'var(--bg-app)', border: '1px solid var(--border)'}}>
-                   <p style={{fontWeight: '800', fontSize: '13px'}}>3 Entregas com problemas</p>
+                   <p style={{fontWeight: '600', fontSize: '13px'}}>3 Entregas com problemas</p>
                    <p style={{fontSize: '11px', marginTop: '4px'}}>Resolver pendências para evitar re-entrega.</p>
                 </div>
              </div>
@@ -789,7 +789,7 @@ const Logistics: React.FC = () => {
                <div style={styles.pStatsGrid}>
                   <div style={styles.pStatCard}><p>Entregas</p><strong>412</strong></div>
                   <div style={styles.pStatCard}><p>Nota</p><strong>4.9</strong></div>
-                  <div style={styles.pStatCard}><p>Status</p><span style={{color: 'var(--success)', fontWeight: '800'}}>ATIVO</span></div>
+                  <div style={styles.pStatCard}><p>Status</p><span style={{color: 'var(--success)', fontWeight: '600'}}>ATIVO</span></div>
                </div>
                <div style={styles.pSection}>
                   <h4 style={styles.pSectionTitle}>Últimas Atividades</h4>
@@ -903,7 +903,7 @@ const Logistics: React.FC = () => {
             <div style={{...styles.iconBox, width: '48px', height: '48px', backgroundColor: 'var(--danger-light)', marginBottom: '16px'}}>
               <AlertCircle size={24} color="var(--danger)" />
             </div>
-            <h3 style={{fontSize: '18px', fontWeight: '900'}}>{selectedOccurrence.type}</h3>
+            <h3 style={{fontSize: '18px', fontWeight: '700'}}>{selectedOccurrence.type}</h3>
             <p style={styles.uSub}>Registrado em: {selectedOccurrence.timestamp}</p>
             
             <div style={{marginTop: '24px', padding: '16px', backgroundColor: 'var(--bg-app)', borderRadius: '16px'}}>
@@ -957,8 +957,8 @@ const styles: Record<string, any> = {
   container: { padding: '32px', backgroundColor: 'var(--bg-app)', minHeight: '100vh' },
   headerPremium: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap' as const, gap: '24px' },
   headerTitleArea: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
-  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' },
+  headerBadge: { display: 'inline-block', width: 'fit-content', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '700', marginBottom: '8px', letterSpacing: '1px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-1px' },
   tabNavCompact: { display: 'flex', gap: '8px', backgroundColor: 'rgba(241, 245, 249, 0.5)', padding: '6px', borderRadius: '18px', border: '1px solid var(--border)', overflowX: 'auto' as const, scrollbarWidth: 'none' as const },
   tabBtnCompact: { 
     display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', 
@@ -973,14 +973,14 @@ const styles: Record<string, any> = {
   kpiCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
   kpiInfo: { display: 'flex', flexDirection: 'column' as const },
   kpiLabel: { fontSize: '13px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  kpiValue: { fontSize: '24px', fontWeight: '900', color: '#0f172a', margin: '4px 0' },
+  kpiValue: { fontSize: '24px', fontWeight: '700', color: '#0f172a', margin: '4px 0' },
   kpiSub: { fontSize: '11px', color: '#94a3b8' },
   kpiIconBox: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   
   dashboardMainGrid: { display: 'grid', gridTemplateColumns: '1.8fr 1fr', gap: '24px' },
   chartArea: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e2e8f0' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  cardTitle: { fontSize: '18px', fontWeight: '800', color: '#0f172a' },
+  cardTitle: { fontSize: '18px', fontWeight: '600', color: '#0f172a' },
   chartLegend: { display: 'flex', gap: '16px' },
   legendItem: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#64748b', fontWeight: '600' },
   dot: { width: '8px', height: '8px', borderRadius: '50%' },
@@ -1000,15 +1000,15 @@ const styles: Record<string, any> = {
   actionGroup: { display: 'flex', gap: '12px', alignItems: 'center' },
   dateFilter: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', padding: '0 20px', borderRadius: '16px', border: '1px solid #e2e8f0', height: '52px' },
   dateInput: { border: 'none', outline: 'none', fontSize: '12px', color: '#1E293B', backgroundColor: 'transparent', fontWeight: '700' },
-  excelBtn: { height: '52px', padding: '0 20px', borderRadius: '16px', border: 'none', backgroundColor: '#ecfdf5', fontSize: '14px', fontWeight: '800', color: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
-  primaryBtnSmall: { height: '52px', padding: '0 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.3)' },
+  excelBtn: { height: '52px', padding: '0 20px', borderRadius: '16px', border: 'none', backgroundColor: '#ecfdf5', fontSize: '14px', fontWeight: '600', color: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  primaryBtnSmall: { height: '52px', padding: '0 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.3)' },
   
   routesGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' },
   routeCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid #e2e8f0', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 20px -10px rgba(0,0,0,0.1)' } },
   routeHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   routeBadge: { fontSize: '10px', color: '#94a3b8', backgroundColor: '#ebebeb', padding: '4px 8px', borderRadius: '6px', fontWeight: '700' },
-  statusTag: { fontSize: '10px', fontWeight: '800', padding: '4px 10px', borderRadius: '20px' },
-  routeName: { fontSize: '18px', fontWeight: '900', color: '#0f172a', marginBottom: '16px' },
+  statusTag: { fontSize: '10px', fontWeight: '600', padding: '4px 10px', borderRadius: '20px' },
+  routeName: { fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '16px' },
   routeMeta: { display: 'flex', flexDirection: 'column' as const, gap: '8px', marginBottom: '24px' },
   metaItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' },
   routeFooter: { borderTop: '1px solid #e8e8e8', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
@@ -1017,10 +1017,10 @@ const styles: Record<string, any> = {
 
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
   table: { width: '100%', borderCollapse: 'collapse' as const, minWidth: '900px' },
-  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const, borderBottom: '1px solid var(--border)' },
+  th: { textAlign: 'left' as const, padding: '16px 24px', fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const, borderBottom: '1px solid var(--border)' },
   td: { padding: '16px 24px', fontSize: '14px', borderBottom: '1px solid var(--border)', color: 'var(--text-secondary)' },
   tr: { transition: 'background 0.2s' },
-  tag: { padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '800' },
+  tag: { padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '600' },
   uSub: { fontSize: '11px', color: 'var(--text-muted)' },
   iconBtn: { border: 'none', backgroundColor: 'transparent', color: 'var(--text-muted)', cursor: 'pointer' },
 
@@ -1034,7 +1034,7 @@ const styles: Record<string, any> = {
   mapControls: { position: 'absolute' as const, right: '24px', bottom: '24px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   mapBtn: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: 'white', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-md)' },
   miniIconBtn: { width: '28px', height: '28px', borderRadius: '8px', border: '1px solid var(--border)', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)' },
-  btnWarningSmall: { padding: '8px 16px', backgroundColor: 'var(--warning)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', marginTop: '8px' },
+  btnWarningSmall: { padding: '8px 16px', backgroundColor: 'var(--warning)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '11px', fontWeight: '600', cursor: 'pointer', marginTop: '8px' },
 
   grid2: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px' },
   occurrenceRow: { display: 'flex', gap: '16px', padding: '16px', borderRadius: '16px', border: '1px solid var(--bg-app)', marginBottom: '12px' },
@@ -1042,14 +1042,14 @@ const styles: Record<string, any> = {
   alertPanel: { padding: '20px', backgroundColor: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '20px' },
   
   rankingRow: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', borderBottom: '1px solid var(--border)' },
-  rankNum: { width: '40px', fontSize: '18px', fontWeight: '900', color: 'var(--text-muted)' },
+  rankNum: { width: '40px', fontSize: '18px', fontWeight: '700', color: 'var(--text-muted)' },
 
   // --- Modal Styles ---
   routeDetailView: { padding: '12px' },
   detailGrid: { display: 'grid', gridTemplateColumns: '1.8fr 1fr', gap: '32px' },
   detailMain: { display: 'flex', flexDirection: 'column' as const, gap: '32px' },
   section: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
-  sectionTitle: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '16px', fontWeight: '800', marginBottom: '24px' },
+  sectionTitle: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '16px', fontWeight: '600', marginBottom: '24px' },
   infoRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   infoItem: { display: 'flex', flexDirection: 'column' as const, gap: '4px' },
   deliveryList: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
@@ -1057,23 +1057,23 @@ const styles: Record<string, any> = {
   detailSide: { display: 'flex', flexDirection: 'column' as const, gap: '24px' },
   sideSummary: { backgroundColor: 'var(--bg-app)', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
   summaryItem: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-secondary)' },
-  btnPrimaryFull: { width: '100%', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px' },
+  btnPrimaryFull: { width: '100%', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '600', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px' },
 
   // --- Person Summary Styles ---
   personSummary: { padding: '12px' },
   personHeader: { display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '32px' },
-  pAvatar: { width: '64px', height: '64px', borderRadius: '20px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '800' },
-  pName: { fontSize: '20px', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-0.5px' },
+  pAvatar: { width: '64px', height: '64px', borderRadius: '20px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '600' },
+  pName: { fontSize: '20px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-0.5px' },
   pRole: { fontSize: '13px', color: 'var(--text-muted)' },
   pStatsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '32px' },
   pStatCard: { backgroundColor: 'var(--bg-app)', padding: '16px', borderRadius: '16px', textAlign: 'center' as const, border: '1px solid var(--border)' },
   pSection: { marginBottom: '32px' },
-  pSectionTitle: { fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const, marginBottom: '16px', letterSpacing: '1px' },
+  pSectionTitle: { fontSize: '12px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const, marginBottom: '16px', letterSpacing: '1px' },
   pQuickActions: { display: 'flex', gap: '8px' },
   pIconAction: { padding: '8px', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'white', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' },
   pLog: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' },
   pActions: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' },
-  btnPAction: { padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '800', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
+  btnPAction: { padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
   
   form: { display: 'flex', flexDirection: 'column' as const, gap: '16px', padding: '12px' },
   formRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },

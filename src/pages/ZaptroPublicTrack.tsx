@@ -13,73 +13,38 @@ import {
   type RouteLiveTrailPoint,
 } from '../constants/zaptroRouteLiveStore';
 
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 const LIME = '#D9FF00';
+
+const truckIconHtml = `
+  <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #0f172a; border: 2px solid ${LIME}; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${LIME}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>
+    </svg>
+  </div>
+`;
+
+const truckIcon = L.divIcon({
+  html: truckIconHtml,
+  className: '',
+  iconSize: [40, 40],
+  iconAnchor: [20, 20]
+});
+
+function LiveMapCenter({ center }: { center: [number, number] }) {
+  const map = useMap();
+  useEffect(() => {
+    map.panTo(center, { animate: true, duration: 1.5 });
+  }, [center, map]);
+  return null;
+}
 
 /** Superfície neutra (chips / mapa) — cinza quente, um pouco mais escuro que o slate `#e2e8f0`. */
 const PUBLIC_TRACK_NEUTRAL_SURFACE = '#f4f4f4';
 
-/** Converte trilha GPS em coordenadas SVG (plano local; suficiente para percursos curtos). */
-function trailPolylinePoints(trail: RouteLiveTrailPoint[]): React.ReactNode {
-  if (trail.length === 0) return null;
-  const lats = trail.map((t) => t.lat);
-  const lngs = trail.map((t) => t.lng);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLng = Math.min(...lngs);
-  const maxLng = Math.max(...lngs);
-  const padLat = Math.max((maxLat - minLat) * 0.12, 0.0004);
-  const padLng = Math.max((maxLng - minLng) * 0.12, 0.0004);
-  const loLat = minLat - padLat;
-  const hiLat = maxLat + padLat;
-  const loLng = minLng - padLng;
-  const hiLng = maxLng + padLng;
-  const denomLat = hiLat - loLat || 1;
-  const denomLng = hiLng - loLng || 1;
-  const w = 400;
-  const h = 220;
-  const pad = 14;
-  const innerW = w - pad * 2;
-  const innerH = h - pad * 2;
-  const toXY = (p: RouteLiveTrailPoint) => {
-    const x = pad + ((p.lng - loLng) / denomLng) * innerW;
-    const y = pad + (1 - (p.lat - loLat) / denomLat) * innerH;
-    return { x, y };
-  };
-  const pts = trail.map(toXY);
-  const d = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
-  const last = pts[pts.length - 1];
-  return (
-    <>
-      {trail.length > 1 ? (
-        <path
-          d={d}
-          fill="none"
-          stroke={LIME}
-          strokeWidth={3.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={0.95}
-        />
-      ) : null}
-      {pts.map((p, i) => (
-        <circle
-          key={`${trail[i].at}-${i}`}
-          cx={p.x}
-          cy={p.y}
-          r={i === pts.length - 1 ? 6 : 3.5}
-          fill={i === pts.length - 1 ? '#0f172a' : LIME}
-          stroke="#fff"
-          strokeWidth={1.5}
-        />
-      ))}
-      {trail.length === 1 && last ? (
-        <text x={last.x + 10} y={last.y - 8} fontSize={11} fontWeight={700} fill="#64748b">
-          Última posição
-        </text>
-      ) : null}
-    </>
-  );
-}
 
 function resolveCarrierDisplayName(snap: RouteExecutionSnapshot): string {
   const short = snap.carrierShortName?.trim();
@@ -235,12 +200,12 @@ const ZaptroPublicTrack: React.FC = () => {
     <div style={pageShell}>
       <div style={pageInner}>
       <header style={{ textAlign: 'center', marginBottom: 24 }}>
-        <p style={{ margin: 0, fontSize: 12, fontWeight: 950, letterSpacing: '0.2em', color: '#a1a1aa' }}>RASTREIO</p>
+        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', color: '#a1a1aa' }}>RASTREIO</p>
         <h1
           style={{
             margin: '10px 0 0',
             fontSize: 32,
-            fontWeight: 950,
+            fontWeight: 700,
             color: '#0f172a',
             letterSpacing: '-0.04em',
             display: 'flex',
@@ -275,7 +240,7 @@ const ZaptroPublicTrack: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
             <AlertTriangle size={22} color="#b91c1c" style={{ flexShrink: 0 }} />
             <div>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 950, color: '#991b1b' }}>Problema na entrega</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#991b1b' }}>Problema na entrega</p>
               <p style={{ margin: '6px 0 0', fontSize: 13, fontWeight: 600, color: '#7f1d1d', lineHeight: 1.45 }}>
                 O motorista reportou um problema. A operação foi alertada — em produção isto dispara também WhatsApp interno.
               </p>
@@ -299,7 +264,7 @@ const ZaptroPublicTrack: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
             <Phone size={22} color="#D9FF00" style={{ flexShrink: 0 }} />
             <div>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 950, color: '#1e40af' }}>Pedido de contacto com o cliente</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#1e40af' }}>Pedido de contacto com o cliente</p>
               <p style={{ margin: '6px 0 0', fontSize: 13, fontWeight: 600, color: '#000000', lineHeight: 1.45 }}>
                 O motorista pediu apoio para falar com o cliente. A operação deve verificar e ligar se necessário.
               </p>
@@ -313,8 +278,8 @@ const ZaptroPublicTrack: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
           <Building2 size={20} color="#0f172a" />
           <div>
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 950, color: '#94a3b8', letterSpacing: '0.08em' }}>MOTORISTA</p>
-            <p style={{ margin: '4px 0 0', fontSize: 16, fontWeight: 950, color: '#0f172a' }}>{snap.driverDisplayName}</p>
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.02em' }}>MOTORISTA</p>
+            <p style={{ margin: '4px 0 0', fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{snap.driverDisplayName}</p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
@@ -325,7 +290,7 @@ const ZaptroPublicTrack: React.FC = () => {
 
       {mapsUrl ? (
         <section style={card}>
-          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 950, color: '#64748b', letterSpacing: '0.1em' }}>ÚLTIMA POSIÇÃO</p>
+          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 700, color: '#64748b', letterSpacing: '0.1em' }}>ÚLTIMA POSIÇÃO</p>
           <a
             href={mapsUrl}
             target="_blank"
@@ -335,7 +300,7 @@ const ZaptroPublicTrack: React.FC = () => {
               alignItems: 'center',
               gap: 8,
               fontSize: 15,
-              fontWeight: 950,
+              fontWeight: 700,
               color: '#0f172a',
             }}
           >
@@ -349,8 +314,8 @@ const ZaptroPublicTrack: React.FC = () => {
       ) : null}
 
       <section style={card}>
-        <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 950, color: '#64748b', letterSpacing: '0.1em' }}>ESTADO ATUAL</p>
-        <div style={{ fontSize: 20, fontWeight: 950, color: '#0f172a', marginBottom: 20 }}>{ROUTE_STATUS_LABEL[status]}</div>
+        <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 700, color: '#64748b', letterSpacing: '0.1em' }}>ESTADO ATUAL</p>
+        <div style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', marginBottom: 20 }}>{ROUTE_STATUS_LABEL[status]}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
           {steps.map((s, i) => {
             const done = i <= activeIdx;
@@ -374,7 +339,7 @@ const ZaptroPublicTrack: React.FC = () => {
                     <Truck size={20} color={done ? '#000' : '#94a3b8'} />
                   )}
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 900, color: done ? '#0f172a' : '#94a3b8' }}>{s.label}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: done ? '#0f172a' : '#94a3b8' }}>{s.label}</span>
               </div>
             );
           })}
@@ -393,26 +358,36 @@ const ZaptroPublicTrack: React.FC = () => {
 
       {displayTrail.length > 0 ? (
         <section style={card}>
-          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 950, color: '#64748b', letterSpacing: '0.1em' }}>
+          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 700, color: '#64748b', letterSpacing: '0.1em' }}>
             PERCURSO
           </p>
           <p style={{ margin: '0 0 14px', fontSize: 13, fontWeight: 600, color: '#64748b', lineHeight: 1.45 }}>
-            Linha aproximada das posições partilhadas pelo motorista. Cada ponto mostra quando passou por ali (neste
-            ambiente os dados ficam neste browser).
+            Acompanhamento em tempo real da entrega.
           </p>
-          <div
-            style={{
-              borderRadius: 16,
-              overflow: 'hidden',
-              border: '1px solid #e2e8f0',
-              backgroundColor: PUBLIC_TRACK_NEUTRAL_SURFACE,
-              marginBottom: 14,
-            }}
-          >
-            <svg viewBox="0 0 400 220" width="100%" height="220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa esquemático do percurso">
-              <rect width="400" height="220" fill="#ebebeb" />
-              {trailPolylinePoints(displayTrail)}
-            </svg>
+          <div style={{ height: 320, borderRadius: 16, overflow: 'hidden', border: '1px solid #e2e8f0', marginBottom: 14 }}>
+            <MapContainer 
+              center={[displayTrail[displayTrail.length - 1].lat, displayTrail[displayTrail.length - 1].lng]} 
+              zoom={14} 
+              style={{ height: '100%', width: '100%', background: '#ebebeb' }}
+              zoomControl={false}
+            >
+              <TileLayer
+                attribution="&copy; OpenStreetMap"
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              />
+              <Polyline 
+                positions={displayTrail.map(p => [p.lat, p.lng])} 
+                color="#0f172a" 
+                weight={4} 
+                opacity={0.8}
+                dashArray="10, 10" 
+              />
+              <Marker 
+                position={[displayTrail[displayTrail.length - 1].lat, displayTrail[displayTrail.length - 1].lng]} 
+                icon={truckIcon}
+              />
+              <LiveMapCenter center={[displayTrail[displayTrail.length - 1].lat, displayTrail[displayTrail.length - 1].lng]} />
+            </MapContainer>
           </div>
           <ul style={{ margin: 0, padding: 0, listStyle: 'none', maxHeight: 200, overflowY: 'auto' }}>
             {[...displayTrail]
@@ -450,7 +425,7 @@ const ZaptroPublicTrack: React.FC = () => {
                 alignItems: 'center',
                 gap: 8,
                 fontSize: 14,
-                fontWeight: 950,
+                fontWeight: 700,
                 color: '#0f172a',
               }}
             >
@@ -510,7 +485,7 @@ const ZaptroPublicTrack: React.FC = () => {
               to="/"
               style={{
                 fontSize: 20,
-                fontWeight: 950,
+                fontWeight: 700,
                 color: '#000000',
                 letterSpacing: '-0.03em',
                 textDecoration: 'none',
@@ -530,7 +505,7 @@ const ZaptroPublicTrack: React.FC = () => {
               style={{
                 margin: 0,
                 fontSize: 32,
-                fontWeight: 950,
+                fontWeight: 700,
                 color: '#0f172a',
                 lineHeight: 1.2,
                 letterSpacing: '-0.03em',

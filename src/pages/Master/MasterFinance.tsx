@@ -439,11 +439,11 @@ const MasterFinance: React.FC = () => {
                                  </div>
                               </td>
                               <td>{new Date(t.due_date).toLocaleDateString()}</td>
-                              <td><span style={{color: t.type === 'INCOME' ? '#10b981' : '#ef4444', fontWeight: '800'}}>{t.type === 'INCOME' ? 'ENTRADA' : 'SAÍDA'}</span></td>
+                              <td><span style={{color: t.type === 'INCOME' ? '#10b981' : '#ef4444', fontWeight: '600'}}>{t.type === 'INCOME' ? 'ENTRADA' : 'SAÍDA'}</span></td>
                               <td><strong style={{color: '#1e293b'}}>{formatCurrency(t.amount)}</strong></td>
                               <td>
                                  <span style={{
-                                    padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '800',
+                                    padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: '600',
                                     backgroundColor: t.status === 'PAID' ? '#ecfdf5' : '#fef2f2',
                                     color: t.status === 'PAID' ? '#10b981' : '#ef4444'
                                  }}>{t.status}</span>
@@ -522,70 +522,70 @@ const MasterFinance: React.FC = () => {
 const styles: Record<string, any> = {
    container: { padding: '24px', backgroundColor: 'transparent' },
    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' },
-   badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-   title: { fontSize: '32px', fontWeight: '950', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
+   badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', borderRadius: '30px', fontSize: '10px', fontWeight: '700', marginBottom: '8px', letterSpacing: '1px' },
+   title: { fontSize: '32px', fontWeight: '700', color: '#000000', letterSpacing: '-1.5px', margin: 0 },
    subtitle: { color: '#6b7280', fontSize: '15px', fontWeight: '500' },
    headerActions: { display: 'flex', gap: '12px' },
    refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', cursor: 'pointer', color: '#6b7280' },
-   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
-   secondaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', color: '#000000' },
+   primaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(217, 255, 0, 0.2)' },
+   secondaryBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', color: '#000000' },
 
    metricsGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '20px', marginBottom: '32px' },
    metricCardBig: { position: 'relative' as const, backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
    metricCard: { backgroundColor: 'white', padding: '24px', borderRadius: '28px', border: '1px solid #e5e7eb', display: 'flex', gap: '16px', alignItems: 'center' },
    mCardInfo: { display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '24px' },
    mIconBox: { width: '56px', height: '56px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-   mLabel: { fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-   mValue: { fontSize: '32px', fontWeight: '950', color: '#D9FF00', margin: 0, letterSpacing: '-1px' },
+   mLabel: { fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+   mValue: { fontSize: '32px', fontWeight: '700', color: '#D9FF00', margin: 0, letterSpacing: '-1px' },
    mDivider: { height: '1px', backgroundColor: '#ebebeb', margin: '0 0 20px 0' },
    mSubRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
    mSubLabel: { fontSize: '11px', color: '#94a3b8', fontWeight: '700', display: 'block' },
-   mSubValue: { fontSize: '16px', fontWeight: '900', color: '#1e293b' },
-   mTrend: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '950' },
-   mValueSmall: { fontSize: '24px', fontWeight: '950', color: '#000000', margin: '4px 0 0 0' },
+   mSubValue: { fontSize: '16px', fontWeight: '700', color: '#1e293b' },
+   mTrend: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: '700' },
+   mValueSmall: { fontSize: '24px', fontWeight: '700', color: '#000000', margin: '4px 0 0 0' },
    mStatus: { fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
 
    chartsRow: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', marginBottom: '32px' },
    chartCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb' },
    chartHeader: { marginBottom: '32px' },
-   chartTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
+   chartTitle: { fontSize: '18px', fontWeight: '700', color: '#000000', margin: 0 },
    statsCard: { backgroundColor: 'white', padding: '32px', borderRadius: '32px', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' as const },
    pieLegendGrid: { borderTop: '1px solid #e8e8e8', paddingTop: '20px', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
    legItem: { display: 'flex', alignItems: 'center', gap: '12px' },
    legDot: { width: '8px', height: '8px', borderRadius: '50%' },
    legName: { flex: 1, fontSize: '12px', fontWeight: '700', color: '#64748b' },
-   legValue: { fontSize: '13px', fontWeight: '900', color: '#000000' },
+   legValue: { fontSize: '13px', fontWeight: '700', color: '#000000' },
 
    tableSection: { backgroundColor: 'white', borderRadius: '32px', border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' },
    tableHeader: { padding: '28px 32px', borderBottom: '1px solid #e8e8e8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-   tableTitle: { fontSize: '18px', fontWeight: '900', color: '#000000', margin: 0 },
+   tableTitle: { fontSize: '18px', fontWeight: '700', color: '#000000', margin: 0 },
    tableActions: { display: 'flex', gap: '12px' },
    searchBox: { display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f9fafb', padding: '12px 20px', borderRadius: '14px', border: '1px solid #e5e7eb' },
    searchInput: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontSize: '14px', fontWeight: '600', width: '200px' },
-   filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' },
+   filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' },
 
    table: { width: '100%', borderCollapse: 'collapse' as const },
    thead: { backgroundColor: '#f9fafb', textAlign: 'left' as const },
-   th: { padding: '16px 32px', fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+   th: { padding: '16px 32px', fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
    tr: { borderBottom: '1px solid #e8e8e8', transition: 'background 0.2s' },
    td: { padding: '20px 32px' },
    companyInfo: { display: 'flex', flexDirection: 'column' as const },
-   cName: { fontSize: '15px', fontWeight: '900', color: '#D9FF00' },
+   cName: { fontSize: '15px', fontWeight: '700', color: '#D9FF00' },
    cId: { fontSize: '10px', color: '#94a3b8', fontWeight: '700' },
-   planBadge: { padding: '4px 10px', backgroundColor: '#f3f4f6', color: '#4b5563', borderRadius: '8px', fontSize: '11px', fontWeight: '900' },
+   planBadge: { padding: '4px 10px', backgroundColor: '#f3f4f6', color: '#4b5563', borderRadius: '8px', fontSize: '11px', fontWeight: '700' },
    dateInfo: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', fontWeight: '700' },
-   statusTag: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '900', width: 'fit-content' },
-   priceText: { fontSize: '16px', fontWeight: '900', color: '#000000' },
+   statusTag: { display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', width: 'fit-content' },
+   priceText: { fontSize: '16px', fontWeight: '700', color: '#000000' },
    rowActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-   drillBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' },
+   drillBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'rgba(217, 255, 0, 0.18)', color: '#D9FF00', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' },
    actionBtn: { padding: '8px', border: 'none', backgroundColor: '#f9fafb', borderRadius: '10px', cursor: 'pointer', color: '#64748b' },
 
    overdueAlertBox: { marginTop: '32px', backgroundColor: '#fef2f2', padding: '24px', borderRadius: '24px', border: '1px solid rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', gap: '20px' },
    ovIcon: { width: '56px', height: '56px', borderRadius: '16px', backgroundColor: 'white', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.1)' },
    ovContent: { flex: 1 },
-   ovTitle: { fontSize: '16px', fontWeight: '900', color: '#ef4444', margin: '0 0 4px 0' },
+   ovTitle: { fontSize: '16px', fontWeight: '700', color: '#ef4444', margin: '0 0 4px 0' },
    ovText: { color: '#ef4444', fontSize: '14px', opacity: 0.8, margin: 0 },
-   ovActionBtn: { padding: '14px 28px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' },
+   ovActionBtn: { padding: '14px 28px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' },
 
    modalContent: { padding: '10px' },
    drillStats: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '32px' },
@@ -596,10 +596,10 @@ const styles: Record<string, any> = {
    
    form: { display: 'flex', flexDirection: 'column' as const, gap: '20px', padding: '10px' },
    fGroup: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-   fLabel: { fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' as const },
+   fLabel: { fontSize: '12px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' as const },
    fInput: { padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '14px', fontWeight: '600', outline: 'none', backgroundColor: '#f9fafb' },
    fRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
-   saveBtnModal: { padding: '16px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', marginTop: '10px' }
+   saveBtnModal: { padding: '16px', backgroundColor: '#D9FF00', color: '#000000', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', marginTop: '10px' }
 };
 
 export default MasterFinance;

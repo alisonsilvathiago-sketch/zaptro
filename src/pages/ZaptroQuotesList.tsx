@@ -407,7 +407,7 @@ const ZaptroQuotesListContent: React.FC = () => {
               border: `1px solid ${border}`,
               background: palette.searchBg,
               color: palette.text,
-              fontWeight: 800,
+              fontWeight: 600,
               fontSize: 15,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -420,7 +420,7 @@ const ZaptroQuotesListContent: React.FC = () => {
               style={{
                 margin: 0,
                 fontSize: 'clamp(28px, 4vw, 36px)',
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '-0.04em',
                 lineHeight: 1.1,
                 color: palette.text,
@@ -442,20 +442,21 @@ const ZaptroQuotesListContent: React.FC = () => {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 10,
-              padding: '12px 20px',
-              borderRadius: 16,
+              justifyContent: 'center',
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
               border: 'none',
               background: 'linear-gradient(180deg, #0a0a0a 0%, #000 100%)',
               color: LIME,
-              fontWeight: 950,
-              fontSize: 15,
               cursor: 'pointer',
               fontFamily: 'inherit',
               boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+              flexShrink: 0,
             }}
+            title={calcEntryButtonLabel}
           >
-            <Calculator size={20} strokeWidth={2.2} /> {calcEntryButtonLabel}
+            <Calculator size={22} strokeWidth={2.4} />
           </button>
           {leadFilter ? (
             <button
@@ -470,7 +471,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                 border: `1px solid ${border}`,
                 background: 'transparent',
                 color: palette.textMuted,
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 15,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -548,7 +549,7 @@ const ZaptroQuotesListContent: React.FC = () => {
               flexDirection: 'column',
               gap: 8,
               fontSize: 11,
-              fontWeight: 950,
+              fontWeight: 700,
               letterSpacing: '0.06em',
               color: palette.textMuted,
             }}
@@ -582,7 +583,7 @@ const ZaptroQuotesListContent: React.FC = () => {
               flexDirection: 'column',
               gap: 8,
               fontSize: 11,
-              fontWeight: 950,
+              fontWeight: 700,
               letterSpacing: '0.06em',
               color: palette.textMuted,
             }}
@@ -629,7 +630,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   border: quotesUiMode === 'kanban' ? '1px solid #000' : `1px solid ${border}`,
                   backgroundColor: quotesUiMode === 'kanban' ? '#000' : isDark ? 'rgba(255,255,255,0.04)' : '#fff',
                   color: quotesUiMode === 'kanban' ? LIME : palette.text,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 14,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -650,7 +651,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   border: quotesUiMode === 'listas' ? `1px solid ${LIME}` : `1px solid ${border}`,
                   backgroundColor: quotesUiMode === 'listas' ? 'rgba(217,255,0,0.14)' : isDark ? 'rgba(255,255,255,0.04)' : '#fff',
                   color: palette.text,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   fontSize: 14,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
@@ -671,7 +672,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                 border: `1px solid ${border}`,
                 background: palette.searchBg,
                 color: palette.text,
-                fontWeight: 900,
+                fontWeight: 700,
                 fontSize: 15,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -704,7 +705,7 @@ const ZaptroQuotesListContent: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, width: '100%', maxWidth: 640, textAlign: 'left' }}>
             <FileSpreadsheet size={40} color={palette.lime} style={{ flexShrink: 0, opacity: 0.9, marginTop: 2 }} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ margin: '0 0 8px', fontWeight: 950, fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1.2, color: palette.text }}>
+              <p style={{ margin: '0 0 8px', fontWeight: 700, fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1.2, color: palette.text }}>
                 Nenhum orçamento encontrado{leadFilter ? ' para este lead' : ''}.
               </p>
               <p style={{ margin: 0, fontSize: 15, fontWeight: 600, lineHeight: 1.55, color: palette.textMuted }}>
@@ -740,7 +741,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                       border: `1px solid ${border}`,
                       backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : '#f4f4f4',
                       fontSize: 13,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.04em',
                       textTransform: 'uppercase',
                       color: isDark ? '#fafafa' : '#000000',
@@ -818,7 +819,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                                 style={{ ...avatarBox, marginTop: -9, position: 'relative', zIndex: 1 }}
                               />
                             </div>
-                            <div style={{ fontWeight: 900, fontSize: 13, color: palette.text, lineHeight: 1.3, minWidth: 0 }}>
+                            <div style={{ fontWeight: 700, fontSize: 13, color: palette.text, lineHeight: 1.3, minWidth: 0 }}>
                               {client}
                             </div>
                           </div>
@@ -834,7 +835,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: 6,
-                              fontWeight: 900,
+                              fontWeight: 700,
                               fontSize: 11,
                               color: palette.text,
                               cursor: 'pointer',
@@ -856,15 +857,12 @@ const ZaptroQuotesListContent: React.FC = () => {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, minWidth: 720 }}>
             <thead>
               <tr style={{ borderBottom: `1px solid ${border}`, textAlign: 'left' }}>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>ID</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>Cliente / lead</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>Valor</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>Estado</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>Produto/Serviço</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>Criado</th>
-                <th style={{ padding: '12px 14px', fontWeight: 950, fontSize: 13, letterSpacing: '0.06em', color: palette.text }}>
-                  Página do cliente
-                </th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Cliente</th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Valor total</th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Estado</th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Serviço / Detalhe</th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Criado em</th>
+                <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: palette.textMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Ação</th>
               </tr>
             </thead>
             <tbody>
@@ -882,7 +880,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                 const avatarBox: React.CSSProperties = {
                   width: 26,
                   height: 26,
-                  borderRadius: 8,
+                  borderRadius: '50%',
                   objectFit: 'cover',
                   flexShrink: 0,
                   border: `1px solid ${border}`,
@@ -891,18 +889,15 @@ const ZaptroQuotesListContent: React.FC = () => {
                 };
                 return (
                   <tr key={q.id} style={{ borderBottom: `1px solid ${border}` }}>
-                    <td style={{ padding: '12px 14px', fontWeight: 800, color: palette.text, fontFamily: 'ui-monospace, monospace', fontSize: 12 }}>
-                      {q.id.length > 14 ? `${q.id.slice(0, 12)}…` : q.id}
-                    </td>
                     <td style={{ padding: '12px 14px', fontWeight: 700, color: palette.text, verticalAlign: 'middle' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                         <div
                           style={{
                             display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'stretch',
+                            flexDirection: 'row',
+                            alignItems: 'center',
                             flexShrink: 0,
-                            width: 26,
+                            gap: -12, // Overlap side-by-side
                           }}
                           aria-hidden
                         >
@@ -920,7 +915,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                             title="Responsável / equipa"
                             loading="lazy"
                             decoding="async"
-                            style={{ ...avatarBox, marginTop: -8, position: 'relative', zIndex: 1 }}
+                            style={{ ...avatarBox, marginLeft: -12, position: 'relative', zIndex: 1, border: `2px solid ${isDark ? '#000' : '#fff'}` }}
                           />
                         </div>
                         <div style={{ minWidth: 0 }}>
@@ -929,7 +924,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                     <td style={{ padding: '12px 14px', fontWeight: 950, color: palette.text }}>{formatBrl(quoteMonetaryValue(q))}</td>
+                     <td style={{ padding: '12px 14px', fontWeight: 700, color: palette.text }}>{formatBrl(quoteMonetaryValue(q))}</td>
                     <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                       <span role="status" style={quoteStatusBadgeStyle(q.status, isDark, LIME)}>
                         {QUOTE_STATUS_LABEL[q.status]}
@@ -951,7 +946,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: 6,
-                          fontWeight: 900,
+                          fontWeight: 700,
                           fontSize: 12,
                           color: palette.text,
                           cursor: 'pointer',
@@ -1006,7 +1001,7 @@ const ZaptroQuotesListContent: React.FC = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 18 }}>
               <div>
-                <h2 id="zaptro-freight-calc-title" style={{ margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: '-0.03em' }}>
+                <h2 id="zaptro-freight-calc-title" style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: '-0.03em' }}>
                   {calcModalTitle}
                 </h2>
                 <p style={{ margin: '8px 0 0', fontSize: 13, fontWeight: 600, color: palette.textMuted, lineHeight: 1.45 }}>
@@ -1039,7 +1034,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                     border: calcMode === 'freight' ? '1px solid #000' : `1px solid ${border}`,
                     backgroundColor: calcMode === 'freight' ? '#000' : 'transparent',
                     color: calcMode === 'freight' ? LIME : palette.textMuted,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -1061,7 +1056,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                     border: calcMode === 'storage' ? '1px solid #000' : `1px solid ${border}`,
                     backgroundColor: calcMode === 'storage' ? '#000' : 'transparent',
                     color: calcMode === 'storage' ? LIME : palette.textMuted,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -1090,7 +1085,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                     { val: calcExtras, set: setCalcExtras, lab: 'Extras (R$)' },
                   ] as const
                 ).map(({ val, set, lab }) => (
-                  <label key={lab} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                  <label key={lab} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                     {lab}
                     <input
                       value={val}
@@ -1118,7 +1113,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                     { val: storageRate, set: setStorageRate, lab: 'R$ / m² · dia' },
                   ] as const
                 ).map(({ val, set, lab }) => (
-                  <label key={lab} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 950, color: palette.textMuted }}>
+                  <label key={lab} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
                     {lab}
                     <input
                       value={val}
@@ -1148,13 +1143,13 @@ const ZaptroQuotesListContent: React.FC = () => {
                 border: `1px solid ${isDark ? 'rgba(217,255,0,0.22)' : 'rgba(0,0,0,0.06)'}`,
               }}
             >
-              <div style={{ fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>VALOR ESTIMADO</div>
-              <div style={{ fontSize: 30, fontWeight: 950, letterSpacing: '-0.03em', marginTop: 6, color: palette.text }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: palette.textMuted }}>VALOR ESTIMADO</div>
+              <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.03em', marginTop: 6, color: palette.text }}>
                 {formatBrl(activeCalcMode === 'freight' ? suggestedFreight : suggestedStorage)}
               </div>
             </div>
 
-            <p style={{ margin: '0 0 10px', fontSize: 11, fontWeight: 950, letterSpacing: '0.08em', color: palette.textMuted }}>CLIENTE</p>
+            <p style={{ margin: '0 0 10px', fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: palette.textMuted }}>CLIENTE</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 18 }}>
               <input
                 value={custName}
@@ -1215,7 +1210,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : '#f4f4f4',
                 }}
               >
-                <div style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, marginBottom: 6 }}>LINK PARA O CLIENTE</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, marginBottom: 6 }}>LINK PARA O CLIENTE</div>
                 <a href={lastSavedQuoteUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: palette.text, wordBreak: 'break-all' }}>
                   {lastSavedQuoteUrl}
                 </a>
@@ -1235,7 +1230,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                     border: 'none',
                     background: '#000',
                     color: LIME,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 13,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -1256,7 +1251,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   border: `1px solid ${border}`,
                   background: 'transparent',
                   color: palette.textMuted,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
@@ -1277,7 +1272,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   border: `1px solid ${border}`,
                   background: palette.searchBg,
                   color: palette.text,
-                  fontWeight: 900,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
@@ -1293,7 +1288,7 @@ const ZaptroQuotesListContent: React.FC = () => {
                   border: 'none',
                   background: '#000',
                   color: LIME,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}

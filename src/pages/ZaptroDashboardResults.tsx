@@ -50,7 +50,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { zaptroOccurrencePath, ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import { isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
-import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+import toast from 'react-hot-toast';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 
@@ -737,10 +737,11 @@ const ZaptroDashboardContent: React.FC = () => {
     const welcomeSeen = localStorage.getItem('zaptro_welcome_seen');
 
     if (params.get('welcome') === 'true' && !welcomeSeen) {
+      toast.dismiss();
       setShowWelcome(true);
       localStorage.setItem('zaptro_welcome_seen', 'true');
       // Limpa a URL para ficar limpa
-      navigate(ZAPTRO_ROUTES.DASHBOARD, { replace: true });
+      navigate({ pathname: location.pathname, search: '' }, { replace: true });
     }
 
 
@@ -929,7 +930,9 @@ const ZaptroDashboardContent: React.FC = () => {
 
   /** Links antigos `#personalizar-empresa` no painel → mesma experiência que o menu do perfil. */
   useEffect(() => {
-    if (location.pathname !== ZAPTRO_ROUTES.DASHBOARD || location.hash !== '#personalizar-empresa') return;
+    const onResults =
+      location.pathname === ZAPTRO_ROUTES.RESULTADOS || location.pathname === ZAPTRO_ROUTES.DASHBOARD;
+    if (!onResults || location.hash !== '#personalizar-empresa') return;
     if (canPurchaserTools) navigate(`${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=marca`, { replace: true });
     else navigate(ZAPTRO_ROUTES.DASHBOARD, { replace: true });
   }, [location.pathname, location.hash, canPurchaserTools, navigate]);
@@ -1106,7 +1109,7 @@ const ZaptroDashboardContent: React.FC = () => {
           {!dashLayoutEdit ? (
             <div style={{ flex: 1 }} />
           ) : (
-            <span style={{ fontSize: 13, fontWeight: 800, color: palette.textMuted }}>Personalizar página</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: palette.textMuted }}>Personalizar página</span>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             {!dashLayoutEdit ? (
@@ -1123,7 +1126,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#fff',
                   color: palette.text,
                   fontSize: 13,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
@@ -1143,7 +1146,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     background: 'transparent',
                     color: palette.textMuted,
                     fontSize: 14,
-                    fontWeight: 800,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                   }}
@@ -1160,7 +1163,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     background: '#0f172a',
                     color: '#fff',
                     fontSize: 14,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                   }}
@@ -1207,7 +1210,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 border: 'none',
                 background: 'none',
                 color: palette.mode === 'dark' ? accent : '#14532d',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 13,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -1273,7 +1276,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   style={{
                     margin: 0,
                     fontSize: 22,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     letterSpacing: '-0.03em',
                     color: palette.text,
                     lineHeight: 1.2,
@@ -1313,7 +1316,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   backgroundColor: dashWidgetFilterMarketingOnly ? accentSoft : 'transparent',
                   color: accentText,
                   fontSize: 13,
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                   marginBottom: 4,
@@ -1376,7 +1379,7 @@ const ZaptroDashboardContent: React.FC = () => {
                               <span
                                 style={{
                                   fontSize: 11,
-                                  fontWeight: 850,
+                                  fontWeight: 700,
                                   padding: '4px 10px',
                                   borderRadius: 999,
                                   backgroundColor: '#ffedd5',
@@ -1390,7 +1393,7 @@ const ZaptroDashboardContent: React.FC = () => {
                               <span
                                 style={{
                                   fontSize: 11,
-                                  fontWeight: 850,
+                                  fontWeight: 700,
                                   padding: '4px 10px',
                                   borderRadius: 999,
                                   backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.16)' : 'rgba(217, 255, 0, 0.28)',
@@ -1418,7 +1421,7 @@ const ZaptroDashboardContent: React.FC = () => {
                             {selected ? <Check size={14} strokeWidth={3} color="#0a0a0a" /> : null}
                           </span>
                         </div>
-                        <div style={{ fontSize: 15, fontWeight: 950, color: palette.text, marginBottom: 8, lineHeight: 1.25 }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: palette.text, marginBottom: 8, lineHeight: 1.25 }}>
                           {meta.title}
                         </div>
                         <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: palette.textMuted, lineHeight: 1.5 }}>
@@ -1449,7 +1452,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     border: 'none',
                     background: 'none',
                     color: palette.textMuted,
-                    fontWeight: 850,
+                    fontWeight: 700,
                     fontSize: 15,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -1467,7 +1470,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     border: 'none',
                     background: '#000000',
                     color: '#ffffff',
-                    fontWeight: 950,
+                    fontWeight: 700,
                     fontSize: 15,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -1522,7 +1525,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 background: 'rgba(15,23,42,0.65)',
                 color: '#f8fafc',
                 fontSize: 12,
-                fontWeight: 800,
+                fontWeight: 600,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -1591,7 +1594,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   <span
                     style={{
                       fontSize: 10,
-                      fontWeight: 950,
+                      fontWeight: 700,
                       letterSpacing: '0.16em',
                       textTransform: 'uppercase',
                       padding: '5px 12px',
@@ -1640,17 +1643,20 @@ const ZaptroDashboardContent: React.FC = () => {
                 <h1
                   id="zaptro-dash-hero-title"
                   style={{
-                    margin: 0,
-                    fontSize: 'clamp(18px, 2.1vw, 24px)',
-                    fontWeight: 800,
+                    margin: '0 0 4px 0',
+                    fontSize: 'clamp(20px, 2.4vw, 28px)',
+                    fontWeight: 700,
                     color: '#f8fafc',
-                    lineHeight: 1.3,
-                    letterSpacing: '-0.03em',
+                    lineHeight: 1.2,
+                    letterSpacing: '-0.04em',
                     textWrap: 'balance' as const,
                   }}
                 >
-                  Olá, {dashFirstName || profile?.full_name || 'Comandante'}. O que queres que eu faça hoje?
+                  Olá, {dashFirstName || profile?.full_name || 'Comandante'} 🚀
                 </h1>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'rgba(248,250,252,0.5)', letterSpacing: '0.02em' }}>
+                  {new Date().toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}.
+                </p>
               </div>
             </div>
             <div style={{ ...styles.headerActions, marginLeft: 'auto' }}>
@@ -1665,7 +1671,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     border: '1px solid rgba(255,255,255,0.1)',
                     boxShadow: '0 12px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
                   }}
-                  title="O saldo de créditos aparecerá aqui quando o número WhatsApp estiver habilitado para a empresa."
+                  title="Saldo de créditos disponíveis"
                 >
                   <span style={{ ...styles.dashboardCreditsLabel, color: palette.mode === 'dark' ? '#a3a3a3' : '#71717a' }}>CRÉDITOS</span>
                   <div style={styles.dashboardCreditsRow}>
@@ -1699,92 +1705,6 @@ const ZaptroDashboardContent: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
-
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <p
-              style={{
-                margin: '0 0 10px',
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'rgba(248,250,252,0.5)',
-              }}
-            >
-              Comando rápido
-            </p>
-            <button
-              type="button"
-              aria-expanded={digestPanelOpen}
-              aria-controls="zaptro-dash-assistant-panel"
-              onClick={() => setDigestPanelOpen(true)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 14,
-                padding: '16px 20px',
-                borderRadius: 20,
-                border: '1px solid rgba(15, 23, 42, 0.06)',
-                backgroundColor: 'rgba(255,255,255,0.98)',
-                color: '#475569',
-                fontSize: 15,
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                boxSizing: 'border-box',
-                boxShadow:
-                  '0 4px 24px rgba(15,23,42,0.08), 0 1px 0 rgba(255,255,255,0.95) inset, 0 0 0 1px rgba(255,255,255,0.4) inset',
-                fontFamily: 'inherit',
-                transition: 'box-shadow 0.2s ease, transform 0.15s ease',
-              }}
-            >
-              <span
-                style={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flex: 1,
-                  minWidth: 0,
-                }}
-              >
-                Pergunta ao Zaptro ou pede uma ação — resumo, CRM, histórico…
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-                <span
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 40,
-                    height: 40,
-                    borderRadius: 14,
-                    backgroundColor: 'rgba(148, 163, 184, 0.16)',
-                  }}
-                  aria-hidden
-                >
-                  <Mic size={20} color="#64748b" strokeWidth={1.9} />
-                </span>
-                <span
-                  style={{
-                    width: 46,
-                    height: 46,
-                    borderRadius: 999,
-                    background: `linear-gradient(145deg, ${LIME} 0%, #bef264 100%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#0a0a0a',
-                    boxShadow: '0 6px 20px rgba(217,255,0,0.35)',
-                  }}
-                  aria-hidden
-                >
-                  <ArrowUp size={22} strokeWidth={2.4} />
-                </span>
-              </span>
-            </button>
           </div>
         </section>
         )}
@@ -1821,7 +1741,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 background: palette.mode === 'dark' ? 'rgba(17,17,17,0.9)' : 'rgba(255,255,255,0.95)',
                 color: palette.text,
                 fontSize: 12,
-                fontWeight: 800,
+                fontWeight: 600,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -1836,7 +1756,7 @@ const ZaptroDashboardContent: React.FC = () => {
               position: 'relative',
               overflow: 'visible',
               borderRadius: 30,
-              padding: 'clamp(22px, 4vw, 32px) clamp(22px, 4.5vw, 36px) clamp(20px, 3.5vw, 28px)',
+              padding: 'clamp(22px, 4vw, 32px) clamp(22px, 4.5vw, 36px) clamp(20px, 3.5vw, 48px)',
               border: `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.14)' : 'rgba(15,23,42,0.1)'}`,
               backgroundColor: palette.mode === 'dark' ? 'rgba(20,20,20,0.78)' : 'rgba(255,255,255,0.86)',
               backdropFilter: 'blur(14px)',
@@ -1858,7 +1778,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 <span
                   style={{
                     fontSize: 14,
-                    fontWeight: 950,
+                    fontWeight: 700,
                     color: assistantUi.text,
                     letterSpacing: '-0.02em',
                   }}
@@ -1975,6 +1895,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   justifyContent: 'flex-end',
                   marginTop: 16,
                   paddingTop: 4,
+                  paddingBottom: 32,
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -2060,7 +1981,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   gap: 10,
                   paddingLeft: 4,
                   paddingRight: 4,
-                  paddingBottom: 8,
+                  paddingBottom: 24,
                 }}
               >
                 {digestMessages.map((m) => {
@@ -2103,7 +2024,7 @@ const ZaptroDashboardContent: React.FC = () => {
                         <div
                           style={{
                             fontSize: 10,
-                            fontWeight: 800,
+                            fontWeight: 600,
                             letterSpacing: '0.1em',
                             marginBottom: 6,
                             color: 'rgba(0,0,0,0.55)',
@@ -2169,7 +2090,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                 color: palette.text,
                 fontSize: 12,
-                fontWeight: 800,
+                fontWeight: 600,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -2236,8 +2157,8 @@ const ZaptroDashboardContent: React.FC = () => {
                        <span
                          style={{
                            fontSize: 9,
-                           fontWeight: 950,
-                           letterSpacing: '0.08em',
+                           fontWeight: 700,
+                           letterSpacing: '0.02em',
                            textTransform: 'uppercase',
                            padding: '3px 8px',
                            borderRadius: 8,
@@ -2286,7 +2207,7 @@ const ZaptroDashboardContent: React.FC = () => {
                    background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                    color: palette.text,
                    fontSize: 12,
-                   fontWeight: 800,
+                   fontWeight: 600,
                    cursor: 'pointer',
                    fontFamily: 'inherit',
                  }}
@@ -2356,7 +2277,7 @@ const ZaptroDashboardContent: React.FC = () => {
                     <CartesianGrid strokeDasharray="4 8" stroke={chartStrokeGrid} vertical={false} />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: chartTick, fontSize: 11, fontWeight: 800 }}
+                      tick={{ fill: chartTick, fontSize: 11, fontWeight: 600 }}
                       axisLine={false}
                       tickLine={false}
                       dy={10}
@@ -2374,12 +2295,12 @@ const ZaptroDashboardContent: React.FC = () => {
                         border: `1px solid ${chartStrokeGrid}`,
                         backgroundColor: palette.mode === 'dark' ? '#000000' : '#ffffff',
                         boxShadow: ZAPTRO_SHADOW.md,
-                        fontWeight: 800,
+                        fontWeight: 600,
                         fontSize: 13,
                         color: palette.text,
                       }}
                       formatter={(value: number) => [`${value}`, 'Mensagens']}
-                      labelStyle={{ color: palette.textMuted, fontWeight: 800, fontSize: 11 }}
+                      labelStyle={{ color: palette.textMuted, fontWeight: 600, fontSize: 11 }}
                     />
                     <Area
                       type="monotone"
@@ -2443,7 +2364,7 @@ const ZaptroDashboardContent: React.FC = () => {
                    background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                    color: palette.text,
                    fontSize: 12,
-                   fontWeight: 800,
+                   fontWeight: 600,
                    cursor: 'pointer',
                    fontFamily: 'inherit',
                  }}
@@ -2539,7 +2460,7 @@ const ZaptroDashboardContent: React.FC = () => {
               backgroundColor: palette.mode === 'dark' ? 'rgba(127,29,29,0.25)' : '#FEF2F2',
               color: palette.mode === 'dark' ? '#fecaca' : '#991b1b',
               fontSize: 13,
-              fontWeight: 800,
+              fontWeight: 600,
               lineHeight: 1.45,
               display: 'flex',
               alignItems: 'flex-start',
@@ -2579,7 +2500,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                 color: palette.text,
                 fontSize: 12,
-                fontWeight: 800,
+                fontWeight: 600,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -2616,7 +2537,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 gap: 8,
                 padding: '10px 16px',
                 borderRadius: 14,
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: 13,
                 flexShrink: 0,
               }}
@@ -2658,7 +2579,7 @@ const ZaptroDashboardContent: React.FC = () => {
                   background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                   color: palette.text,
                   fontSize: 12,
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
@@ -2687,7 +2608,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 style={{
                   display: 'inline-block',
                   fontSize: 10,
-                  fontWeight: 950,
+                  fontWeight: 700,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   padding: '5px 10px',
@@ -2703,7 +2624,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 style={{
                   margin: '0 0 10px',
                   fontSize: 'clamp(18px, 2vw, 22px)',
-                  fontWeight: 950,
+                  fontWeight: 700,
                   letterSpacing: '-0.03em',
                   color: palette.text,
                   lineHeight: 1.25,
@@ -2747,7 +2668,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 gap: 8,
                 padding: '14px 18px',
                 borderRadius: 14,
-                fontWeight: 950,
+                fontWeight: 700,
                 fontSize: 14,
                 border: 'none',
                 cursor: 'pointer',
@@ -2790,7 +2711,7 @@ const ZaptroDashboardContent: React.FC = () => {
                 background: palette.mode === 'dark' ? 'rgba(17,17,17,0.92)' : '#fff',
                 color: palette.text,
                 fontSize: 12,
-                fontWeight: 800,
+                fontWeight: 600,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
@@ -2814,7 +2735,7 @@ const ZaptroDashboardContent: React.FC = () => {
             >
               <Icon size={20} strokeWidth={2} color={palette.lime} style={{ flexShrink: 0 }} />
               <span style={{ textAlign: 'left', minWidth: 0 }}>
-                <span style={{ display: 'block', fontSize: 14, fontWeight: 950, letterSpacing: '-0.02em' }}>{label}</span>
+                <span style={{ display: 'block', fontSize: 14, fontWeight: 700, letterSpacing: '-0.02em' }}>{label}</span>
                 <span style={{ display: 'block', fontSize: 12, fontWeight: 600, color: palette.textMuted, marginTop: 4 }}>
                   {sub}
                 </span>
@@ -3050,7 +2971,7 @@ class ZaptroDashboardPreviewErrorBoundary extends Component<
   }
 }
 
-const ZaptroDashboard: React.FC = () => (
+const ZaptroDashboardResults: React.FC = () => (
   <ZaptroLayout>
     {ZAPTRO_DASHBOARD_MODERN_PREVIEW ? (
       <ZaptroDashboardPreviewErrorBoundary>
@@ -3142,14 +3063,14 @@ const styles: Record<string, any> = {
   },
   dashboardCreditsLabel: {
     fontSize: '9px',
-    fontWeight: 950,
+    fontWeight: 700,
     letterSpacing: '0.14em',
     color: '#a3a3a3',
   },
   dashboardCreditsRow: { display: 'flex', alignItems: 'center', gap: '10px' },
   dashboardCreditsValue: {
     fontSize: '32px',
-    fontWeight: 950,
+    fontWeight: 700,
     color: '#FFFFFF',
     letterSpacing: '-1.5px',
     lineHeight: 1,
@@ -3185,7 +3106,7 @@ const styles: Record<string, any> = {
     justifyContent: 'center',
   },
   heroPhotoImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-  heroPhotoPh: { fontSize: '28px', fontWeight: 950 },
+  heroPhotoPh: { fontSize: '28px', fontWeight: 700 },
   heroPhotoCam: {
     position: 'absolute',
     bottom: '4px',
@@ -3199,7 +3120,7 @@ const styles: Record<string, any> = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { fontSize: '40px', fontWeight: '950', color: '#000000', margin: 0, letterSpacing: '-2px' },
+  title: { fontSize: '40px', fontWeight: '700', color: '#000000', margin: 0, letterSpacing: '-2px' },
   subtitle: { fontSize: '16px', color: '#64748B', margin: 0, fontWeight: '500' },
   /** Ocupa a linha inteira abaixo da saudação → botões alinhados à direita do painel. */
   headerActions: {
@@ -3222,13 +3143,13 @@ const styles: Record<string, any> = {
     borderRadius: '18px',
     border: '1px solid #d4d4d8',
     fontSize: '14px',
-    fontWeight: 950,
+    fontWeight: 700,
     cursor: 'pointer',
     transition: '0.2s',
     fontFamily: 'inherit',
   },
-  priBtn: { padding: '14px 28px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', transition: '0.2s' },
-  secBtn: { padding: '14px 28px', backgroundColor: 'white', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, borderRadius: '16px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  priBtn: { padding: '14px 28px', backgroundColor: '#0F172A', color: 'white', border: 'none', borderRadius: '16px', fontWeight: '700', cursor: 'pointer', transition: '0.2s' },
+  secBtn: { padding: '14px 28px', backgroundColor: 'white', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, borderRadius: '16px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
 
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '24px' },
   statCard: { 
@@ -3248,7 +3169,7 @@ const styles: Record<string, any> = {
     minHeight: '28px',
     borderRadius: '12px',
     fontSize: '13px',
-    fontWeight: '900',
+    fontWeight: '700',
     cursor: 'pointer',
     boxSizing: 'border-box',
   },
@@ -3262,7 +3183,7 @@ const styles: Record<string, any> = {
     boxShadow: ZAPTRO_SHADOW.overlay,
   },
   statUploadHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' },
-  statUploadTitle: { margin: 0, fontSize: '20px', fontWeight: 950, color: '#0f172a', letterSpacing: '-0.5px' },
+  statUploadTitle: { margin: 0, fontSize: '20px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px' },
   statUploadHint: { margin: '0 0 20px', fontSize: '14px', color: '#64748b', lineHeight: 1.5 },
   statUploadFileLabel: {
     display: 'inline-flex',
@@ -3271,7 +3192,7 @@ const styles: Record<string, any> = {
     padding: '12px 20px',
     borderRadius: '14px',
     border: '1px solid #e4e4e7',
-    fontWeight: 900,
+    fontWeight: 700,
     fontSize: '13px',
     cursor: 'pointer',
     marginBottom: '16px',
@@ -3281,15 +3202,15 @@ const styles: Record<string, any> = {
   statUploadPreview: { display: 'block', width: '100%', maxHeight: '200px', objectFit: 'contain', background: ZAPTRO_FIELD_BG },
   statUploadActions: { display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' },
   statContent: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  statValue: { fontSize: '42px', fontWeight: '950', color: '#0F172A', margin: 0, letterSpacing: '-1.5px' },
+  statValue: { fontSize: '42px', fontWeight: '700', color: '#0F172A', margin: 0, letterSpacing: '-1.5px' },
   statLabel: { fontSize: '14px', color: ZAPTRO_TITLE_COLOR, fontWeight: '700' },
 
   mainGrid: { display: 'flex', gap: '20px', flexWrap: 'wrap' },
   gridCard: { backgroundColor: 'white', padding: '32px', borderRadius: '40px', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, boxShadow: ZAPTRO_SHADOW.md, minWidth: '320px' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' },
-  cardTitle: { fontSize: '22px', fontWeight: '950', color: ZAPTRO_TITLE_COLOR, margin: 0, letterSpacing: '-0.8px' },
+  cardTitle: { fontSize: '22px', fontWeight: '700', color: ZAPTRO_TITLE_COLOR, margin: 0, letterSpacing: '-0.8px' },
   tabGroup: { display: 'flex', alignItems: 'center', gap: '4px', borderRadius: '14px' },
-  tab: { padding: '8px 20px', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: '900', cursor: 'pointer', backgroundColor: 'transparent', color: ZAPTRO_TITLE_COLOR },
+  tab: { padding: '8px 20px', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: '700', cursor: 'pointer', backgroundColor: 'transparent', color: ZAPTRO_TITLE_COLOR },
 
   chartWrap: { width: '100%', minHeight: 300, marginTop: 4 },
 
@@ -3303,41 +3224,41 @@ const styles: Record<string, any> = {
     border: `1px solid ${ZT_UI.surfaceBorder}`,
   },
   feedBase: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  typeBadge: { alignSelf: 'flex-start', padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '950', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px' },
+  typeBadge: { alignSelf: 'flex-start', padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px' },
   feedRow: { display: 'flex', gap: '14px', alignItems: 'center' },
-  userAvatar: { width: '36px', height: '36px', borderRadius: '12px', backgroundColor: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: '#0F172A', border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
+  userAvatar: { width: '36px', height: '36px', borderRadius: '12px', backgroundColor: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: '#0F172A', border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
   feedInfo: { flex: 1 },
   feedText: { fontSize: '13px', color: '#1E293B', margin: 0, lineHeight: '1.4' },
   feedTime: { fontSize: '11px', color: '#94A3B8', fontWeight: '700', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' },
-  viewMoreBtn: { width: '100%', padding: '16px', marginTop: '32px', backgroundColor: 'transparent', border: '1px solid #e4e4e7', borderRadius: '16px', color: '#64748B', fontWeight: '900', fontSize: '13px', cursor: 'pointer' },
+  viewMoreBtn: { width: '100%', padding: '16px', marginTop: '32px', backgroundColor: 'transparent', border: '1px solid #e4e4e7', borderRadius: '16px', color: '#64748B', fontWeight: '700', fontSize: '13px', cursor: 'pointer' },
 
   modalOverlay: { position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 },
   modalContent: { width: '600px', backgroundColor: 'white', borderRadius: '48px', boxShadow: ZAPTRO_SHADOW.xxl, overflow: 'hidden' },
   modalHeader: { padding: '40px 40px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  modalTypeBadge: { padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '950', display: 'flex', alignItems: 'center', gap: '8px', letterSpacing: '1px' },
+  modalTypeBadge: { padding: '8px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', letterSpacing: '1px' },
   closeBtn: { background: ZAPTRO_FIELD_BG, border: 'none', width: '40px', height: '40px', borderRadius: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748B' },
   
   modalBody: { padding: '0 40px 40px' },
   modalMainInfo: { display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '40px', marginTop: '10px' },
-  modalAvatarLarge: { width: '64px', height: '64px', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '950', color: 'white' },
-  modalTitle: { fontSize: '24px', fontWeight: '950', color: '#0F172A', margin: '0 0 6px 0', letterSpacing: '-1px' },
+  modalAvatarLarge: { width: '64px', height: '64px', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '700', color: 'white' },
+  modalTitle: { fontSize: '24px', fontWeight: '700', color: '#0F172A', margin: '0 0 6px 0', letterSpacing: '-1px' },
   modalUserSub: { fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 },
   
   modalGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' },
   modalInfoCard: { padding: '20px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '24px', border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
-  modalLabel: { fontSize: '10px', fontWeight: '950', color: ZAPTRO_TITLE_COLOR, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', letterSpacing: '0.5px' },
-  modalVal: { fontSize: '15px', fontWeight: '850', color: '#0F172A', margin: 0 },
+  modalLabel: { fontSize: '10px', fontWeight: '700', color: ZAPTRO_TITLE_COLOR, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', letterSpacing: '0.5px' },
+  modalVal: { fontSize: '15px', fontWeight: '700', color: '#0F172A', margin: 0 },
   
   modalDescription: { padding: '24px', backgroundColor: ZAPTRO_FIELD_BG, borderRadius: '24px', border: `1px solid ${ZAPTRO_SECTION_BORDER}`, marginBottom: '40px' },
   modalDescText: { fontSize: '15px', color: '#475569', lineHeight: '1.6', margin: 0, fontWeight: '500' },
   
   modalFooter: { display: 'flex', gap: '16px' },
-  modalActionBtn: { flex: 1, padding: '18px', borderRadius: '18px', border: 'none', backgroundColor: '#0F172A', color: 'white', fontWeight: '950', fontSize: '15px', cursor: 'pointer' },
-  modalSecBtn: { padding: '18px 32px', borderRadius: '18px', border: '1px solid #e4e4e7', backgroundColor: 'transparent', color: '#0F172A', fontWeight: '950', fontSize: '14px', cursor: 'pointer' },
+  modalActionBtn: { flex: 1, padding: '18px', borderRadius: '18px', border: 'none', backgroundColor: '#0F172A', color: 'white', fontWeight: '700', fontSize: '15px', cursor: 'pointer' },
+  modalSecBtn: { padding: '18px 32px', borderRadius: '18px', border: '1px solid #e4e4e7', backgroundColor: 'transparent', color: '#0F172A', fontWeight: '700', fontSize: '14px', cursor: 'pointer' },
 
   welcomeCard: { width: '90%', maxWidth: '500px', backgroundColor: 'white', borderRadius: '48px', padding: '60px', textAlign: 'center', boxShadow: ZAPTRO_SHADOW.overlay, border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
   welcomeZapBox: { marginBottom: '30px' },
-  welcomeTitle: { fontSize: '32px', fontWeight: '950', color: '#000', margin: '0 0 20px 0', letterSpacing: '-1.5px' },
+  welcomeTitle: { fontSize: '32px', fontWeight: '700', color: '#000', margin: '0 0 20px 0', letterSpacing: '-1.5px' },
   welcomeStatusBox: { marginBottom: '30px', backgroundColor: ZAPTRO_FIELD_BG, padding: '20px', borderRadius: '24px', border: `1px solid ${ZAPTRO_SECTION_BORDER}` },
   statusLine: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' },
   statusText: { fontSize: '16px', color: '#000', margin: 0, fontWeight: '600' },
@@ -3345,4 +3266,4 @@ const styles: Record<string, any> = {
   welcomeActions: { display: 'flex', flexDirection: 'column', gap: '12px' },
 };
 
-export default ZaptroDashboard;
+export default ZaptroDashboardResults;

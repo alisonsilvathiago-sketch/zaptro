@@ -136,7 +136,7 @@ const MasterAdmin: React.FC = () => {
             </div>
             <h2 style={styles.kpiValue}>{metrics.totalCompanies}</h2>
             <div style={styles.kpiFooter}>
-               <span style={{color: '#10b981', fontWeight: '800'}}><TrendingUp size={12} /> {metrics.growth}%</span>
+               <span style={{color: '#10b981', fontWeight: '600'}}><TrendingUp size={12} /> {metrics.growth}%</span>
                <span style={{color: '#94a3b8', fontSize: '11px'}}>vs mês anterior</span>
             </div>
          </div>
@@ -167,7 +167,7 @@ const MasterAdmin: React.FC = () => {
             </div>
             <h2 style={styles.kpiValue}>{metrics.pendingApis}</h2>
             <div style={styles.kpiFooter}>
-               <span style={{color: '#f59e0b', fontWeight: '800'}}>Pendente autorização Master</span>
+               <span style={{color: '#f59e0b', fontWeight: '600'}}>Pendente autorização Master</span>
             </div>
          </div>
       </div>
@@ -191,7 +191,7 @@ const MasterAdmin: React.FC = () => {
                      <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                      <Tooltip 
                         contentStyle={{borderRadius: '16px', border: 'none', boxShadow: 'var(--shadow-lg)'}}
-                        itemStyle={{fontWeight: 800, color: '#D9FF00'}}
+                        itemStyle={{fontWeight: 600, color: '#D9FF00'}}
                      />
                      <Area type="monotone" dataKey="revenue" stroke="#D9FF00" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
                   </AreaChart>
@@ -239,46 +239,46 @@ const styles: Record<string, any> = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px', gap: '32px', backgroundColor: 'white', padding: '24px 32px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
   headerLeft: { flex: 1 },
   headerRight: { display: 'flex', alignItems: 'center', gap: '24px' },
-  badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '900', marginBottom: '8px', letterSpacing: '1px' },
-  title: { fontSize: '32px', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1.5px', margin: 0 },
+  badge: { display: 'inline-block', padding: '4px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '30px', fontSize: '10px', fontWeight: '700', marginBottom: '8px', letterSpacing: '1px' },
+  title: { fontSize: '32px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-1.5px', margin: 0 },
   subtitle: { fontSize: '15px', color: 'var(--text-muted)', margin: 0 },
   headerActions: { display: 'flex', gap: '12px', alignItems: 'center' },
   refreshBtn: { width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all 0.2s' },
-  statusPill: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '12px', fontSize: '11px', fontWeight: '800', border: '1px solid rgba(16, 185, 129, 0.1)' },
+  statusPill: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: '#ecfdf5', color: '#10b981', borderRadius: '12px', fontSize: '11px', fontWeight: '600', border: '1px solid rgba(16, 185, 129, 0.1)' },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', boxShadow: '0 0 10px #10b981' },
   
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px' },
   kpiCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
   kpiHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' },
   kpiIcon: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  kpiLabel: { fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
-  kpiValue: { fontSize: '28px', fontWeight: '900', color: 'var(--text-main)', marginBottom: '8px' },
+  kpiLabel: { fontSize: '12px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
+  kpiValue: { fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '8px' },
   kpiFooter: { display: 'flex', alignItems: 'center', gap: '6px' },
 
   tabContainer: { display: 'flex', gap: '4px', backgroundColor: '#ebebeb', padding: '4px', borderRadius: '14px', width: 'fit-content' },
-  tabLink: { padding: '8px 16px', borderRadius: '10px', fontSize: '12px', fontWeight: '800', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '8px' },
+  tabLink: { padding: '8px 16px', borderRadius: '10px', fontSize: '12px', fontWeight: '600', color: '#64748b', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '8px' },
   tabActive: { backgroundColor: 'white', color: 'var(--primary)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
 
-  sectionTitle: { fontSize: '18px', fontWeight: '900', color: 'var(--text-main)', marginBottom: '20px', letterSpacing: '-0.5px' },
+  sectionTitle: { fontSize: '18px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '20px', letterSpacing: '-0.5px' },
   shortcutsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px' },
   shortcutCard: { backgroundColor: 'white', padding: '20px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-4px)', boxShadow: 'var(--shadow-lg)', borderColor: 'var(--primary)' } },
   shortcutIcon: { width: '52px', height: '52px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   shortcutContent: { flex: 1 },
-  shortcutLabel: { fontSize: '15px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '2px' },
+  shortcutLabel: { fontSize: '15px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '2px' },
   shortcutDesc: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500' },
 
   chartsRow: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' },
   chartCard: { backgroundColor: 'white', padding: '32px', borderRadius: '28px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' },
-  chartTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--primary)', marginBottom: '24px' },
+  chartTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--primary)', marginBottom: '24px' },
   
   healthList: { display: 'flex', flexDirection: 'column' as const, gap: '16px', marginBottom: '32px' },
   healthItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', backgroundColor: 'var(--bg-app)', borderRadius: '16px' },
   hIcon: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' },
   hContent: { flex: 1, display: 'flex', flexDirection: 'column' as const },
-  hLabel: { fontSize: '13px', fontWeight: '800', color: 'var(--text-main)' },
+  hLabel: { fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' },
   hStatus: { fontSize: '11px', color: '#10b981', fontWeight: '700' },
   hDot: { width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' },
-  auditBtn: { width: '100%', padding: '16px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }
+  auditBtn: { width: '100%', padding: '16px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }
 };
 
 export default MasterAdmin;

@@ -131,16 +131,16 @@ const styles = {
   },
   heroContent: { maxWidth: '900px', margin: '0 auto' },
   badge: { 
-    fontSize: '11px', fontWeight: '900', color: 'var(--primary)', 
+    fontSize: '11px', fontWeight: '700', color: 'var(--primary)', 
     backgroundColor: 'var(--primary-light)', padding: '6px 16px', 
     borderRadius: '30px', letterSpacing: '1px' 
   },
-  heroTitle: { fontSize: '56px', fontWeight: '950', color: '#1e293b', marginTop: '24px', letterSpacing: '-2px', lineHeight: '1.1' },
+  heroTitle: { fontSize: '56px', fontWeight: '700', color: '#1e293b', marginTop: '24px', letterSpacing: '-2px', lineHeight: '1.1' },
   highlight: { color: 'var(--primary)' },
   heroSubtitle: { fontSize: '20px', color: '#64748b', marginTop: '24px', lineHeight: '1.6', maxWidth: '700px', margin: '24px auto' },
   heroActions: { display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '40px' },
-  primaryBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '16px', border: 'none', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
-  secondaryBtn: { padding: '16px 32px', backgroundColor: '#ebebeb', color: '#1e293b', borderRadius: '16px', border: 'none', fontWeight: '800', cursor: 'pointer' },
+  primaryBtn: { padding: '16px 32px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '16px', border: 'none', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
+  secondaryBtn: { padding: '16px 32px', backgroundColor: '#ebebeb', color: '#1e293b', borderRadius: '16px', border: 'none', fontWeight: '600', cursor: 'pointer' },
 
   statsRow: { 
     maxWidth: '1200px', margin: '0 auto', display: 'flex', 
@@ -151,7 +151,7 @@ const styles = {
 
   catalogSection: { padding: '100px 40px', maxWidth: '1200px', margin: '0 auto' },
   sectionHeader: { textAlign: 'center' as const, marginBottom: '64px' },
-  sectionTitle: { fontSize: '36px', fontWeight: '900', color: '#1e293b' },
+  sectionTitle: { fontSize: '36px', fontWeight: '700', color: '#1e293b' },
   sectionDesc: { fontSize: '18px', color: '#64748b', marginTop: '12px' },
   
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '32px' },
@@ -166,12 +166,12 @@ const styles = {
   priceTag: { 
     position: 'absolute' as const, bottom: '16px', right: '16px', 
     backgroundColor: '#16a34a', color: 'white', padding: '8px 16px', 
-    borderRadius: '12px', fontWeight: '900', fontSize: '16px' 
+    borderRadius: '12px', fontWeight: '700', fontSize: '16px' 
   },
   
   cardBody: { padding: '28px', display: 'flex', flexDirection: 'column' as const, gap: '16px' },
-  category: { fontSize: '11px', fontWeight: '900', color: 'var(--primary)', textTransform: 'uppercase' as const },
-  cTitle: { fontSize: '20px', fontWeight: '800', color: '#1e293b', letterSpacing: '-0.5px' },
+  category: { fontSize: '11px', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase' as const },
+  cTitle: { fontSize: '20px', fontWeight: '600', color: '#1e293b', letterSpacing: '-0.5px' },
   cDesc: { fontSize: '15px', color: '#64748b', lineHeight: '1.6' },
   cardMeta: { display: 'flex', gap: '24px', alignItems: 'center' },
   mItem: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '700', color: '#94a3b8' },
@@ -179,11 +179,11 @@ const styles = {
   buyBtn: { 
     marginTop: '12px', padding: '16px', backgroundColor: '#1e293b', 
     color: 'white', border: 'none', borderRadius: '16px', 
-    fontWeight: '800', cursor: 'pointer', display: 'flex', 
+    fontWeight: '600', cursor: 'pointer', display: 'flex', 
     alignItems: 'center', justifyContent: 'center', gap: '10px' 
   },
   
-  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '800' },
+  loader: { padding: '100px', textAlign: 'center' as const, color: 'var(--primary)', fontWeight: '600' },
   empty: { textAlign: 'center' as const, gridColumn: '1 / -1', padding: '100px', color: '#94a3b8' },
 
   trustSection: { padding: '100px 40px', backgroundColor: '#fcfcfd' },
@@ -201,7 +201,7 @@ const styles = {
   corpBtn: { 
     marginTop: '32px', padding: '18px 40px', backgroundColor: 'white', 
     color: 'var(--primary)', border: 'none', borderRadius: '18px', 
-    fontWeight: '900', cursor: 'pointer' 
+    fontWeight: '700', cursor: 'pointer' 
   }
 };
 

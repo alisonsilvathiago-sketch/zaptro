@@ -358,9 +358,9 @@ const SupportCenter: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '40px', backgroundColor: 'transparent', minHeight: '90vh', display: 'flex', flexDirection: 'column' },
   pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  pageTitle: { fontSize: '28px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-1px' },
+  pageTitle: { fontSize: '28px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '-1px' },
   pageSubtitle: { fontSize: '15px', color: 'var(--text-muted)' },
-  newBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
+  newBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
   
   mainGrid: { display: 'grid', gridTemplateColumns: '360px 1fr', gap: '24px', flex: 1, maxHeight: 'calc(100vh - 250px)' },
   sidebar: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
@@ -371,22 +371,22 @@ const styles: Record<string, any> = {
   ticketItem: { padding: '16px', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s', border: '1px solid transparent', marginBottom: '8px' },
   ticketActive: { backgroundColor: 'rgba(217, 255, 0, 0.18)', border: '1px solid #ddd6fe' },
   ticketTop: { display: 'flex', justifyContent: 'space-between', marginBottom: '4px' },
-  ticketId: { fontSize: '11px', fontWeight: '800', color: '#94a3b8' },
+  ticketId: { fontSize: '11px', fontWeight: '600', color: '#94a3b8' },
   ticketDate: { fontSize: '11px', color: '#94a3b8' },
-  ticketTitle: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)', marginBottom: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  ticketTitle: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)', marginBottom: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   ticketMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  statusBadge: { fontSize: '10px', fontWeight: '900', padding: '3px 10px', borderRadius: '6px' },
+  statusBadge: { fontSize: '10px', fontWeight: '700', padding: '3px 10px', borderRadius: '6px' },
   categoryText: { fontSize: '11px', fontWeight: '700', color: '#94a3b8' },
   
   chatArea: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid var(--border)', overflow: 'hidden', display: 'flex' },
   chatWrapper: { flex: 1, display: 'flex', flexDirection: 'column' },
   chatHeader: { padding: '24px 32px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   chatInfo: { display: 'flex', alignItems: 'center', gap: '16px' },
-  avatar: { width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'var(--accent)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '18px' },
-  chatTitle: { fontSize: '18px', fontWeight: '900', color: 'var(--primary)' },
+  avatar: { width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'var(--accent)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '18px' },
+  chatTitle: { fontSize: '18px', fontWeight: '700', color: 'var(--primary)' },
   chatSub: { fontSize: '13px', color: '#94a3b8' },
   chatActions: { display: 'flex', gap: '12px', alignItems: 'center' },
-  slaBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '800', color: '#f59e0b', backgroundColor: '#fffbeb', padding: '8px 16px', borderRadius: '10px' },
+  slaBadge: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: '600', color: '#f59e0b', backgroundColor: '#fffbeb', padding: '8px 16px', borderRadius: '10px' },
   moreBtn: { border: '1px solid #e2e8f0', background: 'white', padding: '10px', borderRadius: '10px', cursor: 'pointer' },
   
   chatBody: { flex: 1, padding: '32px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', backgroundColor: '#fcfdfe' },
@@ -396,7 +396,7 @@ const styles: Record<string, any> = {
   messageBubble: { maxWidth: '70%', padding: '16px', borderRadius: '20px' },
   clientBubble: { backgroundColor: 'var(--primary)', color: 'white', borderRadius: '20px 20px 0 20px' },
   masterBubble: { backgroundColor: '#ebebeb', color: 'var(--primary)', borderRadius: '20px 20px 20px 0' },
-  msgHeader: { display: 'flex', justifyContent: 'space-between', gap: '12px', marginBottom: '4px', fontSize: '11px', fontWeight: '800' },
+  msgHeader: { display: 'flex', justifyContent: 'space-between', gap: '12px', marginBottom: '4px', fontSize: '11px', fontWeight: '600' },
   msgTime: { opacity: 0.7, fontWeight: '400' },
   msgText: { fontSize: '14px', lineHeight: '1.5', margin: 0 },
   
@@ -411,12 +411,12 @@ const styles: Record<string, any> = {
   // Modal Form
   form: { display: 'flex', flexDirection: 'column', gap: '20px', padding: '10px 0' },
   field: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)' },
+  label: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)' },
   modalInput: { padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px' },
   modalSelect: { padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px', backgroundColor: 'white' },
   textarea: { padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px', resize: 'none' },
   row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
-  submitBtn: { marginTop: '10px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '850', fontSize: '15px', cursor: 'pointer' }
+  submitBtn: { marginTop: '10px', padding: '16px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '700', fontSize: '15px', cursor: 'pointer' }
 };
 
 export default SupportCenter;

@@ -295,7 +295,7 @@ const Dashboard: React.FC = () => {
                   <p style={styles.kpiLabel}>{kpi.label}</p>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                     <h3 style={styles.kpiValue}>{loading ? '...' : kpi.value}</h3>
-                    <span style={{ fontSize: '11px', fontWeight: '800', color: '#10b981' }}>{kpi.trend}</span>
+                    <span style={{ fontSize: '11px', fontWeight: '600', color: '#10b981' }}>{kpi.trend}</span>
                   </div>
                   <p style={styles.kpiSub}>{kpi.sub}</p>
                 </div>
@@ -466,7 +466,7 @@ const Dashboard: React.FC = () => {
              style={{
                ...styles.secondaryBtn, 
                color: '#10b981', 
-               fontWeight: '950', 
+               fontWeight: '700', 
                backgroundColor: '#ecfdf5', 
                border: '1px solid rgba(16, 185, 129, 0.2)',
                display: 'flex',
@@ -491,7 +491,7 @@ const Dashboard: React.FC = () => {
 const styles = {
   container: { padding: '0', minHeight: '100vh', backgroundColor: 'transparent' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-0.02em' },
+  title: { fontSize: '28px', fontWeight: '600', color: 'var(--text-main)', letterSpacing: '-0.02em' },
   subtitle: { color: 'var(--text-muted)', fontSize: '15px', marginTop: '4px' },
   headerActions: { display: 'flex', gap: '12px', alignItems: 'center' },
   datePicker: { display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'var(--bg-card)', padding: '10px 16px', borderRadius: '14px', border: '1px solid var(--border)', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '600' },
@@ -500,24 +500,24 @@ const styles = {
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' },
   kpiCard: { backgroundColor: 'white', padding: '20px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', minHeight: '110px' },
   kpiInfo: { display: 'flex', flexDirection: 'column' as const, gap: '2px' },
-  kpiLabel: { fontSize: '11px', color: '#64748b', fontWeight: '800', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
-  kpiValue: { fontSize: '22px', fontWeight: '900', color: '#0f172a', margin: 0 },
+  kpiLabel: { fontSize: '11px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase' as const, letterSpacing: '0.05em' },
+  kpiValue: { fontSize: '22px', fontWeight: '700', color: '#0f172a', margin: 0 },
   kpiSub: { fontSize: '11px', color: '#94a3b8', margin: 0 },
   kpiIconBox: { width: '52px', height: '52px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   calendarMiniCard: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' },
   chartCard: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '28px', border: '1px solid var(--border)' },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
-  cardTitle: { fontSize: '16px', fontWeight: '800', color: 'var(--text-main)' },
-  cardBadge: { padding: '5px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '20px', fontSize: '11px', fontWeight: '800' },
+  cardTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--text-main)' },
+  cardBadge: { padding: '5px 12px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '20px', fontSize: '11px', fontWeight: '600' },
   
   // Mini Calendar Styles
   miniCal: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   miniCalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  miniMonth: { fontSize: '10px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '1px' },
+  miniMonth: { fontSize: '10px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '1px' },
   miniNav: { display: 'flex', gap: '8px', color: 'var(--text-muted)' },
   miniGrid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' },
-  miniWeekDay: { fontSize: '9px', fontWeight: '900', color: 'var(--text-muted)', textAlign: 'center' as const },
+  miniWeekDay: { fontSize: '9px', fontWeight: '700', color: 'var(--text-muted)', textAlign: 'center' as const },
   miniDay: { fontSize: '10px', fontWeight: '700', color: 'var(--text-main)', textAlign: 'center' as const, height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px' },
   miniToday: { backgroundColor: 'var(--primary)', color: 'white' },
   miniEvent: { backgroundColor: '#fee2e2', color: '#ef4444' },
@@ -525,8 +525,8 @@ const styles = {
   // Admin Finance Grid
   adminFinGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' },
   finCard: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
-  finLabel: { fontSize: '10px', fontWeight: '900', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '12px' },
-  finValue: { fontSize: '24px', fontWeight: '900', color: 'var(--text-main)', marginBottom: '16px' },
+  finLabel: { fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '12px' },
+  finValue: { fontSize: '24px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '16px' },
   finBar: { width: '100%', height: '6px', backgroundColor: 'var(--bg-app)', borderRadius: '10px', overflow: 'hidden' },
   finFill: { height: '100%', borderRadius: '10px' },
 
@@ -536,14 +536,14 @@ const styles = {
 
   // Calculator Styles
   calcBody: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
-  calcScreen: { width: '100%', padding: '20px', backgroundColor: '#0f172a', borderRadius: '16px', color: 'white', fontSize: '24px', fontWeight: '800', textAlign: 'right' as const, overflow: 'hidden' },
+  calcScreen: { width: '100%', padding: '20px', backgroundColor: '#0f172a', borderRadius: '16px', color: 'white', fontSize: '24px', fontWeight: '600', textAlign: 'right' as const, overflow: 'hidden' },
   calcGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' },
-  calcBtn: { padding: '16px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'white', fontSize: '16px', fontWeight: '800', cursor: 'pointer', '&:hover': { backgroundColor: 'var(--bg-app)' } },
+  calcBtn: { padding: '16px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'white', fontSize: '16px', fontWeight: '600', cursor: 'pointer', '&:hover': { backgroundColor: 'var(--bg-app)' } },
 
   bottomGrid: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' },
   activityCard: { backgroundColor: 'var(--bg-card)', padding: '28px', borderRadius: '28px', border: '1px solid var(--border)' },
   secondaryCard: { backgroundColor: 'var(--bg-card)', padding: '28px', borderRadius: '28px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
-  liveTag: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: '6px 12px', borderRadius: '20px' },
+  liveTag: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '600', color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: '6px 12px', borderRadius: '20px' },
   liveDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' },
   alertList: { display: 'flex', flexDirection: 'column' as const, gap: '16px' },
   alertItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', borderRadius: '16px', backgroundColor: 'var(--bg-app)', border: '1px solid var(--border)' },
@@ -553,7 +553,7 @@ const styles = {
   alertTime: { fontSize: '12px', color: 'var(--text-muted)' },
   fleetGauge: { width: '180px', height: '180px', borderRadius: '50%', border: '12px solid var(--bg-app)', borderTopColor: 'var(--primary)', position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' },
   gaugeCenter: { textAlign: 'center' as const },
-  gaugeValue: { fontSize: '32px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '0' },
+  gaugeValue: { fontSize: '32px', fontWeight: '600', color: 'var(--text-main)', marginBottom: '0' },
   gaugeLabel: { fontSize: '14px', color: 'var(--text-muted)' },
 };
 

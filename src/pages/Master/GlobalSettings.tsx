@@ -333,69 +333,69 @@ const GlobalSettings: React.FC = () => {
 const styles: Record<string, any> = {
   container: { padding: '0', backgroundColor: 'transparent', minHeight: '100vh' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' },
-  title: { fontSize: '28px', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-1.5px' },
+  title: { fontSize: '28px', fontWeight: '700', color: 'var(--primary)', letterSpacing: '-1.5px' },
   subtitle: { color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' },
   headerActions: { display: 'flex', gap: '12px' },
   refreshBtn: { width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-muted)' },
-  saveBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
+  saveBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '14px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.2)' },
   
   infraBar: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '24px', border: '1px solid var(--border)' },
   infraItem: { display: 'flex', alignItems: 'center', gap: '16px', padding: '0 16px', borderRight: '1px solid #e2e8f0', '&:last-child': { borderRight: 'none' } },
   infraInfo: { display: 'flex', flexDirection: 'column' as const },
-  infraLabel: { fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
-  infraValue: { fontSize: '14px', fontWeight: '800', color: 'var(--text-main)' },
+  infraLabel: { fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
+  infraValue: { fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' },
 
   tabNav: { display: 'flex', gap: '32px', marginBottom: '32px', borderBottom: '1px solid var(--border)', padding: '0 8px' },
-  navBtn: { display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 0', border: 'none', background: 'none', fontSize: '15px', fontWeight: '800', color: 'var(--text-muted)', cursor: 'pointer', position: 'relative' as const, transition: 'all 0.2s' },
+  navBtn: { display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 0', border: 'none', background: 'none', fontSize: '15px', fontWeight: '600', color: 'var(--text-muted)', cursor: 'pointer', position: 'relative' as const, transition: 'all 0.2s' },
   navActive: { color: 'var(--primary)', '&::after': { content: '""', position: 'absolute' as const, bottom: '-1px', left: 0, right: 0, height: '2px', backgroundColor: 'var(--primary)', borderRadius: '2px' } },
 
   settingsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', paddingBottom: '40px' },
   settingsCard: { backgroundColor: 'white', padding: '32px', borderRadius: '28px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column' as const },
   cardHeader: { display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '32px' },
   cardIconBox: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  cardTitle: { fontSize: '18px', fontWeight: '900', color: 'var(--primary)', margin: 0 },
+  cardTitle: { fontSize: '18px', fontWeight: '700', color: 'var(--primary)', margin: 0 },
   cardSub: { fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px', fontWeight: '500' },
   cardBody: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   
   settingRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #e8e8e8' },
-  sLabel: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)', margin: 0 },
+  sLabel: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)', margin: 0 },
   sDesc: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500', margin: 0 },
-  sValue: { fontSize: '13px', fontWeight: '800', color: 'var(--primary)' },
+  sValue: { fontSize: '13px', fontWeight: '600', color: 'var(--primary)' },
 
   toggle: { width: '48px', height: '26px', backgroundColor: '#e2e8f0', borderRadius: '30px', padding: '3px', cursor: 'pointer', transition: 'all 0.3s' },
   toggleDot: { width: '20px', height: '20px', backgroundColor: 'white', borderRadius: '50%', boxShadow: 'var(--shadow-sm)' },
   toggleDotActive: { width: '20px', height: '20px', backgroundColor: 'white', borderRadius: '50%', marginLeft: '22px', border: '4px solid #10b981', boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)' },
 
   brandingPreview: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px' },
-  bLogoBox: { width: '44px', height: '44px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950', fontSize: '20px' },
+  bLogoBox: { width: '44px', height: '44px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '20px' },
   bInfo: { display: 'flex', flexDirection: 'column' as const },
-  bLabel: { fontSize: '14px', fontWeight: '800', color: 'var(--primary)', margin: 0 },
+  bLabel: { fontSize: '14px', fontWeight: '600', color: 'var(--primary)', margin: 0 },
   bSub: { fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600' },
   colorGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' },
-  colorItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)' },
+  colorItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)' },
   colorCirc: { width: '20px', height: '20px', borderRadius: '50%' },
 
   keysGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
   keyItem: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  kLabel: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', fontWeight: '900', color: '#94a3b8', letterSpacing: '0.05em' },
+  kLabel: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', fontWeight: '700', color: '#94a3b8', letterSpacing: '0.05em' },
   eyeBtn: { border: 'none', background: 'none', cursor: 'pointer', color: 'var(--primary)' },
   keyInput: { padding: '12px 16px', backgroundColor: '#f4f4f4', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', fontWeight: '700', color: 'var(--primary)', outline: 'none' },
 
   mStatsRow: { display: 'flex', gap: '16px', backgroundColor: '#f4f4f4', padding: '16px', borderRadius: '16px' },
   mStatItem: { flex: 1, display: 'flex', flexDirection: 'column' as const, gap: '2px' },
-  mStatLabel: { fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
-  mStatValue: { fontSize: '16px', fontWeight: '900', color: 'var(--primary)' },
+  mStatLabel: { fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase' as const },
+  mStatValue: { fontSize: '16px', fontWeight: '700', color: 'var(--primary)' },
 
-  secondaryBtn: { padding: '14px', border: '1px solid var(--border)', backgroundColor: 'white', borderRadius: '14px', fontSize: '13px', fontWeight: '800', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' },
+  secondaryBtn: { padding: '14px', border: '1px solid var(--border)', backgroundColor: 'white', borderRadius: '14px', fontSize: '13px', fontWeight: '600', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' },
   
   // WA Messaging
   waGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' },
   waItem: { backgroundColor: '#f4f4f4', padding: '24px', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' as const, gap: '12px' },
-  waTag: { fontSize: '9px', fontWeight: '900', color: '#D9FF00', backgroundColor: 'rgba(217, 255, 0, 0.18)', padding: '4px 10px', borderRadius: '6px', alignSelf: 'flex-start' },
-  waItemTitle: { fontSize: '16px', fontWeight: '900', color: 'var(--primary)', margin: 0 },
+  waTag: { fontSize: '9px', fontWeight: '700', color: '#D9FF00', backgroundColor: 'rgba(217, 255, 0, 0.18)', padding: '4px 10px', borderRadius: '6px', alignSelf: 'flex-start' },
+  waItemTitle: { fontSize: '16px', fontWeight: '700', color: 'var(--primary)', margin: 0 },
   waItemDesc: { fontSize: '12px', color: 'var(--text-muted)', margin: 0 },
-  waEditBtn: { marginTop: '12px', padding: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', borderRadius: '12px', fontSize: '12px', fontWeight: '800', color: 'var(--primary)', cursor: 'pointer' },
-  liveTag: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '800', borderRadius: '20px', padding: '4px 12px' }
+  waEditBtn: { marginTop: '12px', padding: '10px', border: '1px solid #e2e8f0', backgroundColor: 'white', borderRadius: '12px', fontSize: '12px', fontWeight: '600', color: 'var(--primary)', cursor: 'pointer' },
+  liveTag: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: '600', borderRadius: '20px', padding: '4px 12px' }
 };
 
 export default GlobalSettings;

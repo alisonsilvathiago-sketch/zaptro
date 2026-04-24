@@ -30,33 +30,33 @@ const styles: Record<string, any> = {
     width: '120px', height: '120px', borderRadius: '40px', 
     backgroundColor: 'var(--primary-light)', color: 'var(--primary)', 
     display: 'flex', alignItems: 'center', justifyContent: 'center', 
-    fontSize: '48px', fontWeight: '950', border: '4px solid white',
+    fontSize: '48px', fontWeight: '700', border: '4px solid white',
     boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'
   },
   heroInfo: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  heroTitle: { fontSize: '32px', fontWeight: '950', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
+  heroTitle: { fontSize: '32px', fontWeight: '700', color: 'var(--text-main)', margin: 0, letterSpacing: '-1.5px' },
   heroSubtitle: { fontSize: '16px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '12px' },
-  badgeStatus: { padding: '6px 16px', borderRadius: '30px', fontSize: '12px', fontWeight: '900' },
+  badgeStatus: { padding: '6px 16px', borderRadius: '30px', fontSize: '12px', fontWeight: '700' },
   
   actionGroup: { display: 'flex', gap: '12px' },
-  btnAction: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', fontWeight: '800', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' },
+  btnAction: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'white', fontWeight: '600', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' },
   btnPrimary: { backgroundColor: 'var(--primary)', color: 'white', border: 'none' },
 
   mainGrid: { display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '32px' },
   sidebar: { display: 'flex', flexDirection: 'column', gap: '24px' },
   sideCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)' },
-  sideTitle: { fontSize: '11px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '1px' },
+  sideTitle: { fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '1px' },
   infoItem: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', color: 'var(--text-secondary)', fontSize: '14px' },
 
   contentArea: { display: 'flex', flexDirection: 'column', gap: '32px' },
   tabs: { display: 'flex', gap: '24px', borderBottom: '1px solid var(--border)', marginBottom: '8px', overflowX: 'auto' as const, scrollbarWidth: 'none' as const },
-  tab: { padding: '12px 4px', border: 'none', background: 'none', fontWeight: '800', fontSize: '14px', color: 'var(--text-muted)', cursor: 'pointer', position: 'relative', whiteSpace: 'nowrap' as const },
+  tab: { padding: '12px 4px', border: 'none', background: 'none', fontWeight: '600', fontSize: '14px', color: 'var(--text-muted)', cursor: 'pointer', position: 'relative', whiteSpace: 'nowrap' as const },
   tabActive: { color: 'var(--primary)' },
   tabIndicator: { position: 'absolute', bottom: '-1px', left: 0, right: 0, height: '3px', backgroundColor: 'var(--primary)', borderRadius: '3px' },
 
   statsRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
   statCard: { backgroundColor: 'white', padding: '24px', borderRadius: '24px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  statValue: { fontSize: '24px', fontWeight: '950', color: 'var(--text-main)', margin: '4px 0 0 0' },
+  statValue: { fontSize: '24px', fontWeight: '700', color: 'var(--text-main)', margin: '4px 0 0 0' },
   statLabel: { fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', margin: 0 },
   
   cardGrid: { display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px' },
@@ -71,7 +71,7 @@ const styles: Record<string, any> = {
   },
   histIcon: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   
-  tag: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900' },
+  tag: { padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '700' },
   vehicleVinc: { display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0' }
 };
 
@@ -197,18 +197,18 @@ const CollaboratorProfile: React.FC = () => {
             <div style={styles.vehicleVinc}>
                <Truck size={24} color="var(--primary)" />
                <div>
-                  <p style={{margin: 0, fontSize: '13px', fontWeight: '800'}}>Vículo Atual</p>
+                  <p style={{margin: 0, fontSize: '13px', fontWeight: '600'}}>Vículo Atual</p>
                   <p style={{margin: 0, fontSize: '11px', color: 'var(--text-muted)'}}>{emp?.vehicle || 'Sem veículo fixo'}</p>
                </div>
             </div>
             <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px'}}>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '12px'}}>
                   <span>Área de Atuação</span>
-                  <span style={{fontWeight: '800'}}>{emp?.area}</span>
+                  <span style={{fontWeight: '600'}}>{emp?.area}</span>
                </div>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '12px'}}>
                   <span>Tempo de Empresa</span>
-                  <span style={{fontWeight: '800'}}>1 ano e 2 meses</span>
+                  <span style={{fontWeight: '600'}}>1 ano e 2 meses</span>
                </div>
             </div>
           </div>
@@ -276,14 +276,14 @@ const CollaboratorProfile: React.FC = () => {
                      <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
                         <div style={{padding: '16px', backgroundColor: '#f0fdf4', borderRadius: '16px', border: '1px solid #bbf7d0'}}>
                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                              <span style={{fontSize: '11px', fontWeight: '900', color: '#166534'}}>RECONHECIMENTO</span>
+                              <span style={{fontSize: '11px', fontWeight: '700', color: '#166534'}}>RECONHECIMENTO</span>
                               <span style={{fontSize: '10px', color: '#166534'}}>08/04</span>
                            </div>
                            <p style={{margin: 0, fontSize: '13px', color: '#166534'}}>Excelente performance na rota PR-450. Entrega concluída com nota máxima.</p>
                         </div>
                         <div style={{padding: '16px', backgroundColor: '#f4f4f4', borderRadius: '16px', border: '1px solid #e2e8f0'}}>
                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                              <span style={{fontSize: '11px', fontWeight: '900', color: '#64748b'}}>ATUALIZAÇÃO DOC</span>
+                              <span style={{fontSize: '11px', fontWeight: '700', color: '#64748b'}}>ATUALIZAÇÃO DOC</span>
                               <span style={{fontSize: '10px', color: '#64748b'}}>02/04</span>
                            </div>
                            <p style={{margin: 0, fontSize: '13px', color: '#444'}}>Certificado NR-35 atualizado com sucesso no cofre digital.</p>
@@ -361,12 +361,12 @@ const CollaboratorProfile: React.FC = () => {
                      <div key={i} style={styles.historyItem}>
                         <div style={styles.histIcon}><Navigation size={24} color="var(--primary)" /></div>
                         <div style={styles.histMain}>
-                           <h4 style={{margin: 0, fontSize: '15px', fontWeight: '800'}}>Rota #{route.id}</h4>
+                           <h4 style={{margin: 0, fontSize: '15px', fontWeight: '600'}}>Rota #{route.id}</h4>
                            <p style={{margin: 0, fontSize: '12px', color: 'var(--text-muted)'}}>{route.route} • {route.km}</p>
                         </div>
                         <div style={{textAlign: 'right'}}>
                            <p style={{margin: 0, fontSize: '11px', color: 'var(--text-muted)'}}>{route.date}</p>
-                           <p style={{margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-main)'}}>Logta Fleet</p>
+                           <p style={{margin: 0, fontSize: '14px', fontWeight: '700', color: 'var(--text-main)'}}>Logta Fleet</p>
                         </div>
                         <span style={{...styles.tag, backgroundColor: '#ecfdf5', color: '#10b981'}}>{route.status}</span>
                      </div>
@@ -387,7 +387,7 @@ const CollaboratorProfile: React.FC = () => {
                       <div key={log.id} style={styles.historyItem}>
                          <div style={styles.histIcon}><ShieldCheck size={20} color="var(--primary)" /></div>
                          <div style={{flex: 1}}>
-                            <h4 style={{margin: 0, fontSize: '14px', fontWeight: '800'}}>{log.details}</h4>
+                            <h4 style={{margin: 0, fontSize: '14px', fontWeight: '600'}}>{log.details}</h4>
                             <p style={{margin: 0, fontSize: '11px', color: 'var(--text-muted)'}}>{log.module} • {log.action}</p>
                          </div>
                          <span style={{fontSize: '11px', fontWeight: '700', color: '#94a3b8'}}>{new Date(log.created_at).toLocaleString()}</span>
@@ -406,17 +406,17 @@ const CollaboratorProfile: React.FC = () => {
                         <div style={{...styles.vehicleVinc, backgroundColor: '#f0fdf4', borderColor: '#bbf7d0'}}>
                            <Calendar size={20} color="#10b981" />
                            <div>
-                              <p style={{margin: 0, fontSize: '13px', fontWeight: '800', color: '#166534'}}>Próximo Período Aquisitivo</p>
+                              <p style={{margin: 0, fontSize: '13px', fontWeight: '600', color: '#166534'}}>Próximo Período Aquisitivo</p>
                               <p style={{margin: 0, fontSize: '11px', color: '#166534'}}>{emp?.vacations?.next} (Planejado)</p>
                            </div>
                         </div>
                         <div style={{padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0'}}>
                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                               <div>
-                                 <p style={{margin: 0, fontSize: '12px', fontWeight: '800'}}>Saldo de Dias</p>
+                                 <p style={{margin: 0, fontSize: '12px', fontWeight: '600'}}>Saldo de Dias</p>
                                  <p style={{margin: 0, fontSize: '11px', color: 'var(--text-muted)'}}>Direito a férias remuneradas</p>
                               </div>
-                              <h3 style={{margin: 0, color: 'var(--primary)', fontWeight: '950'}}>{emp?.vacations?.daysRemaining} Dias</h3>
+                              <h3 style={{margin: 0, color: 'var(--primary)', fontWeight: '700'}}>{emp?.vacations?.daysRemaining} Dias</h3>
                            </div>
                         </div>
                      </div>
@@ -427,7 +427,7 @@ const CollaboratorProfile: React.FC = () => {
                         <div style={{padding: '12px', backgroundColor: '#fef2f2', borderRadius: '12px', border: '1px solid #fee2e2'}}>
                            <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px'}}>
                               <AlertTriangle size={14} color="#ef4444" />
-                              <span style={{fontSize: '11px', fontWeight: '900', color: '#b91c1c'}}>ADVERTÊNCIA</span>
+                              <span style={{fontSize: '11px', fontWeight: '700', color: '#b91c1c'}}>ADVERTÊNCIA</span>
                            </div>
                            <p style={{margin: 0, fontSize: '12px', color: '#b91c1c'}}>Atraso injustificado na saída da garagem (02/04).</p>
                         </div>

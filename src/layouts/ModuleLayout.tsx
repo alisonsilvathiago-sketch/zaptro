@@ -101,7 +101,7 @@ const styles = {
   },
   headerBadge: {
     fontSize: '10px',
-    fontWeight: '900',
+    fontWeight: '700',
     color: 'var(--primary)',
     backgroundColor: 'var(--primary-light)',
     padding: '4px 12px',
@@ -112,7 +112,7 @@ const styles = {
   },
   title: {
     fontSize: '28px',
-    fontWeight: '900',
+    fontWeight: '700',
     color: 'var(--text-main)',
     letterSpacing: '-1px',
     margin: 0,
@@ -146,13 +146,13 @@ const styles = {
   },
   navLabel: {
     fontSize: '13px',
-    fontWeight: '800',
+    fontWeight: '600',
     color: 'var(--primary)',
     whiteSpace: 'nowrap' as const,
   },
   itemBadge: {
     fontSize: '10px',
-    fontWeight: '800',
+    fontWeight: '600',
     backgroundColor: 'var(--primary)',
     color: 'white',
     padding: '2px 8px',

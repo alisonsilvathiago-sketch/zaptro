@@ -18,9 +18,9 @@ const styles: Record<string, any> = {
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  logoTop: { position: 'absolute', top: '50px', left: '60px', display: 'flex', alignItems: 'center', gap: '15px', fontSize: '24px', fontWeight: '950', letterSpacing: '-1.5px', zIndex: 10 },
+  logoTop: { position: 'absolute', top: '50px', left: '60px', display: 'flex', alignItems: 'center', gap: '15px', fontSize: '24px', fontWeight: '700', letterSpacing: '-1.5px', zIndex: 10 },
   centerBox: { zIndex: 10, textAlign: 'center' },
-  mainPhrase: { fontSize: 'clamp(40px, 6vw, 84px)', fontWeight: '950', color: '#0a0a0a', lineHeight: 0.9, textTransform: 'uppercase', letterSpacing: '-4px' },
+  mainPhrase: { fontSize: 'clamp(40px, 6vw, 84px)', fontWeight: '700', color: '#0a0a0a', lineHeight: 0.9, textTransform: 'uppercase', letterSpacing: '-4px' },
   rightSide: { 
     flex: 1, backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', 
     position: 'relative', overflow: 'hidden', borderRadius: 0
@@ -30,11 +30,11 @@ const styles: Record<string, any> = {
     borderRadius: '50%', pointerEvents: 'none', transform: 'translate(-50%, -50%)'
   },
   heroContent: { position: 'relative', zIndex: 10, width: '90%', maxWidth: '550px', textAlign: 'center' },
-  heroTitle: { fontSize: '56px', fontWeight: '950', color: '#000', letterSpacing: '-2px', lineHeight: 1, marginBottom: '24px' },
+  heroTitle: { fontSize: '56px', fontWeight: '700', color: '#000', letterSpacing: '-2px', lineHeight: 1, marginBottom: '24px' },
   heroSubtitle: { fontSize: '16px', color: '#64748B', fontWeight: '600', lineHeight: 1.6, marginBottom: '48px' },
   heroActions: { display: 'flex', gap: '16px', justifyContent: 'center' },
-  btnPrimary: { padding: '18px 45px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '18px', fontSize: '16px', fontWeight: '950', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
-  btnSecondary: { padding: '18px 45px', backgroundColor: '#fff', color: '#000', borderRadius: '18px', fontSize: '16px', fontWeight: '950', border: '2px solid #000', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }
+  btnPrimary: { padding: '18px 45px', backgroundColor: '#000', color: '#D9FF00', borderRadius: '18px', fontSize: '16px', fontWeight: '700', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
+  btnSecondary: { padding: '18px 45px', backgroundColor: '#fff', color: '#000', borderRadius: '18px', fontSize: '16px', fontWeight: '700', border: '2px solid #000', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }
 };
 
 const ZapRay = ({ size = 24, color = "#D9FF00", style = {} }) => (
@@ -122,7 +122,7 @@ const Home: React.FC = () => {
           keywords="logta, zaptro, dev"
         />
         <div style={{ maxWidth: '520px' }}>
-          <h1 style={{ fontSize: 'clamp(26px, 5vw, 36px)', fontWeight: 800, marginBottom: '12px' }}>
+          <h1 style={{ fontSize: 'clamp(26px, 5vw, 36px)', fontWeight: 600, marginBottom: '12px' }}>
             Logta — ambiente local
           </h1>
           <p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '15px', marginBottom: '28px' }}>
@@ -172,7 +172,7 @@ const Home: React.FC = () => {
         keywords="logta, erp logística, transportadora, crm frota, gestão transporte"
       />
       <div style={{ maxWidth: '520px' }}>
-        <h1 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 800, marginBottom: '16px' }}>
+        <h1 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 600, marginBottom: '16px' }}>
           Logta
         </h1>
         <p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '16px' }}>

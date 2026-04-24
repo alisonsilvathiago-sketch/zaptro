@@ -12,6 +12,8 @@ import { useAuth } from '../context/AuthContext';
 import { zaptroClientProfilePath } from '../constants/zaptroRoutes';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
+import { exportToExcel } from '../lib/exportToExcel';
+import { ZaptroLeadsTab } from './ZaptroLeadsTab';
 
 /** Linhas fictícias (mesmo formato que `whatsapp_conversations`) para pré-visualizar a lista e KPIs. */
 export function getZaptroDemoClientById(id: string): any | null {
@@ -25,6 +27,7 @@ function buildDemoClients(): any[] {
 const ZaptroClients: React.FC = () => {
   const navigate = useNavigate();
   const { profile } = useAuth();
+  const [activeTab, setActiveTab] = useState<'clients' | 'leads'>('clients');
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,7 +43,6 @@ const ZaptroClients: React.FC = () => {
       return;
     }
     try {
-      // Buscando conversas únicas para identificar clientes atendidos
       const { data, error } = await supabaseZaptro
         .from('whatsapp_conversations')
         .select('*, whatsapp_messages(*)')
@@ -49,7 +51,6 @@ const ZaptroClients: React.FC = () => {
 
       if (error) throw error;
 
-      // Agrupar por número de telefone/contato para ter lista de clientes única
       const uniqueClients = Array.from(new Map(data?.map((item) => [item.sender_number, item])).values());
       if (!uniqueClients.length) {
         setClients(buildDemoClients());
@@ -77,29 +78,22 @@ const ZaptroClients: React.FC = () => {
     void fetchClients();
   }, [fetchClients]);
 
-  const exportToExcel = () => {
-    if (!clients.length) {
-      notifyZaptro('info', 'Nada para exportar', 'Ainda não há clientes na lista. Atenda conversas no WhatsApp e volte aqui.');
+  const handleExportExcel = () => {
+    if (!filteredClients.length) {
+      notifyZaptro('info', 'Sem dados', 'Nenhum cliente encontrado com o filtro atual.');
       return;
     }
-    const headers = ['Nome/Número', 'Status', 'Último Contato', 'Mensagens'];
-    const rows = clients.map(c => [
-      c.sender_name || c.sender_number,
-      c.status,
-      new Date(c.updated_at).toLocaleDateString(),
-      c.whatsapp_messages?.length || 0
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers, ...rows].map(e => e.join(",")).join("\n");
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `clientes_zaptro_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    notifyZaptro('success', 'Excel Gerado', 'A lista de clientes foi exportada com sucesso.');
+    exportToExcel(
+      filteredClients.map((c) => ({
+        'Nome / Empresa': c.sender_name || '—',
+        'WhatsApp': c.sender_number || '—',
+        'Status': c.status === 'open' ? 'Em atendimento' : 'Finalizado',
+        'Último contato': c.updated_at ? new Date(c.updated_at).toLocaleString('pt-BR') : '—',
+        'Mensagens': c.whatsapp_messages?.length || 0,
+      })),
+      'clientes_zaptro',
+    );
+    notifyZaptro('success', 'Excel gerado!', `${filteredClients.length} clientes exportados.`);
   };
 
   const filteredClients = clients.filter(
@@ -149,8 +143,13 @@ const ZaptroClients: React.FC = () => {
               )}
            </div>
            <div style={styles.actions}>
-              <button style={styles.exportBtn} onClick={exportToExcel}>
+              <button style={styles.exportBtn} onClick={handleExportExcel}>
                  <FileSpreadsheet size={16} /> Exportar Excel
+                 {filteredClients.length > 0 && (
+                   <span style={{ background: 'rgba(255,255,255,0.25)', borderRadius: 999, padding: '1px 8px', fontSize: 11 }}>
+                     {filteredClients.length}
+                   </span>
+                 )}
               </button>
            </div>
         </header>
@@ -167,17 +166,53 @@ const ZaptroClients: React.FC = () => {
            ))}
         </div>
 
-        {/* CLIENT LIST AREA */}
-        <div style={styles.listSection}>
-           <div style={styles.toolbar}>
+        {/* Tab Switcher */}
+        <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #EBEBEC', marginBottom: 28, marginTop: 12 }}>
+          <button
+            onClick={() => setActiveTab('clients')}
+            style={{
+              padding: '12px 16px',
+              border: 'none',
+              borderBottom: activeTab === 'clients' ? '3px solid #D9FF00' : '3px solid transparent',
+              backgroundColor: 'transparent',
+              color: activeTab === 'clients' ? '#000' : '#64748B',
+              fontWeight: 700,
+              fontSize: 14,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}
+          >
+            Clientes Base
+          </button>
+          <button
+            onClick={() => setActiveTab('leads')}
+            style={{
+              padding: '12px 16px',
+              border: 'none',
+              borderBottom: activeTab === 'leads' ? '3px solid #D9FF00' : '3px solid transparent',
+              backgroundColor: 'transparent',
+              color: activeTab === 'leads' ? '#000' : '#64748B',
+              fontWeight: 700,
+              fontSize: 14,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}
+          >
+            Leads & Oportunidades
+          </button>
+        </div>
+
+        {activeTab === 'clients' ? (
+          <div style={styles.listSection}>
+            <div style={styles.toolbar}>
               <div style={styles.searchBox}>
-                 <Search size={18} color="#94A3B8" />
-                 <input 
-                   placeholder="Buscar por nome ou WhatsApp..." 
-                   style={styles.searchInput} 
-                   value={searchTerm}
-                   onChange={e => setSearchTerm(e.target.value)}
-                 />
+                  <Search size={18} color="#94A3B8" />
+                  <input 
+                    placeholder="Buscar por nome ou WhatsApp..." 
+                    style={styles.searchInput} 
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                  />
               </div>
               <button
                 type="button"
@@ -188,23 +223,23 @@ const ZaptroClients: React.FC = () => {
               >
                 <Filter size={16} /> Filtrar Base
               </button>
-           </div>
+            </div>
 
-           {loading ? (
-             <div style={styles.loadingArea}><Loader2 className="zaptro-clients-spin" size={32} color="#000" /></div>
-           ) : (
-             <div style={styles.tableCard}>
+            {loading ? (
+              <div style={styles.loadingArea}><Loader2 className="zaptro-clients-spin" size={32} color="#000" /></div>
+            ) : (
+              <div style={styles.tableCard}>
                 <table style={styles.table}>
-                   <thead>
+                    <thead>
                       <tr style={styles.thead}>
-                         <th style={styles.th}>CLIENTE</th>
-                         <th style={styles.th}>STATUS</th>
-                         <th style={styles.th}>ÚLTIMO CONTATO</th>
-                         <th style={styles.th}>INTERAÇÕES</th>
-                         <th style={styles.th}>AÇÕES</th>
+                          <th style={styles.th}>CLIENTE</th>
+                          <th style={styles.th}>STATUS</th>
+                          <th style={styles.th}>ÚLTIMO CONTATO</th>
+                          <th style={styles.th}>INTERAÇÕES</th>
+                          <th style={styles.th}>AÇÕES</th>
                       </tr>
-                   </thead>
-                   <tbody>
+                    </thead>
+                    <tbody>
                       {!filteredClients.length ? (
                         <tr>
                           <td colSpan={5} style={{ ...styles.td, textAlign: 'center', padding: 48, color: '#64748B', fontWeight: 700 }}>
@@ -214,63 +249,66 @@ const ZaptroClients: React.FC = () => {
                       ) : (
                       filteredClients.map(c => (
                         <tr key={c.id} style={styles.tr}>
-                           <td style={styles.td}>
+                            <td style={styles.td}>
                               <div style={styles.clientCell}>
-                                 <div style={styles.avatar}>{c.sender_name?.[0] || <User size={14}/>}</div>
-                                 <div style={styles.clientInfo}>
+                                  <div style={styles.avatar}>{c.sender_name?.[0] || <User size={14}/>}</div>
+                                  <div style={styles.clientInfo}>
                                     <span style={styles.clientName}>{c.sender_name || 'Cliente S/ Nome'}</span>
                                     <span style={styles.clientPhone}>{c.sender_number}</span>
-                                 </div>
+                                  </div>
                               </div>
-                           </td>
-                           <td style={styles.td}>
+                            </td>
+                            <td style={styles.td}>
                               <span style={{...styles.statBadge, backgroundColor: c.status === 'open' ? '#EEFCEF' : '#F1F5F9', color: c.status === 'open' ? '#10B981' : '#64748B'}}>
-                                 {c.status === 'open' ? 'EM ATENDIMENTO' : 'FINALIZADO'}
+                                  {c.status === 'open' ? 'EM ATENDIMENTO' : 'FINALIZADO'}
                               </span>
-                           </td>
-                           <td style={styles.td}>
+                            </td>
+                            <td style={styles.td}>
                               <div style={styles.dateCell}>
-                                 <Calendar size={14} color="#94A3B8" />
-                                 <span>{new Date(c.updated_at).toLocaleDateString()}</span>
+                                  <Calendar size={14} color="#94A3B8" />
+                                  <span>{new Date(c.updated_at).toLocaleDateString()}</span>
                               </div>
-                           </td>
-                           <td style={styles.td}>
+                            </td>
+                            <td style={styles.td}>
                               <div style={styles.interactionCell}>
-                                 <MessageSquare size={14} color="#D9FF00" />
-                                 <span>{c.whatsapp_messages?.length || 0} msgs</span>
+                                  <MessageSquare size={14} color="#D9FF00" />
+                                  <span>{c.whatsapp_messages?.length || 0} msgs</span>
                               </div>
-                           </td>
-                           <td style={styles.td}>
+                            </td>
+                            <td style={styles.td}>
                               <button
                                 style={styles.viewBtn}
                                 type="button"
                                 onClick={() => navigate(zaptroClientProfilePath(String(c.id)))}
                               >
-                                 Ver Perfil <ChevronRight size={16} />
+                                  Ver Perfil <ChevronRight size={16} />
                               </button>
-                           </td>
+                            </td>
                         </tr>
                       ))
                       )}
-                   </tbody>
+                    </tbody>
                 </table>
-             </div>
-           )}
-        </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <ZaptroLeadsTab />
+        )}
       </div>
     </ZaptroLayout>
   );
 };
 
 const styles: Record<string, any> = {
-  container: { display: 'flex', flexDirection: 'column', gap: '40px' },
+  container: { display: 'flex', flexDirection: 'column', gap: '40px', width: '100%', maxWidth: 1360, margin: '0 auto', boxSizing: 'border-box' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 },
   headerInfo: { flex: 1, minWidth: 0 },
   actions: { flexShrink: 0 },
-  title: { fontSize: '32px', fontWeight: '950', color: '#000', margin: 0, letterSpacing: '-1.5px' },
+  title: { fontSize: '32px', fontWeight: '700', color: '#000', margin: 0, letterSpacing: '-0.02em' },
   subtitle: { fontSize: '15px', color: '#64748B', fontWeight: '500', margin: '4px 0 0 0' },
   
-  exportBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#ebebeb', color: '#000', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '950', cursor: 'pointer' },
+  exportBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: '12px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' },
 
   kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' },
 
@@ -278,25 +316,25 @@ const styles: Record<string, any> = {
   toolbar: { display: 'flex', justifyContent: 'space-between', gap: '16px' },
   searchBox: { flex: 1, display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#FBFBFC', padding: '14px 20px', borderRadius: '18px', border: '1px solid #EBEBEC' },
   searchInput: { background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', fontWeight: '600', color: '#000', width: '100%' },
-  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 20px', backgroundColor: '#FBFBFC', border: '1px solid #EBEBEC', borderRadius: '18px', fontSize: '13px', fontWeight: '900', color: '#000000' },
+  filterBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '0 20px', backgroundColor: '#FBFBFC', border: '1px solid #EBEBEC', borderRadius: '18px', fontSize: '13px', fontWeight: '600', color: '#000000' },
 
   tableCard: { backgroundColor: 'white', borderRadius: '24px', border: '1px solid #EBEBEC', overflow: 'hidden' },
   table: { width: '100%', borderCollapse: 'collapse' },
   thead: { backgroundColor: '#FBFBFC', borderBottom: '1px solid #EBEBEC' },
-  th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '950', color: '#000000', textTransform: 'uppercase', letterSpacing: '1px' },
+  th: { padding: '20px 24px', textAlign: 'left', fontSize: '11px', fontWeight: '700', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.04em' },
   tr: { borderBottom: '1px solid #EBEBEC' },
   td: { padding: '20px 24px' },
   
   clientCell: { display: 'flex', alignItems: 'center', gap: '16px' },
-  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#000', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '950' },
-  clientName: { display: 'block', fontSize: '14px', fontWeight: '950', color: '#000' },
+  avatar: { width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#000', color: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' },
+  clientName: { display: 'block', fontSize: '14px', fontWeight: '700', color: '#000' },
   clientPhone: { display: 'block', fontSize: '12px', color: '#94A3B8', fontWeight: '600' },
   
-  statBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: '950', letterSpacing: '0.5px' },
+  statBadge: { padding: '6px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.02em' },
   dateCell: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', color: '#475569' },
   interactionCell: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', color: '#475569' },
   
-  viewBtn: { padding: '10px 16px', backgroundColor: '#FBFBFC', color: '#000', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '950', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+  viewBtn: { padding: '10px 16px', backgroundColor: '#FBFBFC', color: '#000', border: 'none', borderRadius: '10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
   
   loadingArea: { padding: '100px', textAlign: 'center' }
 };

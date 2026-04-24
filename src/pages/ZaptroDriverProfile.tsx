@@ -5,7 +5,7 @@ import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { useAuth } from '../context/AuthContext';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
-import { ZAPTRO_ROUTES, zaptroDriverProfilePath } from '../constants/zaptroRoutes';
+import { ZAPTRO_ROUTES, zaptroDriverProfilePath, zaptroWhatsappInboxThreadPath } from '../constants/zaptroRoutes';
 import { isZaptroDemoDriverId, ZAPTRO_DEMO_DRIVERS } from '../constants/zaptroDriversDemo';
 import { extractPlateFromVehicleText, vehicleTextContainsPlate } from '../utils/zaptroDriverVehicle';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
@@ -124,7 +124,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
   if (!driver) {
     return (
       <div style={{ padding: 32, maxWidth: 520, margin: '0 auto' }}>
-        <p style={{ fontSize: 16, fontWeight: 800, color: palette.text }}>Motorista não encontrado</p>
+        <p style={{ fontSize: 16, fontWeight: 600, color: palette.text }}>Motorista não encontrado</p>
         <p style={{ color: palette.textMuted, fontWeight: 600, lineHeight: 1.55 }}>
           Confirme o link ou volte à lista. Só é possível ver motoristas da mesma transportadora.
         </p>
@@ -133,7 +133,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
           style={{
             display: 'inline-flex',
             marginTop: 18,
-            fontWeight: 950,
+            fontWeight: 700,
             color: '#000',
             background: palette.lime,
             padding: '12px 18px',
@@ -160,7 +160,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
-          fontWeight: 800,
+          fontWeight: 600,
           fontSize: 14,
           color: palette.text,
           fontFamily: 'inherit',
@@ -193,7 +193,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
           <User size={34} color={isDark ? palette.lime : '#0f172a'} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950, letterSpacing: '-0.04em', color: palette.text }}>
+          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: '-0.04em', color: palette.text }}>
             {driver.name}
           </h1>
           <p style={{ margin: '8px 0 0', fontSize: 13, fontWeight: 700, color: palette.textMuted }}>
@@ -203,7 +203,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
             <span
               style={{
                 fontSize: 11,
-                fontWeight: 950,
+                fontWeight: 700,
                 letterSpacing: '0.06em',
                 padding: '6px 12px',
                 borderRadius: 999,
@@ -217,8 +217,8 @@ const ZaptroDriverProfileContent: React.FC = () => {
               <span
                 style={{
                   fontSize: 11,
-                  fontWeight: 950,
-                  letterSpacing: '0.08em',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
                   padding: '6px 12px',
                   borderRadius: 999,
                   border: `1px solid ${border}`,
@@ -236,33 +236,31 @@ const ZaptroDriverProfileContent: React.FC = () => {
         <div style={{ borderRadius: 20, border: `1px solid ${border}`, padding: 20, backgroundColor: cardBg }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <Phone size={18} color={palette.textMuted} />
-            <span style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, letterSpacing: '0.08em' }}>WHATSAPP</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, letterSpacing: '0.02em' }}>WHATSAPP</span>
           </div>
-          <p style={{ margin: 0, fontSize: 17, fontWeight: 950, color: palette.text }}>{driver.phone}</p>
-          <a
-            href={`https://wa.me/${String(driver.phone).replace(/\D/g, '')}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ marginTop: 10, display: 'inline-block', fontSize: 13, fontWeight: 800, color: '#16a34a' }}
+          <p style={{ margin: 0, fontSize: 17, fontWeight: 700, color: palette.text }}>{driver.phone}</p>
+          <Link
+            to={zaptroWhatsappInboxThreadPath(String(driver.phone))}
+            style={{ marginTop: 10, display: 'inline-block', fontSize: 13, fontWeight: 600, color: '#16a34a', textDecoration: 'none' }}
           >
             Abrir WhatsApp
-          </a>
+          </Link>
         </div>
         <div style={{ borderRadius: 20, border: `1px solid ${border}`, padding: 20, backgroundColor: cardBg }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <Truck size={18} color={palette.textMuted} />
-            <span style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, letterSpacing: '0.08em' }}>VEÍCULO</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, letterSpacing: '0.02em' }}>VEÍCULO</span>
           </div>
-          <p style={{ margin: 0, fontSize: 15, fontWeight: 800, color: palette.text, lineHeight: 1.45 }}>
+          <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: palette.text, lineHeight: 1.45 }}>
             {driver.vehicle || 'Sem veículo cadastrado'}
           </p>
         </div>
         <div style={{ borderRadius: 20, border: `1px solid ${border}`, padding: 20, backgroundColor: cardBg }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <Route size={18} color={palette.textMuted} />
-            <span style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, letterSpacing: '0.08em' }}>VIAGENS</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, letterSpacing: '0.02em' }}>VIAGENS</span>
           </div>
-          <p style={{ margin: 0, fontSize: 22, fontWeight: 950, color: palette.text }}>—</p>
+          <p style={{ margin: 0, fontSize: 22, fontWeight: 700, color: palette.text }}>—</p>
           <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.45 }}>
             Contagem de rotas entregues liga-se ao módulo operacional (em desenvolvimento).
           </p>
@@ -270,9 +268,9 @@ const ZaptroDriverProfileContent: React.FC = () => {
         <div style={{ borderRadius: 20, border: `1px solid ${border}`, padding: 20, backgroundColor: cardBg }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <MapPin size={18} color={palette.textMuted} />
-            <span style={{ fontSize: 11, fontWeight: 950, color: palette.textMuted, letterSpacing: '0.08em' }}>LOCAL</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted, letterSpacing: '0.02em' }}>LOCAL</span>
           </div>
-          <p style={{ margin: 0, fontSize: 15, fontWeight: 800, color: palette.text }}>—</p>
+          <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: palette.text }}>—</p>
           <p style={{ margin: '8px 0 0', fontSize: 12, fontWeight: 600, color: palette.textMuted, lineHeight: 1.45 }}>
             Última posição / estado da rota virá da API de rastreio.
           </p>
@@ -289,7 +287,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
             marginBottom: 22,
           }}
         >
-          <h2 style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 950, color: palette.text }}>Quem já usou a placa {plate}</h2>
+          <h2 style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: palette.text }}>Quem já usou a placa {plate}</h2>
           <p style={{ margin: '0 0 16px', fontSize: 13, fontWeight: 600, color: palette.textMuted, lineHeight: 1.55 }}>
             A mesma viatura pode passar por vários motoristas. Aqui listamos outros condutores da frota com esta placa no
             campo «veículo / placa» (texto livre).
@@ -304,7 +302,7 @@ const ZaptroDriverProfileContent: React.FC = () => {
                 <li key={p.id} style={{ marginBottom: 8 }}>
                   <Link
                     to={zaptroDriverProfilePath(p.id)}
-                    style={{ color: palette.text, fontWeight: 950, textDecoration: 'underline' }}
+                    style={{ color: palette.text, fontWeight: 700, textDecoration: 'underline' }}
                   >
                     {p.name}
                   </Link>

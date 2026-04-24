@@ -33,6 +33,12 @@ export const ZAPTRO_ROUTES = {
   PROFILE: '/conta',
   /** Mapa OSM + Leaflet + rota OSRM (ferramenta interna). */
   OPENSTREETMAP: '/mapa',
+  /** Lista de veículos/ativos. */
+  FLEET: '/frota',
+  /** Perfil detalhado do veículo. */
+  VEHICLE_PROFILE: '/frota/perfil',
+  /** Perfil detalhado do colaborador. */
+  TEAM_MEMBER_PROFILE: '/equipe/perfil',
   /** Mesma UI que `PROFILE` — útil para links antigos e como URL de referência em demos. */
   LEGACY_PROFILE: '/zaptro-perfil',
   BILLING: '/faturamento',
@@ -69,4 +75,12 @@ export function zaptroLeadProfilePath(id: string): string {
 
 export function zaptroDriverProfilePath(id: string): string {
   return `${ZAPTRO_ROUTES.DRIVER_PROFILE}/${encodeURIComponent(id)}`;
+}
+
+export function zaptroVehicleProfilePath(id: string): string {
+  return `${ZAPTRO_ROUTES.VEHICLE_PROFILE}/${encodeURIComponent(id)}`;
+}
+
+export function zaptroTeamMemberProfilePath(id: string): string {
+  return `${ZAPTRO_ROUTES.TEAM_MEMBER_PROFILE}/${encodeURIComponent(id)}`;
 }

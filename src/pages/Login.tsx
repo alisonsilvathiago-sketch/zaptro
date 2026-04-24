@@ -466,7 +466,7 @@ const styles: Record<string, any> = {
     isolation: 'isolate' as const,
     backgroundImage: [
       'radial-gradient(ellipse 78% 65% at 94% 94%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 22%, transparent 46%)',
-      'radial-gradient(ellipse 105% 92% at 74% 36%, rgba(217, 255, 0, 0.62) 0%, rgba(217, 255, 0, 0.22) 34%, rgba(217, 255, 0, 0.06) 52%, transparent 68%)',
+      'radial-gradient(ellipse 105% 92% at 74% 36%, rgba(217, 255, 0, 0.62) 0%, rgba(0, 0, 0, 0.22) 34%, rgba(0, 0, 0, 0.06) 52%, transparent 68%)',
       'radial-gradient(ellipse 90% 75% at 6% 10%, #000000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 68%)',
       'radial-gradient(ellipse 80% 70% at 0% 100%, #000000 0%, transparent 55%)',
     ].join(', '),

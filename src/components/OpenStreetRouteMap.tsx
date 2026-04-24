@@ -13,6 +13,7 @@ import {
   ZAPTRO_MAP_ORIGIN_ICON, 
   ZAPTRO_MAP_DEST_ICON, 
   ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_VEHICLE_ICON,
   ZAPTRO_MAP_ROUTE_COLORS 
 } from '../constants/zaptroMapStyles';
 
@@ -87,6 +88,70 @@ function FitBounds({ positions }: { positions: [number, number][] }) {
 
 type PlacementTool = 'origin' | 'dest' | 'pin' | null;
 
+function CustomMapControls({ fitPositions }: { fitPositions: [number, number][] }) {
+  const map = useMap();
+  
+  const handleZoomIn = () => map.zoomIn();
+  const handleZoomOut = () => map.zoomOut();
+  const handleFit = () => {
+    if (fitPositions.length >= 2) {
+      const b = L.latLngBounds(fitPositions);
+      map.fitBounds(b, { padding: [48, 48], maxZoom: 14 });
+    }
+  };
+
+  const btnS: React.CSSProperties = {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    border: '1px solid rgba(0,0,0,0.05)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    transition: 'all 0.2s',
+    color: '#000',
+    fontSize: 20,
+    fontWeight: 500,
+  };
+
+  return (
+    <div style={{ position: 'absolute', bottom: 30, right: 20, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <button 
+        style={btnS} 
+        onClick={handleZoomIn}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <span style={{ fontSize: 24, fontWeight: 400 }}>+</span>
+      </button>
+      <button 
+        style={btnS} 
+        onClick={handleZoomOut}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <span style={{ fontSize: 24, fontWeight: 400 }}>−</span>
+      </button>
+      <button 
+        style={btnS} 
+        onClick={handleFit}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 3 21 3 21 9" />
+          <polyline points="9 21 3 21 3 15" />
+          <line x1="21" y1="3" x2="14" y2="10" />
+          <line x1="3" y1="21" x2="10" y2="14" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 function MapClickBridge({
   tool,
   onPick,
@@ -114,6 +179,15 @@ export type OpenStreetRouteMapProps = {
   /** Coordenadas iniciais. */
   initialOrigin?: LatLng;
   initialDest?: LatLng;
+  /** Frota de veículos para mostrar no mapa. */
+  vehicles?: Array<{
+    id: string;
+    lat: number;
+    lng: number;
+    label: string;
+    status: 'moving' | 'stopped';
+    type?: 'truck' | 'van' | 'car';
+  }>;
 };
 
 /**
@@ -126,7 +200,8 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
   mode = 'planning',
   driverPos,
   initialOrigin,
-  initialDest
+  initialDest,
+  vehicles = []
 }) => {
   const navigate = useNavigate();
   const [origin, setOrigin] = useState<LatLng | null>(initialOrigin || null);
@@ -264,8 +339,10 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
     const pts: [number, number][] = [];
     if (origin) pts.push([origin.lat, origin.lng]);
     if (dest) pts.push([dest.lat, dest.lng]);
+    if (driverPos) pts.push([driverPos.lat, driverPos.lng]);
+    vehicles.forEach(v => pts.push([v.lat, v.lng]));
     return pts;
-  }, [route, origin, dest]);
+  }, [route, origin, dest, driverPos, vehicles]);
 
   return (
     <div
@@ -465,6 +542,7 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MapClickBridge tool={tool} onPick={handlePick} />
+          <CustomMapControls fitPositions={fitPositions} />
           {fitPositions.length >= 2 && <FitBounds positions={fitPositions} />}
 
           {mode === 'planning' && origin && (
@@ -502,6 +580,44 @@ const OpenStreetRouteMap: React.FC<OpenStreetRouteMapProps> = ({
               </Popup>
             </Marker>
           )}
+
+          {/* REAL-TIME FLEET MARKERS */}
+          {vehicles.map((v) => (
+            <Marker 
+              key={v.id} 
+              position={[v.lat, v.lng]} 
+              icon={ZAPTRO_MAP_VEHICLE_ICON(v.type || 'truck', v.status)}
+            >
+              <Popup>
+                <div style={{ padding: '4px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#94A3B8', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    VEÍCULO EM OPERAÇÃO
+                  </div>
+                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#000' }}>
+                    {v.label}
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    marginTop: '8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: v.status === 'moving' ? '#10B981' : '#64748B'
+                  }}>
+                    <div style={{ 
+                      width: '6px', 
+                      height: '6px', 
+                      borderRadius: '50%', 
+                      backgroundColor: v.status === 'moving' ? '#10B981' : '#64748B' 
+                    }} />
+                    {v.status === 'moving' ? 'EM MOVIMENTO' : 'PARADO / ESTACIONADO'}
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
           {freePins.map((p) => (
             <Marker key={p.id} position={[p.lat, p.lng]} icon={freeIcon(p.n)}>
               <Popup>
@@ -586,11 +702,11 @@ function btnStyle(active: boolean, primary?: boolean, danger?: boolean): React.C
     padding: '8px 14px',
     borderRadius: 12,
     border: active ? '2px solid #D9FF00' : '1px solid #cbd5e1',
-    background: active ? 'rgba(217, 255, 0, 0.22)' : '#fff',
+    background: active ? '#000' : '#fff',
     fontWeight: 600,
     fontSize: 12,
     cursor: 'pointer',
-    color: '#000000',
+    color: active ? '#D9FF00' : '#000000',
   };
 }
 

@@ -15,7 +15,7 @@ import { hasZaptroGranularPermission, isZaptroTenantAdminRole } from '../utils/z
 import { zaptroSettingsTabToPageId } from '../utils/zaptroPagePermissionMap';
 import { isZaptroBrandingEntitledByPlan } from '../utils/zaptroBrandingEntitlement';
 
-const TAB_KEYS = ['config', 'automation', 'chatbot', 'marca', 'api', 'time'] as const;
+const TAB_KEYS = ['config', 'automation', 'chatbot', 'marca', 'api'] as const;
 type TabKey = (typeof TAB_KEYS)[number];
 
 const CHATBOT_PREFS_KEY = 'zaptro_chatbot_prefs_v1';
@@ -205,7 +205,6 @@ const ZaptroSettingsInner: React.FC = () => {
         { id: 'chatbot' as const, label: 'Chatbot' },
         { id: 'marca' as const, label: 'Personalizar empresa' },
         { id: 'api' as const, label: 'Integrações API' },
-        { id: 'time' as const, label: 'Equipe e Acessos' },
       ] as const,
     [],
   );
@@ -249,7 +248,7 @@ const ZaptroSettingsInner: React.FC = () => {
           Configurações
         </h1>
         <p style={{ margin: 0, fontSize: 15, color: palette.textMuted, fontWeight: 600, lineHeight: 1.5 }}>
-          Conexão WhatsApp, automação, chatbot, marca, integrações API e equipe.
+          Conexão WhatsApp, automação, chatbot, marca e integrações API.
         </p>
       </header>
 
@@ -260,7 +259,7 @@ const ZaptroSettingsInner: React.FC = () => {
           className="zaptro-settings-nav"
           style={{
             flexShrink: 0,
-            width: 220,
+            width: 260,
             display: 'flex',
             flexDirection: 'column',
             gap: 6,
@@ -307,7 +306,7 @@ const ZaptroSettingsInner: React.FC = () => {
                 <span
                   style={{
                     fontWeight: 700,
-                    fontSize: 14.5,
+                    fontSize: 16,
                     lineHeight: 1.35,
                     textAlign: 'left',
                     whiteSpace: 'normal',
@@ -336,9 +335,7 @@ const ZaptroSettingsInner: React.FC = () => {
             padding:
               activeTab === 'config'
                 ? '28px 24px 36px'
-                : activeTab === 'time'
-                  ? '16px 16px 28px'
-                  : '24px 24px 36px',
+                : '24px 24px 36px',
             boxSizing: 'border-box',
           }}
         >
@@ -347,7 +344,6 @@ const ZaptroSettingsInner: React.FC = () => {
           {activeTab === 'chatbot' && <ZaptroChatbotTab />}
           {activeTab === 'marca' && <ZaptroWhiteLabelInner embedded />}
           {activeTab === 'api' && <ZaptroSettingsApiTab />}
-          {activeTab === 'time' && <ZaptroTeam hideLayout />}
         </div>
       </div>
 

@@ -27,7 +27,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
 import type { Company } from '../types';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
-import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
+import { ZAPTRO_ROUTES, zaptroTeamMemberProfilePath } from '../constants/zaptroRoutes';
 import { resolveMemberAvatarUrl } from '../utils/zaptroAvatar';
 import { isZaptroTenantAdminRole } from '../utils/zaptroPermissions';
 import { ZAPTRO_PAGE_PERMISSION_DEFS, sanitizeZaptroPagePermissions } from '../utils/zaptroPagePermissionMap';
@@ -551,7 +551,7 @@ const ZaptroTeamContent: React.FC = () => {
                   role="button"
                   tabIndex={0}
                   style={{ ...styles.memberCard, cursor: 'pointer' }}
-                  onClick={() => setMemberDialog(m)}
+                  onClick={() => navigate(zaptroTeamMemberProfilePath(m.id))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
@@ -695,7 +695,7 @@ const ZaptroTeamContent: React.FC = () => {
                       >
                         {on ? 'No painel' : 'Ausente'}
                       </span>
-                      <button type="button" style={styles.rankingOpenBtn} onClick={() => setMemberDialog(m)}>
+                      <button type="button" style={styles.rankingOpenBtn} onClick={() => navigate(zaptroTeamMemberProfilePath(m.id))}>
                         Ver
                       </button>
                     </div>

@@ -2319,18 +2319,38 @@ const ZaptroCrmContent: React.FC = () => {
             style={{
               width: '100%',
               maxWidth: 480,
-              padding: 28,
-              ...panelCard(),
+              padding: 32,
+              borderRadius: 32,
+              backgroundColor: cardBg,
+              border: `1px solid ${border}`,
               color: palette.text,
+              boxShadow: palette.mode === 'dark' ? 'none' : ZAPTRO_SHADOW.lg,
+              position: 'relative'
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Novo contato</h2>
-              <button type="button" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => setCreateOpen(false)} aria-label="Fechar">
-                <X size={22} color={palette.textMuted} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }}>Novo contato</h2>
+              <button 
+                type="button" 
+                style={{ 
+                  border: 'none', 
+                  background: palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#f1f5f9', 
+                  width: 36,
+                  height: 36,
+                  borderRadius: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: palette.textMuted
+                }} 
+                onClick={() => setCreateOpen(false)} 
+                aria-label="Fechar"
+              >
+                <X size={20} />
               </button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               {[
                 ['clientName', 'Cliente / empresa'],
                 ['phone', 'Telefone / WhatsApp'],
@@ -2338,55 +2358,68 @@ const ZaptroCrmContent: React.FC = () => {
                 ['destination', 'Destino'],
                 ['cargoType', 'Tipo de carga'],
               ].map(([key, lab]) => (
-                <label key={key} style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
-                  {lab}
+                <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: palette.text, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {lab}
+                  </label>
                   <input
                     style={{
-                      marginTop: 6,
                       width: '100%',
                       boxSizing: 'border-box',
-                      padding: '12px 14px',
-                      borderRadius: 14,
+                      padding: '14px 16px',
+                      borderRadius: 16,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
+                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                       color: palette.text,
                       fontWeight: 700,
+                      fontSize: 14,
+                      outline: 'none',
+                      fontFamily: 'inherit'
                     }}
                     value={(createForm as any)[key]}
                     onChange={(e) => setCreateForm((f) => ({ ...f, [key]: e.target.value }))}
                   />
-                </label>
+                </div>
               ))}
-              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
-                Valor estimado (R$)
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: palette.text, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Valor estimado (R$)
+                </label>
                 <input
                   style={{
-                    marginTop: 6,
                     width: '100%',
                     boxSizing: 'border-box',
-                    padding: '12px 14px',
-                    borderRadius: 14,
+                    padding: '14px 16px',
+                    borderRadius: 16,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
+                    fontSize: 14,
+                    outline: 'none',
+                    fontFamily: 'inherit'
                   }}
                   value={createForm.estimatedValue}
                   onChange={(e) => setCreateForm((f) => ({ ...f, estimatedValue: e.target.value }))}
                 />
-              </label>
-              <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
-                Tag
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: palette.text, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Tag
+                </label>
                 <select
                   style={{
-                    marginTop: 6,
                     width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: 14,
+                    padding: '14px 16px',
+                    borderRadius: 16,
                     border: `1px solid ${border}`,
-                    backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                     color: palette.text,
                     fontWeight: 700,
+                    fontSize: 14,
+                    outline: 'none',
+                    appearance: 'none',
+                    fontFamily: 'inherit'
                   }}
                   value={createForm.tag}
                   onChange={(e) => setCreateForm((f) => ({ ...f, tag: e.target.value as any }))}
@@ -2396,20 +2429,25 @@ const ZaptroCrmContent: React.FC = () => {
                   <option value="vip">VIP</option>
                   <option value="retorno">Retorno</option>
                 </select>
-              </label>
+              </div>
               {isAdmin && (
-                <label style={{ fontSize: 11, fontWeight: 700, color: palette.textMuted }}>
-                  Responsável
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: palette.text, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Responsável
+                  </label>
                   <select
                     style={{
-                      marginTop: 6,
                       width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: 14,
+                      padding: '14px 16px',
+                      borderRadius: 16,
                       border: `1px solid ${border}`,
-                      backgroundColor: palette.mode === 'dark' ? '#0f172a' : '#f4f4f4',
+                      backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#f4f4f4',
                       color: palette.text,
                       fontWeight: 700,
+                      fontSize: 14,
+                      outline: 'none',
+                      appearance: 'none',
+                      fontFamily: 'inherit'
                     }}
                     value={createForm.assigneeId}
                     onChange={(e) => setCreateForm((f) => ({ ...f, assigneeId: e.target.value }))}
@@ -2421,14 +2459,43 @@ const ZaptroCrmContent: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                </label>
+                </div>
               )}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-              <button type="button" onClick={() => setCreateOpen(false)} style={{ padding: '12px 18px', borderRadius: 14, border: `1px solid ${border}`, background: 'transparent', fontWeight: 700, cursor: 'pointer', color: palette.textMuted }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 32 }}>
+              <button 
+                type="button" 
+                onClick={() => setCreateOpen(false)} 
+                style={{ 
+                  padding: '14px 24px', 
+                  borderRadius: 16, 
+                  border: `1px solid ${border}`, 
+                  background: 'transparent', 
+                  fontWeight: 700, 
+                  fontSize: 14,
+                  cursor: 'pointer', 
+                  color: palette.textMuted,
+                  fontFamily: 'inherit'
+                }}
+              >
                 Cancelar
               </button>
-              <button type="button" onClick={submitCreate} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: '#000', color: LIME, fontWeight: 700, cursor: 'pointer' }}>
+              <button 
+                type="button" 
+                onClick={submitCreate} 
+                style={{ 
+                  padding: '14px 24px', 
+                  borderRadius: 16, 
+                  border: 'none', 
+                  background: '#000', 
+                  color: LIME, 
+                  fontWeight: 800, 
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
+                }}
+              >
                 Criar lead
               </button>
             </div>

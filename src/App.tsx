@@ -33,6 +33,8 @@ const ZaptroPublicTrack = lazy(() => import('./pages/ZaptroPublicTrack'));
 const ZaptroDriverProfile = lazy(() => import('./pages/ZaptroDriverProfile'));
 const ZaptroCompanyLogin = lazy(() => import('./pages/ZaptroCompanyLogin'));
 const ZaptroLeadProfile = lazy(() => import('./pages/ZaptroLeadProfile'));
+const ZaptroVehicleProfile = lazy(() => import('./pages/ZaptroVehicleProfile'));
+const ZaptroTeamMemberProfile = lazy(() => import('./pages/ZaptroTeamMemberProfile'));
 
 const App: React.FC = () => {
   const { isLoading, isLoggingOut, isLoggingIn } = useAuth();
@@ -154,6 +156,26 @@ const App: React.FC = () => {
             }
           />
           <Route
+            path={`${ZAPTRO_ROUTES.VEHICLE_PROFILE}/:id`}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="motoristas">
+                  <ZaptroVehicleProfile />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={`${ZAPTRO_ROUTES.TEAM_MEMBER_PROFILE}/:id`}
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="equipe">
+                  <ZaptroTeamMemberProfile />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path={ZAPTRO_ROUTES.BILLING}
             element={
               <ProtectedRoute>
@@ -219,6 +241,16 @@ const App: React.FC = () => {
               <ProtectedRoute>
                 <ZaptroPagePermissionRoute pageId="clientes">
                   <ZaptroLeadProfile />
+                </ZaptroPagePermissionRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clientes/leads"
+            element={
+              <ProtectedRoute>
+                <ZaptroPagePermissionRoute pageId="clientes">
+                  <ZaptroClients />
                 </ZaptroPagePermissionRoute>
               </ProtectedRoute>
             }

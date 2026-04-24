@@ -12,10 +12,12 @@ import { readRouteLive, type RouteLiveBucket } from '../../constants/zaptroRoute
 import { ROUTE_STATUS_LABEL, type RouteExecutionStatus, zaptroDriverRoutePath } from '../../constants/zaptroRouteExecution';
 import { zaptroDriverProfilePath } from '../../constants/zaptroRoutes';
 
+import { ZAPTRO_DEMO_VEHICLES } from '../../constants/zaptroVehiclesDemo';
 import { 
   ZAPTRO_MAP_ORIGIN_ICON, 
   ZAPTRO_MAP_DEST_ICON, 
   ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_VEHICLE_ICON,
   ZAPTRO_MAP_ROUTE_COLORS 
 } from '../../constants/zaptroMapStyles';
 
@@ -204,9 +206,18 @@ type PreparedRoute = {
  * com marcadores clicáveis (motorista) e atalho para `/rota/:token`.
  */
 const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark, height = 440, className, crmStorageId }) => {
+  const navigate = useNavigate();
   const [mapReady, setMapReady] = useState(false);
   const [liveBump, setLiveBump] = useState(0);
   const [osrmById, setOsrmById] = useState<Record<string, [number, number][] | null>>({});
+
+  // Coordenadas simuladas para os veículos de demonstração (região de SP)
+  const vehiclePositions = useMemo(() => [
+    { id: 'v1', lat: -23.5505, lng: -46.6333, label: 'Volvo FH 540' },
+    { id: 'v2', lat: -23.4505, lng: -46.5333, label: 'Sprinter 415' },
+    { id: 'v3', lat: -23.6505, lng: -46.7333, label: 'Fiorino Endurance' },
+    { id: 'v4', lat: -23.5005, lng: -46.8000, label: 'Scania R450' }
+  ], []);
 
   useEffect(() => {
     setMapReady(true);
@@ -228,8 +239,32 @@ const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark,
   }, []);
 
   const todayRoutes = useMemo(() => {
-    if (!crmStorageId) return [];
-    return readActiveRoutes(crmStorageId).filter((r) => isRouteCreatedToday(r.createdAt));
+    const fromStorage = crmStorageId ? readActiveRoutes(crmStorageId).filter((r) => isRouteCreatedToday(r.createdAt)) : [];
+    
+    // Se não houver rotas hoje, injetamos duas rotas de demonstração para o dashboard não ficar vazio
+    if (fromStorage.length === 0) {
+      const today = new Date().toISOString();
+      return [
+        { 
+          id: 'seed-1', 
+          token: 'demo-today-1', 
+          label: 'Entrega Prioritária #7721', 
+          createdAt: today, 
+          status: 'ativa',
+          clientRef: 'Logística SP-Centro' 
+        },
+        { 
+          id: 'seed-2', 
+          token: 'demo-today-2', 
+          label: 'Coleta Agendada #9902', 
+          createdAt: today, 
+          status: 'ativa',
+          clientRef: 'Indústria ABC' 
+        }
+      ] as ActiveRouteRow[];
+    }
+    
+    return fromStorage;
   }, [crmStorageId, liveBump]);
 
   const prepared = useMemo<PreparedRoute[]>(() => {
@@ -270,8 +305,12 @@ const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark,
     for (const p of prepared) {
       for (const pt of p.path) out.push(pt);
     }
+    // Incluir posições dos veículos no fit bounds
+    for (const v of vehiclePositions) {
+      out.push([v.lat, v.lng]);
+    }
     return out;
-  }, [prepared]);
+  }, [prepared, vehiclePositions]);
 
   const center = useMemo(() => [-23.2, -46.75] as [number, number], []);
   const h = typeof height === 'number' ? `${height}px` : height;
@@ -371,6 +410,48 @@ const DashboardMonochromeMap: React.FC<DashboardMonochromeMapProps> = ({ isDark,
               )}
             </React.Fragment>
           ))}
+
+          {/* VEÍCULOS DA FROTA */}
+          {ZAPTRO_DEMO_VEHICLES.map((v, i) => {
+            const pos = vehiclePositions[i];
+            if (!pos) return null;
+            
+            // Mapeamento de tipos para os ícones do mapa
+            const typeMap: Record<string, 'truck' | 'van' | 'car'> = {
+              'Caminhão': 'truck',
+              'Van': 'van',
+              'Furgão': 'van',
+              'Carro': 'car'
+            };
+            const iconType = typeMap[v.type] || 'truck';
+            const iconStatus = v.status === 'em_rota' ? 'moving' : 'stopped';
+
+            return (
+              <Marker 
+                key={v.id} 
+                position={[pos.lat, pos.lng]} 
+                icon={ZAPTRO_MAP_VEHICLE_ICON(iconType, iconStatus)}
+              >
+                <Popup>
+                  <div style={{ minWidth: 180 }}>
+                    <div style={{ fontWeight: 800, fontSize: 14, color: '#000', marginBottom: 4 }}>{v.plate}</div>
+                    <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>{v.model} ({v.brand})</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: v.status === 'disponivel' ? '#22c55e' : (v.status === 'em_rota' ? '#3b82f6' : '#ef4444') }} />
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>{v.status.replace('_', ' ')}</span>
+                    </div>
+                    <button
+                      type="button"
+                      style={popupBtn}
+                      onClick={() => navigate(`/frota?id=${v.id}`)}
+                    >
+                      Ver perfil do veículo
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
       <div

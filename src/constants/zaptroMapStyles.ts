@@ -64,9 +64,33 @@ export const ZAPTRO_MAP_DRIVER_ICON = L.divIcon({
   iconAnchor: [24, 24],
 });
 
+export const ZAPTRO_MAP_VEHICLE_ICON = (type: 'truck' | 'van' | 'car' = 'truck', status: 'moving' | 'stopped' = 'moving') => {
+  const color = status === 'moving' ? '#D9FF00' : '#FFF';
+  const shadow = status === 'moving' ? 'rgba(217, 255, 0, 0.4)' : 'rgba(0,0,0,0.2)';
+  
+  return L.divIcon({
+    className: 'zaptro-vehicle-marker',
+    html: `
+      <div style="filter: drop-shadow(0 4px 10px ${shadow}); transform: scale(1.1); transition: all 0.3s ease;">
+        <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="25" y="15" width="50" height="60" rx="8" fill="#000" />
+          <rect x="30" y="20" width="40" height="15" rx="2" fill="${color}" />
+          <rect x="25" y="70" width="50" height="10" rx="4" fill="#000" />
+          <circle cx="35" cy="80" r="6" fill="#111" />
+          <circle cx="65" cy="80" r="6" fill="#111" />
+          <path d="M35 22 L65 22 L62 30 L38 30 Z" fill="rgba(255,255,255,0.2)" />
+        </svg>
+      </div>
+    `,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+  });
+};
+
 export const ZAPTRO_MAP_ROUTE_COLORS = {
   main: '#000000',
   accent: '#D9FF00',
   traveled: '#000000', // Black line for tracking
   shadow: 'rgba(0,0,0,0.15)',
 };
+

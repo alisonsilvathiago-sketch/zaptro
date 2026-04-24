@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import React, { useEffect, useState, useMemo } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Truck, Navigation, User, Package, Clock, Shield } from 'lucide-react';
+import { Truck, Navigation, User, Package, Clock, Shield, Activity } from 'lucide-react';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
+import { readRouteLive } from '../constants/zaptroRouteLiveStore';
+import { ZAPTRO_MAP_ROUTE_HANDOFF_KEY, type ZaptroMapRouteHandoffPayload } from '../constants/zaptroMapRouteHandoff';
 
 // Corrigindo ícones padrão do Leaflet no React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -15,35 +17,114 @@ import {
   ZAPTRO_MAP_ORIGIN_ICON, 
   ZAPTRO_MAP_DEST_ICON, 
   ZAPTRO_MAP_DRIVER_ICON,
+  ZAPTRO_MAP_VEHICLE_ICON,
   ZAPTRO_MAP_ROUTE_COLORS 
 } from '../constants/zaptroMapStyles';
 
 const DefaultIcon = ZAPTRO_MAP_DRIVER_ICON;
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const FleetMap: React.FC = () => {
+function CustomMapControls() {
+  const map = useMap();
+  
+  const handleZoomIn = () => map.zoomIn();
+  const handleZoomOut = () => map.zoomOut();
+  const handleFit = () => {
+    map.setView([-23.5505, -46.6333], 13);
+  };
+
+  const btnS: React.CSSProperties = {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    border: '1px solid rgba(0,0,0,0.05)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    transition: 'all 0.2s',
+    color: '#000',
+    fontSize: 20,
+    fontWeight: 500,
+  };
+
+  return (
+    <div style={{ position: 'absolute', bottom: 30, right: 20, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <button 
+        style={btnS} 
+        onClick={handleZoomIn}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <span style={{ fontSize: 24, fontWeight: 400 }}>+</span>
+      </button>
+      <button 
+        style={btnS} 
+        onClick={handleZoomOut}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <span style={{ fontSize: 24, fontWeight: 400 }}>−</span>
+      </button>
+      <button 
+        style={btnS} 
+        onClick={handleFit}
+        onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 3 21 3 21 9" />
+          <polyline points="9 21 3 21 3 15" />
+          <line x1="21" y1="3" x2="14" y2="10" />
+          <line x1="3" y1="21" x2="10" y2="14" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+interface FleetMapProps {
+  routes?: Array<{
+    id: string;
+    token: string;
+    label: string;
+    lat?: number;
+    lng?: number;
+    status: string;
+  }>;
+}
+
+const FleetMap: React.FC<FleetMapProps> = ({ routes = [] }) => {
   const { palette } = useZaptroTheme();
   const isDark = palette.mode === 'dark';
   const navigate = useNavigate();
+  
+  // Combine internal mock for "fleet" (vehicles) with external "routes" (shipments)
   const [vehicles, setVehicles] = useState<any[]>([]);
-  const [shipments, setShipments] = useState<any[]>([]);
 
   useEffect(() => {
-    // Mock de veículos em movimento
+    // Keep some mock vehicles for visual fullness
     const mockVehicles = [
-      { id: 1, name: 'Caminhão 01', lat: -23.5505, lng: -46.6333, status: 'moving', driver: 'João Silva', speed: '65 km/h' },
-      { id: 2, name: 'Caminhão 04', lat: -23.5600, lng: -46.6500, status: 'stopped', driver: 'Maria Santos', speed: '0 km/h' },
+      { id: 'v1', name: 'Caminhão 01', lat: -23.5505, lng: -46.6333, status: 'moving', driver: 'João Silva', speed: '65 km/h', type: 'truck' },
+      { id: 'v2', name: 'Caminhão 04', lat: -23.5600, lng: -46.6500, status: 'stopped', driver: 'Maria Santos', speed: '0 km/h', type: 'van' },
     ];
-    
-    // Mock de remessas pendentes/em rota
-    const mockShipments = [
-      { id: 101, token: 'rt-demo-001', client: 'Indústria ABC', lat: -23.5700, lng: -46.6600, status: 'DELIVERY_PENDING' },
-      { id: 102, token: 'rt-demo-002', client: 'Mercado Central', lat: -23.5400, lng: -46.6200, status: 'DELIVERY_PENDING' },
-    ];
-
     setVehicles(mockVehicles);
-    setShipments(mockShipments);
   }, []);
+
+  // Map real routes to markers
+  const activeMarkers = useMemo(() => {
+    return routes.map(r => {
+      const live = readRouteLive(r.token);
+      return {
+        ...r,
+        lat: live?.lastLat ?? -23.5505 + (Math.random() - 0.5) * 0.1, // Fallback to random SP if no GPS yet
+        lng: live?.lastLng ?? -46.6333 + (Math.random() - 0.5) * 0.1,
+        liveStatus: live?.status || 'assigned'
+      };
+    });
+  }, [routes]);
 
   const tile = isDark
     ? {
@@ -65,15 +146,20 @@ const FleetMap: React.FC = () => {
       >
         <MapContainer
           center={[-23.5505, -46.6333] as any}
-          zoom={13}
+          zoom={12}
           style={{ height: '100%', width: '100%' }}
           scrollWheelZoom={false}
         >
           <TileLayer attribution={tile.attribution} url={tile.url} />
+          <CustomMapControls />
 
-        {/* VEÍCULOS */}
+        {/* VEÍCULOS MOCK */}
         {vehicles.map(vehicle => (
-          <Marker key={vehicle.id} position={[vehicle.lat, vehicle.lng] as any} icon={ZAPTRO_MAP_DRIVER_ICON}>
+          <Marker 
+            key={vehicle.id} 
+            position={[vehicle.lat, vehicle.lng] as any} 
+            icon={ZAPTRO_MAP_VEHICLE_ICON(vehicle.type || 'truck', vehicle.status === 'moving' ? 'moving' : 'stopped')}
+          >
             <Popup>
               <div style={styles.popup}>
                 <div style={styles.popupHeader}>
@@ -83,32 +169,33 @@ const FleetMap: React.FC = () => {
                 <div style={styles.pBody}>
                    <p style={styles.pText}><User size={12} /> {vehicle.driver}</p>
                    <p style={styles.pText}><Navigation size={12} /> Velocidade: <strong>{vehicle.speed}</strong></p>
-                   <div style={{...styles.pStatus, backgroundColor: vehicle.status === 'moving' ? '#dcfce7' : '#fee2e2', color: vehicle.status === 'moving' ? '#166534' : '#991b1b'}}>
-                      {vehicle.status === 'moving' ? 'Em Movimento' : 'Parado'}
-                   </div>
                 </div>
               </div>
             </Popup>
           </Marker>
         ))}
 
-        {/* ENTREGAS */}
-        {shipments.map(shipment => (
-          <Marker key={shipment.id} position={[shipment.lat, shipment.lng] as any} icon={ZAPTRO_MAP_DEST_ICON}>
+        {/* ROTAS REAIS (REAL-TIME) */}
+        {activeMarkers.map(route => (
+          <Marker 
+            key={route.id} 
+            position={[route.lat, route.lng] as any} 
+            icon={ZAPTRO_MAP_DEST_ICON}
+          >
             <Popup>
               <div style={styles.popup}>
                 <div style={{...styles.popupHeader, color: '#f59e0b'}}>
                    <Package size={16} />
-                   <h4 style={styles.pTitle}>Entrega: {shipment.client}</h4>
+                   <h4 style={styles.pTitle}>{route.label}</h4>
                 </div>
                 <div style={styles.pBody}>
-                   <p style={styles.pText}><Clock size={12} /> Previsão: Hoje, 15:30</p>
-                   <p style={styles.pText}><Shield size={12} /> Carga Segurada</p>
+                   <p style={styles.pText}><Clock size={12} /> Token: {route.token}</p>
+                   <p style={styles.pText}><Activity size={12} /> Status: <strong>{route.liveStatus}</strong></p>
                    <button
                      style={styles.pBtn}
-                     onClick={() => navigate(`${ZAPTRO_ROUTES.ROUTES}?token=${shipment.token}`)}
+                     onClick={() => navigate(`${ZAPTRO_ROUTES.ROUTES}?token=${route.token}`)}
                    >
-                     Ver Detalhes do Pedido
+                     Ver Detalhes Operacionais
                    </button>
                 </div>
               </div>
@@ -118,17 +205,16 @@ const FleetMap: React.FC = () => {
         </MapContainer>
       </div>
 
-
       {/* FLOATING LEGEND */}
       <div style={styles.floatingPanel}>
-         <h4 style={styles.panelTitle}>Monitoramento Ativo</h4>
+         <h4 style={styles.panelTitle}>Monitoramento Live</h4>
          <div style={styles.panelRow}>
             <div style={{...styles.dot, backgroundColor: '#D9FF00'}} />
-            <span>Veículos Ativos (45)</span>
+            <span>Veículos (Frota)</span>
          </div>
          <div style={styles.panelRow}>
             <div style={{...styles.dot, backgroundColor: '#f59e0b'}} />
-            <span>Entregas Pendentes (12)</span>
+            <span>Rotas Operacionais ({activeMarkers.length})</span>
          </div>
       </div>
     </div>

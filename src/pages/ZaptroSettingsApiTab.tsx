@@ -130,49 +130,51 @@ const ZaptroSettingsApiTab: React.FC = () => {
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '10px 12px',
-    borderRadius: 12,
+    padding: '14px 16px',
+    borderRadius: 14,
     border: `1px solid ${border}`,
-    backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#fff',
+    backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#f4f4f4',
     color: palette.text,
     fontSize: 14,
-    fontWeight: 600,
+    fontWeight: 700,
     boxSizing: 'border-box',
+    fontFamily: 'inherit',
+    transition: 'border-color 0.2s',
   };
 
   const labelStyle: React.CSSProperties = {
     display: 'block',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 700,
-    letterSpacing: '0.06em',
-    color: palette.textMuted,
-    marginBottom: 6,
+    letterSpacing: '0.02em',
+    color: palette.text,
+    marginBottom: 8,
   };
 
   return (
     <div style={{ width: '100%', maxWidth: '100%', padding: '8px 0 24px', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', marginBottom: 22 }}>
+      <div style={{ display: 'flex', gap: 20, alignItems: 'center', marginBottom: 32 }}>
         <div
           style={{
-            width: 52,
-            height: 52,
-            borderRadius: 16,
-            backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.12)' : '#ebebeb',
+            width: 60,
+            height: 60,
+            borderRadius: 18,
+            backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.1)' : '#f4f4f4',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
+            border: `1px solid ${border}`,
           }}
         >
-          <Webhook size={26} color={palette.lime} strokeWidth={2.2} />
+          <Webhook size={28} color={palette.lime} strokeWidth={2.2} />
         </div>
         <div style={{ minWidth: 0 }}>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px', color: palette.text }}>
+          <h2 style={{ margin: '0 0 4px 0', fontSize: 24, fontWeight: 700, letterSpacing: '-0.03em', color: palette.text }}>
             Integrações API
           </h2>
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: palette.textMuted, fontWeight: 600 }}>
-            APIs por <strong style={{ color: palette.text }}>empresa</strong> (NF-e, ERP, webhooks). Os módulos usam o{' '}
-            <strong style={{ color: palette.text }}>tipo</strong> para saber o que está ligado.
+          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.4, color: palette.textMuted, fontWeight: 600 }}>
+            Conecte o Zaptro ao seu ERP, TMS ou sistemas de faturamento via API.
           </p>
         </div>
       </div>
@@ -187,131 +189,115 @@ const ZaptroSettingsApiTab: React.FC = () => {
       >
         <div
           style={{
-            flex: '1 1 280px',
-            minWidth: 224,
-            maxWidth: 'min(100%, 440px)',
-            padding: 18,
-            borderRadius: 20,
+            flex: '1 1 300px',
+            maxWidth: 440,
+            padding: 24,
+            borderRadius: 24,
             border: `1px solid ${border}`,
-            backgroundColor: palette.mode === 'dark' ? 'rgba(217,255,0,0.06)' : '#fff',
+            backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#FFFFFF',
             boxSizing: 'border-box',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
           }}
         >
           <h3
             style={{
-              margin: '0 0 8px',
-              fontSize: 12,
+              margin: '0 0 16px',
+              fontSize: 13,
               fontWeight: 700,
-              letterSpacing: '0.06em',
-              color: palette.textMuted,
+              letterSpacing: '0.05em',
+              color: palette.text,
             }}
           >
-            REFERÊNCIA TÉCNICA
+            DOCUMENTAÇÃO RÁPIDA
           </h3>
-          <p style={{ margin: '0 0 12px', fontSize: 12, lineHeight: 1.5, color: palette.textMuted, fontWeight: 600 }}>
-            URLs de exemplo; a API e as chaves correm no servidor.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
             {[
               {
                 Icon: Shield,
-                line: (
-                  <>
-                    <strong style={{ color: palette.text }}>1 · Conexão</strong>
-                    {' — '}
-                    tokens por empresa.
-                  </>
-                ),
+                title: 'Conexão Segura',
+                desc: 'Utilize tokens únicos por empresa.',
               },
               {
                 Icon: ArrowDownToLine,
-                line: (
-                  <>
-                    <strong style={{ color: palette.text }}>2 · Webhook</strong>
-                    {' — '}
-                    <code style={{ fontSize: 10, fontFamily: 'ui-monospace, monospace' }}>
-                      POST …{ZAPTRO_INBOUND_WEBHOOK_PATH_PREFIX}/:source
-                    </code>
-                  </>
-                ),
+                title: 'Recebimento (Webhook)',
+                desc: `POST …${ZAPTRO_INBOUND_WEBHOOK_PATH_PREFIX}/:source`,
               },
-            ].map(({ Icon, line }, i) => (
+            ].map(({ Icon, title, desc }, i) => (
               <div
                 key={i}
                 style={{
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 10,
-                  padding: '10px 12px',
-                  borderRadius: 14,
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '12px 16px',
+                  borderRadius: 16,
+                  backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f8fafc',
                   border: `1px solid ${border}`,
-                  backgroundColor: cardBg,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  lineHeight: 1.45,
-                  color: palette.textMuted,
                 }}
               >
-                <Icon size={16} color={palette.lime} strokeWidth={2.2} style={{ flexShrink: 0, marginTop: 1 }} />
-                <p style={{ margin: 0, minWidth: 0 }}>{line}</p>
+                <div style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#000', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon size={18} color={palette.lime} strokeWidth={2} />
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: palette.text }}>{title}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: palette.textMuted, opacity: 0.8 }}>{desc}</div>
+                </div>
               </div>
             ))}
           </div>
 
-          <div style={{ marginBottom: 8, fontSize: 10, fontWeight: 700, letterSpacing: '0.05em', color: palette.textMuted }}>
-            WEBHOOKS (EXEMPLO)
+          <div style={{ marginBottom: 12, fontSize: 11, fontWeight: 700, letterSpacing: '0.05em', color: palette.textMuted }}>
+            EXEMPLOS DE WEBHOOK
           </div>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
             {webhookExamples.map((w) => (
               <li
                 key={w.source}
                 style={{
                   display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
+                  flexDirection: 'column',
                   gap: 8,
-                  padding: '8px 10px',
-                  borderRadius: 12,
+                  padding: '14px',
+                  borderRadius: 16,
                   border: `1px solid ${border}`,
-                  backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#ebebeb',
+                  backgroundColor: palette.mode === 'dark' ? '#0a0a0a' : '#f8fafc',
                 }}
               >
-                <span style={{ fontSize: 11, fontWeight: 600, color: palette.text, minWidth: 224, flexShrink: 0 }}>
-                  {w.label}
-                </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: palette.text }}>{w.label}</span>
+                  <button
+                    type="button"
+                    onClick={() => copyUrl(w.url)}
+                    style={{
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                      color: palette.lime,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 11,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {copiedUrl === w.url ? <Check size={14} /> : <Copy size={14} />}
+                    {copiedUrl === w.url ? 'Copiado' : 'Copiar'}
+                  </button>
+                </div>
                 <code
                   style={{
-                    flex: '1 1 160px',
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: 600,
                     wordBreak: 'break-all',
                     color: palette.textMuted,
                     fontFamily: 'ui-monospace, monospace',
+                    backgroundColor: palette.mode === 'dark' ? '#111' : '#f1f5f9',
+                    padding: '8px 10px',
+                    borderRadius: 8,
                   }}
                 >
                   {w.url}
                 </code>
-                <button
-                  type="button"
-                  onClick={() => copyUrl(w.url)}
-                  title="Copiar URL"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '6px 10px',
-                    borderRadius: 10,
-                    border: `1px solid ${border}`,
-                    background: palette.mode === 'dark' ? '#111' : '#fff',
-                    cursor: 'pointer',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: palette.text,
-                  }}
-                >
-                  {copiedUrl === w.url ? <Check size={13} color="#16a34a" /> : <Copy size={13} />}
-                  {copiedUrl === w.url ? 'Copiado' : 'Copiar'}
-                </button>
               </li>
             ))}
           </ul>
@@ -339,19 +325,20 @@ const ZaptroSettingsApiTab: React.FC = () => {
           {canEdit && (
             <div
               style={{
-                padding: 18,
-                borderRadius: 18,
-                marginBottom: 20,
+                padding: 24,
+                borderRadius: 24,
+                marginBottom: 32,
                 border: `1px solid ${border}`,
-                backgroundColor: cardBg,
+                backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#FFFFFF',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
               }}
             >
-              <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: palette.text, letterSpacing: '0.04em' }}>
-                Nova integração
+              <h3 style={{ margin: '0 0 20px', fontSize: 16, fontWeight: 700, color: palette.text }}>
+                Nova Integração
               </h3>
-              <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(0,1fr)' }}>
+              <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
                 <div>
-                  <span style={labelStyle}>Tipo</span>
+                  <span style={labelStyle}>Tipo de Sistema</span>
                   <select
                     value={draft.category}
                     onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value as ZaptroExternalApiCategory }))}
@@ -365,16 +352,16 @@ const ZaptroSettingsApiTab: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <span style={labelStyle}>Nome</span>
+                  <span style={labelStyle}>Nome da Integração</span>
                   <input
                     style={inputStyle}
-                    placeholder="Ex.: Focus NFe · produção"
+                    placeholder="Ex.: Focus NFe · Produção"
                     value={draft.name}
                     onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
                   />
                 </div>
-                <div>
-                  <span style={labelStyle}>URL base</span>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <span style={labelStyle}>URL Base da API</span>
                   <input
                     style={inputStyle}
                     placeholder="https://api.exemplo.com/v1"
@@ -382,55 +369,58 @@ const ZaptroSettingsApiTab: React.FC = () => {
                     onChange={(e) => setDraft((d) => ({ ...d, baseUrl: e.target.value }))}
                   />
                 </div>
-                <div>
-                  <span style={labelStyle}>Chave / token (local neste browser)</span>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <span style={labelStyle}>Token de Acesso / API Key</span>
                   <input
                     style={inputStyle}
                     type="password"
                     autoComplete="off"
-                    placeholder="Cole a API key ou token"
+                    placeholder="Cole sua chave de acesso aqui"
                     value={draft.apiKey}
                     onChange={(e) => setDraft((d) => ({ ...d, apiKey: e.target.value }))}
                   />
                 </div>
-                <label
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    color: palette.text,
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={draft.enabled}
-                    onChange={(e) => setDraft((d) => ({ ...d, enabled: e.target.checked }))}
-                  />
-                  Activar assim que guardar
-                </label>
-                <button
-                  type="button"
-                  onClick={handleAdd}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 8,
-                    padding: '12px 18px',
-                    borderRadius: 14,
-                    border: 'none',
-                    backgroundColor: palette.lime,
-                    color: '#000',
-                    fontWeight: 700,
-                    fontSize: 14,
-                    cursor: 'pointer',
-                    width: 'fit-content',
-                  }}
-                >
-                  <Plus size={18} /> Guardar integração
-                </button>
+                <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+                  <label
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      cursor: 'pointer',
+                      fontWeight: 700,
+                      fontSize: 14,
+                      color: palette.text,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={draft.enabled}
+                      onChange={(e) => setDraft((d) => ({ ...d, enabled: e.target.checked }))}
+                      style={{ width: 18, height: 18, accentColor: '#000' }}
+                    />
+                    Ativar integração imediatamente
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAdd}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      padding: '14px 28px',
+                      borderRadius: 16,
+                      border: 'none',
+                      backgroundColor: '#000',
+                      color: palette.lime,
+                      fontWeight: 700,
+                      fontSize: 15,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Plus size={20} /> Guardar Integração
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -444,64 +434,79 @@ const ZaptroSettingsApiTab: React.FC = () => {
               Nenhuma API configurada ainda.
             </p>
           ) : (
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
               {rows.map((r) => (
                 <li
                   key={r.id}
                   style={{
-                    padding: 16,
-                    borderRadius: 16,
+                    padding: '20px 24px',
+                    borderRadius: 20,
                     border: `1px solid ${border}`,
-                    backgroundColor: cardBg,
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : '#FFFFFF',
                     display: 'flex',
                     flexWrap: 'wrap',
-                    alignItems: 'flex-start',
+                    alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: 12,
+                    gap: 16,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                   }}
                 >
-                  <div style={{ minWidth: 0, flex: '1 1 220px' }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: palette.lime, marginBottom: 4 }}>
-                      {ZAPTRO_EXTERNAL_API_CATEGORY_LABEL[r.category]}
+                  <div style={{ minWidth: 0, flex: '1 1 300px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                      <span
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 800,
+                          padding: '3px 8px',
+                          borderRadius: 6,
+                          backgroundColor: '#000',
+                          color: palette.lime,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
+                        {ZAPTRO_EXTERNAL_API_CATEGORY_LABEL[r.category]}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: r.enabled ? '#16a34a' : palette.textMuted,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 4,
+                        }}
+                      >
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: r.enabled ? '#16a34a' : '#94a3b8' }} />
+                        {r.enabled ? 'Ativa' : 'Inativa'}
+                      </span>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: palette.text, marginBottom: 6 }}>{r.name}</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: palette.textMuted, wordBreak: 'break-all' }}>
+                    <div style={{ fontSize: 17, fontWeight: 700, color: palette.text, marginBottom: 4, letterSpacing: '-0.01em' }}>
+                      {r.name}
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: palette.textMuted, wordBreak: 'break-all', opacity: 0.8, lineHeight: 1.4 }}>
                       {r.baseUrl}
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: palette.textMuted, marginTop: 8 }}>
-                      Chave: {r.apiKey ? `${'•'.repeat(8)}${r.apiKey.slice(-4)}` : '—'}
-                    </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        padding: '6px 10px',
-                        borderRadius: 999,
-                        backgroundColor: r.enabled ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.2)',
-                        color: r.enabled ? '#15803d' : palette.textMuted,
-                      }}
-                    >
-                      {r.enabled ? 'Activa' : 'Inactiva'}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                     {canEdit && (
                       <>
                         <button
                           type="button"
-                          title={r.enabled ? 'Desactivar' : 'Activar'}
+                          title={r.enabled ? 'Desativar' : 'Ativar'}
                           onClick={() => toggle(r.id)}
                           style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 12,
+                            width: 44,
+                            height: 44,
+                            borderRadius: 14,
                             border: `1px solid ${border}`,
-                            background: palette.mode === 'dark' ? '#111' : '#fff',
+                            background: palette.mode === 'dark' ? '#111' : '#f4f4f4',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: palette.text,
+                            color: r.enabled ? palette.text : palette.textMuted,
+                            transition: '0.2s',
                           }}
                         >
                           <Power size={18} />
@@ -511,16 +516,17 @@ const ZaptroSettingsApiTab: React.FC = () => {
                           title="Remover"
                           onClick={() => remove(r.id)}
                           style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 12,
+                            width: 44,
+                            height: 44,
+                            borderRadius: 14,
                             border: `1px solid ${border}`,
-                            background: palette.mode === 'dark' ? '#111' : '#fff',
+                            background: palette.mode === 'dark' ? '#111' : '#f4f4f4',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#b91c1c',
+                            color: '#ef4444',
+                            transition: '0.2s',
                           }}
                         >
                           <Trash2 size={18} />

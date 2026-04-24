@@ -99,8 +99,8 @@ const ZaptroHomeInicio: React.FC = () => {
           alignItems: 'center',
           paddingTop: 0,
           paddingBottom: 0,
-          paddingLeft: 20,
-          paddingRight: 20,
+          paddingLeft: 40,
+          paddingRight: 40,
         }}
       >
         <div
@@ -165,7 +165,7 @@ const ZaptroHomeInicio: React.FC = () => {
                 alignItems: 'center',
                 gap: 10,
                 cursor: 'pointer',
-                boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 8px 22px rgba(217, 255, 0, 0.22)',
+                boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 4px 12px rgba(0,0,0,0.08)',
                 fontFamily: 'inherit',
               }}
             >
@@ -408,8 +408,8 @@ const ZaptroHomeInicio: React.FC = () => {
                   paddingLeft: 0,
                   paddingRight: 0,
                   fontSize: 76,
-                  fontWeight: 700,
-                  letterSpacing: 0,
+                  fontWeight: 900,
+                  letterSpacing: '-0.02em',
                   lineHeight: 0.9,
                   color: '#000000',
                 }}

@@ -8,6 +8,7 @@ import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import OpenStreetRouteMap from '../components/OpenStreetRouteMap';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+import { ZAPTRO_DEMO_VEHICLES } from '../constants/zaptroVehiclesDemo';
 
 const LIME = '#D9FF00';
 
@@ -58,6 +59,15 @@ const ZaptroOpenStreetMap: React.FC = () => {
     concluido: MOCK_ROUTES.filter(r => r.status === 'concluido').length,
     erro: MOCK_ROUTES.filter(r => r.status === 'erro').length,
   };
+
+  const fleetForMap = ZAPTRO_DEMO_VEHICLES.map((v, i) => ({
+    id: v.id,
+    lat: -23.5505 + (i * 0.05), // Simulated coords around SP
+    lng: -46.6333 + (i * 0.08),
+    label: `${v.model} (${v.plate})`,
+    status: v.status === 'em_rota' ? 'moving' as const : 'stopped' as const,
+    type: (v.type.toLowerCase().includes('van') ? 'van' : v.type.toLowerCase().includes('caminhão') ? 'truck' : 'car') as any
+  }));
 
   const cardBg = isDark ? '#1a1a1a' : '#fff';
   const border = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
@@ -271,7 +281,7 @@ const ZaptroOpenStreetMap: React.FC = () => {
 
           {/* The Map */}
           <div style={{ flex: 1, overflow: 'hidden' }}>
-            <OpenStreetRouteMap height="100%" />
+            <OpenStreetRouteMap height="100%" vehicles={fleetForMap} />
           </div>
         </div>
       </div>

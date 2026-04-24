@@ -3,7 +3,7 @@ import {
   ArrowLeft, Phone, MessageSquare, DollarSign, 
   Calendar, Clock, Tag, User, MapPin, 
   MoreHorizontal, Send, ChevronRight, 
-  CheckCircle2, XCircle, AlertCircle
+  CheckCircle2, XCircle, AlertCircle, ArrowRight
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
@@ -51,151 +51,192 @@ const ZaptroLeadProfile: React.FC = () => {
 
   return (
     <ZaptroLayout>
-      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {/* Header / Back */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <button 
-            onClick={() => navigate(ZAPTRO_ROUTES.CLIENTS)}
-            style={{ width: 40, height: 40, borderRadius: 12, border: `1px solid ${border}`, backgroundColor: surface, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: palette.text }}
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: palette.text, letterSpacing: '-0.02em' }}>{lead.name}</h1>
-              <span style={{ fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 8, backgroundColor: 'rgba(249, 115, 22, 0.1)', color: '#f97316', textTransform: 'uppercase' }}>{lead.stage}</span>
+      <div style={{ maxWidth: 1300, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 32, paddingBottom: 40 }}>
+        {/* Header Superior */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+            <button 
+              onClick={() => navigate(ZAPTRO_ROUTES.CLIENTS)}
+              style={{ width: 44, height: 44, borderRadius: 14, border: `1px solid ${border}`, backgroundColor: surface, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: palette.text, transition: 'all 0.2s' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = surface2}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = surface}
+            >
+              <ArrowLeft size={22} strokeWidth={2.5} />
+            </button>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <h1 style={{ margin: 0, fontSize: 32, fontWeight: 800, color: palette.text, letterSpacing: '-0.04em' }}>{lead.name}</h1>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, padding: '5px 12px', borderRadius: 20, backgroundColor: '#000', color: palette.lime, textTransform: 'uppercase', letterSpacing: '0.05em' }}>LEAD</span>
+                  <span style={{ fontSize: 10, fontWeight: 800, padding: '5px 12px', borderRadius: 20, backgroundColor: 'rgba(249, 115, 22, 0.12)', color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{lead.stage}</span>
+                </div>
+              </div>
+              <p style={{ margin: '6px 0 0', fontSize: 15, fontWeight: 600, color: palette.textMuted }}>Oportunidade gerada em {new Date(lead.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
             </div>
-            <p style={{ margin: '4px 0 0', fontSize: 14, fontWeight: 600, color: palette.textMuted }}>Perfil do Lead · Criado em {new Date(lead.date).toLocaleDateString()}</p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 12 }}>
+             <button style={{ padding: '12px 24px', borderRadius: 16, border: `1px solid ${border}`, backgroundColor: surface, color: palette.text, fontWeight: 700, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
+               <MoreHorizontal size={18} /> Ações
+             </button>
+             <button 
+                onClick={() => notifyZaptro('success', 'Convertido!', 'Lead convertido em cliente com sucesso.')}
+                style={{ padding: '12px 28px', borderRadius: 16, border: 'none', backgroundColor: '#000', color: palette.lime, fontWeight: 800, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
+              >
+                <CheckCircle2 size={18} strokeWidth={2.5} /> Converter Agora
+              </button>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '350px 1fr', gap: 24 }}>
-          {/* Left Column: Info & Actions */}
+        <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 32, alignItems: 'flex-start' }}>
+          {/* Coluna Esquerda: Detalhes e CRM */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <div style={{ backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 24, padding: 24, boxShadow: d ? 'none' : ZAPTRO_SHADOW.sm }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: '#000', color: palette.lime, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800 }}>
+            {/* Card Principal */}
+            <div style={{ backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 28, padding: 32, boxShadow: d ? 'none' : '0 10px 40px rgba(15,23,42,0.04)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{ width: 64, height: 64, borderRadius: 20, backgroundColor: '#000', color: palette.lime, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}>
                     {lead.name[0]}
                   </div>
                   <div>
-                    <span style={{ display: 'block', fontSize: 14, fontWeight: 700, color: palette.text }}>{lead.name}</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: palette.textMuted }}>{lead.phone}</span>
+                    <span style={{ display: 'block', fontSize: 18, fontWeight: 800, color: palette.text, letterSpacing: '-0.02em' }}>{lead.name}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: palette.textMuted }}>{lead.location}</span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: `1px solid ${border}`, paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <MapPin size={16} color={palette.textMuted} />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: palette.text }}>{lead.location}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}`, padding: '24px 0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <Phone size={18} color={palette.textMuted} />
+                      <span style={{ fontSize: 14, fontWeight: 700, color: palette.text }}>{lead.phone}</span>
+                    </div>
+                    <button style={{ padding: '6px 12px', borderRadius: 8, border: 'none', backgroundColor: '#22c55e', color: '#fff', fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>Ligar</button>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <User size={16} color={palette.textMuted} />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: palette.text }}>Responsável: {lead.owner}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <Tag size={18} color={palette.textMuted} />
+                    <span style={{ fontSize: 14, fontWeight: 700, color: palette.text }}>{lead.email}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <DollarSign size={16} color={palette.textMuted} />
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#f97316' }}>Potencial: {lead.value}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <User size={18} color={palette.textMuted} />
+                    <span style={{ fontSize: 14, fontWeight: 700, color: palette.text }}>Dono: {lead.owner}</span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {lead.tags.map(tag => (
-                    <span key={tag} style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 8, backgroundColor: surface2, color: palette.textMuted }}>
-                      {tag}
-                    </span>
-                  ))}
+                <div>
+                   <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: palette.textMuted, letterSpacing: '0.1em', marginBottom: 16, textTransform: 'uppercase' }}>Potencial de Negócio</label>
+                   <div style={{ padding: '20px', borderRadius: 20, backgroundColor: 'rgba(249, 115, 22, 0.05)', border: '1px solid rgba(249, 115, 22, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <DollarSign size={24} color="#f97316" />
+                      <span style={{ fontSize: 24, fontWeight: 800, color: '#f97316', letterSpacing: '-0.02em' }}>{lead.value}</span>
+                   </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: palette.textMuted, letterSpacing: '0.1em', marginBottom: 12, textTransform: 'uppercase' }}>Etiquetas</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {lead.tags.map(tag => (
+                      <span key={tag} style={{ fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 10, backgroundColor: surface2, color: palette.text, border: `1px solid ${border}` }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <button 
-                onClick={() => notifyZaptro('success', 'Convertido!', 'Lead convertido em cliente com sucesso.')}
-                style={{ width: '100%', padding: 16, borderRadius: 16, border: 'none', backgroundColor: palette.lime, color: '#000', fontWeight: 800, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
-              >
-                <CheckCircle2 size={18} /> Converter em Cliente
-              </button>
-              <button 
-                onClick={() => notifyZaptro('info', 'Orçamento', 'Abrindo editor de orçamento...')}
-                style={{ width: '100%', padding: 16, borderRadius: 16, border: `1px solid ${border}`, backgroundColor: surface, color: palette.text, fontWeight: 700, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
-              >
-                <DollarSign size={18} /> Novo Orçamento
-              </button>
-              <button 
-                onClick={() => notifyZaptro('warning', 'Arquivado', 'Lead marcado como perdido.')}
-                style={{ width: '100%', padding: 14, borderRadius: 16, border: `1px solid ${border}`, backgroundColor: 'transparent', color: '#ef4444', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
-              >
-                <XCircle size={16} /> Marcar como Perdido
-              </button>
+            {/* Quick Notes Card */}
+            <div style={{ backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 28, padding: 24 }}>
+              <h4 style={{ margin: '0 0 16px', fontSize: 14, fontWeight: 800, color: palette.text }}>Resumo do Lead (AI)</h4>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: palette.textMuted, lineHeight: 1.6 }}>
+                Interessado em transporte refrigerado recorrente. Volume estimado de 4 viagens/mês. Orçamento enviado aguardando aprovação da diretoria.
+              </p>
             </div>
           </div>
 
-          {/* Right Column: Interaction History */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24, height: '700px' }}>
-            <div style={{ flex: 1, backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 24, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: d ? 'none' : ZAPTRO_SHADOW.sm }}>
-              {/* Timeline Header */}
-              <div style={{ padding: '20px 24px', borderBottom: `1px solid ${border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <MessageSquare size={18} color={palette.textMuted} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: palette.text }}>Histórico de Interações</span>
+          {/* Coluna Direita: Timeline de Interações */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, height: 780, backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 32, overflow: 'hidden', boxShadow: d ? 'none' : '0 15px 50px rgba(15,23,42,0.05)' }}>
+              {/* Header do Chat */}
+              <div style={{ padding: '24px 32px', borderBottom: `1px solid ${border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: surface }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 0 4px rgba(34, 197, 94, 0.15)' }} />
+                  <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>Atendimento via WhatsApp</span>
                 </div>
-                <div style={{ display: 'flex', gap: 10 }}>
-                   <span style={{ fontSize: 11, fontWeight: 700, color: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', padding: '4px 10px', borderRadius: 20 }}>WhatsApp Online</span>
+                <div style={{ display: 'flex', gap: 12 }}>
+                   <button style={{ width: 38, height: 38, borderRadius: 12, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.text, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Calendar size={18} /></button>
+                   <button style={{ width: 38, height: 38, borderRadius: 12, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.text, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Clock size={18} /></button>
                 </div>
               </div>
 
-              {/* Timeline Content */}
-              <div style={{ flex: 1, overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 20, backgroundColor: surface2 }}>
+              {/* Feed de Mensagens */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '32px', display: 'flex', flexDirection: 'column', gap: 24, backgroundColor: surface2 }}>
                 {lead.history.map((item: any) => (
-                  <div key={item.id} style={{ alignSelf: item.sender === 'me' ? 'flex-end' : 'flex-start', maxWidth: '80%' }}>
+                  <div key={item.id} style={{ alignSelf: item.sender === 'me' ? 'flex-end' : 'flex-start', maxWidth: '85%', minWidth: '200px' }}>
                     {item.type === 'msg' ? (
-                      <div style={{ padding: '12px 16px', borderRadius: 16, backgroundColor: item.sender === 'me' ? '#000' : surface, color: item.sender === 'me' ? palette.lime : palette.text, border: `1px solid ${border}`, boxShadow: ZAPTRO_SHADOW.xs }}>
-                        <p style={{ margin: 0, fontSize: 14, fontWeight: 600, lineHeight: 1.5 }}>{item.text}</p>
-                        <span style={{ display: 'block', textAlign: 'right', fontSize: 10, marginTop: 4, opacity: 0.7 }}>{item.time}</span>
+                      <div style={{ 
+                        padding: '16px 20px', 
+                        borderRadius: item.sender === 'me' ? '22px 22px 4px 22px' : '22px 22px 22px 4px', 
+                        backgroundColor: item.sender === 'me' ? '#000' : surface, 
+                        color: item.sender === 'me' ? palette.lime : palette.text, 
+                        border: item.sender === 'me' ? 'none' : `1px solid ${border}`,
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                      }}>
+                        <p style={{ margin: 0, fontSize: 14, fontWeight: 600, lineHeight: 1.6 }}>{item.text}</p>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 6, marginTop: 8, opacity: 0.6 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700 }}>{item.sender === 'me' ? 'VOCÊ' : 'LEAD'}</span>
+                          <span style={{ fontSize: 10 }}>· {item.time}</span>
+                        </div>
                       </div>
                     ) : item.type === 'note' ? (
-                      <div style={{ padding: '12px 16px', borderRadius: 12, backgroundColor: 'rgba(234, 179, 8, 0.05)', border: '1px dashed #eab308', color: '#854d0e', display: 'flex', gap: 12 }}>
-                        <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                      <div style={{ padding: '16px 20px', borderRadius: 20, backgroundColor: 'rgba(234, 179, 8, 0.08)', border: '1px dashed rgba(234, 179, 8, 0.4)', color: '#854d0e', display: 'flex', gap: 14 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 10px rgba(234, 179, 8, 0.1)' }}>
+                          <AlertCircle size={18} color="#eab308" />
+                        </div>
                         <div>
-                          <p style={{ margin: 0, fontSize: 13, fontWeight: 700 }}>Nota Interna: {item.text}</p>
-                          <span style={{ fontSize: 10, opacity: 0.8 }}>Por {item.author} · {item.time}</span>
+                          <p style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 800 }}>Nota de Equipe</p>
+                          <p style={{ margin: 0, fontSize: 13, fontWeight: 600 }}>{item.text}</p>
+                          <span style={{ display: 'block', fontSize: 10, marginTop: 8, opacity: 0.8, fontWeight: 700 }}>{item.author.toUpperCase()} · {item.time}</span>
                         </div>
                       </div>
                     ) : (
-                      <div style={{ padding: '12px 16px', borderRadius: 12, backgroundColor: 'rgba(59, 130, 246, 0.05)', border: '1px solid #3b82f6', color: '#1e40af', display: 'flex', gap: 12, alignItems: 'center' }}>
-                         <DollarSign size={18} />
-                         <div>
-                            <p style={{ margin: 0, fontSize: 13, fontWeight: 700 }}>{item.text}</p>
-                            <span style={{ fontSize: 10, opacity: 0.8 }}>{item.time}</span>
+                      <div style={{ padding: '16px 20px', borderRadius: 20, backgroundColor: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.3)', color: '#1e40af', display: 'flex', gap: 14, alignItems: 'center' }}>
+                         <div style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 10px rgba(59, 130, 246, 0.1)' }}>
+                           <DollarSign size={20} color="#3b82f6" />
                          </div>
-                         <ArrowRight size={14} style={{ marginLeft: 'auto' }} />
+                         <div style={{ flex: 1 }}>
+                            <p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 800 }}>Documento Enviado</p>
+                            <p style={{ margin: 0, fontSize: 12, fontWeight: 600 }}>{item.text}</p>
+                         </div>
+                         <ArrowRight size={18} style={{ marginLeft: 8, opacity: 0.5 }} />
                       </div>
                     )}
                   </div>
                 ))}
               </div>
 
-              {/* Input Area */}
-              <div style={{ padding: 20, borderTop: `1px solid ${border}`, backgroundColor: surface }}>
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <input 
-                    placeholder="Escreva uma mensagem para o lead via WhatsApp..." 
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    style={{ flex: 1, padding: '14px 20px', borderRadius: 16, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.text, fontSize: 14, fontWeight: 600, outline: 'none' }}
-                  />
+              {/* Área de Input de Mensagem */}
+              <div style={{ padding: '24px 32px', borderTop: `1px solid ${border}`, backgroundColor: surface }}>
+                <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                  <div style={{ flex: 1, position: 'relative' }}>
+                    <input 
+                      placeholder="Responda ao lead agora..." 
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                      style={{ width: '100%', padding: '16px 24px', borderRadius: 18, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.text, fontSize: 15, fontWeight: 600, outline: 'none', boxSizing: 'border-box' }}
+                    />
+                    <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: 8 }}>
+                       {/* Emojis / Attachments could go here */}
+                    </div>
+                  </div>
                   <button 
                     onClick={handleSendMessage}
-                    style={{ width: 50, height: 50, borderRadius: 16, border: 'none', backgroundColor: '#000', color: palette.lime, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    style={{ width: 54, height: 54, borderRadius: 18, border: 'none', backgroundColor: '#000', color: palette.lime, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: '0 8px 20px rgba(0,0,0,0.1)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                    <Send size={20} />
+                    <Send size={22} strokeWidth={2.5} />
                   </button>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>

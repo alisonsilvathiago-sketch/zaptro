@@ -71,7 +71,8 @@ import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import LogtaModal from '../components/Modal';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import { toastError, toastSuccess } from '../lib/toast';
-import { ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
+import { ZAPTRO_ROUTES, zaptroTeamMemberProfilePath } from '../constants/zaptroRoutes';
+import { resolveMemberAvatarUrl } from '../utils/zaptroAvatar';
 import {
   readAllConversationCargo,
   persistConversationCargoPhase,
@@ -158,7 +159,7 @@ function waInboxContactLabel(chat: Pick<Conversation, 'sender_name' | 'sender_nu
 
 const WA_INBOX_STARRED_KEY = 'zaptro_wa_inbox_starred_v1';
 
-type WaInboxFilter = 'all' | 'unread' | 'starred' | 'groups';
+type WaInboxFilter = 'all' | 'unread' | 'starred' | 'groups' | 'billing' | 'mine';
 
 function readInboxStarredIds(): Set<string> {
   try {
@@ -218,7 +219,7 @@ function digitsForTel(phone: string | null | undefined): string {
 /** SLA simples: minutos desde a última mensagem **entrada** do cliente (sem exigir coluna extra na BD). */
 const SLA_CUSTOMER_REPLY_MIN = 12;
 
-type TeamPick = { id: string; full_name: string | null };
+type TeamPick = { id: string; full_name: string | null; role?: string; avatar_url?: string | null };
 
 /** Minutos desde a última mensagem **se for entrada do cliente** (equipa ainda não respondeu depois dela). */
 function minutesSinceLastPendingCustomerMessage(messages: Message[], fallbackIso?: string | null): number | null {
@@ -333,6 +334,7 @@ const WhatsAppPremiumContent: React.FC = () => {
   const navigate = useNavigate();
   const { waThread } = useParams<{ waThread?: string }>();
   const { profile, isMaster } = useAuth();
+  const isAdmin = useMemo(() => isMaster || isZaptroTenantAdminRole(profile?.role), [isMaster, profile?.role]);
   const { company } = useTenant();
   const { palette } = useZaptroTheme();
   
@@ -407,6 +409,7 @@ const WhatsAppPremiumContent: React.FC = () => {
   const [tempMessagesEnabled, setTempMessagesEnabled] = useState(false);
   const [massSelectionMode, setMassSelectionMode] = useState(false);
   const [massSelectedChatIds, setMassSelectedChatIds] = useState<Set<string>>(new Set());
+  const [deletedChatIds, setDeletedChatIds] = useState<Set<string>>(new Set());
   const [billingModalOpen, setBillingModalOpen] = useState(false);
   const [billingAmount, setBillingAmount] = useState('');
   const [billingDescription, setBillingDescription] = useState('');
@@ -448,6 +451,7 @@ const WhatsAppPremiumContent: React.FC = () => {
         last_customer_message_at: agoIso(4),
         status: 'open',
         unread_count: 2,
+        assigned_to: 'agent-001',
       },
       {
         id: 'zaptro-demo-2',
@@ -515,14 +519,17 @@ const WhatsAppPremiumContent: React.FC = () => {
 
   const displayConversations = useMemo(() => {
     const raw = conversations.length > 0 ? conversations : mergedDemoConversations;
-    return [...raw].sort((a, b) => {
+    // Filter out deleted
+    const filtered = raw.filter(c => !deletedChatIds.has(c.id));
+    
+    return [...filtered].sort((a, b) => {
       const aPinned = pinnedChatIds.has(a.id);
       const bPinned = pinnedChatIds.has(b.id);
       if (aPinned && !bPinned) return -1;
       if (!aPinned && bPinned) return 1;
       return new Date(b.last_customer_message_at || 0).getTime() - new Date(a.last_customer_message_at || 0).getTime();
     });
-  }, [conversations, mergedDemoConversations, pinnedChatIds]);
+  }, [conversations, mergedDemoConversations, pinnedChatIds, deletedChatIds]);
   /**
    * Badge «Demo» + aviso de pré-visualização: só enquanto não há conversas reais em `whatsapp_conversations`
    * para esta empresa. Some assim que a API (ou realtime) preencher `conversations`.
@@ -672,11 +679,19 @@ const WhatsAppPremiumContent: React.FC = () => {
     void (async () => {
       const { data, error } = await supabaseZaptro
         .from('profiles')
-        .select('id, full_name')
+        .select('id, full_name, role, avatar_url')
         .eq('company_id', profile.company_id)
         .order('full_name', { ascending: true })
         .limit(80);
-      if (cancelled || error) return;
+      if (cancelled || error) {
+        // Fallback demo team members for better UX when Supabase is not returning data
+        setTeamMembers([
+          { id: 'agent-001', full_name: 'Thiago Silva', role: 'Gerente' },
+          { id: 'agent-002', full_name: 'Alisson Santos', role: 'Atendimento' },
+          { id: 'agent-003', full_name: 'Marcos Oliveira', role: 'Financeiro' },
+        ]);
+        return;
+      }
       setTeamMembers((data as TeamPick[]) || []);
     })();
     return () => {
@@ -849,11 +864,12 @@ const WhatsAppPremiumContent: React.FC = () => {
   const sendBlocked = useMemo(() => {
     if (!selectedChat || !profile?.id) return false;
     if (lockedChatIds.has(selectedChat.id)) return true; // Forced lock by Admin
-    if (isMaster) return false;
-    if (isZaptroDemoConversationId(selectedChat.id)) return false;
     const who = selectedChat.assigned_to;
-    return !!(who && who !== profile.id);
-  }, [selectedChat, profile?.id, isMaster, lockedChatIds]);
+    // Strictly blocked if assigned to someone else (must claim/destravar)
+    if (who && who !== profile.id) return true;
+    if (isZaptroDemoConversationId(selectedChat.id)) return false;
+    return false;
+  }, [selectedChat, profile?.id, lockedChatIds]);
 
   const customerIdleMinutes = useMemo(() => {
     if (!selectedChat) return null;
@@ -956,6 +972,9 @@ const WhatsAppPremiumContent: React.FC = () => {
         .eq('company_id', profile.company_id);
 
       if (error) throw error;
+
+      setConversations(prev => prev.map(c => c.id === selectedChat.id ? { ...c, assigned_to: profile.id, attendance_status: 'in_service' } : c));
+      setSelectedChat(prev => prev && prev.id === selectedChat.id ? { ...prev, assigned_to: profile.id, attendance_status: 'in_service' } : prev);
       
       notifyZaptro('success', 'Atendimento', `Você assumiu esta conversa.`);
     } catch (e: any) {
@@ -966,7 +985,7 @@ const WhatsAppPremiumContent: React.FC = () => {
   };
 
   const handleInterruptConversation = async () => {
-    if (!selectedChat || !profile?.id || !profile?.company_id || !isMaster) return;
+    if (!selectedChat || !profile?.id || !profile?.company_id || !isAdmin) return;
     setInterrupting(true);
     try {
       const { error } = await supabaseZaptro
@@ -980,6 +999,10 @@ const WhatsAppPremiumContent: React.FC = () => {
         .eq('company_id', profile.company_id);
 
       if (error) throw error;
+
+      setConversations(prev => prev.map(c => c.id === selectedChat.id ? { ...c, assigned_to: profile.id, attendance_status: 'in_service' } : c));
+      setSelectedChat(prev => prev && prev.id === selectedChat.id ? { ...prev, assigned_to: profile.id, attendance_status: 'in_service' } : prev);
+
       notifyZaptro('warning', 'Interrupção', 'Você assumiu o controle deste atendimento.');
     } catch (e: any) {
       toastError(e.message || 'Falha ao interromper.');
@@ -1004,7 +1027,7 @@ const WhatsAppPremiumContent: React.FC = () => {
 
     setSending(true);
 
-    if (!isZaptroDemoConversationId(selectedChat.id) && !isMaster) {
+    if (!isZaptroDemoConversationId(selectedChat.id) && !isAdmin) {
       const who = selectedChat.assigned_to;
       if (who && profile?.id && who !== profile.id) {
         toastError('Conversa atribuída a outro agente. Usa «Atribuir responsável a mim» antes de enviar.');
@@ -1284,6 +1307,8 @@ const WhatsAppPremiumContent: React.FC = () => {
         (c.last_message || '').toLowerCase().includes('cobrança') ||
         (c.tags || []).some(t => t.toLowerCase() === 'financeiro')
       );
+    } else if (waInboxFilter === 'mine') {
+      list = list.filter((c) => c.assigned_to === profile?.id);
     }
     const q = waSearchTerm.trim().toLowerCase();
     if (q) {
@@ -1346,7 +1371,133 @@ const WhatsAppPremiumContent: React.FC = () => {
     });
   }, []);
 
+  const handleMassArchive = useCallback(() => {
+    if (massSelectedChatIds.size === 0) return;
+    setArchivedChatIds(prev => {
+      const next = new Set(prev);
+      massSelectedChatIds.forEach(id => next.add(id));
+      return next;
+    });
+    const count = massSelectedChatIds.size;
+    setMassSelectedChatIds(new Set());
+    setMassSelectionMode(false);
+    notifyZaptro('success', 'WhatsApp', `${count} conversas arquivadas.`);
+  }, [massSelectedChatIds]);
+
+  const handleMassStar = useCallback(() => {
+    if (massSelectedChatIds.size === 0) return;
+    setStarredChatIds(prev => {
+      const next = new Set(prev);
+      massSelectedChatIds.forEach(id => {
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+      });
+      return next;
+    });
+    const count = massSelectedChatIds.size;
+    setMassSelectedChatIds(new Set());
+    setMassSelectionMode(false);
+    notifyZaptro('success', 'WhatsApp', `${count} conversas favoritadas.`);
+  }, [massSelectedChatIds]);
+
+  const handleMassDelete = useCallback(async () => {
+    if (massSelectedChatIds.size === 0) return;
+    const count = massSelectedChatIds.size;
+    
+    if (conversations.length > 0) {
+      try {
+        const { error } = await supabaseZaptro
+          .from('whatsapp_conversations')
+          .delete()
+          .in('id', Array.from(massSelectedChatIds));
+        if (error) throw error;
+        setConversations(prev => prev.filter(c => !massSelectedChatIds.has(c.id)));
+      } catch (err: any) {
+        notifyZaptro('error', 'Erro ao apagar', err.message);
+        return;
+      }
+    } else {
+      setDeletedChatIds(prev => {
+        const next = new Set(prev);
+        massSelectedChatIds.forEach(id => next.add(id));
+        return next;
+      });
+    }
+
+    setMassSelectedChatIds(new Set());
+    setMassSelectionMode(false);
+    notifyZaptro('success', 'WhatsApp', `${count} conversas apagadas.`);
+  }, [massSelectedChatIds, conversations]);
+
   const renderAvatar = (chat: Conversation, variant: 'list' | 'header' | 'panel') => {
+    const m = chat.assigned_to ? teamMembers.find(tm => tm.id === chat.assigned_to) : null;
+    const agentPhoto = m ? resolveMemberAvatarUrl(m.avatar_url, m.id) : null;
+    const displayName = getDisplayName(chat);
+    const label = (displayName[0] || 'C').toUpperCase();
+    const url = chat.customer_avatar?.trim();
+
+    const size = variant === 'list' ? 52 : (variant === 'header' ? 48 : 80);
+    const borderRadius = variant === 'list' ? 18 : (variant === 'header' ? 16 : 24);
+    const badgeSize = variant === 'header' ? 20 : 22;
+
+    return (
+      <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+        <div style={{ 
+          width: size, 
+          height: size, 
+          borderRadius: borderRadius, 
+          overflow: 'hidden',
+          backgroundColor: '#000',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: variant === 'panel' ? `3px solid ${LIME}` : `1px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : '#e4e4e7'}`,
+          boxSizing: 'border-box'
+        }}>
+          {url ? (
+            <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <span style={{ fontSize: size * 0.4, fontWeight: 800, color: LIME }}>{label}</span>
+          )}
+        </div>
+
+        {agentPhoto && variant !== 'panel' && (
+          <div 
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(zaptroTeamMemberProfilePath(chat.assigned_to!));
+            }}
+            title={`Responsável: ${m?.full_name}`}
+            style={{ 
+              position: 'absolute', 
+              top: -4, 
+              left: -4, 
+              width: badgeSize, 
+              height: badgeSize, 
+              borderRadius: '50%', 
+              border: `2px solid ${palette.sidebarBg}`,
+              backgroundColor: '#000',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10,
+              cursor: 'pointer',
+              boxShadow: '0 3px 6px rgba(0,0,0,0.4)',
+              transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.25)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          >
+            <img src={agentPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  const old_renderAvatar_placeholder = () => {};
+  /*
     const label = (getDisplayName(chat)[0] || 'C').toUpperCase();
     const url = chat.customer_avatar?.trim();
     const box =
@@ -1538,27 +1689,114 @@ const WhatsAppPremiumContent: React.FC = () => {
     }
 
     setAssigning(true);
+    const oldAgentId = selectedChat.assigned_to;
     try {
       const { error } = await supabaseZaptro
         .from('whatsapp_conversations')
-        .update({ assigned_to: profile.id })
+        .update({ assigned_to: profile.id, attendance_status: 'in_service' })
         .eq('id', selectedChat.id)
         .eq('company_id', profile.company_id);
 
       if (error) throw error;
 
       setConversations((prev) =>
-        prev.map((c) => (c.id === selectedChat.id ? { ...c, assigned_to: profile.id } : c))
+        prev.map((c) => (c.id === selectedChat.id ? { ...c, assigned_to: profile.id, attendance_status: 'in_service' } : c))
       );
       setSelectedChat((prev) =>
-        prev && prev.id === selectedChat.id ? { ...prev, assigned_to: profile.id } : prev
+        prev && prev.id === selectedChat.id ? { ...prev, assigned_to: profile.id, attendance_status: 'in_service' } : prev
       );
-      toastSuccess('Responsável atribuído. A conversa aparece na sua caixa de entrada.');
+      
+      // Auto-message logic
+      if (oldAgentId && oldAgentId !== profile.id) {
+        await sendHandoverMessage(oldAgentId, profile.id);
+      }
+      
+      notifyZaptro('success', 'Zaptro WhatsApp', 'Você agora é o responsável por esta conversa.');
+      
+      // Auto-focus composer and clear any block state
+      setTimeout(() => {
+        composerTextareaRef.current?.focus();
+      }, 200);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Falha ao atribuir responsável.';
       toastError(msg);
     } finally {
       setAssigning(false);
+    }
+  };
+
+  const sendHandoverMessage = async (oldAgentId: string | null, newAgentId: string) => {
+    if (!selectedChat) return;
+    const oldMember = teamMembers.find(m => m.id === oldAgentId);
+    const newMember = teamMembers.find(m => m.id === newAgentId);
+    
+    const oldName = oldMember?.full_name || 'Agente';
+    const newName = newMember?.full_name || 'Colaborador Zaptro';
+    const newRole = newMember?.role || 'Atendente';
+    
+    const text = `🔄 *Atualização de Atendimento*\n\nInformamos que você agora está sendo atendido por:\n\n👤 *${newName.toUpperCase()}*\n💼 *${newRole}*\n\nAnteriormente com: ${oldName}.\nComo posso ajudar?`;
+
+    if (isZaptroDemoConversationId(selectedChat.id)) {
+      setMessages(prev => [...prev, {
+        id: `system-${Date.now()}`,
+        content: text,
+        direction: 'out',
+        created_at: new Date().toISOString()
+      }]);
+      return;
+    }
+
+    try {
+      const instanceName = profile?.company_id ? `instance_${profile.company_id.substring(0, 8)}` : 'default';
+      await supabaseZaptro.functions.invoke('evolution-gateway', {
+        body: { 
+          action: 'send-message',
+          number: selectedChat.sender_number,
+          text: text,
+          instanceName: instanceName
+        }
+      });
+      setMessages(prev => [...prev, {
+        id: `system-handover-${Date.now()}`,
+        content: text,
+        direction: 'out',
+        created_at: new Date().toISOString()
+      }]);
+    } catch (err) {
+      console.error('Erro ao enviar mensagem de handover:', err);
+    }
+  };
+
+  const handleTransferConversation = async (targetAgentId: string) => {
+    if (!selectedChat || !profile?.company_id) return;
+    setTransferring(true);
+    const oldAgentId = selectedChat.assigned_to;
+    
+    try {
+      const { error } = await supabaseZaptro
+        .from('whatsapp_conversations')
+        .update({ assigned_to: targetAgentId })
+        .eq('id', selectedChat.id)
+        .eq('company_id', profile.company_id);
+
+      if (error) throw error;
+
+      await sendHandoverMessage(oldAgentId, targetAgentId);
+
+      setConversations((prev) =>
+        prev.map((c) => (c.id === selectedChat.id ? { ...c, assigned_to: targetAgentId } : c))
+      );
+      setSelectedChat((prev) =>
+        prev && prev.id === selectedChat.id ? { ...prev, assigned_to: targetAgentId } : prev
+      );
+
+      setTransferOpen(false);
+      setTransferTargetId('');
+      notifyZaptro('success', 'Transferência', `Atendimento encaminhado com sucesso.`);
+    } catch (err: any) {
+      toastError(err.message || 'Erro ao transferir.');
+    } finally {
+      setTransferring(false);
     }
   };
 
@@ -1674,12 +1912,12 @@ const WhatsAppPremiumContent: React.FC = () => {
               <button 
                 style={{
                   ...styles.newChatOption,
-                  backgroundColor: LIME,
+                  backgroundColor: '#f4f4f4',
                   margin: '0 30px',
                   width: 'calc(100% - 60px)',
                   borderRadius: 16,
                   padding: '16px 24px',
-                  boxShadow: '0 4px 12px rgba(217, 255, 0, 0.2)'
+                  boxShadow: 'none'
                 }}
                 onClick={() => {
                   setNewContactModalOpen(true);
@@ -1839,7 +2077,7 @@ const WhatsAppPremiumContent: React.FC = () => {
                           }
                         },
                       ].map((item, idx) => (
-                        (!item.adminOnly || isMaster) && (
+                        (!item.adminOnly || isAdmin) && (
                           <button
                             key={idx}
                             onClick={(e) => {
@@ -1917,6 +2155,7 @@ const WhatsAppPremiumContent: React.FC = () => {
           {(
             [
               { id: 'all' as const, label: 'Tudo' },
+              { id: 'mine' as const, label: 'Minhas' },
               { id: 'unread' as const, label: 'Não lidas' },
               { id: 'starred' as const, label: 'Favoritas' },
               { id: 'groups' as const, label: 'Grupos' },
@@ -1932,12 +2171,12 @@ const WhatsAppPremiumContent: React.FC = () => {
                 aria-selected={on}
                 onClick={() => setWaInboxFilter(id)}
                 style={{
-                  padding: '10px 24px',
+                  padding: '8px 20px',
                   borderRadius: 16,
                   border: on ? 'none' : `1px solid ${border}`,
                   backgroundColor: on ? '#000' : 'transparent',
                   color: on ? LIME : palette.text,
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: 700,
                   cursor: 'pointer',
                   transition: 'all 0.2s',
@@ -1969,9 +2208,9 @@ const WhatsAppPremiumContent: React.FC = () => {
               <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>{massSelectedChatIds.size} selecionadas</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <button title="Arquivar" onClick={() => notifyZaptro('info', 'WhatsApp', 'Conversas arquivadas.')} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Archive size={18} /></button>
-              <button title="Favoritar" onClick={() => notifyZaptro('info', 'WhatsApp', 'Conversas favoritadas.')} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Star size={18} /></button>
-              <button title="Apagar" onClick={() => notifyZaptro('danger', 'WhatsApp', 'Conversas apagadas.')} style={{ border: 'none', background: 'transparent', color: '#EF4444', cursor: 'pointer' }}><Trash2 size={18} /></button>
+              <button title="Arquivar" onClick={handleMassArchive} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Archive size={18} /></button>
+              <button title="Favoritar" onClick={handleMassStar} style={{ border: 'none', background: 'transparent', color: palette.text, cursor: 'pointer' }}><Star size={18} /></button>
+              <button title="Apagar" onClick={handleMassDelete} style={{ border: 'none', background: 'transparent', color: '#EF4444', cursor: 'pointer' }}><Trash2 size={18} /></button>
             </div>
           </div>
         )}
@@ -2025,13 +2264,7 @@ const WhatsAppPremiumContent: React.FC = () => {
                       />
                     </div>
                   )}
-                  <div style={styles.avatarWrap}>
-                    <img
-                      alt=""
-                      src={chat.customer_avatar || `https://picsum.photos/seed/${chat.id}/64/64`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  </div>
+                  {renderAvatar(chat, 'list')}
                   <div style={styles.itemMain}>
                     <div style={styles.itemHeader}>
                       <span style={{ 
@@ -2071,6 +2304,25 @@ const WhatsAppPremiumContent: React.FC = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                     <p style={{ ...styles.itemPreview, flex: 1 }}>{chat.last_message || 'Nenhuma mensagem'}</p>
+                    {chat.assigned_to && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{ width: 14, height: 14, borderRadius: '50%', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                           {(() => {
+                              const m = teamMembers.find(tm => tm.id === chat.assigned_to);
+                              const photo = m ? resolveMemberAvatarUrl(m.avatar_url, m.id) : null;
+                              return photo ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={8} color={LIME} />;
+                           })()}
+                        </div>
+                        <span style={{ 
+                          fontSize: 10, 
+                          fontWeight: 800, 
+                          color: palette.text,
+                          opacity: 0.8
+                        }}>
+                          {teamMembers.find(m => m.id === chat.assigned_to)?.full_name?.split(' ')[0] || 'Agente'}
+                        </span>
+                      </div>
+                    )}
                     {isUnread && (
                       <div style={{
                         width: 22,
@@ -2088,20 +2340,6 @@ const WhatsAppPremiumContent: React.FC = () => {
                       }}>
                         {chat.unread_count || 1}
                       </div>
-                    )}
-                    {chat.assigned_to && (
-                      <span style={{ 
-                        fontSize: 9, 
-                        fontWeight: 700, 
-                        textTransform: 'uppercase', 
-                        color: palette.lime, 
-                        backgroundColor: '#000', 
-                        padding: '2px 6px', 
-                        borderRadius: 4,
-                        whiteSpace: 'nowrap'
-                      }}>
-                        Em Atendimento
-                      </span>
                     )}
                     </div>
                   </div>
@@ -2137,14 +2375,13 @@ const WhatsAppPremiumContent: React.FC = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                     <h3 style={{ ...styles.activeName, color: palette.text, fontSize: 18, marginBottom: 2 }}>{getDisplayName(selectedChat)}</h3>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' }} />
-                    <span style={styles.onlinePill}>online agora</span>
-                  </div>
-                </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'rgba(75, 231, 8, 1)' }} />
+                      <span style={styles.onlinePill}>online agora</span>
+                    </div>
               </div>
 
-              {searchInsideOpen ? (
+            {searchInsideOpen ? (
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '0 20px' }}>
                   <div style={{ position: 'relative', flex: 1 }}>
                     <Search 
@@ -2255,41 +2492,111 @@ const WhatsAppPremiumContent: React.FC = () => {
                       zIndex: 1000,
                       border: `1px solid ${border}`
                     }}>
-                      {[
-                        { icon: Info, label: 'Dados do contato', onClick: () => { setShowRightPanel(true); setHeaderMenuOpen(false); } },
-                        { icon: Search, label: 'Pesquisar', onClick: () => { setSearchInsideOpen(true); setHeaderMenuOpen(false); } },
-                        { icon: CheckSquare, label: 'Selecionar mensagens', onClick: () => { setSelectionMode(true); setSelectedMessageIds(new Set()); setHeaderMenuOpen(false); } },
-                        { 
-                          icon: Clock, 
-                          label: tempMessagesEnabled ? 'Desativar mensagens temporárias' : 'Mensagens temporárias', 
-                          onClick: () => { setTempMessagesEnabled(!tempMessagesEnabled); setHeaderMenuOpen(false); notifyZaptro('info', 'WhatsApp', tempMessagesEnabled ? 'Mensagens temporárias desativadas.' : 'Mensagens temporárias ativadas (24h).'); } 
-                        },
-                        { icon: XCircle, label: 'Fechar conversa', onClick: () => { setSelectedChat(null); setHeaderMenuOpen(false); } },
-                        { divider: true },
-                        { 
-                          icon: MinusCircle, 
-                          label: 'Limpar conversa', 
-                          onClick: () => { 
-                            if (confirm('Deseja limpar todas as mensagens desta conversa?')) {
-                              setMessages([]);
-                              setHeaderMenuOpen(false);
-                              notifyZaptro('success', 'WhatsApp', 'Conversa limpa.');
-                            }
-                          } 
-                        },
-                        { 
-                          icon: Trash2, 
-                          label: 'Apagar conversa', 
-                          onClick: () => { 
-                            if (confirm('Deseja apagar esta conversa permanentemente?')) {
-                              setConversations(prev => prev.filter(c => c.id !== selectedChat.id));
-                              setSelectedChat(null);
-                              setHeaderMenuOpen(false);
-                              notifyZaptro('success', 'WhatsApp', 'Conversa apagada.');
-                            }
-                          } 
-                        },
-                      ].map((item, idx) => (
+                      {(() => {
+                        const menuItems: any[] = [];
+                        
+                        // 1. Responsible Info
+                        if (selectedChat.assigned_to) {
+                          const m = teamMembers.find(tm => tm.id === selectedChat.assigned_to);
+                          menuItems.push({
+                            icon: User,
+                            label: `Responsável: ${m?.full_name || 'Agente'}`,
+                            onClick: () => { navigate(zaptroTeamMemberProfilePath(selectedChat.assigned_to!)); setHeaderMenuOpen(false); }
+                          });
+                        }
+
+                        // 2. Unlock (Admin only)
+                        if ((isMaster || isZaptroTenantAdminRole(profile?.role)) && selectedChat.assigned_to !== profile?.id) {
+                          menuItems.push({
+                            icon: Unlock,
+                            label: 'DESTRAVAR CONVERSA',
+                            onClick: () => { handleAssignResponsible(); setHeaderMenuOpen(false); },
+                            isDestravar: true
+                          });
+                        }
+
+                        // 3. Forward (Admin only)
+                        if (isMaster || isZaptroTenantAdminRole(profile?.role)) {
+                          menuItems.push({
+                            icon: Share,
+                            label: 'ENCAMINHAR ATENDIMENTO',
+                            onClick: () => { setTransferOpen(true); setHeaderMenuOpen(false); }
+                          });
+                        }
+
+                        if (menuItems.length > 0) menuItems.push({ divider: true });
+
+                        // Standard items
+                        menuItems.push(
+                          { icon: Info, label: 'Dados do contato', onClick: () => { setShowRightPanel(true); setHeaderMenuOpen(false); } },
+                          { icon: Search, label: 'Pesquisar', onClick: () => { setSearchInsideOpen(true); setHeaderMenuOpen(false); } },
+                          { 
+                            icon: CheckSquare, 
+                            label: 'Selecionar mensagens', 
+                            onClick: () => { 
+                              if (sendBlocked) {
+                                notifyZaptro('warning', 'Ação Bloqueada', 'Você precisa destravar esta conversa para selecionar mensagens.');
+                                setHeaderMenuOpen(false);
+                                return;
+                              }
+                              setSelectionMode(true); 
+                              setSelectedMessageIds(new Set()); 
+                              setHeaderMenuOpen(false); 
+                            } 
+                          },
+                          { 
+                            icon: Clock, 
+                            label: tempMessagesEnabled ? 'Desativar mensagens temporárias' : 'Mensagens temporárias', 
+                            onClick: () => { 
+                              if (sendBlocked) {
+                                notifyZaptro('warning', 'Ação Bloqueada', 'Você precisa destravar para alterar mensagens temporárias.');
+                                setHeaderMenuOpen(false);
+                                return;
+                              }
+                              setTempMessagesEnabled(!tempMessagesEnabled); 
+                              setHeaderMenuOpen(false); 
+                              notifyZaptro('info', 'WhatsApp', tempMessagesEnabled ? 'Mensagens temporárias desativadas.' : 'Mensagens temporárias ativadas (24h).'); 
+                            } 
+                          },
+                          { icon: XCircle, label: 'Fechar conversa', onClick: () => { setSelectedChat(null); setHeaderMenuOpen(false); } },
+                          { divider: true },
+                          { 
+                            icon: MinusCircle, 
+                            label: 'Limpar conversa', 
+                            onClick: () => { 
+                              if (sendBlocked) {
+                                notifyZaptro('warning', 'Ação Bloqueada', 'Você precisa destravar para limpar esta conversa.');
+                                setHeaderMenuOpen(false);
+                                return;
+                              }
+                              if (confirm('Deseja limpar todas as mensagens desta conversa?')) {
+                                setMessages([]);
+                                setHeaderMenuOpen(false);
+                                notifyZaptro('success', 'WhatsApp', 'Conversa limpa.');
+                              }
+                            } 
+                          },
+                          { 
+                            icon: Trash2, 
+                            label: 'Apagar conversa', 
+                            onClick: () => { 
+                              if (sendBlocked) {
+                                notifyZaptro('warning', 'Ação Bloqueada', 'Você precisa destravar para apagar esta conversa.');
+                                setHeaderMenuOpen(false);
+                                return;
+                              }
+                              if (confirm('Deseja apagar esta conversa permanentemente?')) {
+                                setConversations(prev => prev.filter(c => c.id !== selectedChat.id));
+                                setSelectedChat(null);
+                                setHeaderMenuOpen(false);
+                                notifyZaptro('success', 'WhatsApp', 'Conversa apagada.');
+                              }
+                            } 
+                          }
+                        );
+
+                        return menuItems;
+                      })().map((item: any, idx: number) => (
                         item.divider ? (
                           <div key={idx} style={{ height: 1, backgroundColor: border, margin: '8px 0' }} />
                         ) : (
@@ -2304,9 +2611,9 @@ const WhatsAppPremiumContent: React.FC = () => {
                               gap: 12,
                               border: 'none',
                               background: 'transparent',
-                              color: palette.text,
+                              color: item.isDestravar ? LIME : palette.text,
                               fontSize: 14,
-                              fontWeight: 600,
+                              fontWeight: item.isDestravar ? 900 : 600,
                               cursor: 'pointer',
                               textAlign: 'left',
                               transition: 'background 0.2s ease'
@@ -2314,7 +2621,7 @@ const WhatsAppPremiumContent: React.FC = () => {
                             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = palette.mode === 'dark' ? '#111b21' : '#f8fafc')}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                           >
-                            {item.icon && <item.icon size={18} color={palette.textMuted} />}
+                            {item.icon && <item.icon size={18} color={item.isDestravar ? LIME : palette.textMuted} />}
                             {item.label}
                           </button>
                         )
@@ -2433,8 +2740,6 @@ const WhatsAppPremiumContent: React.FC = () => {
                       alignItems: 'center',
                       gap: 12,
                       justifyContent: isOut ? 'flex-end' : 'flex-start',
-                      filter: (sendBlocked && !isMaster) ? 'blur(8px)' : 'none',
-                      pointerEvents: (sendBlocked && !isMaster) ? 'none' : 'auto',
                       cursor: selectionMode ? 'pointer' : 'default',
                     }}
                   >
@@ -2475,8 +2780,8 @@ const WhatsAppPremiumContent: React.FC = () => {
               })}
               <div ref={messagesEndRef} />
 
-              {/* BLUR OVERLAY FOR BLOCKED CHATS */}
-              {sendBlocked && !isMaster && (
+              {/* BLUR OVERLAY FOR BLOCKED CHATS - Only for non-admins */}
+              {sendBlocked && !isAdmin && (
                 <div style={{
                   position: 'absolute',
                   inset: 0,
@@ -2502,7 +2807,6 @@ const WhatsAppPremiumContent: React.FC = () => {
                         borderRadius: 14,
                         backgroundColor: '#000',
                         color: LIME,
-                        border: 'none',
                         fontWeight: 700,
                         cursor: 'pointer'
                       }}
@@ -2514,369 +2818,377 @@ const WhatsAppPremiumContent: React.FC = () => {
               )}
             </div>
 
-            {/* COMPOSER AREA */}
-            <div style={{ padding: '12px 24px', backgroundColor: palette.sidebarBg, borderTop: `1px solid ${border}` }}>
-              {sendBlocked && isMaster ? (
-                 <div style={{ padding: '10px 16px', borderRadius: 12, backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            {/* COMPOSER AREA - Hidden if blocked (unless admin) */}
+            {(!sendBlocked || isAdmin) && (
+              <div style={{ padding: '12px 24px', backgroundColor: palette.sidebarBg, borderTop: `1px solid ${border}` }}>
+                {sendBlocked && isAdmin && (
+                  <div style={{ padding: '10px 16px', borderRadius: 12, backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                     <Lock size={16} color="#ef4444" />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: palette.text, flex: 1 }}>Conversa atribuída a outro agente. Como Admin, pode assumir agora.</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: palette.text, flex: 1 }}>Conversa atribuída a outro agente. Como Admin, você pode intervir ou assumir o controle total.</span>
                     <button onClick={handleInterruptConversation} style={{ padding: '6px 12px', borderRadius: 8, backgroundColor: '#ef4444', color: '#fff', border: 'none', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-                      {interrupting ? '...' : 'Interromper'}
+                      {interrupting ? '...' : 'Assumir agora'}
                     </button>
-                 </div>
-              ) : null}
+                  </div>
+                )}
 
-              <form
-                onSubmit={handleSendMessage}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  gap: 12,
-                  backgroundColor: palette.mode === 'dark' ? '#2a3942' : '#fff',
-                  padding: '8px 12px',
-                  borderRadius: 24,
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              >
-                <div style={{ position: 'relative' }}>
-                  {attachmentMenuOpen && (
-                    <div style={{
-                      position: 'absolute',
-                      bottom: 'calc(100% + 14px)',
-                      left: 0,
-                      width: 220,
-                      backgroundColor: '#fff',
-                      borderRadius: 14,
-                      padding: '6px 0',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                      zIndex: 1000,
-                      border: '1px solid rgba(0,0,0,0.06)',
-                      animation: 'zaptroSlideUp 0.15s ease-out'
-                    }}>
-                      {[
-                        { icon: FileText, label: 'Documento', color: '#7f66ff' },
-                        { icon: ImageIcon, label: 'Fotos e vídeos', color: '#007aff' },
-                        { icon: Mic, label: 'Áudio', color: '#ff9500' },
-                        { icon: User, label: 'Contato', color: '#007aff' },
-                        { divider: true },
-                        { icon: CircleDollarSign, label: 'Pix', color: '#34c759' },
-                        { icon: FileText, label: 'Orçamento', color: '#ff9500' },
-                        { icon: Zap, label: 'Resposta rápida', color: '#ffcc00' },
-                        { icon: CreditCard, label: 'Cobrar', color: '#007aff' },
-                      ].map((item, idx) => (
-                        item.divider ? (
-                          <div key={idx} style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.04)', margin: '4px 0' }} />
-                        ) : (
-                          <button
-                            key={idx}
-                            onClick={() => {
-                              setAttachmentMenuOpen(false);
-                              if (item.label === 'Documento') {
-                                docInputRef.current?.click();
-                                return;
-                              }
-                              if (item.label === 'Fotos e vídeos') {
-                                mediaInputRef.current?.click();
-                                return;
-                              }
-                              if (item.label === 'Áudio') {
-                                startRecording();
-                                return;
-                              }
-                              if (item.label === 'Contato') {
-                                setContactsModalOpen(true);
-                                return;
-                              }
-                              if (item.label === 'Pix') {
-                                const s = company?.settings as any;
-                                const pix = s?.pix_key;
-                                if (pix) {
-                                  const text = `Seguem os dados para pagamento via Pix:\n\n🔑 Chave Pix: ${pix}\n🏦 Banco: ${s?.bank_name || '—'}\n👤 Titular: ${s?.bank_holder || company?.name || '—'}`;
-                                  setNewMessage(text);
-                                  notifyZaptro('success', 'Pix', 'Dados inseridos. Pressione enviar.');
-                                } else {
-                                   notifyZaptro('warning', 'Pix não configurado', 'Cadastre sua chave em Conta > Minha Empresa.');
-                                }
-                                return;
-                              }
-                              if (item.label === 'Orçamento') {
-                                setQuotesModalOpen(true);
-                                return;
-                              }
-                              if (item.label === 'Cobrar') {
-                                setBillingModalOpen(true);
-                                return;
-                              }
-                              if (item.label === 'Resposta rápida') {
-                                setQuickResponsesOpen(true);
-                                return;
-                              }
-                              notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" em desenvolvimento.`);
-                            }}
-                            style={{
-                              width: '100%',
-                              padding: '8px 16px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 12,
-                              border: 'none',
-                              background: 'transparent',
-                              color: '#000',
-                              fontSize: 13,
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              textAlign: 'left',
-                              transition: 'background 0.2s'
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)')}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                          >
-                            <div style={{ 
-                              width: 28, 
-                              height: 28, 
-                              borderRadius: 8, 
-                              backgroundColor: `${item.color}15`, 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center',
-                              color: item.color
-                            }}>
-                              <item.icon size={16} strokeWidth={2.5} />
-                            </div>
-                            <span>{item.label}</span>
-                          </button>
-                        )
-                      ))}
-                    </div>
-                  )}
-                  <button 
-                    type="button" 
-                    style={{ ...styles.inputSideBtn, color: palette.textMuted }} 
-                    onClick={() => setAttachmentMenuOpen(!attachmentMenuOpen)}
-                  >
-                    <Plus size={24} />
-                  </button>
-                </div>
-                <input 
-                  type="file" 
-                  ref={docInputRef} 
-                  style={{ display: 'none' }} 
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setPendingFile({ file, previewUrl: null });
-                    }
-                    e.target.value = '';
+                <form
+                  onSubmit={handleSendMessage}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    gap: 12,
+                    backgroundColor: palette.mode === 'dark' ? '#2a3942' : '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 24,
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
                   }}
-                />
-                <input 
-                  type="file" 
-                  ref={mediaInputRef} 
-                  style={{ display: 'none' }} 
-                  accept="image/*,video/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const isImg = file.type.startsWith('image/');
-                      const url = isImg ? URL.createObjectURL(file) : null;
-                      setPendingFile({ file, previewUrl: url });
-                    }
-                    e.target.value = '';
-                  }}
-                />
-                <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {/* ── FILE PREVIEW INLINE ── */}
-                  {pendingFile && (
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: '10px 14px',
-                      borderRadius: 14,
-                      background: palette.mode === 'dark' ? '#1a2530' : '#f0f7ff',
-                      border: `1.5px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,120,255,0.15)'}`,
-                      animation: 'zaptroSlideUp 0.2s ease-out',
-                      marginBottom: 2,
-                    }}>
-                      {/* Thumbnail or file icon */}
-                      {pendingFile.previewUrl ? (
-                        <img
-                          src={pendingFile.previewUrl}
-                          alt="preview"
-                          style={{ width: 52, height: 52, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
-                        />
-                      ) : (
-                        <div style={{
-                          width: 52, height: 52, borderRadius: 10,
-                          background: palette.mode === 'dark' ? '#2a3942' : '#e8f0fe',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                        }}>
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
-                            <polyline points="14 2 14 8 20 8" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      )}
-                      {/* Info */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: palette.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {pendingFile.file.name}
-                        </div>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted, marginTop: 2 }}>
-                          {(pendingFile.file.size / 1024).toFixed(0)} KB · {pendingFile.file.type.split('/')[1]?.toUpperCase() || 'ARQUIVO'}
-                        </div>
-                      </div>
-                      {/* Actions */}
-                      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
-                            setPendingFile(null);
-                          }}
-                          style={{
-                            padding: '6px 12px', borderRadius: 10, border: '1.5px solid rgba(0,0,0,0.12)',
-                            background: 'transparent', fontSize: 12, fontWeight: 700,
-                            color: palette.textMuted, cursor: 'pointer'
-                          }}
-                        >Cancelar</button>
-                        <button
-                          type="button"
-                          disabled={sendingFile}
-                          onClick={async () => {
-                            setSendingFile(true);
-                            // Simulate upload + send
-                            await new Promise(r => setTimeout(r, 900));
-                            notifyZaptro('success', 'Arquivo enviado!', `"${pendingFile.file.name}" foi enviado para ${selectedChat?.sender_name || 'o cliente'}.`);
-                            if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
-                            setPendingFile(null);
-                            setSendingFile(false);
-                          }}
-                          style={{
-                            padding: '6px 14px', borderRadius: 10, border: 'none',
-                            background: LIME, fontSize: 12, fontWeight: 800,
-                            color: '#000', cursor: sendingFile ? 'wait' : 'pointer',
-                            display: 'flex', alignItems: 'center', gap: 6
-                          }}
-                        >
-                          {sendingFile ? (
-                            <svg width="14" height="14" viewBox="0 0 24 24" style={{ animation: 'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" stroke="#000" strokeWidth="3" fill="none" strokeDasharray="60" strokeDashoffset="20"/></svg>
+                >
+                  <div style={{ position: 'relative' }}>
+                    {attachmentMenuOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 'calc(100% + 14px)',
+                        left: 0,
+                        width: 220,
+                        backgroundColor: '#fff',
+                        borderRadius: 14,
+                        padding: '6px 0',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        zIndex: 1000,
+                        border: '1px solid rgba(0,0,0,0.06)',
+                        animation: 'zaptroSlideUp 0.15s ease-out'
+                      }}>
+                        {[
+                          { icon: FileText, label: 'Documento', color: '#7f66ff' },
+                          { icon: ImageIcon, label: 'Fotos e vídeos', color: '#007aff' },
+                          { icon: Mic, label: 'Áudio', color: '#ff9500' },
+                          { icon: User, label: 'Contato', color: '#007aff' },
+                          { divider: true },
+                          { icon: CircleDollarSign, label: 'Pix', color: '#34c759' },
+                          { icon: FileText, label: 'Orçamento', color: '#ff9500' },
+                          { icon: Zap, label: 'Resposta rápida', color: '#ffcc00' },
+                          { icon: CreditCard, label: 'Cobrar', color: '#007aff' },
+                        ].map((item, idx) => (
+                          item.divider ? (
+                            <div key={idx} style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.04)', margin: '4px 0' }} />
                           ) : (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#000" strokeWidth="2.5" strokeLinecap="round"/><path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="#000" strokeWidth="2.5" strokeLinejoin="round"/></svg>
-                          )}
-                          Enviar
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {isRecording ? (
-                    <div style={{ 
-                      height: 40, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between', 
-                      padding: '0 12px',
-                      animation: 'zaptroSlideUp 0.2s ease-out' 
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <button type="button" onClick={cancelRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
-                          <Trash2 size={20} />
-                        </button>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff4d4f', animation: 'pulse 1s infinite' }} />
-                          <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>{formatAudioTime(recordingDuration)}</span>
-                        </div>
-                      </div>
-                      
-                      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4, padding: '0 20px', opacity: 0.3 }}>
-                        {[...Array(20)].map((_, i) => (
-                          <div key={i} style={{ width: 3, height: 6 + Math.random() * 24, backgroundColor: palette.text, borderRadius: 2 }} />
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                setAttachmentMenuOpen(false);
+                                if (item.label === 'Documento') {
+                                  docInputRef.current?.click();
+                                  return;
+                                }
+                                if (item.label === 'Fotos e vídeos') {
+                                  mediaInputRef.current?.click();
+                                  return;
+                                }
+                                if (item.label === 'Áudio') {
+                                  startRecording();
+                                  return;
+                                }
+                                if (item.label === 'Contato') {
+                                  setContactsModalOpen(true);
+                                  return;
+                                }
+                                if (item.label === 'Pix') {
+                                  const s = company?.settings as any;
+                                  const pix = s?.pix_key;
+                                  if (pix) {
+                                    const text = `Seguem os dados para pagamento via Pix:\n\n🔑 Chave Pix: ${pix}\n🏦 Banco: ${s?.bank_name || '—'}\n👤 Titular: ${s?.bank_holder || company?.name || '—'}`;
+                                    setNewMessage(text);
+                                    notifyZaptro('success', 'Pix', 'Dados inseridos. Pressione enviar.');
+                                  } else {
+                                     notifyZaptro('warning', 'Pix não configurado', 'Cadastre sua chave em Conta > Minha Empresa.');
+                                  }
+                                  return;
+                                }
+                                if (item.label === 'Orçamento') {
+                                  setQuotesModalOpen(true);
+                                  return;
+                                }
+                                if (item.label === 'Cobrar') {
+                                  setBillingModalOpen(true);
+                                  return;
+                                }
+                                if (item.label === 'Resposta rápida') {
+                                  setQuickResponsesOpen(true);
+                                  return;
+                                }
+                                notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" em desenvolvimento.`);
+                              }}
+                              style={{
+                                width: '100%',
+                                padding: '8px 16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 12,
+                                border: 'none',
+                                background: 'transparent',
+                                color: '#000',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                transition: 'background 0.2s'
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                            >
+                              <div style={{ 
+                                width: 28, 
+                                height: 28, 
+                                borderRadius: 8, 
+                                backgroundColor: `${item.color}15`, 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                color: item.color
+                              }}>
+                                <item.icon size={16} strokeWidth={2.5} />
+                              </div>
+                              <span>{item.label}</span>
+                            </button>
+                          )
                         ))}
                       </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                         <button type="button" onClick={stopRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
-                           <Circle size={20} fill="#ff4d4f" />
-                         </button>
+                    )}
+                    <button 
+                      type="button" 
+                      style={{ ...styles.inputSideBtn, color: palette.textMuted }} 
+                      onClick={() => setAttachmentMenuOpen(!attachmentMenuOpen)}
+                    >
+                      <Plus size={24} />
+                    </button>
+                  </div>
+                  <input 
+                    type="file" 
+                    ref={docInputRef} 
+                    style={{ display: 'none' }} 
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setPendingFile({ file, previewUrl: null });
+                      }
+                      e.target.value = '';
+                    }}
+                  />
+                  <input 
+                    type="file" 
+                    ref={mediaInputRef} 
+                    style={{ display: 'none' }} 
+                    accept="image/*,video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const isImg = file.type.startsWith('image/');
+                        const url = isImg ? URL.createObjectURL(file) : null;
+                        setPendingFile({ file, previewUrl: url });
+                      }
+                      e.target.value = '';
+                    }}
+                  />
+                  <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {/* ── FILE PREVIEW INLINE ── */}
+                    {pendingFile && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '10px 14px',
+                        borderRadius: 14,
+                        background: palette.mode === 'dark' ? '#1a2530' : '#f0f7ff',
+                        border: `1.5px solid ${palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,120,255,0.15)'}`,
+                        animation: 'zaptroSlideUp 0.2s ease-out',
+                        marginBottom: 2,
+                      }}>
+                        {/* Thumbnail or file icon */}
+                        {pendingFile.previewUrl ? (
+                          <img
+                            src={pendingFile.previewUrl}
+                            alt="preview"
+                            style={{ width: 52, height: 52, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: 52, height: 52, borderRadius: 10,
+                            background: palette.mode === 'dark' ? '#2a3942' : '#e8f0fe',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                          }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
+                              <polyline points="14 2 14 8 20 8" stroke="#007aff" strokeWidth="2" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        )}
+                        {/* Info */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: palette.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {pendingFile.file.name}
+                          </div>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: palette.textMuted, marginTop: 2 }}>
+                            {(pendingFile.file.size / 1024).toFixed(0)} KB · {pendingFile.file.type.split('/')[1]?.toUpperCase() || 'ARQUIVO'}
+                          </div>
+                        </div>
+                        {/* Actions */}
+                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
+                              setPendingFile(null);
+                            }}
+                            style={{
+                              padding: '6px 12px', borderRadius: 10, border: '1.5px solid rgba(0,0,0,0.12)',
+                              background: 'transparent', fontSize: 12, fontWeight: 700,
+                              color: palette.textMuted, cursor: 'pointer'
+                            }}
+                          >Cancelar</button>
+                          <button
+                            type="button"
+                            disabled={sendingFile}
+                            onClick={async () => {
+                              setSendingFile(true);
+                              // Simulate upload + send
+                              await new Promise(r => setTimeout(r, 900));
+                              notifyZaptro('success', 'Arquivo enviado!', `"${pendingFile.file.name}" foi enviado para ${selectedChat?.sender_name || 'o cliente'}.`);
+                              if (pendingFile.previewUrl) URL.revokeObjectURL(pendingFile.previewUrl);
+                              setPendingFile(null);
+                              setSendingFile(false);
+                            }}
+                            style={{
+                              padding: '6px 14px', borderRadius: 10, border: 'none',
+                              background: LIME, fontSize: 12, fontWeight: 800,
+                              color: '#000', cursor: sendingFile ? 'wait' : 'pointer',
+                              display: 'flex', alignItems: 'center', gap: 6
+                            }}
+                          >
+                            {sendingFile ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" style={{ animation: 'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" stroke="#000" strokeWidth="3" fill="none" strokeDasharray="60" strokeDashoffset="20"/></svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#000" strokeWidth="2.5" strokeLinecap="round"/><path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="#000" strokeWidth="2.5" strokeLinejoin="round"/></svg>
+                            )}
+                            Enviar
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <textarea
-                      rows={1}
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={selectedChat && lockedChatIds.has(selectedChat.id) ? "Esta conversa foi bloqueada pelo administrador" : "Escreva uma mensagem..."}
-                      disabled={sendBlocked || sending}
-                      style={{
-                        width: '100%',
-                        border: 'none',
-                        background: 'transparent',
-                        outline: 'none',
-                        padding: '8px 0',
-                        fontSize: 15,
-                        fontWeight: 600,
-                        resize: 'none',
-                        maxHeight: 120,
-                        color: palette.text
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSendMessage(e as any);
-                        }
-                      }}
-                    />
-                  )}
-                </div>
+                    )}
 
-                {!newMessage.trim() && !isRecording && !sendBlocked ? (
-                  <button
-                    type="button"
-                    onClick={startRecording}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      backgroundColor: 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: palette.textMuted,
-                      transition: 'transform 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-                  >
-                    <Mic size={22} strokeWidth={2.5} />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={(sending || sendBlocked) && !isRecording}
-                    onClick={isRecording ? (e) => { e.preventDefault(); stopRecording(); } : undefined}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      backgroundColor: (isRecording || newMessage.trim()) ? LIME : 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#000',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    {isRecording ? <Send size={20} fill="#000" /> : <Send size={20} fill={newMessage.trim() ? '#000' : 'none'} />}
-                  </button>
-                )}
-              </form>
-            </div>
+                    {isRecording ? (
+                      <div style={{ 
+                        height: 40, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between', 
+                        padding: '0 12px',
+                        animation: 'zaptroSlideUp 0.2s ease-out' 
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <button type="button" onClick={cancelRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
+                            <Trash2 size={20} />
+                          </button>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff4d4f', animation: 'pulse 1s infinite' }} />
+                            <span style={{ fontSize: 15, fontWeight: 700, color: palette.text }}>{formatAudioTime(recordingDuration)}</span>
+                          </div>
+                        </div>
+                        
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4, padding: '0 20px', opacity: 0.3 }}>
+                          {[...Array(20)].map((_, i) => (
+                            <div key={i} style={{ width: 3, height: 6 + Math.random() * 24, backgroundColor: palette.text, borderRadius: 2 }} />
+                          ))}
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                           <button type="button" onClick={stopRecording} style={{ border: 'none', background: 'transparent', color: '#ff4d4f', cursor: 'pointer' }}>
+                             <Circle size={20} fill="#ff4d4f" />
+                           </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <textarea
+                        rows={1}
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder={
+                          selectedChat && lockedChatIds.has(selectedChat.id) 
+                            ? "Esta conversa foi bloqueada pelo administrador" 
+                            : sendBlocked 
+                              ? "Conversa em tratativa com outro agente. Clique em DESTRAVAR para responder."
+                              : "Escreva uma mensagem..."
+                        }
+                        disabled={(sendBlocked && !isAdmin) || sending}
+                        style={{
+                          width: '100%',
+                          border: 'none',
+                          background: 'transparent',
+                          outline: 'none',
+                          padding: '8px 0',
+                          fontSize: 15,
+                          fontWeight: 600,
+                          resize: 'none',
+                          maxHeight: 120,
+                          color: palette.text
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage(e as any);
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {!newMessage.trim() && !isRecording && (sendBlocked && !isAdmin) ? (
+                    <button
+                      type="button"
+                      onClick={startRecording}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        backgroundColor: 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: palette.textMuted,
+                        transition: 'transform 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                    >
+                      <Mic size={22} strokeWidth={2.5} />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={(sending || (sendBlocked && !isAdmin)) && !isRecording}
+                      onClick={isRecording ? (e) => { e.preventDefault(); stopRecording(); } : undefined}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        backgroundColor: (isRecording || newMessage.trim()) ? LIME : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#000',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {isRecording ? <Send size={20} fill="#000" /> : <Send size={20} fill={newMessage.trim() ? '#000' : 'none'} />}
+                    </button>
+                  )}
+                </form>
+              </div>
+            )}
           </div>
         ) : (
           <div style={{ ...styles.emptyView, backgroundColor: palette.mode === 'dark' ? '#222e35' : '#f4f4f4' }}>
@@ -2943,6 +3255,29 @@ const WhatsAppPremiumContent: React.FC = () => {
                     </div>
                   </div>
                 ))}
+                
+                {selectedChat.assigned_to && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 12, 
+                    marginTop: 8,
+                    padding: '12px',
+                    borderRadius: 14,
+                    backgroundColor: palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.05)' : 'rgba(0,0,0,0.02)',
+                    border: `1px solid ${palette.mode === 'dark' ? 'rgba(217, 255, 0, 0.1)' : 'rgba(0,0,0,0.04)'}`
+                  }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <User size={16} color={LIME} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: LIME, textTransform: 'uppercase' }}>Responsável Zaptro</p>
+                      <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: palette.text }}>
+                        {teamMembers.find(m => m.id === selectedChat.assigned_to)?.full_name || 'Agente Externo'}
+                      </p>
+                    </div>
+                  </div>
+                )}
              </div>
           </div>
 
@@ -3128,7 +3463,16 @@ const WhatsAppPremiumContent: React.FC = () => {
               action: 'pin'
             },
             { icon: Tag, label: 'Etiquetar conversa', action: 'label' },
-            { icon: MessageSquare, label: 'Marcar como não lida', action: 'unread' },
+            { 
+              icon: MessageSquare, 
+              label: 'Marcar como não lida', 
+              action: 'unread' 
+            },
+            { 
+              icon: UserPlus, 
+              label: contextMenu.chat.assigned_to === profile?.id ? 'Já sou o responsável' : 'Assumir atendimento', 
+              action: 'claim' 
+            },
             { divider: true },
             { icon: MinusCircle, label: 'Limpar conversa', action: 'clear' },
             { icon: Trash2, label: 'Apagar conversa', action: 'delete' },
@@ -3162,6 +3506,14 @@ const WhatsAppPremiumContent: React.FC = () => {
                     archiveChat(contextMenu.chat.id);
                   } else if (item.action === 'unread') {
                     toggleUnread(contextMenu.chat.id);
+                  } else if (item.action === 'claim') {
+                    if (contextMenu.chat.id === selectedChat?.id) {
+                      void handleClaimConversation();
+                    } else {
+                      // Se não for o chat selecionado, precisamos de lógica manual ou selecionar primeiro
+                      handleSelectChat(contextMenu.chat);
+                      setTimeout(() => void handleClaimConversation(), 100);
+                    }
                   } else {
                     notifyZaptro('info', 'WhatsApp', `Ação "${item.label}" executada.`);
                   }

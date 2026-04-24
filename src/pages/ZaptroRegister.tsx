@@ -115,37 +115,37 @@ const ZaptroRegister: React.FC = () => {
     () => [
       {
         title: 'Crie sua conta',
-        leftLine: 'Vamos começar com o essencial.',
+        leftLine: 'Comece sua jornada com o essencial.',
         kind: 'account' as const,
       },
       {
         title: 'Sobre sua empresa',
-        leftLine: 'Queremos conhecer sua operação.',
+        leftLine: 'Conhecer sua operação é o primeiro passo.',
         kind: 'company' as const,
       },
       {
         title: 'Localização da sede',
-        leftLine: 'Onde fica a base da sua malha?',
+        leftLine: 'Sua base é o centro da sua malha.',
         kind: 'location' as const,
       },
       {
         title: 'Qual o seu segmento?',
-        leftLine: 'Personalize o Zaptro para o seu mercado.',
+        leftLine: 'Zaptro feito sob medida para você.',
         kind: 'segment' as const,
       },
       {
         title: 'Horário de funcionamento',
-        leftLine: 'Seus clientes saberão quando encontrar você.',
+        leftLine: 'Disponibilidade total para seus clientes.',
         kind: 'hours' as const,
       },
       {
         title: 'Sobre sua marca',
-        leftLine: 'Uma boa história gera confiança.',
+        leftLine: 'Identidade que gera autoridade.',
         kind: 'brand' as const,
       },
       {
         title: 'Conecte seu WhatsApp',
-        leftLine: 'Falta pouco: conecte o canal oficial.',
+        leftLine: 'Falta pouco para automatizar tudo.',
         kind: 'connect' as const,
       },
     ],
@@ -417,7 +417,8 @@ const ZaptroRegister: React.FC = () => {
       case 'account':
         return (
           <>
-            <FieldRow icon={<User size={18} />}>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><User size={18} /></div>
               <input
                 type="text"
                 placeholder="Nome"
@@ -425,8 +426,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.first_name}
                 onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<User size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><User size={18} /></div>
               <input
                 type="text"
                 placeholder="Sobrenome"
@@ -434,8 +436,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.last_name}
                 onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<Mail size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Mail size={18} /></div>
               <input
                 type="email"
                 placeholder="E-mail"
@@ -443,8 +446,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<Lock size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Lock size={18} /></div>
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Senha"
@@ -453,15 +457,16 @@ const ZaptroRegister: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
-                {showPassword ? <EyeOff size={18} color="#64748B" /> : <Eye size={18} color="#64748B" />}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-            </FieldRow>
+            </div>
           </>
         );
       case 'company':
         return (
           <>
-            <FieldRow icon={<Building2 size={18} />}>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Building2 size={18} /></div>
               <input
                 type="text"
                 placeholder="Nome da transportadora"
@@ -469,8 +474,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.company_name}
                 onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<Building2 size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Building2 size={18} /></div>
               <input
                 type="text"
                 placeholder="Nome fantasia (opcional)"
@@ -478,8 +484,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.trade_name}
                 onChange={(e) => setFormData({ ...formData, trade_name: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<Phone size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Phone size={18} /></div>
               <input
                 type="tel"
                 placeholder="WhatsApp comercial (com DDD)"
@@ -487,13 +494,14 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
-            </FieldRow>
+            </div>
           </>
         );
       case 'location':
         return (
           <>
-            <FieldRow icon={<MapPin size={18} />}>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><MapPin size={18} /></div>
               <input
                 type="text"
                 placeholder="Endereço completo"
@@ -501,9 +509,10 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               />
-            </FieldRow>
+            </div>
             <div style={styles.twoCol}>
-              <FieldRow icon={<MapPin size={18} />}>
+              <div style={styles.inputWrapper}>
+                <div style={styles.fieldIcon}><MapPin size={18} /></div>
                 <input
                   type="text"
                   placeholder="Cidade"
@@ -511,8 +520,9 @@ const ZaptroRegister: React.FC = () => {
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 />
-              </FieldRow>
-              <FieldRow icon={<MapPin size={18} />}>
+              </div>
+              <div style={styles.inputWrapper}>
+                <div style={styles.fieldIcon}><MapPin size={18} /></div>
                 <input
                   type="text"
                   placeholder="UF"
@@ -521,9 +531,10 @@ const ZaptroRegister: React.FC = () => {
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value.toUpperCase() })}
                 />
-              </FieldRow>
+              </div>
             </div>
-            <FieldRow icon={<ShieldCheck size={18} />}>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><ShieldCheck size={18} /></div>
               <input
                 type="text"
                 placeholder="CEP"
@@ -531,8 +542,9 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.cep}
                 onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
               />
-            </FieldRow>
-            <FieldRow icon={<Globe size={18} />}>
+            </div>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Globe size={18} /></div>
               <input
                 type="url"
                 placeholder="Site institucional (opcional)"
@@ -540,7 +552,7 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.website}
                 onChange={(e) => setFormData({ ...formData, website: e.target.value })}
               />
-            </FieldRow>
+            </div>
           </>
         );
       case 'segment':
@@ -574,7 +586,8 @@ const ZaptroRegister: React.FC = () => {
       case 'hours':
         return (
           <>
-            <FieldRow icon={<Clock size={18} />}>
+            <div style={styles.inputWrapper}>
+              <div style={styles.fieldIcon}><Clock size={18} /></div>
               <input
                 type="text"
                 placeholder="Dias (ex.: Segunda a sexta)"
@@ -582,24 +595,26 @@ const ZaptroRegister: React.FC = () => {
                 value={formData.hours_days}
                 onChange={(e) => setFormData({ ...formData, hours_days: e.target.value })}
               />
-            </FieldRow>
+            </div>
             <div style={styles.twoCol}>
-              <FieldRow icon={<Clock size={18} />}>
+              <div style={styles.inputWrapper}>
+                <div style={styles.fieldIcon}><Clock size={18} /></div>
                 <input
                   type="time"
                   style={styles.input}
                   value={formData.hours_start}
                   onChange={(e) => setFormData({ ...formData, hours_start: e.target.value })}
                 />
-              </FieldRow>
-              <FieldRow icon={<Clock size={18} />}>
+              </div>
+              <div style={styles.inputWrapper}>
+                <div style={styles.fieldIcon}><Clock size={18} /></div>
                 <input
                   type="time"
                   style={styles.input}
                   value={formData.hours_end}
                   onChange={(e) => setFormData({ ...formData, hours_end: e.target.value })}
                 />
-              </FieldRow>
+              </div>
             </div>
             <p style={styles.hintMuted}>Início e término do expediente comercial.</p>
           </>
@@ -666,96 +681,116 @@ const ZaptroRegister: React.FC = () => {
   };
 
   return (
-    <ZaptroLayout hideSidebar hideTopbar>
-      <div style={{ ...styles.page, backgroundColor: 'transparent' }}>
-        <div style={styles.leftSide} className={`hide-mobile ${ZAPTRO_HERO_SPLIT_PANEL_CLASS}`}>
-          <ZaptroHeroParticleCanvas grid={30} />
-          <div style={styles.logoTop}>
-            <ZapRay size={22} />
-            <span style={{ color: '#0a0a0a', fontSize: '20px', fontWeight: 700 }}>ZAPTRO</span>
+    <div className="zaptro-register-root" style={styles.page}>
+      <div className="zaptro-register-card" style={styles.registerCard}>
+        {/* Left Side: Premium Mesh Hero */}
+        <div className={`zaptro-register-hero hide-mobile ${ZAPTRO_HERO_SPLIT_PANEL_CLASS}`} style={styles.cardLeft}>
+          <div className="zaptro-register-mesh" style={styles.meshContainer} aria-hidden>
+            <div style={{ ...styles.meshBlob, top: '-8%', right: '-22%', backgroundColor: '#D9FF00', width: '92%', height: '88%', opacity: 0.55, filter: 'blur(120px)' }} />
+            <div style={{ ...styles.meshBlob, bottom: '-25%', right: '-18%', backgroundColor: '#FFFFFF', width: '58%', height: '55%', opacity: 0.42, filter: 'blur(100px)' }} />
+            <div style={{ ...styles.meshBlob, top: '-15%', left: '-20%', backgroundColor: '#000000', width: '75%', height: '70%', opacity: 0.5, filter: 'blur(80px)' }} />
           </div>
-          <div style={styles.phraseContainer}>
-            <div style={styles.phraseTag}>Onboarding guiado</div>
-            <div key={step} style={styles.dynamicPhrase}>
-              {meta.leftLine}
+          
+          <div style={styles.cardLeftContent}>
+            <div style={styles.cardLogo}>
+              <ZapRay size={32} color="#D9FF00" />
+              <span style={{ fontSize: 28, fontWeight: 700, color: '#FFF', letterSpacing: '-1.5px' }}>ZAPTRO</span>
             </div>
-            <div style={styles.stepPill}>
-              Etapa {step + 1} de {TOTAL_STEPS}
+
+            <div style={styles.phraseContainer}>
+               <p style={styles.phraseTag}>Onboarding Premium</p>
+               <h2 key={step} style={styles.dynamicPhrase}>
+                 {meta.leftLine}
+               </h2>
+               <div style={styles.progressContainer}>
+                 <div style={styles.stepInfo}>
+                   Etapa {step + 1} de {TOTAL_STEPS}
+                 </div>
+                 <div style={styles.progressTrack}>
+                   <div style={{ ...styles.progressFillStatic, width: `${progressPct}%` }} />
+                 </div>
+               </div>
             </div>
-            <div style={styles.progressTrack}>
-              <div style={{ ...styles.progressFillStatic, width: `${progressPct}%` }} />
-            </div>
+            <div /> {/* Spacer */}
           </div>
         </div>
 
-        <div style={styles.rightSide} className="rightSide">
-          <div style={styles.formCard}>
+        {/* Right Side: Step Form */}
+        <div className="zaptro-register-form-col" style={styles.cardRight}>
+          <div style={styles.formWrapper}>
+            <div style={styles.mobileHeader} className="show-mobile-only">
+               <ZapRay size={24} color="#000" />
+               <div style={styles.mobileProgress}>
+                 <span style={styles.stepPillMobile}>Etapa {step + 1} / {TOTAL_STEPS}</span>
+                 <div style={styles.progressTrackMobile}>
+                   <div style={{ ...styles.progressFillStatic, width: `${progressPct}%` }} />
+                 </div>
+               </div>
+            </div>
+
+            <div style={styles.stepHeader}>
+               {step >= 1 ? <p style={styles.greeting}>{greeting}</p> : null}
+               <h1 style={styles.cardTitle}>{meta.title}</h1>
+               <p style={styles.stepDesc}>Preencha as informações abaixo para configurar sua experiência premium.</p>
+            </div>
+
             <div style={styles.formContainer}>
-              <div key={step}>
-                  <div style={styles.mobileProgress} className="show-mobile-only">
-                    <span style={styles.stepPillMobile}>
-                      Etapa {step + 1} / {TOTAL_STEPS}
-                    </span>
-                    <div style={styles.progressTrack}>
-                      <div style={{ ...styles.progressFillStatic, width: `${progressPct}%` }} />
-                    </div>
-                  </div>
-                  {step >= 1 ? <p style={styles.greeting}>{greeting}</p> : null}
-                  <h1 style={styles.cardTitle}>{meta.title}</h1>
-                  <div style={styles.inputStack}>{renderFields()}</div>
-                  {step === TOTAL_STEPS - 1 && postRegCompanyId ? (
-                    <div style={styles.skipWaWrap}>
-                      <button type="button" onClick={goToDashboardSkipWa} style={styles.skipWaBtn}>
-                        Ir para o painel e ligar o WhatsApp mais tarde
-                      </button>
-                    </div>
-                  ) : (
-                    <div style={styles.footerActions}>
-                      <button
-                        type="button"
-                        onClick={() => setStep((s) => Math.max(0, s - 1))}
-                        disabled={step === 0 || loading || (step === TOTAL_STEPS - 1 && postRegCompanyId !== null)}
-                        style={{
-                          ...styles.backBtn,
-                          opacity: step === 0 || loading || (step === TOTAL_STEPS - 1 && postRegCompanyId !== null) ? 0.35 : 1,
-                        }}
-                      >
-                        <ArrowLeft size={16} /> Voltar
-                      </button>
-                      <button type="button" onClick={handleNext} style={styles.nextBtn} disabled={loading || !!postRegCompanyId}>
-                        {loading ? (
-                          <Loader2 size={22} className="spin" />
-                        ) : step === TOTAL_STEPS - 1 ? (
-                          'Criar conta e gerar código'
-                        ) : (
-                          'Continuar'
-                        )}
-                        {!loading && !postRegCompanyId && <ArrowRight size={20} />}
-                      </button>
-                    </div>
-                  )}
-                  <p style={styles.autosaveNote}>Seu progresso é salvo automaticamente neste dispositivo.</p>
-              </div>
+               <div style={styles.inputStack}>
+                 {renderFields()}
+               </div>
+
+               {step === TOTAL_STEPS - 1 && postRegCompanyId ? (
+                 <div style={styles.skipWaWrap}>
+                   <button type="button" onClick={goToDashboardSkipWa} style={styles.skipWaBtn}>
+                     Ir para o painel e conectar depois
+                   </button>
+                 </div>
+               ) : (
+                 <div style={styles.footerActions}>
+                   <button
+                     type="button"
+                     onClick={() => setStep((s) => Math.max(0, s - 1))}
+                     disabled={step === 0 || loading || !!postRegCompanyId}
+                     style={{
+                       ...styles.backBtn,
+                       opacity: step === 0 || loading || !!postRegCompanyId ? 0 : 1,
+                       pointerEvents: step === 0 || loading || !!postRegCompanyId ? 'none' : 'auto',
+                     }}
+                   >
+                     <ArrowLeft size={16} /> Voltar
+                   </button>
+                   <button type="button" onClick={handleNext} style={styles.nextBtn} disabled={loading || !!postRegCompanyId}>
+                     {loading ? (
+                       <Loader2 size={20} className="spin" />
+                     ) : step === TOTAL_STEPS - 1 ? (
+                       'Finalizar Cadastro'
+                     ) : (
+                       'Continuar'
+                     )}
+                     {!loading && !postRegCompanyId && <ArrowRight size={18} />}
+                   </button>
+                 </div>
+               )}
+               <p style={styles.autosaveNote}>Seu progresso é salvo automaticamente.</p>
             </div>
           </div>
         </div>
-        <style>{`
-          ${zaptroHeroSplitPanelCss()}
-          .spin { animation: rotate 1s linear infinite; }
-          @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-          .ray-pulse { animation: pulse 2s infinite; }
-          @keyframes pulse { 0% { filter: drop-shadow(0 0 0px rgba(217,255,0,0.4)); } 50% { filter: drop-shadow(0 0 24px rgba(217,255,0,0.55)); } 100% { filter: drop-shadow(0 0 0px rgba(217,255,0,0.4)); } }
-          @media (max-width: 1024px) {
-            .hide-mobile { display: none !important; }
-            .rightSide { border-radius: 0 !important; }
-            .show-mobile-only { display: flex !important; }
-          }
-          @media (min-width: 1025px) {
-            .show-mobile-only { display: none !important; }
-          }
-        `}</style>
       </div>
-    </ZaptroLayout>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+        ${zaptroHeroSplitPanelCss()}
+        @media (max-width: 1024px) {
+          .hide-mobile { display: none !important; }
+          .show-mobile-only { display: flex !important; }
+          .zaptro-register-card { flex-direction: column !important; }
+          .zaptro-register-form-col { width: 100% !important; padding: 40px 24px !important; }
+        }
+        @media (min-width: 1025px) {
+          .show-mobile-only { display: none !important; }
+        }
+      `}</style>
+    </div>
   );
 };
 
@@ -768,214 +803,193 @@ function FieldRow({ icon, children }: { icon: React.ReactNode; children: React.R
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  page: { width: '100vw', minHeight: '100vh', display: 'flex', overflow: 'hidden', backgroundColor: '#000', fontFamily: 'Inter, sans-serif' },
-  leftSide: {
-    flex: 1,
-    position: 'relative',
+const styles: Record<string, any> = {
+  page: {
+    position: 'fixed',
+    inset: 0,
+    zIndex: 2000,
+    backgroundColor: '#000',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
+    fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
   },
-  logoTop: { position: 'absolute', top: '40px', left: '50px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 700, zIndex: 2 },
-  phraseContainer: {
+  registerCard: {
+    display: 'flex',
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: '#FFF',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  cardLeft: {
+    flex: '1 1 45%',
+    position: 'relative',
+    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    gap: '16px',
-    width: '88%',
-    maxWidth: 420,
-    zIndex: 2,
+    padding: '60px',
+    backgroundColor: '#000',
   },
-  phraseTag: { fontSize: '10px', fontWeight: 600, color: 'rgba(10,10,10,0.5)', letterSpacing: '0.22em', textTransform: 'uppercase' },
-  dynamicPhrase: {
-    fontSize: 'clamp(22px, 3.2vw, 36px)',
-    fontWeight: 700,
-    color: '#0a0a0a',
-    letterSpacing: '-0.04em',
-    lineHeight: 1.15,
-  },
-  stepPill: {
-    fontSize: '12px',
-    fontWeight: 600,
-    color: '#0a0a0a',
-    backgroundColor: 'rgba(255,255,255,0.55)',
-    padding: '8px 14px',
-    borderRadius: 999,
-    border: '1px solid rgba(0,0,0,0.06)',
-  },
-  progressTrack: {
-    width: '100%',
-    maxWidth: 280,
-    height: 6,
-    backgroundColor: 'rgba(0,0,0,0.08)',
-    borderRadius: 999,
+  meshContainer: {
+    position: 'absolute',
+    inset: 0,
+    backgroundColor: '#000',
+    isolation: 'isolate' as const,
+    backgroundImage: [
+      'radial-gradient(ellipse 78% 65% at 94% 94%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 22%, transparent 46%)',
+      'radial-gradient(ellipse 105% 92% at 74% 36%, rgba(217, 255, 0, 0.62) 0%, rgba(0, 0, 0, 0.22) 34%, rgba(0, 0, 0, 0.06) 52%, transparent 68%)',
+      'radial-gradient(ellipse 90% 75% at 6% 10%, #000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 68%)',
+      'radial-gradient(ellipse 80% 70% at 0% 100%, #000 0%, transparent 55%)',
+    ].join(', '),
     overflow: 'hidden',
+    zIndex: 0,
   },
-  progressFillStatic: { height: '100%', backgroundColor: 'rgba(217, 255, 0, 1)', borderRadius: 999, transition: 'width 0.35s ease' },
-  rightSide: {
-    flex: 1,
-    backgroundColor: '#f4f4f5',
+  meshBlob: { position: 'absolute', borderRadius: '50%', filter: 'blur(100px)', zIndex: 0 },
+  cardLeftContent: { position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
+  cardLogo: { display: 'flex', alignItems: 'center', gap: '12px' },
+  phraseContainer: { display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '500px' },
+  phraseTag: { color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 700, margin: 0, letterSpacing: '0.05em', textTransform: 'uppercase' },
+  dynamicPhrase: {
+    color: '#FFF',
+    fontSize: 'clamp(32px, 3.5vw, 44px)',
+    fontWeight: 700,
+    lineHeight: 1.1,
+    margin: 0,
+    letterSpacing: '-1.5px',
+    textShadow: '0 2px 28px rgba(0,0,0,0.85)',
+  },
+  progressContainer: { display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' },
+  stepInfo: { fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.8)' },
+  progressTrack: { width: '100%', maxWidth: 300, height: 6, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 999, overflow: 'hidden' },
+  progressFillStatic: { height: '100%', backgroundColor: '#D9FF00', borderRadius: 999, transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)' },
+  cardRight: {
+    flex: '1 1 55%',
+    backgroundColor: '#FFF',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
-    padding: '32px 20px',
-    borderRadius: '120px 0 0 120px',
+    padding: '40px 60px',
+    overflowY: 'auto',
   },
-  formCard: {
-    width: '100%',
-    maxWidth: 460,
-    backgroundColor: '#fff',
-    borderRadius: 28,
-    boxShadow: '0 24px 80px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0,0,0,0.04)',
-    padding: '8px',
-  },
-  formContainer: { width: '100%', padding: '28px 24px 20px', boxSizing: 'border-box', zIndex: 10 },
-  greeting: { margin: '0 0 8px 0', fontSize: 14, fontWeight: 650, color: '#52525b', textAlign: 'center' },
-  cardTitle: { fontSize: '26px', fontWeight: 700, color: '#09090b', margin: '0 0 24px 0', letterSpacing: '-0.03em', textAlign: 'center' },
-  inputStack: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  twoCol: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
-  fieldGroup: { display: 'flex', alignItems: 'center', border: '1px solid #e4e4e7', borderRadius: '16px', backgroundColor: '#FFFFFF', position: 'relative', minHeight: 52 },
-  fieldIcon: { paddingLeft: '14px', display: 'flex', alignItems: 'center', color: '#18181b', flexShrink: 0 },
+  formWrapper: { width: '100%', maxWidth: '420px' },
+  mobileHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 },
+  mobileProgress: { display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' },
+  stepPillMobile: { fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' },
+  progressTrackMobile: { width: 80, height: 4, backgroundColor: '#f1f5f9', borderRadius: 999, overflow: 'hidden' },
+  stepHeader: { marginBottom: 32 },
+  greeting: { fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '0.02em' },
+  cardTitle: { fontSize: 28, fontWeight: 700, color: '#0f172a', margin: '0 0 8px 0', letterSpacing: '-1px' },
+  stepDesc: { fontSize: 14, color: '#64748b', fontWeight: 600, lineHeight: 1.5 },
+  formContainer: { display: 'flex', flexDirection: 'column', gap: '24px' },
+  inputStack: { display: 'flex', flexDirection: 'column', gap: '16px' },
+  twoCol: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
+  fieldGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  inputWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
+  fieldIcon: { position: 'absolute', left: '16px', color: '#94a3b8', display: 'flex', alignItems: 'center' },
   input: {
-    flex: 1,
-    padding: '14px 14px 14px 8px',
-    background: 'transparent',
-    border: 'none',
-    outline: 'none',
+    width: '100%',
+    padding: '14px 16px 14px 44px',
+    borderRadius: '14px',
+    border: '1.5px solid #E2E8F0',
     fontSize: '15px',
-    fontWeight: 650,
-    color: '#09090b',
-    minWidth: 0,
+    fontWeight: 600,
+    color: '#0f172a',
+    outline: 'none',
+    transition: 'all 0.2s ease',
+    backgroundColor: '#FFF',
   },
-  eyeBtn: { position: 'absolute', right: '12px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' },
   textarea: {
     width: '100%',
     padding: '16px',
-    backgroundColor: '#FFFFFF',
-    border: '1px solid #e4e4e7',
-    borderRadius: '16px',
-    outline: 'none',
+    borderRadius: '14px',
+    border: '1.5px solid #E2E8F0',
     fontSize: '15px',
-    fontWeight: 650,
+    fontWeight: 600,
+    color: '#0f172a',
+    outline: 'none',
     minHeight: 120,
     resize: 'vertical',
-    boxSizing: 'border-box',
     fontFamily: 'inherit',
+    backgroundColor: '#FFF',
   },
-  footerActions: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '28px', gap: 12 },
+  eyeBtn: { position: 'absolute', right: '12px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center' },
+  footerActions: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px', gap: 16 },
   backBtn: {
     background: 'none',
     border: 'none',
-    color: '#27272a',
-    fontSize: '13px',
-    fontWeight: 600,
+    color: '#64748b',
+    fontSize: '14px',
+    fontWeight: 700,
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
+    transition: 'color 0.2s ease',
   },
   nextBtn: {
-    padding: '16px 28px',
-    backgroundColor: '#09090b',
-    color: 'rgba(217, 255, 0, 1)',
-    borderRadius: '16px',
+    flex: 1,
+    padding: '16px 24px',
+    backgroundColor: '#0f172a',
+    color: '#D9FF00',
+    borderRadius: '14px',
     fontSize: '15px',
     fontWeight: 700,
     border: 'none',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: '10px',
-    flexShrink: 0,
+    transition: 'transform 0.1s ease',
   },
-  fileDrop: {
-    border: '2px dashed #d4d4d8',
-    borderRadius: '20px',
-    padding: '28px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '12px',
-    position: 'relative',
-    backgroundColor: '#fafafa',
-  },
-  hiddenFile: { position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' },
-  fileLabel: { fontSize: '13px', fontWeight: 600, color: '#27272a', textAlign: 'center' },
-  qrArea: { display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '16px' },
-  connectLead: {
-    margin: '0 0 4px 0',
-    fontSize: 13,
-    color: '#52525b',
-    fontWeight: 600,
-    lineHeight: 1.55,
-    textAlign: 'center',
-  },
-  skipWaWrap: { marginTop: 20, display: 'flex', justifyContent: 'center' },
-  skipWaBtn: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#52525b',
-    textDecoration: 'underline',
-    padding: '8px 4px',
-    fontFamily: 'inherit',
-  },
-  logoCircleWrapper: { position: 'relative' },
-  logoPreviewCircle: { width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e4e4e7' },
-  logoBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 999,
-    backgroundColor: 'rgba(217, 255, 0, 1)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: '2px solid #fff',
-  },
-  fileIconBox: {
-    width: '72px',
-    height: '72px',
-    borderRadius: '50%',
-    backgroundColor: '#f4f4f5',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  segmentGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
+  segmentGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
   segmentCard: {
     position: 'relative',
-    borderRadius: 16,
-    border: '1px solid #e4e4e7',
-    padding: '16px 14px',
+    borderRadius: 14,
+    border: '1.5px solid #E2E8F0',
+    padding: '20px 16px',
     cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'background-color 0.15s ease, border-color 0.15s ease',
+    textAlign: 'center',
+    transition: 'all 0.2s ease',
+    backgroundColor: '#FFF',
   },
   segmentCheck: {
     position: 'absolute',
     top: 10,
     right: 10,
-    width: 26,
-    height: 26,
+    width: 22,
+    height: 22,
     borderRadius: 999,
-    backgroundColor: 'rgba(217, 255, 0, 1)',
+    backgroundColor: '#D9FF00',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    border: '1px solid rgba(0,0,0,0.05)',
   },
-  hintMuted: { margin: 0, fontSize: 12, color: '#71717a', fontWeight: 600 },
-  autosaveNote: { marginTop: 18, fontSize: 11, color: '#a1a1aa', textAlign: 'center', fontWeight: 600 },
-  mobileProgress: { flexDirection: 'column', gap: 10, marginBottom: 16, alignItems: 'center' },
-  stepPillMobile: { fontSize: 12, fontWeight: 600, color: '#52525b' },
+  fileDrop: {
+    border: '2px dashed #E2E8F0',
+    borderRadius: '14px',
+    padding: '32px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '16px',
+    position: 'relative',
+    backgroundColor: '#f8fafc',
+    transition: 'border-color 0.2s ease',
+  },
+  hiddenFile: { position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' },
+  fileLabel: { fontSize: '13px', fontWeight: 700, color: '#0f172a' },
+  fileIconBox: { width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E2E8F0' },
+  logoPreviewCircle: { width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #FFF', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' },
+  logoBadge: { position: 'absolute', bottom: -4, right: -4, width: 28, height: 28, borderRadius: 999, backgroundColor: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #FFF' },
+  qrArea: { display: 'flex', flexDirection: 'column', gap: '20px' },
+  connectLead: { fontSize: 13, color: '#64748b', fontWeight: 600, lineHeight: 1.6, textAlign: 'center', margin: 0 },
+  autosaveNote: { marginTop: 8, fontSize: 11, color: '#94a3b8', textAlign: 'center', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' },
+  hintMuted: { margin: 0, fontSize: 12, color: '#94a3b8', fontWeight: 600 },
+  skipWaWrap: { display: 'flex', justifyContent: 'center' },
+  skipWaBtn: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#64748b', textDecoration: 'underline', padding: '8px' },
 };
 
 export default ZaptroRegister;

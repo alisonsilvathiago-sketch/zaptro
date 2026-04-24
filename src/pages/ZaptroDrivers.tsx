@@ -582,19 +582,21 @@ const ZaptroDriversContent: React.FC = () => {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 16, borderBottom: `1px solid ${palette.sidebarBorder}`, marginBottom: 28 }}>
+        {/* Tab Switcher Premium - Standard Black Style */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32, marginTop: 12 }}>
           <button
             onClick={() => setActiveTab('drivers')}
             style={{
-              padding: '12px 16px',
-              border: 'none',
-              borderBottom: activeTab === 'drivers' ? `2px solid ${palette.lime}` : '2px solid transparent',
-              backgroundColor: 'transparent',
-              color: activeTab === 'drivers' ? palette.text : palette.textMuted,
+              padding: '8px 18px',
+              borderRadius: 14,
+              backgroundColor: activeTab === 'drivers' ? '#000' : 'transparent',
+              color: activeTab === 'drivers' ? '#D9FF00' : '#64748B',
               fontWeight: 700,
-              fontSize: 14,
+              fontSize: 13,
+              border: 'none',
               cursor: 'pointer',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             Motoristas da Operação
@@ -602,15 +604,16 @@ const ZaptroDriversContent: React.FC = () => {
           <button
             onClick={() => setActiveTab('vehicles')}
             style={{
-              padding: '12px 16px',
-              border: 'none',
-              borderBottom: activeTab === 'vehicles' ? `2px solid ${palette.lime}` : '2px solid transparent',
-              backgroundColor: 'transparent',
-              color: activeTab === 'vehicles' ? palette.text : palette.textMuted,
+              padding: '8px 18px',
+              borderRadius: 14,
+              backgroundColor: activeTab === 'vehicles' ? '#000' : 'transparent',
+              color: activeTab === 'vehicles' ? '#D9FF00' : '#64748B',
               fontWeight: 700,
-              fontSize: 14,
+              fontSize: 13,
+              border: 'none',
               cursor: 'pointer',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             Frota (Veículos)

@@ -327,7 +327,6 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
       { icon: Navigation, label: 'Rotas', path: ZAPTRO_ROUTES.ROUTES },
       { icon: Truck, label: 'Motoristas', path: ZAPTRO_ROUTES.DRIVERS },
       { icon: MessageSquare, label: 'WhatsApp', path: ZAPTRO_ROUTES.CHAT },
-      { icon: Clock, label: 'Histórico', path: ZAPTRO_ROUTES.HISTORY },
       { icon: Users, label: 'Clientes', path: ZAPTRO_ROUTES.CLIENTS },
       { icon: Settings, label: 'Ajustes', path: `${ZAPTRO_ROUTES.SETTINGS_ALIAS}?tab=config` },
     ];
@@ -508,6 +507,11 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
     const isMaster = profile?.role?.toUpperCase() === 'MASTER' || profile?.role?.toUpperCase() === 'ADMIN';
     if (isMaster || isZaptroTenantAdminRole(profile?.role)) return true;
     return hasZaptroGranularPermission(profile?.role, profile?.permissions, 'faturamento');
+  }, [isMaster, profile?.role, profile?.permissions]);
+
+  const showHistoryMenuLink = useMemo(() => {
+    if (isMaster || isZaptroTenantAdminRole(profile?.role)) return true;
+    return hasZaptroGranularPermission(profile?.role, profile?.permissions, 'historico');
   }, [isMaster, profile?.role, profile?.permissions]);
 
   const showBrandingMenuLink = useMemo(() => {
@@ -1352,6 +1356,24 @@ const ZaptroLayoutChrome: React.FC<ZaptroLayoutProps> = ({
                           Assinatura & Faturamento
                         </button>
 
+                        {showHistoryMenuLink && (
+                          <button
+                            type="button"
+                            role="menuitem"
+                            style={{ ...styles.profileMenuItem, color: palette.text }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = palette.navActiveBg;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                            onClick={() => goProfileMenu(ZAPTRO_ROUTES.HISTORY)}
+                          >
+                            <Clock size={18} strokeWidth={2.2} color={palette.text} />
+                            Histórico
+                          </button>
+                        )}
+
                         {showProfileAdvancedLinks && (
                           <>
                             {(showBillingMenuLink &&
@@ -1739,7 +1761,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '10px',
     cursor: 'pointer',
-    boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 8px 22px rgba(217, 255, 0, 0.22)',
+    boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 4px 12px rgba(0, 0, 0, 0.08)',
     transition: 'transform 0.15s ease, box-shadow 0.15s ease',
   },
   hubPopup: {
@@ -1889,6 +1911,8 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 'min(100%, 1720px)',
     marginLeft: 'auto',
     marginRight: 'auto',
+    paddingLeft: 24,
+    paddingRight: 24,
     boxSizing: 'border-box',
     flex: 1,
     minHeight: 0,

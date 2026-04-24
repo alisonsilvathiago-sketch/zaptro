@@ -253,79 +253,157 @@ const MasterCRM: React.FC = () => {
         </div>
       )}
 
-      {/* LEAD DETAILS MODAL */}
-      <LogtaModal 
-        isOpen={!!selectedLead} 
-        onClose={() => setSelectedLead(null)} 
-        width="800px" 
-        title={`Oportunidade: ${selectedLead?.name}`}
-      >
-         {selectedLead && (
-            <div style={styles.modalContent}>
-               <div style={styles.modalHeader}>
-                  <div style={styles.modalBadgeRow}>
-                     <span style={styles.potentialTag}>{selectedLead.potential}</span>
-                     <span style={styles.statusBadge}>{funnelStages.find(s => s.id === selectedLead.status)?.name}</span>
+      {/* LEAD DETAILS PREMIUM DRAWER */}
+      {selectedLead && (
+        <>
+          <div
+            onClick={() => setSelectedLead(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 23, 42, 0.4)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 5000,
+              animation: 'fadeIn 0.3s ease'
+            }}
+          />
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            maxWidth: 560,
+            backgroundColor: '#fff',
+            zIndex: 5001,
+            boxShadow: '-20px 0 60px rgba(15, 23, 42, 0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <style>{`
+              @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+            `}</style>
+            
+            {/* Header Area */}
+            <div style={{ padding: '32px', borderBottom: '1px solid var(--border)', position: 'relative' }}>
+              <button 
+                onClick={() => setSelectedLead(null)}
+                style={{ position: 'absolute', top: 24, right: 24, border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer' }}
+              >
+                <X size={24} />
+              </button>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Briefcase size={24} color="#D9FF00" />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 24, fontWeight: 900, color: 'var(--primary)', letterSpacing: '-0.03em' }}>{selectedLead.name}</h2>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                    <span style={{ ...styles.potentialTag, backgroundColor: '#fef3c7', color: '#92400e' }}>{selectedLead.potential}</span>
+                    <span style={{ ...styles.statusBadge, backgroundColor: 'rgba(217, 255, 0, 0.1)', color: '#000', fontWeight: 800 }}>{funnelStages.find(s => s.id === selectedLead.status)?.name}</span>
                   </div>
-                  <div style={styles.modalPrice}>R$ {selectedLead.value.toLocaleString()} / ano</div>
-               </div>
-
-               <div style={styles.modalTabs}>
-                  <div style={{...styles.mTab, borderBottom: '2px solid var(--primary)', color: 'var(--primary)'}}>Visão Geral</div>
-                  <div style={styles.mTab}>Histórico</div>
-                  <div style={styles.mTab}>Arquivos</div>
-                  <div style={styles.mTab}>Follow-ups</div>
-               </div>
-
-               <div style={styles.modalBody}>
-                  <div style={styles.infoGrid}>
-                     <div style={styles.iGroup}>
-                        <label style={styles.iLabel}>Responsável Decisor</label>
-                        <div style={styles.iValue}>{selectedLead.contact}</div>
-                     </div>
-                     <div style={styles.iGroup}>
-                        <label style={styles.iLabel}>Email Corporativo</label>
-                        <div style={styles.iValue}>{selectedLead.email}</div>
-                     </div>
-                     <div style={styles.iGroup}>
-                        <label style={styles.iLabel}>Localização</label>
-                        <div style={styles.iValue}>{selectedLead.city}</div>
-                     </div>
-                     <div style={styles.iGroup}>
-                        <label style={styles.iLabel}>Origem do Lead</label>
-                        <div style={styles.iValue}>Prospecção Ativa LinkedIn</div>
-                     </div>
-                  </div>
-
-                  <div style={styles.interactionLog}>
-                     <h4 style={styles.logTitle}>Ações & Follow-ups Recentes</h4>
-                     <div style={styles.logItem}>
-                        <div style={styles.logDot} />
-                        <div>
-                           <div style={styles.logText}><b>Alison Master</b> enviou proposta comercial em PDF.</div>
-                           <div style={styles.logDate}>Ontem às 14:20</div>
-                        </div>
-                     </div>
-                     <div style={styles.logItem}>
-                        <div style={styles.logDot} />
-                        <div>
-                           <div style={styles.logText}><b>Sistema</b> registrou abertura do email de apresentação.</div>
-                           <div style={styles.logDate}>Há 2 dias</div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <footer style={styles.modalFooter}>
-                  <button style={styles.secondaryBtn} onClick={() => setSelectedLead(null)}>Fechar</button>
-                  <div style={{display: 'flex', gap: '12px'}}>
-                     <button style={{...styles.primaryBtn, backgroundColor: '#ecfdf5', color: '#10b981', border: '1px solid #d1fae5'}}><DollarSign size={16} /> Registrar Venda</button>
-                     <button style={styles.primaryBtn}>Avançar Estágio →</button>
-                  </div>
-               </footer>
+                </div>
+              </div>
+              
+              <div style={{ fontSize: '15px', color: '#64748b', fontWeight: 600 }}>{selectedLead.email} · {selectedLead.city}</div>
             </div>
-         )}
-      </LogtaModal>
+
+            {/* Content Body */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
+              
+              {/* Lead Pulse Info */}
+              <div style={{ 
+                padding: '20px', 
+                borderRadius: 20, 
+                backgroundColor: 'rgba(217, 255, 0, 0.05)', 
+                border: '1px solid rgba(217, 255, 0, 0.2)',
+                marginBottom: 32,
+                display: 'flex',
+                gap: 16
+              }}>
+                <div style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: '#D9FF00', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Clock size={20} color="#000" />
+                </div>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: '#475569', fontWeight: 600 }}>
+                  Lead parado há 5 dias nesta vista — sugere follow-up ou encaminhamento (SLA completo liga-se ao backend).
+                </p>
+              </div>
+
+              {/* CRM Tabs */}
+              <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid var(--border)', marginBottom: 32 }}>
+                <div style={{ padding: '0 0 12px', fontSize: 13, fontWeight: 800, color: '#000', borderBottom: '3px solid #D9FF00', cursor: 'pointer' }}>Visão Geral</div>
+                <div style={{ padding: '0 0 12px', fontSize: 13, fontWeight: 700, color: '#94a3b8', cursor: 'pointer' }}>Tarefas</div>
+                <div style={{ padding: '0 0 12px', fontSize: 13, fontWeight: 700, color: '#94a3b8', cursor: 'pointer' }}>Finanças</div>
+                <div style={{ padding: '0 0 12px', fontSize: 13, fontWeight: 700, color: '#94a3b8', cursor: 'pointer' }}>Arquivos</div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
+                <div style={styles.iGroup}>
+                  <label style={styles.iLabel}>Responsável Decisor</label>
+                  <div style={styles.iValue}>{selectedLead.contact}</div>
+                </div>
+                <div style={styles.iGroup}>
+                  <label style={styles.iLabel}>Valor Anual Estimado</label>
+                  <div style={{ ...styles.iValue, fontSize: 18, color: '#000' }}>R$ {selectedLead.value.toLocaleString()}</div>
+                </div>
+              </div>
+
+              {/* Tasks Section */}
+              <div style={{ marginBottom: 32 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                   <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#000', display: 'flex', alignItems: 'center', gap: 8 }}>
+                     <Calendar size={16} /> Tarefas e retornos
+                   </h4>
+                   <button style={{ padding: '6px 12px', borderRadius: 8, backgroundColor: '#000', color: '#fff', border: 'none', fontSize: 11, fontWeight: 800 }}>+ Agendar</button>
+                </div>
+                <div style={{ padding: '20px', borderRadius: 20, border: '1px solid var(--border)', backgroundColor: '#fff' }}>
+                  <p style={{ margin: 0, fontSize: 13, color: '#64748b', fontWeight: 600, lineHeight: 1.6 }}>
+                    Sem tarefas pendentes. Use "+ Agendar" para criar o primeiro follow-up para {selectedLead.name}.
+                  </p>
+                </div>
+              </div>
+
+              {/* History Log */}
+              <div>
+                <h4 style={{ margin: '0 0 16px', fontSize: 14, fontWeight: 800, color: '#000' }}>Atividade Recente</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                   <div style={{ display: 'flex', gap: 16 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                         <User size={16} />
+                      </div>
+                      <div>
+                         <div style={{ fontSize: 13, color: '#000', fontWeight: 700 }}>Alison Master <span style={{ color: '#94a3b8', fontWeight: 500 }}>enviou proposta em PDF</span></div>
+                         <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, marginTop: 2 }}>Ontem às 14:20</div>
+                      </div>
+                   </div>
+                   <div style={{ display: 'flex', gap: 16 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                         <Zap size={16} />
+                      </div>
+                      <div>
+                         <div style={{ fontSize: 13, color: '#000', fontWeight: 700 }}>Sistema <span style={{ color: '#94a3b8', fontWeight: 500 }}>registrou abertura do email</span></div>
+                         <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, marginTop: 2 }}>Há 2 dias</div>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Area */}
+            <div style={{ padding: '24px 32px', borderTop: '1px solid var(--border)', display: 'flex', gap: 12, backgroundColor: '#f8fafc' }}>
+               <button style={{ flex: 1, padding: '14px', borderRadius: 14, backgroundColor: '#000', color: '#D9FF00', border: 'none', fontWeight: 800, fontSize: 14, cursor: 'pointer' }}>
+                 Avançar Estágio →
+               </button>
+               <button style={{ padding: '14px', borderRadius: 14, backgroundColor: '#fff', color: '#ef4444', border: '1px solid #fee2e2', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+                 <Trash2 size={20} />
+               </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* NEW LEAD MODAL */}
       <LogtaModal 

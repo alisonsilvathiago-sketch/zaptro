@@ -5,11 +5,11 @@ import {
   FileSpreadsheet, FileText, User, MoreHorizontal,
   TrendingUp, Star, Loader2, ArrowLeft
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ZaptroLayout from '../components/Zaptro/ZaptroLayout';
 import { supabaseZaptro } from '../lib/supabase-zaptro';
 import { useAuth } from '../context/AuthContext';
-import { zaptroClientProfilePath } from '../constants/zaptroRoutes';
+import { zaptroClientProfilePath, ZAPTRO_ROUTES } from '../constants/zaptroRoutes';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
 import ZaptroKpiMetricCard from '../components/Zaptro/ZaptroKpiMetricCard';
 import { exportToExcel } from '../lib/exportToExcel';
@@ -26,8 +26,20 @@ function buildDemoClients(): any[] {
 
 const ZaptroClients: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { profile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'clients' | 'leads'>('clients');
+  const [activeTab, setActiveTab] = useState<'clients' | 'leads'>(
+    location.pathname.includes('/leads') ? 'leads' : 'clients'
+  );
+  
+  // Sync activeTab when URL changes (e.g. back button)
+  useEffect(() => {
+    if (location.pathname.includes('/leads')) {
+      setActiveTab('leads');
+    } else {
+      setActiveTab('clients');
+    }
+  }, [location.pathname]);
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -166,36 +178,44 @@ const ZaptroClients: React.FC = () => {
            ))}
         </div>
 
-        {/* Tab Switcher */}
-        <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #EBEBEC', marginBottom: 28, marginTop: 12 }}>
+        {/* Tab Switcher Premium - Standard Black Style */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32, marginTop: 12 }}>
           <button
-            onClick={() => setActiveTab('clients')}
+            onClick={() => {
+              setActiveTab('clients');
+              navigate(ZAPTRO_ROUTES.CLIENTS);
+            }}
             style={{
-              padding: '12px 16px',
-              border: 'none',
-              borderBottom: activeTab === 'clients' ? '3px solid #D9FF00' : '3px solid transparent',
-              backgroundColor: 'transparent',
-              color: activeTab === 'clients' ? '#000' : '#64748B',
+              padding: '8px 18px',
+              borderRadius: 14,
+              backgroundColor: activeTab === 'clients' ? '#000' : 'transparent',
+              color: activeTab === 'clients' ? '#D9FF00' : '#64748B',
               fontWeight: 700,
-              fontSize: 14,
+              fontSize: 13,
+              border: 'none',
               cursor: 'pointer',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             Clientes Base
           </button>
           <button
-            onClick={() => setActiveTab('leads')}
+            onClick={() => {
+              setActiveTab('leads');
+              navigate('/clientes/leads');
+            }}
             style={{
-              padding: '12px 16px',
-              border: 'none',
-              borderBottom: activeTab === 'leads' ? '3px solid #D9FF00' : '3px solid transparent',
-              backgroundColor: 'transparent',
-              color: activeTab === 'leads' ? '#000' : '#64748B',
+              padding: '8px 18px',
+              borderRadius: 14,
+              backgroundColor: activeTab === 'leads' ? '#000' : 'transparent',
+              color: activeTab === 'leads' ? '#D9FF00' : '#64748B',
               fontWeight: 700,
-              fontSize: 14,
+              fontSize: 13,
+              border: 'none',
               cursor: 'pointer',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             Leads & Oportunidades
@@ -301,7 +321,7 @@ const ZaptroClients: React.FC = () => {
 };
 
 const styles: Record<string, any> = {
-  container: { display: 'flex', flexDirection: 'column', gap: '40px', width: '100%', maxWidth: 1360, margin: '0 auto', boxSizing: 'border-box' },
+  container: { display: 'flex', flexDirection: 'column', gap: '40px', width: '100%', maxWidth: 1360, margin: '0 auto', boxSizing: 'border-box', padding: '0 24px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 },
   headerInfo: { flex: 1, minWidth: 0 },
   actions: { flexShrink: 0 },

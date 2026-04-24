@@ -3747,7 +3747,7 @@ const ZaptroMarketing: React.FC = () => {
           border: 1px solid rgba(217, 255, 0, 0.42);
           box-shadow:
             0 0 0 1px rgba(0, 0, 0, 0.4),
-            0 0 24px -8px rgba(217, 255, 0, 0.22);
+            0 0 24px -8px rgba(0, 0, 0, 0.08);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -4375,7 +4375,7 @@ const ZaptroMarketing: React.FC = () => {
           transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
         .zt-metric-card:hover {
-          border-color: rgba(217, 255, 0, 0.22);
+          border-color: rgba(0, 0, 0, 0.08);
           box-shadow: 0 0 40px -12px rgba(217, 255, 0, 0.12);
           transform: translateY(-2px);
         }
@@ -4855,7 +4855,7 @@ const ZaptroMarketing: React.FC = () => {
           background: ${LIME};
           color: #0a0a0f;
           border-color: ${LIME};
-          box-shadow: 0 8px 28px rgba(217, 255, 0, 0.22);
+          box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
         }
         .zt-pricing-cta--lime:hover {
           box-shadow: 0 12px 36px rgba(217, 255, 0, 0.35);

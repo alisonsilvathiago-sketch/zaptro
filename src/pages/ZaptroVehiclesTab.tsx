@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useZaptroTheme } from '../context/ZaptroThemeContext';
 import { Search, Plus, Truck, Edit2, Trash2, Navigation, User, RefreshCw, X } from 'lucide-react';
 import { ZAPTRO_SHADOW } from '../constants/zaptroShadows';
 import { notifyZaptro } from '../components/Zaptro/ZaptroNotificationSystem';
+import { zaptroVehicleProfilePath } from '../constants/zaptroRoutes';
 
 export const ZaptroVehiclesTab: React.FC = () => {
+  const navigate = useNavigate();
   const { palette } = useZaptroTheme();
   const d = palette.mode === 'dark';
   const border = palette.sidebarBorder;
@@ -60,7 +63,27 @@ export const ZaptroVehiclesTab: React.FC = () => {
       {/* Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 18 }}>
         {filtered.map(v => (
-          <div key={v.id} style={{ backgroundColor: surface, border: `1px solid ${border}`, borderRadius: 22, padding: 22, boxShadow: d ? 'none' : ZAPTRO_SHADOW.sm }}>
+          <div 
+            key={v.id} 
+            onClick={() => navigate(zaptroVehicleProfilePath(v.id))}
+            style={{ 
+              backgroundColor: surface, 
+              border: `1px solid ${border}`, 
+              borderRadius: 22, 
+              padding: 22, 
+              boxShadow: d ? 'none' : ZAPTRO_SHADOW.sm,
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = d ? '0 12px 40px rgba(0,0,0,0.3)' : '0 12px 32px rgba(15,23,42,0.08)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = d ? 'none' : ZAPTRO_SHADOW.sm;
+            }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: d ? 'rgba(217,255,0,0.1)' : '#EEFCEF', border: `1px solid ${d ? 'rgba(217,255,0,0.2)' : border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -89,17 +112,17 @@ export const ZaptroVehiclesTab: React.FC = () => {
               </div>
             </div>
 
-            <div style={{ borderTop: `1px solid ${border}`, paddingTop: 14, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button title="Ver rota atual" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => notifyZaptro('info', 'Em breve', 'Integração de rota ao vivo do veículo')}>
+            <div style={{ borderTop: `1px solid ${border}`, paddingTop: 14, display: 'flex', gap: 8, justifycontent: 'flex-end' }}>
+              <button title="Ver rota atual" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifycontent: 'center', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); notifyZaptro('info', 'Em breve', 'Integração de rota ao vivo do veículo'); }}>
                 <Navigation size={16} />
               </button>
-              <button title="Trocar motorista" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => notifyZaptro('info', 'Em breve', 'Vincular motorista')}>
+              <button title="Trocar motorista" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifycontent: 'center', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); notifyZaptro('info', 'Em breve', 'Vincular motorista'); }}>
                 <RefreshCw size={16} />
               </button>
-              <button title="Editar veículo" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => setShowModal(true)}>
+              <button title="Editar veículo" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: palette.textMuted, display: 'flex', alignItems: 'center', justifycontent: 'center', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowModal(true); }}>
                 <Edit2 size={16} />
               </button>
-              <button title="Desativar" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => notifyZaptro('info', 'Em breve', 'Desativar veículo')}>
+              <button title="Desativar" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${border}`, backgroundColor: surface2, color: '#ef4444', display: 'flex', alignItems: 'center', justifycontent: 'center', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); notifyZaptro('info', 'Em breve', 'Desativar veículo'); }}>
                 <Trash2 size={16} />
               </button>
             </div>

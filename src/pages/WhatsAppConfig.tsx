@@ -199,8 +199,15 @@ const WhatsAppConfig: React.FC = () => {
   const statusConnected = status === 'connected';
 
   const stepOrb = (): React.CSSProperties => ({
-    ...zaptroIconOrbStyle({ size: 44, rounded: 'card' }),
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#f4f4f4',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexShrink: 0,
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}`,
   });
 
   const mainColumn = (
@@ -221,7 +228,7 @@ const WhatsAppConfig: React.FC = () => {
         <div style={{ ...zaptroCardRowStyle(isDark), ...styles.stepItem }} className="zaptro-wa-step">
           <div style={styles.stepNumberContainer}>
             <div style={stepOrb()}>
-              <Scan size={20} color={ZAPTRO_ICON_ORB_FG} strokeWidth={2.4} />
+              <Scan size={20} color="#000" strokeWidth={2.4} />
             </div>
             <div style={{ ...styles.stepLine, backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)' }} />
           </div>
@@ -234,7 +241,7 @@ const WhatsAppConfig: React.FC = () => {
         <div style={{ ...zaptroCardRowStyle(isDark), ...styles.stepItem }} className="zaptro-wa-step">
           <div style={styles.stepNumberContainer}>
             <div style={stepOrb()}>
-              <Link2 size={20} color={ZAPTRO_ICON_ORB_FG} strokeWidth={2.4} />
+              <Link2 size={20} color="#000" strokeWidth={2.4} />
             </div>
             <div style={{ ...styles.stepLine, backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)' }} />
           </div>
@@ -247,7 +254,7 @@ const WhatsAppConfig: React.FC = () => {
         <div style={{ ...zaptroCardRowStyle(isDark), ...styles.stepItem }} className="zaptro-wa-step">
           <div style={styles.stepNumberContainer}>
             <div style={stepOrb()}>
-              <CheckCircle2 size={20} color={ZAPTRO_ICON_ORB_FG} strokeWidth={2.4} />
+              <CheckCircle2 size={20} color="#000" strokeWidth={2.4} />
             </div>
           </div>
           <div>
@@ -500,8 +507,18 @@ const WhatsAppConfig: React.FC = () => {
   return (
     <div className="zaptro-wa-config" style={{ width: '100%', maxWidth: 960, margin: 0, boxSizing: 'border-box', padding: '4px 0 8px' }}>
       <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', marginBottom: statusConnected ? 20 : 22 }}>
-        <div style={{ ...zaptroIconOrbStyle({ size: 52, rounded: 'card' }), flexShrink: 0 }}>
-          <MessageCircle size={26} color={ZAPTRO_ICON_ORB_FG} strokeWidth={2.2} />
+        <div style={{ 
+          width: 52, 
+          height: 52, 
+          borderRadius: 14, 
+          backgroundColor: '#f4f4f4', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          flexShrink: 0,
+          border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}`,
+        }}>
+          <MessageCircle size={26} color="#000" strokeWidth={2.2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', color: palette.text }}>

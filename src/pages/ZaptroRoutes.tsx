@@ -1,5 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HubGuard from '../components/HubGuard';
 import type { LucideIcon } from 'lucide-react';
 import {
   Activity,
@@ -654,10 +655,25 @@ const RouteCardDualAvatars: React.FC<{ visual: RouteCardVisual; border: string; 
   );
 };
 
-const ZaptroRoutes: React.FC = () => (
-  <ZaptroLayout contentFullWidth>
-    <ZaptroRoutesInner />
-  </ZaptroLayout>
-);
+const ZaptroRoutes: React.FC = () => {
+  const { profile } = useAuth();
+  
+  if (!profile?.company_id) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>
+        <div style={{ width: 40, height: 40, border: '3px solid #E2E8F0', borderTopColor: '#6366F1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  return (
+    <HubGuard companyId={profile.company_id}>
+      <ZaptroLayout contentFullWidth>
+        <ZaptroRoutesInner />
+      </ZaptroLayout>
+    </HubGuard>
+  );
+};
 
 export default ZaptroRoutes;

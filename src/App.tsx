@@ -49,7 +49,7 @@ const App: React.FC = () => {
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* Landing & Auth (Públicas) */}
-          <Route path="/" element={<WhatsAppSales />} />
+          <Route path="/" element={<Navigate to="/inicio" replace />} />
           {/* Orçamento — página pública (token na URL); sem login */}
           <Route path="/orcamento/:token" element={<ZaptroPublicQuote />} />
           {/* Execução de rota: motorista e cliente — públicos (token na URL); sem login */}

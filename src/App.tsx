@@ -10,7 +10,7 @@ import { zaptroSettingsEntryPermissionIds } from './utils/zaptroPagePermissionMa
 
 const WhatsAppSales = lazy(() => import('./pages/WhatsAppSales'));
 const Login = lazy(() => import('./pages/Login'));
-const ZaptroHomeInicio = lazy(() => import('./pages/ZaptroHomeInicio'));
+const ZaptroHomeNovoDesign = lazy(() => import('./pages/ZaptroHomeNovoDesign'));
 const ZaptroDashboardResults = lazy(() => import('./pages/ZaptroDashboardResults'));
 const ZaptroRegister = lazy(() => import('./pages/ZaptroRegister'));
 const WhatsAppPremium = lazy(() => import('./pages/WhatsAppPremium'));
@@ -40,17 +40,13 @@ const App: React.FC = () => {
   const { isLoading, isLoggingOut, isLoggingIn } = useAuth();
   const navigate = useNavigate();
   
-  // Redirecionamento de domínio: zaptro.com.br -> app.zaptro.com.br/inicio
+  // Lógica de Redirecionamento por Domínio
   React.useEffect(() => {
     const hostname = window.location.hostname;
     const pathname = window.location.pathname;
 
-    if (hostname === 'zaptro.com.br' || hostname === 'www.zaptro.com.br') {
-      window.location.replace('https://app.zaptro.com.br/inicio');
-      return;
-    }
-
-    if (hostname === 'app.zaptro.com.br' && (pathname === '/' || pathname === '')) {
+    // Se estiver no app mas na raiz, manda pro inicio (SISTEMA NOVO)
+    if (hostname.includes('app.zaptro.com.br') && (pathname === '/' || pathname === '')) {
       navigate('/inicio', { replace: true });
     }
   }, [navigate]);
@@ -59,13 +55,19 @@ const App: React.FC = () => {
   if (isLoggingIn) return <Loading context="login" />;
   if (isLoading) return <Loading />;
 
+  const isAppDomain = window.location.hostname.includes('app.zaptro.com.br');
+
   return (
     <>
       <SEOManager />
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* Landing & Auth (Públicas) */}
-          <Route path="/" element={<Navigate to="/inicio" replace />} />
+          <Route 
+            path="/" 
+            element={isAppDomain ? <Navigate to="/inicio" replace /> : <WhatsAppSales />} 
+          />
+          
           {/* Orçamento — página pública (token na URL); sem login */}
           <Route path="/orcamento/:token" element={<ZaptroPublicQuote />} />
           {/* Execução de rota: motorista e cliente — públicos (token na URL); sem login */}
@@ -83,7 +85,7 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ZaptroPagePermissionRoute pageId="inicio">
-                  <ZaptroHomeInicio />
+                  <ZaptroHomeNovoDesign />
                 </ZaptroPagePermissionRoute>
               </ProtectedRoute>
             }

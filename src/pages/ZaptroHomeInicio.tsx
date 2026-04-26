@@ -87,15 +87,28 @@ const ZaptroHomeInicio: React.FC = () => {
           borderRadius: 27,
           overflow: 'hidden',
           backgroundColor: '#000',
-          backgroundImage: 'radial-gradient(circle at 50% 120%, rgba(217, 255, 0, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
+          backgroundImage: 'linear-gradient(180deg, #FFFFFF 0%, #D9FF00 45%, #051c0f 80%, #000000 100%)',
           minHeight: 'calc(100dvh - 56px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '0 24px',
+          padding: '40px 24px 0',
           position: 'relative',
         }}
       >
+        {/* Grid Overlay Premium */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            pointerEvents: 'none',
+            maskImage: 'radial-gradient(circle at 50% 40%, black, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 40%, black, transparent 80%)',
+          }}
+        />
+
         {/* Header Toolbar */}
         <div
           style={{

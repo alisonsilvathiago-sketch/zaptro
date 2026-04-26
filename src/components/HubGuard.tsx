@@ -46,7 +46,7 @@ export default function HubGuard({ children, companyId }: { children: React.Reac
         }
 
         // 2. Chamar o Cérebro (Hub)
-        const res = await fetch('https://rrjnkmgkhbtapumgmhhr.supabase.co/functions/v1/validate-access', {
+        const res = await fetch('https://kgktwaziasxgeseucsoy.supabase.co/functions/v1/validate-access', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token, product: 'zaptro' }) // <-- Aqui ele se identifica como zaptro

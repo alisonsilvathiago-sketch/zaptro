@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 /** Projeto Zaptro/Logta (mesmo `ref` do anon key abaixo). */
-const SUPABASE_PROJECT_URL = 'https://zvqsqcxtowqoyqxjapoq.supabase.co';
+const SUPABASE_PROJECT_URL = 'https://kgktwaziasxgeseucsoy.supabase.co';
 
 const DEFAULT_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2cXNxY3h0b3dxb3lxeGphcG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MDMzNTksImV4cCI6MjA5MTI3OTM1OX0.P6QfkVNtJA8dAVwOPTYlA8U9GYFn2xxYz4Pl_dpXCqQ';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtna3R3YXppYXN4Z2VzZXVjc295Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTMyODQsImV4cCI6MjA5MjI4OTI4NH0.vej-NjFayhdrFyCvYdXeO8vfZoEDOMamYzFZuQgNE28';
 
 function resolveSupabaseUrl(): string {
   const fromEnv = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();

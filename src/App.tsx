@@ -38,6 +38,14 @@ const ZaptroTeamMemberProfile = lazy(() => import('./pages/ZaptroTeamMemberProfi
 
 const App: React.FC = () => {
   const { isLoading, isLoggingOut, isLoggingIn } = useAuth();
+  
+  // Redirecionamento de domínio: zaptro.com.br -> app.zaptro.com.br/inicio
+  React.useEffect(() => {
+    const hostname = window.location.hostname;
+    if (hostname === 'zaptro.com.br' || hostname === 'www.zaptro.com.br') {
+      window.location.href = 'https://app.zaptro.com.br/inicio';
+    }
+  }, []);
 
   if (isLoggingOut) return <Loading context="logout" />;
   if (isLoggingIn) return <Loading context="login" />;

@@ -1,0 +1,34 @@
+# Dependencies & build
+node_modules
+dist
+dist-ssr
+
+# Env (secrets)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# Mail API (Node)
+server/logs/
+
+# Logs & debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Editor & OS
+.DS_Store
+._*
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Vite / tooling cache
+.cache
+*.tsbuildinfo
